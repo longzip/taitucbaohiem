@@ -1,2 +1,3 @@
-export function someGetter (/* state */) {
+export function bhyts(state) {
+  return state.bhyts;
 }
