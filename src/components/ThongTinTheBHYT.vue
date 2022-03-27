@@ -8,7 +8,7 @@
         {{ bhyt.ngaySinhDt }}
 
         <q-icon
-          @click="loaiBo(bhyt.maSoBhxh)"
+          @click="xacNhanLoaiBo(bhyt)"
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
       /></q-item-label>
@@ -28,7 +28,7 @@
     <q-item-section side top>
       <q-item-label caption>{{ bhyt.denNgayDt }}</q-item-label>
       <q-icon
-        @click="theoDoi(bhyt.maSoBhxh)"
+        @click="xacNhanTheoDoi(bhyt)"
         name="star"
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
       />
@@ -37,10 +37,12 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   props: ["bhyt"],
   methods: {
-    loaiBo(maSoBhxh) {
+    ...mapActions("bhyts", ["loaiBo", "theoDoi"]),
+    xacNhanLoaiBo(bhyt) {
       this.$q
         .dialog({
           title: "Confirm",
@@ -54,10 +56,10 @@ export default {
           persistent: true,
         })
         .onOk(() => {
-          console.log("Loại bỏ:" + maSoBhxh);
+          this.loaiBo(bhyt);
         });
     },
-    theoDoi(maSoBhxh) {
+    xacNhanTheoDoi(bhyt) {
       this.$q
         .dialog({
           title: "Confirm",
@@ -71,7 +73,7 @@ export default {
           persistent: true,
         })
         .onOk(() => {
-          console.log("Theo dõi:" + maSoBhxh);
+          this.theoDoi(bhyt);
         });
     },
   },

@@ -21,6 +21,14 @@ const routes = [
         component: () => import("pages/PagePhatSinh.vue"),
       },
       {
+        path: "/theo-doi",
+        component: () => import("pages/PageStar.vue"),
+      },
+      {
+        path: "/ngung-hoat-dong",
+        component: () => import("pages/PageNgungHoatDong.vue"),
+      },
+      {
         path: "/tim-kiem",
         component: () => import("pages/PageTimKiem.vue"),
       },

@@ -120,7 +120,7 @@ export default {
       );
       try {
         result = await api.put(url, updateItem);
-        console.log(result);
+        // console.log(result);
         if (result)
           Notify.create({
             type: "positive",
@@ -184,7 +184,7 @@ export default {
     return result;
   },
   getSsm: async (url, isLogin) => {
-    console.log(isLogin);
+    // console.log(isLogin);
     let result = {};
     if (navigator.onLine) {
       Loading.show({

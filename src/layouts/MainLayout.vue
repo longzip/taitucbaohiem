@@ -72,6 +72,18 @@ const linksList = [
     link: "phat-sinh",
   },
   {
+    title: "Đang theo dõi",
+    caption: "Mã số BHXH đang theo dõi",
+    icon: "star",
+    link: "theo-doi",
+  },
+  {
+    title: "Ngừng theo dõi",
+    caption: "Mã số BHXH ngừng hoạt động",
+    icon: "do_not_disturb_on",
+    link: "ngung-hoat-dong",
+  },
+  {
     title: "Cài đặt",
     caption: "Thông tin người dùng",
     icon: "settings",

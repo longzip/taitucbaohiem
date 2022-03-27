@@ -5,6 +5,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
     startDate,
     endDate = startDate,
     completed,
+    disabled,
     name,
     page,
     thang,
@@ -18,6 +19,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
   if (startDate)
     url += `&appointments[]=${startDate}&appointments[]=${endDate}`;
   if (completed) url += `&completed=${completed ? 1 : 0}`;
+  if (disabled) url += `&disabled=${disabled ? 1 : 0}`;
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
 
   const { data } = await client.get(url);
@@ -48,4 +50,22 @@ export const getBhytSsm = async ({ maSoBhxh, isLogin }) => {
 export const updateBhyt = async (bhyt) => {
   const { data } = await client.put(`/api/bhyts/${bhyt.maSoBhxh}`, bhyt);
   return data;
+};
+
+export const lamMoiDanhSach = () => commit("getAllBhyts", []);
+
+export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
+  // console.log(maSoBhxh, disabled);
+  const { data } = await client.put(`/api/bhyts/${maSoBhxh}/disabled`, {
+    disabled: !disabled,
+  });
+  commit("updateBhyt", data);
+};
+
+export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
+  // console.log(maSoBhxh, completed);
+  const { data } = await client.put(`/api/bhyts/${maSoBhxh}/completed`, {
+    completed: !completed,
+  });
+  commit("updateBhyt", data);
 };
