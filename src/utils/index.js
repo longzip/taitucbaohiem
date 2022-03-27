@@ -183,4 +183,35 @@ export default {
     Loading.hide();
     return result;
   },
+  getSsm: async (url, isLogin) => {
+    console.log(isLogin);
+    let result = {};
+    if (navigator.onLine) {
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
+      try {
+        result = await api.get(url, {
+          headers: {
+            Authorization: `Bearer ${isLogin}`,
+          },
+        });
+      } catch (error) {
+        if (error.toString().includes("Network", 0)) {
+          Notify.create({
+            message: "Không thể kế nối đến máy chủ !",
+            color: "red",
+          });
+        }
+      }
+    } else {
+      Notify.create({
+        message: "Không có kết nối Internet !",
+        color: "red",
+      });
+    }
+    Loading.hide();
+    return result;
+  },
 };

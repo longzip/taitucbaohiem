@@ -1,15 +1,51 @@
+import { async } from "@firebase/util";
 import client from "../../utils";
 export const getAllBhyts = async ({ commit }, payload) => {
-  const { startDate, endDate = startDate, completed, name, page } = payload;
+  const {
+    startDate,
+    endDate = startDate,
+    completed,
+    name,
+    page,
+    thang,
+    maHoGd,
+  } = payload;
 
   let url = "/api/bhyts?";
   if (page) url += `page=${page}`;
+  if (thang) url += `thang=${thang}`;
   if (name) url += `&name=${name}`;
   if (startDate)
     url += `&appointments[]=${startDate}&appointments[]=${endDate}`;
-  url += `&completed=${completed ? 1 : 0}`;
+  if (completed) url += `&completed=${completed ? 1 : 0}`;
+  if (maHoGd) url += `&maHoGd=${maHoGd}`;
 
   const { data } = await client.get(url);
 
   if (data) commit("getAllBhyts", data);
+};
+
+export const findBhyts = async ({ searchText, isLogin }) => {
+  console.log(isLogin);
+  const { data } = await client.getSsm(
+    `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${searchText}&isCoDau=true&`,
+    isLogin
+  );
+  if (data) return data.result.value.map((x) => x.maSoBhxh);
+  else return [];
+};
+
+export const getBhytSsm = async ({ maSoBhxh, isLogin }) => {
+  const { data } = await client.getSsm(
+    `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh}`,
+    isLogin
+  );
+  if (data)
+    return { ...data.result.thongTinTheHGD, maHoGd: data.thongTinTK1.maHoGd };
+  else return {};
+};
+
+export const updateBhyt = async (bhyt) => {
+  const { data } = await client.put(`/api/bhyts/${bhyt.maSoBhxh}`, bhyt);
+  return data;
 };

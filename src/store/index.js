@@ -2,6 +2,7 @@ import { store } from "quasar/wrappers";
 import { createStore } from "vuex";
 
 import bhyts from "./module-example";
+import auth from "./module-auth";
 
 /*
  * If not building with SSR mode, you can
@@ -16,6 +17,7 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
       bhyts,
+      auth,
     },
 
     // enable strict mode (adds overhead!)

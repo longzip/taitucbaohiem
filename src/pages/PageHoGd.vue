@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT cần gia hạn</ListHeader
+      >Danh sách thẻ BHYT theo hộ gia đình: {{ this.maHoGd }}</ListHeader
     >
     <q-list v-for="bhyt in bhyts" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
@@ -19,11 +19,16 @@ import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 export default defineComponent({
   components: { ThongTinTheBHYT, ListHeader },
   name: "IndexPage",
+  data() {
+    return {
+      maHoGd: "",
+    };
+  },
   methods: {
     ...mapActions("bhyts", ["getAllBhyts"]),
-    loadData(startDate, endDate, name, completed = 0, page) {
+    loadData() {
       this.getAllBhyts({
-        thang: 1,
+        maHoGd: this.maHoGd,
       });
     },
   },
@@ -33,6 +38,7 @@ export default defineComponent({
   },
 
   mounted() {
+    this.maHoGd = this.$route.params.id;
     this.loadData();
   },
 });
