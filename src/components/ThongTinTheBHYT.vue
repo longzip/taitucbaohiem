@@ -13,9 +13,11 @@
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
       /></q-item-label>
       <q-item-label caption lines="2">
-        Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
-          bhyt.maHoGd
-        }}</a>
+        Mã hộ:<a
+          target="_blank"
+          :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/ho-gia-dinh/${bhyt.maHoGd}`"
+          >{{ bhyt.maHoGd }}</a
+        >
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.soTheBhyt }}</q-item-label>
       <q-item-label caption lines="2">5 năm:{{ bhyt.ngay5Nam }}</q-item-label>
