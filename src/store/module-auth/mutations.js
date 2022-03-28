@@ -15,4 +15,5 @@ export const clearMessages = (state) => {
 };
 export const setIsLogin = (state, payload) => {
   state.isLogin = payload;
+  localStorage.setItem("setIsLogin", payload);
 };

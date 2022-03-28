@@ -12,9 +12,6 @@ export default defineComponent({
     // ...mapActions("vaccines", ["getAllVaccines"])
     async dangNhap() {
       await this.handleAuthStateChanged();
-      if (!this.isLogin) this.$router.replace("/auth");
-
-      //this.$router.replace("/settings");
     },
   },
   computed: {

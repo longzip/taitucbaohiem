@@ -1,4 +1,3 @@
-import { async } from "@firebase/util";
 import client from "../../utils";
 export const getAllBhyts = async ({ commit }, payload) => {
   const {
@@ -18,8 +17,8 @@ export const getAllBhyts = async ({ commit }, payload) => {
   if (name) url += `&name=${name}`;
   if (startDate)
     url += `&appointments[]=${startDate}&appointments[]=${endDate}`;
-  if (completed) url += `&completed=${completed ? 1 : 0}`;
-  if (disabled) url += `&disabled=${disabled ? 1 : 0}`;
+  if (completed !== null) url += `&completed=${completed ? 1 : 0}`;
+  if (disabled !== null) url += `&disabled=${disabled ? 1 : 0}`;
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
 
   const { data } = await client.get(url);

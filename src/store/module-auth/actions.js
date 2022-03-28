@@ -8,39 +8,12 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-export const registerUser = ({}, payload) => {
-  firebaseAuth
-    .createUserWithEmailAndPassword(
-      firebaseAuth,
-      payload.email,
-      payload.password
-    )
-    .then((response) => {
-      console.log(response);
-      let userId = firebaseAuth.currentUser.uid;
-      firebaseDb.ref("users/" + userId).set({
-        name: payload.name,
-        email: payload.email,
-        online: true,
-      });
-    })
-    .catch((error) => {
-      console.log(error.message);
-    });
+export const registerUser = async ({}, payload) => {
+  return;
 };
 
-export const loginUser = ({}, { email, password }) => {
-  signInWithEmailAndPassword(firebaseAuth, email, password);
-  // .then((userCredential) => {
-  //   // Signed in
-  //   const user = userCredential.user;
-  //   console.log(user);
-  //   // ...
-  // })
-  // .catch((error) => {
-  //   const errorCode = error.code;
-  //   const errorMessage = error.message;
-  // });
+export const loginUser = async ({}, { email, password }) => {
+  await signInWithEmailAndPassword(firebaseAuth, email, password);
 };
 export const logoutUser = () => {
   const auth = getAuth();
@@ -48,7 +21,6 @@ export const logoutUser = () => {
     .then(() => {
       commit("setUserDetails", {});
       commit("setIsLogin", "");
-      localStorage.setItem("setIsLogin", "");
     })
     .catch((error) => {
       // An error happened.
@@ -76,7 +48,6 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
               isLogin: userDetails.isLogin,
               userId,
             });
-            localStorage.setItem("setIsLogin", userDetails.isLogin);
             commit("setIsLogin", userDetails.isLogin);
           } else {
             console.log("No data available");
@@ -100,13 +71,6 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
         }
       );
     } else {
-      // User is signed out
-      // dispatch("firebaseUpdateUser", {
-      //   userId: state.userDetails.userId,
-      //   updates: {
-      //     online: false,
-      //   },
-      // });
       commit("setUserDetails", {});
       commit("setIsLogin", "");
     }

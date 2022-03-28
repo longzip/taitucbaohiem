@@ -6,7 +6,7 @@
       <q-input
         outlined
         v-model="searchText"
-        @keyup.enter="timKiem"
+        @keyup.enter="timKiemTheoDS"
         placeholder="Họ và tên"
         hint="Nhập họ và tên rồi nhấn Enter để tìm kiếm"
         dense
@@ -47,13 +47,23 @@ export default {
     ...mapGetters("auth", ["isLogin"]),
   },
   methods: {
-    async timKiem() {
+    async timKiemTheoDS() {
       this.bhyts = [];
       Loading.show({
         spinner: QSpinnerIos,
         spinnerSize: "100px",
       });
-      let url = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${this.searchText}&isCoDau=true&`;
+      let dsHoTen = this.searchText.split(",");
+      if (dsHoTen.length === 0) return;
+      for (let index = 0; index < dsHoTen.length; index++) {
+        const element = dsHoTen[index];
+        await this.timKiem(element);
+      }
+      Loading.hide();
+    },
+
+    async timKiem(hoTen) {
+      let url = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${hoTen}&isCoDau=true&`;
       let { data } = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${this.isLogin}`,
@@ -68,7 +78,6 @@ export default {
           console.log(error);
         }
       }
-      Loading.hide();
     },
     async luu(bhyt) {
       let { data } = await axios.put(

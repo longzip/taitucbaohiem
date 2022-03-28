@@ -45,14 +45,18 @@ export default {
   },
   methods: {
     ...mapActions("auth", ["registerUser", "loginUser"]),
-    submitForm() {
+    async submitForm() {
       if (this.tab == "login") {
-        this.loginUser(this.formData);
+        await this.loginUser(this.formData);
       } else {
-        this.registerUser(this.formData);
+        await this.registerUser(this.formData);
       }
       this.$router.push("/tim-kiem");
     },
+  },
+  mounted() {
+    console.log(localStorage.getItem("setIsLogin"));
+    if (localStorage.getItem("setIsLogin")) this.$router.push("/tra-cuu");
   },
 };
 </script>

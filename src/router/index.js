@@ -35,17 +35,16 @@ export default route(function ({ store /*, ssrContext */ }) {
     ),
   });
 
-  // Router.beforeEach((to, from, next) => {
-  //   if (
-  //     to.matched.some((record) => record.meta.requireAuth) &&
-  //     !(localStorage.getItem("setIsLogin") !== "")
-  //   ) {
-  //     // next({ path: "/settings" });
-  //     next({ path: "/auth", query: { next: to.fullPath } });
-  //   } else {
-  //     next();
-  //   }
-  // });
+  Router.beforeEach((to, from, next) => {
+    if (
+      to.matched.some((record) => record.meta.requireAuth) &&
+      !(localStorage.getItem("setIsLogin") !== "")
+    ) {
+      next({ path: "/auth", query: { next: to.fullPath } });
+    } else {
+      next();
+    }
+  });
 
   return Router;
 });

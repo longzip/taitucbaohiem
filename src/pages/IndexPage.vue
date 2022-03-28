@@ -21,9 +21,11 @@ export default defineComponent({
   name: "IndexPage",
   methods: {
     ...mapActions("bhyts", ["getAllBhyts"]),
-    loadData(startDate, endDate, name, completed = 0, page) {
+    loadData() {
       this.getAllBhyts({
-        thang: 1,
+        thang: 2,
+        completed: 0,
+        disabled: 0,
       });
     },
   },

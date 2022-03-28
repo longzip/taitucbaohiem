@@ -42,11 +42,14 @@ export default {
       bhyts: [],
     };
   },
-  computed: {
-    ...mapGetters("auth", ["isLogin"]),
-  },
   methods: {
     async timKiem() {
+      console.log(localStorage.getItem("setIsLogin"));
+      if (
+        this.searchText.length === 0 ||
+        localStorage.getItem("setIsLogin") === ""
+      )
+        return;
       this.bhyts = [];
       Loading.show({
         spinner: QSpinnerIos,
@@ -77,7 +80,7 @@ export default {
         )}`,
         {
           headers: {
-            Authorization: `Bearer ${this.isLogin}`,
+            Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
           },
         }
       );
@@ -89,8 +92,13 @@ export default {
       this.bhyts.push(theBHYT);
     },
   },
+  computed: {
+    ...mapGetters("auth", ["isLogin"]),
+  },
   mounted() {
-    // console.log(this.$route.query.id);
+    if (!localStorage.getItem("setIsLogin")) this.$router.push("/auth");
+    if (this.$route.query.q) this.searchText = this.$route.query.q;
+    this.timKiem();
   },
 };
 </script>
