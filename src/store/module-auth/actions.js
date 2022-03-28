@@ -48,6 +48,7 @@ export const logoutUser = () => {
     .then(() => {
       commit("setUserDetails", {});
       commit("setIsLogin", "");
+      localStorage.setItem("setIsLogin", "");
     })
     .catch((error) => {
       // An error happened.
@@ -75,6 +76,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
               isLogin: userDetails.isLogin,
               userId,
             });
+            localStorage.setItem("setIsLogin", userDetails.isLogin);
             commit("setIsLogin", userDetails.isLogin);
           } else {
             console.log("No data available");

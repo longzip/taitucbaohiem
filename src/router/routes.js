@@ -3,7 +3,11 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "", component: () => import("pages/IndexPage.vue") },
+      {
+        path: "",
+        component: () => import("pages/IndexPage.vue"),
+        // meta: { requireAuth: true },
+      },
       // {
       //   path: "/contacts",
       //   component: () => import("pages/PageContacts.vue"),
@@ -11,32 +15,49 @@ const routes = [
       {
         path: "/settings",
         component: () => import("pages/PageSettings.vue"),
-      },
-      {
-        path: "/tra-cuu",
-        component: () => import("pages/PageTraCuu.vue"),
+        // meta: { requireAuth: true },
       },
       {
         path: "/phat-sinh",
         component: () => import("pages/PagePhatSinh.vue"),
+        // meta: { requireAuth: true },
       },
       {
         path: "/theo-doi",
         component: () => import("pages/PageStar.vue"),
+        // meta: { requireAuth: true },
       },
       {
         path: "/ngung-hoat-dong",
         component: () => import("pages/PageNgungHoatDong.vue"),
+        // meta: { requireAuth: true },
       },
       {
         path: "/tim-kiem",
         component: () => import("pages/PageTimKiem.vue"),
+        // meta: { requireAuth: true },
       },
       {
         path: "/ho-gia-dinh/:id",
         component: () => import("pages/PageHoGd.vue"),
+        // meta: { requireAuth: true },
       },
-      { path: "/auth", component: () => import("pages/PageAuth.vue") },
+      {
+        path: "/auth",
+        name: "auth",
+        component: () => import("pages/PageAuth.vue"),
+        // meta: { requireAuth: false },
+      },
+      {
+        path: "/tra-cuu/:id",
+        component: () => import("pages/PageTraCuu.vue"),
+        // meta: { requireAuth: false },
+      },
+      {
+        path: "/tra-cuu",
+        component: () => import("pages/PageTraCuu.vue"),
+        // meta: { requireAuth: false },
+      },
     ],
   },
 

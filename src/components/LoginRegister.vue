@@ -1,4 +1,5 @@
 <template>
+  {{ isLogin }}
   <q-form @submit="submitForm">
     <q-input
       v-if="tab == 'register'"
@@ -50,6 +51,7 @@ export default {
       } else {
         this.registerUser(this.formData);
       }
+      this.$router.push("/tim-kiem");
     },
   },
 };

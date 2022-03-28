@@ -72,7 +72,9 @@ export default {
     },
     async xem(maSoBhxh) {
       let { data } = await axios.get(
-        `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh}`,
+        `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
+          maSoBhxh.length - 10
+        )}`,
         {
           headers: {
             Authorization: `Bearer ${this.isLogin}`,
@@ -86,6 +88,9 @@ export default {
       });
       this.bhyts.push(theBHYT);
     },
+  },
+  mounted() {
+    // console.log(this.$route.query.id);
   },
 };
 </script>

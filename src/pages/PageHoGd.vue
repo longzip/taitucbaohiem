@@ -1,8 +1,13 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT theo hộ gia đình: {{ this.maHoGd }}</ListHeader
-    >
+      >Danh sách thẻ BHYT theo hộ gia đình:
+      <a
+        :href="`https://hgd.baohiemxahoi.gov.vn/doViewInfoHo.do?maHo=${maHoGd}`"
+        target="_blank"
+        >{{ maHoGd }}</a
+      >
+    </ListHeader>
     <q-list v-for="bhyt in bhyts" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
