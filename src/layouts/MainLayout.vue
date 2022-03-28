@@ -50,44 +50,44 @@ const linksList = [
   {
     title: "Trang chủ",
     caption: "Đến hạn BHYT",
-    icon: "school",
+    icon: "home",
     link: "/",
   },
   {
     title: "Tra cứu",
     caption: "Tìm theo mã BHXH",
     icon: "search",
-    link: "tra-cuu",
+    link: "/tra-cuu",
   },
   {
     title: "Tìm kiếm",
     caption: "Tìm theo họ tên",
-    icon: "search",
-    link: "tim-kiem",
+    icon: "person_search",
+    link: "/tim-kiem",
   },
-  {
-    title: "Phát sinh",
-    caption: "Mã số BHXH phát sinh",
-    icon: "search",
-    link: "phat-sinh",
-  },
+  // {
+  //   title: "Phát sinh",
+  //   caption: "Mã số BHXH phát sinh",
+  //   icon: "search",
+  //   link: "/phat-sinh",
+  // },
   {
     title: "Đang theo dõi",
     caption: "Mã số BHXH đang theo dõi",
     icon: "star",
-    link: "theo-doi",
+    link: "/theo-doi",
   },
   {
     title: "Ngừng theo dõi",
     caption: "Mã số BHXH ngừng hoạt động",
     icon: "do_not_disturb_on",
-    link: "ngung-hoat-dong",
+    link: "/ngung-hoat-dong",
   },
   {
     title: "Cài đặt",
     caption: "Thông tin người dùng",
     icon: "settings",
-    link: "settings",
+    link: "/settings",
   },
 ];
 

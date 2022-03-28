@@ -3,7 +3,26 @@
     <ListHeader bgcolor="bg-orange-4"
       >Danh sách thẻ BHYT cần gia hạn</ListHeader
     >
-    <q-list v-for="bhyt in bhyts" :key="bhyt.id">
+    <div class="q-gutter-y-md column">
+      <q-input
+        outlined
+        v-model="searchText"
+        placeholder="Từ khóa"
+        hint="Tìm kiếm danh sách hiện tại"
+        dense
+      >
+        <template v-slot:append>
+          <q-icon
+            v-if="searchText !== ''"
+            name="close"
+            @click="searchText = ''"
+            class="cursor-pointer"
+          />
+          <q-icon name="search" />
+        </template>
+      </q-input>
+    </div>
+    <q-list v-for="bhyt in timBhyts(searchText)" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
@@ -19,6 +38,11 @@ import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 export default defineComponent({
   components: { ThongTinTheBHYT, ListHeader },
   name: "IndexPage",
+  data() {
+    return {
+      searchText: "",
+    };
+  },
   methods: {
     ...mapActions("bhyts", ["getAllBhyts"]),
     loadData() {
@@ -31,11 +55,16 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapGetters("bhyts", ["bhyts"]),
+    ...mapGetters("bhyts", ["timBhyts"]),
   },
 
   mounted() {
     this.loadData();
   },
+  // watch: {
+  //   searchText(tuKhoa) {
+  //     console.log(tuKhoa);
+  //   },
+  // },
 });
 </script>

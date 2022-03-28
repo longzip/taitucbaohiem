@@ -13,9 +13,9 @@
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
       /></q-item-label>
       <q-item-label caption lines="2">
-        Mã hộ:<router-link :to="`/ho-gia-dinh/${bhyt.maHoGd}`">{{
+        Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
           bhyt.maHoGd
-        }}</router-link>
+        }}</a>
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.soTheBhyt }}</q-item-label>
       <q-item-label caption lines="2">5 năm:{{ bhyt.ngay5Nam }}</q-item-label>
