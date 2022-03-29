@@ -1,5 +1,11 @@
 <template>
-  <q-item>
+  <q-item
+    :class="{
+      'bg-warning': bhyt.coTheUuTienCaoHon,
+      'bg-positive': getDateDiff(bhyt.denNgayDt) > 30,
+      'bg-blue-grey': getDateDiff(bhyt.denNgayDt) < 1,
+    }"
+  >
     <q-item-section>
       <q-item-label
         ><q-icon
@@ -13,11 +19,9 @@
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
       /></q-item-label>
       <q-item-label caption lines="2">
-        Mã hộ:<a
-          target="_blank"
-          :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/ho-gia-dinh/${bhyt.maHoGd}`"
-          >{{ bhyt.maHoGd }}</a
-        >
+        Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
+          bhyt.maHoGd
+        }}</a>
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.soTheBhyt }}</q-item-label>
       <q-item-label caption lines="2">5 năm:{{ bhyt.ngay5Nam }}</q-item-label>
@@ -28,6 +32,7 @@
     </q-item-section>
 
     <q-item-section side top>
+      <q-item-label caption>{{ getDateDiff(bhyt.denNgayDt) }}</q-item-label>
       <q-item-label caption>{{ bhyt.denNgayDt }}</q-item-label>
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
@@ -40,6 +45,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { date } from "quasar";
 export default {
   props: ["bhyt"],
   methods: {
@@ -77,6 +83,9 @@ export default {
         .onOk(() => {
           this.theoDoi(bhyt);
         });
+    },
+    getDateDiff(ngayHetHan) {
+      return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
     },
   },
 };

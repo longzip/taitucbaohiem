@@ -21,6 +21,7 @@
     "core-js": "^3.6.5",
     "express": "^4.17.3",
     "firebase": "^9.6.10",
+    "moment": "^2.29.1",
     "quasar": "^2.6.0",
     "serve-static": "^1.15.0",
     "vue": "^3.0.0",
