@@ -48,8 +48,8 @@ export default defineComponent({
     loadData() {
       this.getAllBhyts({
         thang: 2,
-        completed: 0,
-        disabled: 0,
+        completed: "0",
+        disabled: "0",
       });
     },
   },
