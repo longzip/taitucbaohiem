@@ -7,6 +7,11 @@
         target="_blank"
         >{{ maHoGd }}</a
       >
+      <q-btn
+        color="primary"
+        label="Xóa hộ gia đình"
+        @click="xacNhanXoa(maHoGd)"
+      />
     </ListHeader>
     <q-list v-for="bhyt in bhyts" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
@@ -30,11 +35,29 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("bhyts", ["getAllBhyts"]),
+    ...mapActions("bhyts", ["getAllBhyts", "xoaHoGd"]),
     loadData() {
       this.getAllBhyts({
         maHoGd: this.maHoGd,
       });
+    },
+    async xacNhanXoa(maHoGd) {
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: "Bạn có muốn loại bỏ?",
+          ok: {
+            push: true,
+          },
+          cancel: {
+            color: "negative",
+          },
+          persistent: true,
+        })
+        .onOk(async () => {
+          await this.xoaHoGd(maHoGd);
+          this.$router.go();
+        });
     },
   },
 

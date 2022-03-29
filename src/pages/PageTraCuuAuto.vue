@@ -107,6 +107,7 @@ export default {
     let { data } = await axios.get(
       "https://cmsbudientulap.herokuapp.com/api/maSoBhxhs"
     );
+    localStorage.setItem("dsMaSoBhxhsDaCapNhat", JSON.stringify(data));
 
     let dsMaSoBhxhs = JSON.parse(localStorage.getItem("dsMaSoBhxhs"));
     console.log("danh sách mã số bh còn lại: " + dsMaSoBhxhs.length);

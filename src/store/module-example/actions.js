@@ -1,4 +1,9 @@
 import client from "../../utils";
+
+export const xoaHoGd = async ({ commit }, payload) => {
+  await client.get(`/api/xoaHoGd?maHoGd=${payload}`);
+};
+
 export const getAllBhyts = async ({ commit }, payload) => {
   const {
     startDate,
