@@ -1,8 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT cần gia hạn</ListHeader
-    >
+    <ListHeader bgcolor="bg-orange-4">Danh sách thẻ BHYT đánh dấu</ListHeader>
     <q-list v-for="bhyt in bhyts" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />

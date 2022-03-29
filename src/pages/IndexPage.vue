@@ -61,10 +61,5 @@ export default defineComponent({
   mounted() {
     this.loadData();
   },
-  // watch: {
-  //   searchText(tuKhoa) {
-  //     console.log(tuKhoa);
-  //   },
-  // },
 });
 </script>

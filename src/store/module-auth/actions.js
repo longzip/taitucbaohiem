@@ -51,7 +51,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
             commit("setIsLogin", userDetails.isLogin);
           } else {
             console.log("No data available");
-            console.log(user);
+            // console.log(user);
             commit("setUserDetails", {
               name: user.displayName,
               email: user.email,

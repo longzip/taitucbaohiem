@@ -55,7 +55,7 @@ export default {
     },
   },
   mounted() {
-    console.log(localStorage.getItem("setIsLogin"));
+    // console.log(localStorage.getItem("setIsLogin"));
     if (localStorage.getItem("setIsLogin")) this.$router.push("/tra-cuu");
   },
 };

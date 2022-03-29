@@ -44,7 +44,8 @@ export default {
   },
   methods: {
     async timKiem() {
-      console.log(localStorage.getItem("setIsLogin"));
+      window.close();
+      // console.log(localStorage.getItem("setIsLogin"));
       if (
         this.searchText.length === 0 ||
         localStorage.getItem("setIsLogin") === ""
@@ -64,6 +65,7 @@ export default {
           console.log(error);
         }
       }
+      window.close();
       Loading.hide();
     },
     async luu(bhyt) {
