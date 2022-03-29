@@ -25,7 +25,14 @@
           >{{ bhyt.maHoGd }}</a
         >
       </q-item-label>
-      <q-item-label caption lines="2">{{ bhyt.soTheBhyt }}</q-item-label>
+      <q-item-label caption lines="2"
+        ><a
+          target="_blank"
+          :href="`https://longzip.github.io/todo-buudienxatulap/#/tra-cuu?q=${bhyt.soTheBhyt}`"
+          >{{ bhyt.soTheBhyt }}</a
+        >
+      </q-item-label>
+      <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2">5 năm:{{ bhyt.ngay5Nam }}</q-item-label>
 
       <q-item-label caption lines="2">
