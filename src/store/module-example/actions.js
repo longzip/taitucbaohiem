@@ -1,7 +1,57 @@
 import client from "../../utils";
+import axios from "axios";
+
+let bhyts = [];
 
 export const xoaHoGd = async ({ commit }, payload) => {
   await client.get(`/api/xoaHoGd?maHoGd=${payload}`);
+};
+
+const timKiem = async (searchText) => {
+  if (searchText.length === 0 || localStorage.getItem("setIsLogin") === "")
+    return [];
+  bhyts = [];
+  const maSoBhxhs = searchText.split(",");
+  for (let index = 0; index < maSoBhxhs.length; index++) {
+    const maSoBhxh = maSoBhxhs[index];
+    try {
+      await xem(maSoBhxh);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return bhyts;
+};
+
+export const luuBhyt = async (bhyt) => {
+  let { data } = await axios.put(
+    `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
+    bhyt
+  );
+  return data;
+};
+export const xem = async (maSoBhxh) => {
+  let { data } = await axios.get(
+    `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
+      maSoBhxh.length - 10
+    )}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
+      },
+    }
+  );
+
+  let theBHYT = await luuBhyt({
+    ...data.result.thongTinTheHGD,
+    maHoGd: data.result.thongTinTK1.maHoGd,
+  });
+  bhyts.push(theBHYT);
+};
+
+export const dongBoDuLieu = async ({ commit }, payload) => {
+  const bhyts = await timKiem(payload);
+  commit("getAllBhyts", [...bhyts]);
 };
 
 export const getAllBhyts = async ({ commit }, payload) => {

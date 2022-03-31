@@ -3,7 +3,7 @@
     :class="{
       'bg-warning': bhyt.coTheUuTienCaoHon,
       'bg-positive': getDateDiff(bhyt.denNgayDt) > 30,
-      'bg-blue-grey': getDateDiff(bhyt.denNgayDt) < 1,
+      'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 1,
     }"
   >
     <q-item-section>
@@ -48,6 +48,11 @@
         name="star"
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
       />
+      <q-item-label caption
+        >Cập nhật:{{
+          new Date(bhyt.updated_at).toLocaleDateString()
+        }}</q-item-label
+      >
     </q-item-section>
   </q-item>
 </template>

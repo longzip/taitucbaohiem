@@ -18,11 +18,12 @@ export default defineComponent({
   components: { ThongTinTheBHYT, ListHeader },
   name: "IndexPage",
   methods: {
-    ...mapActions("bhyts", ["getAllBhyts"]),
-    loadData() {
-      this.getAllBhyts({
+    ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
+    async loadData() {
+      await this.getAllBhyts({
         completed: 1,
       });
+      this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
     },
   },
 

@@ -109,10 +109,16 @@ export default {
     );
     localStorage.setItem("dsMaSoBhxhsDaCapNhat", JSON.stringify(data));
 
+    let maHoGds = await axios.get(
+      "https://cmsbudientulap.herokuapp.com/api/maHoGd"
+    );
+    localStorage.setItem("maHoGds", JSON.stringify(maHoGds.data));
+
     let dsMaSoBhxhs = JSON.parse(localStorage.getItem("dsMaSoBhxhs"));
     console.log("danh sách mã số bh còn lại: " + dsMaSoBhxhs.length);
     console.log("Đã cập nhật thành công: " + data.length);
-    let maSoBhxh = dsMaSoBhxhs.pop();
+    let maSoBhxh = false;
+    // let maSoBhxh = dsMaSoBhxhs.pop();
     while (maSoBhxh) {
       if (!data.includes(maSoBhxh)) {
         await this.xem(maSoBhxh);

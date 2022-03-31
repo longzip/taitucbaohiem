@@ -35,11 +35,14 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("bhyts", ["getAllBhyts", "xoaHoGd"]),
-    loadData() {
-      this.getAllBhyts({
+    ...mapActions("bhyts", ["getAllBhyts", "xoaHoGd", "dongBoDuLieu"]),
+    async loadData() {
+      await this.getAllBhyts({
         maHoGd: this.maHoGd,
       });
+      // console.log("đồng bộ dữ liệu");
+      // console.log(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
+      this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
     },
     async xacNhanXoa(maHoGd) {
       this.$q

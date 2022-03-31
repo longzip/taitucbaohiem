@@ -44,13 +44,18 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("bhyts", ["getAllBhyts"]),
-    loadData() {
-      this.getAllBhyts({
+    ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
+    async loadData() {
+      await this.getAllBhyts({
         thang: 2,
         completed: "0",
         disabled: "0",
       });
+      // this.dongBoDuLieu(
+      //   this.timBhyts()
+      //     .map((bhyt) => bhyt.maSoBhxh)
+      //     .join()
+      // );
     },
   },
 
