@@ -23,7 +23,7 @@ export default defineComponent({
       await this.getAllBhyts({
         completed: 1,
       });
-      this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
+      //this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
     },
   },
 
