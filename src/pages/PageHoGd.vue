@@ -7,10 +7,20 @@
         target="_blank"
         >{{ maHoGd }}</a
       >
+
       <q-btn
+        rounded
         color="primary"
-        label="Xóa hộ gia đình"
+        label="Tải"
+        @click="dongBo()"
+        icon="sync"
+      />
+      <q-btn
+        color="deep-orange"
+        rounded
+        label="Xóa"
         @click="xacNhanXoa(maHoGd)"
+        icon="delete_forever"
       />
     </ListHeader>
     <q-list v-for="bhyt in bhyts" :key="bhyt.id">
@@ -23,6 +33,7 @@
 <script>
 import { defineComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
+import { Loading, QSpinnerIos } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
@@ -42,13 +53,20 @@ export default defineComponent({
       });
       // console.log("đồng bộ dữ liệu");
       // console.log(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
-      this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
+    },
+    async dongBo() {
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
+      await this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
+      Loading.hide();
     },
     async xacNhanXoa(maHoGd) {
       this.$q
         .dialog({
           title: "Confirm",
-          message: "Bạn có muốn loại bỏ?",
+          message: "Bạn có muốn xóa hộ gia đình?",
           ok: {
             push: true,
           },

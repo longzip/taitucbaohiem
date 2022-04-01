@@ -49,10 +49,10 @@ export default {
   data() {
     return {
       formData: {
-        name: "",
-        email: "",
-        smsText: "",
-        isLogin: "",
+        name: "Bưu điện xã Tự Lập",
+        email: "info@buudienxatulap.ga",
+        smsText: "sss",
+        isLogin: "a",
       },
     };
   },
@@ -78,9 +78,11 @@ export default {
         });
     },
   },
-  created() {
-    let { name, email, smsText, isLogin } = this.userDetails;
-    this.formData = { name, email, smsText, isLogin };
+  mounted() {
+    const { isLogin } = this.userDetails;
+    if (this.$route.query.q) this.formData.isLogin = this.$route.query.q;
+    else this.formData.isLogin = isLogin;
+    // this.formData = { name, email, smsText, isLogin };
   },
 };
 </script>

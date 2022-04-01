@@ -9,16 +9,12 @@ export default defineComponent({
   name: "App",
   methods: {
     ...mapActions("auth", ["handleAuthStateChanged"]),
-    // ...mapActions("vaccines", ["getAllVaccines"])
-    async dangNhap() {
-      await this.handleAuthStateChanged();
-    },
   },
   computed: {
     ...mapGetters("auth", ["isLogin"]),
   },
-  mounted() {
-    this.dangNhap();
+  async mounted() {
+    await this.handleAuthStateChanged();
   },
 });
 </script>
