@@ -84,6 +84,12 @@ const linksList = [
     link: "/ngung-hoat-dong",
   },
   {
+    title: "Chưa có dữ liệu",
+    caption: "Mã số BHXH chưa cập nhật",
+    icon: "sync",
+    link: "/dong-bo",
+  },
+  {
     title: "Cài đặt",
     caption: "Thông tin người dùng",
     icon: "settings",

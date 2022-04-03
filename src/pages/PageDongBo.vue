@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT đánh dấu<q-btn
+      >Danh sách thẻ BHYT cần gia hạn<q-btn
         rounded
         color="primary"
         label="Tải"
@@ -50,12 +50,6 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
-    async loadData() {
-      await this.getAllBhyts({
-        completed: 1,
-      });
-      //this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
-    },
     async dongBo() {
       this.dongBoDuLieu(
         this.timBhyts(this.searchText)
@@ -70,7 +64,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.loadData();
+    this.getAllBhyts({ chuaDongBo: "updated_at" });
   },
 });
 </script>

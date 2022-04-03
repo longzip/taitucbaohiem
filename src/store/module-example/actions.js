@@ -55,26 +55,15 @@ export const dongBoDuLieu = async ({ commit }, payload) => {
 };
 
 export const getAllBhyts = async ({ commit }, payload) => {
-  const {
-    startDate,
-    endDate = startDate,
-    completed,
-    disabled,
-    name,
-    page,
-    thang,
-    maHoGd,
-  } = payload;
+  const { completed, disabled, name, thang, maHoGd, chuaDongBo } = payload;
 
   let url = "/api/bhyts?";
-  if (page) url += `page=${page}`;
   if (thang) url += `thang=${thang}`;
   if (name) url += `&name=${name}`;
-  if (startDate)
-    url += `&appointments[]=${startDate}&appointments[]=${endDate}`;
   if (completed) url += `&completed=${completed}`;
   if (disabled) url += `&disabled=${disabled}`;
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
+  if (chuaDongBo) url += `&chuaDongBo=${chuaDongBo}`;
 
   const { data } = await client.get(url);
 

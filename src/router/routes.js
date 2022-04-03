@@ -9,6 +9,11 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "/dong-bo",
+        component: () => import("pages/PageDongBo.vue"),
+        meta: { requireAuth: true },
+      },
+      {
         path: "/settings",
         component: () => import("pages/PageSettings.vue"),
         meta: { requireAuth: true },

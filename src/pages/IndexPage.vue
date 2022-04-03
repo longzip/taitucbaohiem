@@ -1,8 +1,13 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT cần gia hạn</ListHeader
-    >
+      >Danh sách thẻ BHYT cần gia hạn<q-btn
+        rounded
+        color="primary"
+        label="Tải"
+        @click="dongBo()"
+        icon="sync"
+    /></ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
         outlined
@@ -51,11 +56,13 @@ export default defineComponent({
         completed: "0",
         disabled: "0",
       });
-      // this.dongBoDuLieu(
-      //   this.timBhyts()
-      //     .map((bhyt) => bhyt.maSoBhxh)
-      //     .join()
-      // );
+    },
+    async dongBo() {
+      this.dongBoDuLieu(
+        this.timBhyts(this.searchText)
+          .map((bhyt) => bhyt.maSoBhxh)
+          .join()
+      );
     },
   },
 
