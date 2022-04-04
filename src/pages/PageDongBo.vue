@@ -51,11 +51,12 @@ export default defineComponent({
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
     async dongBo() {
-      this.dongBoDuLieu(
+      await this.dongBoDuLieu(
         this.timBhyts(this.searchText)
           .map((bhyt) => bhyt.maSoBhxh)
           .join()
       );
+      this.$router.go();
     },
     async loadData() {
       await this.getAllBhyts({ chuaDongBo: "updated_at" });

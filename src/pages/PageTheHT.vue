@@ -45,14 +45,14 @@ export default defineComponent({
   name: "IndexPage",
   data() {
     return {
-      searchText: "",
+      searchText: "HT",
     };
   },
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
     async loadData() {
       await this.getAllBhyts({
-        name: "HT",
+        name: this.searchText,
       });
     },
     async dongBo() {
