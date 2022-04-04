@@ -57,6 +57,10 @@ export default defineComponent({
           .join()
       );
     },
+    async loadData() {
+      await this.getAllBhyts({ chuaDongBo: "updated_at" });
+      await this.dongBo();
+    },
   },
 
   computed: {
@@ -64,7 +68,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.getAllBhyts({ chuaDongBo: "updated_at" });
+    this.loadData();
   },
 });
 </script>
