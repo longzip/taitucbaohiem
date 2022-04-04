@@ -58,7 +58,7 @@ export default defineComponent({
     },
     async dongBo() {
       this.dongBoDuLieu(
-        this.timBhyts(this.searchText)
+        this.timBhyts()
           .map((bhyt) => bhyt.maSoBhxh)
           .join()
       );
