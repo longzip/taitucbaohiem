@@ -21,14 +21,14 @@
       <q-item-label caption lines="2">
         Mã hộ:<a
           target="_blank"
-          :href="`https://longzip.github.io/todo-buudienxatulap/#/ho-gia-dinh/${bhyt.maHoGd}`"
+          :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/ho-gia-dinh/${bhyt.maHoGd}`"
           >{{ bhyt.maHoGd }}</a
         >
       </q-item-label>
       <q-item-label caption lines="2"
         ><a
           target="_blank"
-          :href="`https://longzip.github.io/todo-buudienxatulap/#/tra-cuu?q=${bhyt.soTheBhyt}`"
+          :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/tra-cuu?q=${bhyt.soTheBhyt}`"
           >{{ bhyt.soTheBhyt }}</a
         >
       </q-item-label>
