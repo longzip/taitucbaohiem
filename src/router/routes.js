@@ -14,6 +14,11 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "/the-ht",
+        component: () => import("pages/PageTheHT.vue"),
+        meta: { requireAuth: true },
+      },
+      {
         path: "/settings",
         component: () => import("pages/PageSettings.vue"),
         meta: { requireAuth: true },

@@ -72,6 +72,12 @@ const linksList = [
   //   link: "/phat-sinh",
   // },
   {
+    title: "Thẻ Hưu Trí",
+    caption: "Mã số BHXH Hưu Trí",
+    icon: "star",
+    link: "/the-ht",
+  },
+  {
     title: "Đang theo dõi",
     caption: "Mã số BHXH đang theo dõi",
     icon: "star",
