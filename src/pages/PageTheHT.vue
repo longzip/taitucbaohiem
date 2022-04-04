@@ -28,7 +28,7 @@
         </template>
       </q-input>
     </div>
-    <q-list v-for="bhyt in timBhyts(searchText)" :key="bhyt.id">
+    <q-list v-for="bhyt in timBhyts()" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
