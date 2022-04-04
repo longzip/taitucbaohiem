@@ -14,6 +14,7 @@
         v-model="searchText"
         placeholder="Từ khóa"
         hint="Tìm kiếm danh sách hiện tại"
+        @keyup.enter="timKiem"
         dense
       >
         <template v-slot:append>
@@ -50,7 +51,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
-    async loadData() {
+    async timKiem() {
       await this.getAllBhyts({
         name: this.searchText,
       });
@@ -69,7 +70,9 @@ export default defineComponent({
   },
 
   mounted() {
-    this.loadData();
+    this.getAllBhyts({
+      name: "HT",
+    });
   },
 });
 </script>
