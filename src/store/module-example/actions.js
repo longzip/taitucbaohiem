@@ -42,10 +42,19 @@ export const xem = async (maSoBhxh) => {
     }
   );
 
-  let theBHYT = await luuBhyt({
-    ...data.result.thongTinTheHGD,
-    maHoGd: data.result.thongTinTK1.maHoGd,
-  });
+  let { thongTinTheHGD } = data.result;
+  if (!thongTinTheHGD) {
+    thongTinTheHGD = {
+      ngay5Nam: data.result.typeId,
+    };
+  }
+  let theBHYT = {};
+  if (data.result.thongTinTK1)
+    theBHYT = await luuBhyt({
+      ...thongTinTheHGD,
+      maHoGd: data.result.thongTinTK1.maHoGd,
+    });
+  else theBHYT = await luuBhyt({ thongTinTheHGD });
   bhyts.push(theBHYT);
 };
 
@@ -71,7 +80,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
 };
 
 export const findBhyts = async ({ searchText, isLogin }) => {
-  console.log(isLogin);
+  // console.log(isLogin);
   const { data } = await client.getSsm(
     `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${searchText}&isCoDau=true&`,
     isLogin
