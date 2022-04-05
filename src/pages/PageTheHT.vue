@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT cần gia hạn<q-btn
+      >Danh sách thẻ BHYT<q-btn
         rounded
         color="primary"
         label="Tải"
@@ -13,7 +13,7 @@
         outlined
         v-model="searchText"
         placeholder="Từ khóa"
-        hint="Tìm kiếm danh sách hiện tại"
+        hint="Tìm kiếm theo thông tin thẻ BHYT"
         @keyup.enter="timKiem"
         dense
       >
@@ -46,7 +46,7 @@ export default defineComponent({
   name: "IndexPage",
   data() {
     return {
-      searchText: "HT",
+      searchText: "",
     };
   },
   methods: {
@@ -70,9 +70,9 @@ export default defineComponent({
   },
 
   mounted() {
-    this.getAllBhyts({
-      name: "HT",
-    });
+    // this.getAllBhyts({
+    //   name: "HT",
+    // });
   },
 });
 </script>
