@@ -44,6 +44,7 @@ export const xem = async (maSoBhxh) => {
 
   let { thongTinTheHGD } = data.result;
   if (!thongTinTheHGD) {
+    console.log(maSoBhxh);
     thongTinTheHGD = {
       ngay5Nam: data.result.typeId,
       maSoBhxh,
@@ -55,7 +56,7 @@ export const xem = async (maSoBhxh) => {
       ...thongTinTheHGD,
       maHoGd: data.result.thongTinTK1.maHoGd,
     });
-  else theBHYT = await luuBhyt({ thongTinTheHGD });
+  else theBHYT = await luuBhyt({ ...thongTinTheHGD });
   bhyts.push(theBHYT);
 };
 
