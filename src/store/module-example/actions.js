@@ -46,6 +46,7 @@ export const xem = async (maSoBhxh) => {
   if (!thongTinTheHGD) {
     thongTinTheHGD = {
       ngay5Nam: data.result.typeId,
+      maSoBhxh,
     };
   }
   let theBHYT = {};
