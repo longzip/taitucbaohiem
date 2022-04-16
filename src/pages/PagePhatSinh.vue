@@ -29,8 +29,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import axios from "axios";
+import { mapGetters, mapActions } from "vuex";
 import { Loading, QSpinnerIos } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
@@ -39,58 +38,24 @@ export default {
   data() {
     return {
       searchText: "",
-      bhyts: [],
     };
   },
   computed: {
     ...mapGetters("auth", ["isLogin"]),
   },
   methods: {
-    async timKiem() {
-      this.bhyts = [];
+    ...mapActions("bhyts", ["getAllBhyts", "taiTuc"]),
+  },
+  async mounted() {
+    if (this.$route.query.q) {
+      this.searchText = this.$route.query.q;
       Loading.show({
         spinner: QSpinnerIos,
         spinnerSize: "100px",
       });
-      let maSoBhxhs = this.searchText.split(",");
-      for (let index = 0; index < maSoBhxhs.length; index++) {
-        const maSoBhxh = maSoBhxhs[index];
-        try {
-          await this.xem(maSoBhxh);
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      await this.taiTuc(this.$route.query.q);
       Loading.hide();
-    },
-    async luu(bhyt) {
-      let { data } = await axios.put(
-        `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
-        bhyt
-      );
-      return data;
-    },
-    async completed(bhyt) {
-      let { data } = await axios.put(
-        `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}/completed`,
-        { completed: true }
-      );
-      return data;
-    },
-    async xem(maSoBhxh) {
-      let theBhyt = await axios.get(
-        `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.isLogin}`,
-          },
-        }
-      );
-
-      await this.luu(theBhyt.data.result.thongTinTheHGD);
-      let theBHYT = await this.completed(theBhyt.data.result.thongTinTheHGD);
-      this.bhyts.push(theBHYT);
-    },
+    }
   },
 };
 </script>

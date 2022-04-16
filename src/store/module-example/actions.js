@@ -7,7 +7,7 @@ export const xoaHoGd = async ({ commit }, payload) => {
   await client.get(`/api/xoaHoGd?maHoGd=${payload}`);
 };
 
-const timKiem = async (searchText) => {
+const timKiem = async (searchText, completed = false) => {
   if (searchText.length === 0 || localStorage.getItem("setIsLogin") === "")
     return [];
   bhyts = [];
@@ -15,7 +15,7 @@ const timKiem = async (searchText) => {
   for (let index = 0; index < maSoBhxhs.length; index++) {
     const maSoBhxh = maSoBhxhs[index];
     try {
-      await xem(maSoBhxh);
+      await xem(maSoBhxh, completed);
     } catch (error) {
       console.log(error);
     }
@@ -30,7 +30,7 @@ export const luuBhyt = async (bhyt) => {
   );
   return data;
 };
-export const xem = async (maSoBhxh) => {
+export const xem = async (maSoBhxh, completed) => {
   let { data } = await axios.get(
     `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
       maSoBhxh.length - 10
@@ -44,7 +44,6 @@ export const xem = async (maSoBhxh) => {
 
   let { thongTinTheHGD } = data.result;
   if (!thongTinTheHGD) {
-    console.log(maSoBhxh);
     thongTinTheHGD = {
       ngay5Nam: data.result.typeId,
       maSoBhxh,
@@ -56,12 +55,17 @@ export const xem = async (maSoBhxh) => {
       ...thongTinTheHGD,
       maHoGd: data.result.thongTinTK1.maHoGd,
     });
-  else theBHYT = await luuBhyt({ ...thongTinTheHGD });
+  else theBHYT = await luuBhyt({ ...thongTinTheHGD, completed });
   bhyts.push(theBHYT);
 };
 
 export const dongBoDuLieu = async ({ commit }, payload) => {
   const bhyts = await timKiem(payload);
+  commit("getAllBhyts", [...bhyts]);
+};
+
+export const taiTuc = async ({ commit }, payload) => {
+  const bhyts = await timKiem(payload, true);
   commit("getAllBhyts", [...bhyts]);
 };
 
