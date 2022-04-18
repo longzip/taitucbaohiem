@@ -54,7 +54,7 @@ export default defineComponent({
       await this.getAllBhyts({
         completed: "0",
         disabled: "0",
-        taiTuc: "1",
+        hetHan: "1",
       });
     },
     async dongBo() {
