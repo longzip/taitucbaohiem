@@ -60,6 +60,12 @@ const linksList = [
     link: "/tai-tuc",
   },
   {
+    title: "Đã hết hạn",
+    caption: "DS BHYT đã hết hạn",
+    icon: "sync",
+    link: "/het-han",
+  },
+  {
     title: "Tra cứu",
     caption: "Tìm theo mã BHXH",
     icon: "search",

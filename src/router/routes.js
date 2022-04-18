@@ -14,6 +14,11 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "/het-han",
+        component: () => import("pages/PageHetHan.vue"),
+        meta: { requireAuth: true },
+      },
+      {
         path: "/dong-bo",
         component: () => import("pages/PageDongBo.vue"),
         meta: { requireAuth: true },
