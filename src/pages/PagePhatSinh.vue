@@ -41,7 +41,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("auth", ["isLogin"]),
+    ...mapGetters("bhyts", ["bhyts"]),
   },
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "taiTuc"]),

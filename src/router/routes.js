@@ -5,17 +5,17 @@ const routes = [
     children: [
       {
         path: "",
-        component: () => import("pages/IndexPage.vue"),
+        component: () => import("src/pages/PageTheHT.vue"),
+        meta: { requireAuth: true },
+      },
+      {
+        path: "/tai-tuc",
+        component: () => import("pages/PageTaiTuc.vue"),
         meta: { requireAuth: true },
       },
       {
         path: "/dong-bo",
         component: () => import("pages/PageDongBo.vue"),
-        meta: { requireAuth: true },
-      },
-      {
-        path: "/the-ht",
-        component: () => import("pages/PageTheHT.vue"),
         meta: { requireAuth: true },
       },
       {

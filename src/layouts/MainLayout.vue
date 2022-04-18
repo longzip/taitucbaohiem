@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Gọi BHYT </q-toolbar-title>
+        <q-toolbar-title> BHXH TỰ NGUYỆN VÀ BHYT </q-toolbar-title>
 
         <q-btn
           round
@@ -48,10 +48,16 @@ import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
   {
-    title: "Trang chủ",
-    caption: "Đến hạn BHYT",
-    icon: "home",
+    title: "Tra cứu",
+    caption: "Tra cứu BHYT",
+    icon: "search",
     link: "/",
+  },
+  {
+    title: "Tái tục",
+    caption: "DS BHYT tái tục",
+    icon: "home",
+    link: "/tai-tuc",
   },
   {
     title: "Tra cứu",

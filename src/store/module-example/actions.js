@@ -54,6 +54,7 @@ export const xem = async (maSoBhxh, completed) => {
     theBHYT = await luuBhyt({
       ...thongTinTheHGD,
       maHoGd: data.result.thongTinTK1.maHoGd,
+      completed,
     });
   else theBHYT = await luuBhyt({ ...thongTinTheHGD, completed });
   bhyts.push(theBHYT);
@@ -70,10 +71,12 @@ export const taiTuc = async ({ commit }, payload) => {
 };
 
 export const getAllBhyts = async ({ commit }, payload) => {
-  const { completed, disabled, name, thang, maHoGd, chuaDongBo } = payload;
+  const { completed, disabled, name, thang, maHoGd, chuaDongBo, taiTuc } =
+    payload;
 
   let url = "/api/bhyts?";
   if (thang) url += `thang=${thang}`;
+  if (taiTuc) url += `taiTuc=${taiTuc}`;
   if (name) url += `&name=${name}`;
   if (completed) url += `&completed=${completed}`;
   if (disabled) url += `&disabled=${disabled}`;

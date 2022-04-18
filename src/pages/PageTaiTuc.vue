@@ -55,6 +55,7 @@ export default defineComponent({
         thang: 2,
         completed: "0",
         disabled: "0",
+        taiTuc: "1",
       });
     },
     async dongBo() {
