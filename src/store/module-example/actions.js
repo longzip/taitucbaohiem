@@ -71,8 +71,16 @@ export const taiTuc = async ({ commit }, payload) => {
 };
 
 export const getAllBhyts = async ({ commit }, payload) => {
-  const { completed, disabled, name, thang, maHoGd, chuaDongBo, taiTuc } =
-    payload;
+  const {
+    completed,
+    disabled,
+    name,
+    thang,
+    maHoGd,
+    chuaDongBo,
+    taiTuc,
+    hetHan,
+  } = payload;
 
   let url = "/api/bhyts?";
   if (thang) url += `thang=${thang}`;
