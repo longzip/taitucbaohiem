@@ -48,8 +48,8 @@ import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
   {
-    title: "Tra cứu",
-    caption: "Tra cứu BHYT",
+    title: "Tìm kiếm",
+    caption: "Theo Tên, Mã thẻ, số đt",
     icon: "search",
     link: "/",
   },
