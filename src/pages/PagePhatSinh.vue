@@ -5,7 +5,7 @@
       <q-input
         outlined
         v-model="searchText"
-        @keyup.enter="timKiem"
+        @keyup.enter="taiTuc(searchText)"
         placeholder="Mã số BHXH"
         hint="Mã số cách nhau bởi dấu phẩy, nhấn Enter để tìm kiếm"
         dense
