@@ -53,6 +53,7 @@ export default defineComponent({
     async loadData() {
       await this.getAllBhyts({
         completed: 1,
+        thang: 1,
       });
       //this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
     },
