@@ -5,7 +5,7 @@
       <q-input
         outlined
         v-model="searchText"
-        @keyup.enter="timKiem"
+        @keyup.enter="dongBoDuLieu(searchText)"
         placeholder="Mã số BHXH"
         hint="Mã số cách nhau bởi dấu phẩy, nhấn Enter để tìm kiếm"
         dense
@@ -29,9 +29,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import axios from "axios";
-import { Loading, QSpinnerIos } from "quasar";
+import { mapGetters, mapActions } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 export default {
@@ -39,65 +37,21 @@ export default {
   data() {
     return {
       searchText: "",
-      bhyts: [],
     };
-  },
-  methods: {
-    async timKiem() {
-      if (
-        this.searchText.length === 0 ||
-        localStorage.getItem("setIsLogin") === ""
-      )
-        return;
-      this.bhyts = [];
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-      let maSoBhxhs = this.searchText.split(",");
-      for (let index = 0; index < maSoBhxhs.length; index++) {
-        const maSoBhxh = maSoBhxhs[index];
-        try {
-          await this.xem(maSoBhxh);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      Loading.hide();
-    },
-    async luu(bhyt) {
-      let { data } = await axios.put(
-        `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
-        bhyt
-      );
-      return data;
-    },
-    async xem(maSoBhxh) {
-      let { data } = await axios.get(
-        `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
-          maSoBhxh.length - 10
-        )}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
-          },
-        }
-      );
-
-      let theBHYT = await this.luu({
-        ...data.result.thongTinTheHGD,
-        maHoGd: data.result.thongTinTK1.maHoGd,
-      });
-      this.bhyts.push(theBHYT);
-    },
   },
   computed: {
     ...mapGetters("auth", ["isLogin"]),
+    ...mapGetters("bhyts", ["bhyts"]),
+  },
+  methods: {
+    ...mapActions("bhyts", ["dongBoDuLieu"]),
   },
   mounted() {
     if (!localStorage.getItem("setIsLogin")) this.$router.push("/auth");
-    if (this.$route.query.q) this.searchText = this.$route.query.q;
-    this.timKiem();
+    if (this.$route.query.q) {
+      this.searchText = this.$route.query.q;
+      this.dongBoDuLieu(this.$route.query.q);
+    }
   },
 };
 </script>

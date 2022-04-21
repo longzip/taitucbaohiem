@@ -30,7 +30,6 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { Loading, QSpinnerIos } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 export default {
@@ -44,17 +43,13 @@ export default {
     ...mapGetters("bhyts", ["bhyts"]),
   },
   methods: {
-    ...mapActions("bhyts", ["getAllBhyts", "taiTuc"]),
+    ...mapActions("bhyts", ["lamMoiDanhSach", "getAllBhyts", "taiTuc"]),
   },
   async mounted() {
+    this.lamMoiDanhSach();
     if (this.$route.query.q) {
       this.searchText = this.$route.query.q;
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
       await this.taiTuc(this.$route.query.q);
-      Loading.hide();
     }
   },
 };

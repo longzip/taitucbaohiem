@@ -29,7 +29,7 @@
         ><a
           target="_blank"
           :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/tra-cuu?q=${bhyt.soTheBhyt}`"
-          >{{ bhyt.soTheBhyt }}</a
+          >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh }}</a
         >
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
@@ -41,8 +41,10 @@
     </q-item-section>
 
     <q-item-section side top>
-      <q-item-label caption>{{ getDateDiff(bhyt.denNgayDt) }}</q-item-label>
-      <q-item-label caption>{{ bhyt.denNgayDt }}</q-item-label>
+      <q-item-label caption
+        >{{ getDateDiff(bhyt.denNgayDt) }} ngày</q-item-label
+      >
+      <q-item-label caption>Đến:{{ bhyt.denNgayDt }}</q-item-label>
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
         name="star"

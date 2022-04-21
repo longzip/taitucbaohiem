@@ -6,7 +6,7 @@
       <q-input
         outlined
         v-model="searchText"
-        @keyup.enter="timKiemTheoDS"
+        @keyup.enter="traCuuTheoTen(searchText)"
         placeholder="Họ và tên"
         hint="Nhập họ và tên rồi nhấn Enter để tìm kiếm"
         dense
@@ -30,9 +30,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import axios from "axios";
-import { Notify, Loading, QSpinnerIos } from "quasar";
+import { mapGetters, mapActions } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 export default {
@@ -40,68 +38,20 @@ export default {
   data() {
     return {
       searchText: "",
-      bhyts: [],
     };
   },
   computed: {
     ...mapGetters("auth", ["isLogin"]),
+    ...mapGetters("bhyts", ["bhyts"]),
   },
   methods: {
-    async timKiemTheoDS() {
-      this.bhyts = [];
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-      let dsHoTen = this.searchText.split(",");
-      if (dsHoTen.length === 0) return;
-      for (let index = 0; index < dsHoTen.length; index++) {
-        const element = dsHoTen[index];
-        await this.timKiem(element);
-      }
-      Loading.hide();
-    },
-
-    async timKiem(hoTen) {
-      let url = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${hoTen}&isCoDau=true&`;
-      let { data } = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${this.isLogin}`,
-        },
-      });
-      let maSoBhxhs = data.result.value.map((x) => x.maSoBhxh);
-      for (let index = 0; index < maSoBhxhs.length; index++) {
-        const maSoBhxh = maSoBhxhs[index];
-        try {
-          await this.xem(maSoBhxh);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    },
-    async luu(bhyt) {
-      let { data } = await axios.put(
-        `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
-        bhyt
-      );
-      return data;
-    },
-    async xem(maSoBhxh) {
-      let { data } = await axios.get(
-        `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.isLogin}`,
-          },
-        }
-      );
-
-      let theBHYT = await this.luu({
-        ...data.result.thongTinTheHGD,
-        maHoGd: data.result.thongTinTK1.maHoGd,
-      });
-      this.bhyts.push(theBHYT);
-    },
+    ...mapActions("bhyts", ["traCuuTheoTen"]),
+  },
+  async mounted() {
+    if (this.$route.query.q) {
+      this.searchText = this.$route.query.q;
+      await this.traCuuTheoTen(this.$route.query.q);
+    }
   },
 };
 </script>

@@ -1,6 +1,6 @@
 import client from "../../utils";
 import axios from "axios";
-
+import { Loading, QSpinnerIos } from "quasar";
 let bhyts = [];
 
 export const xoaHoGd = async ({ commit }, payload) => {
@@ -60,14 +60,40 @@ export const xem = async (maSoBhxh, completed) => {
   bhyts.push(theBHYT);
 };
 
+export const traCuuTheoTen = async ({ commit }, payload) => {
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
+  let url = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${payload}&isCoDau=true&`;
+  let { data } = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
+    },
+  });
+  const maSoBhxhs = data.result.value.map((x) => x.maSoBhxh);
+  const bhyts = await timKiem(maSoBhxhs.join());
+  commit("getAllBhyts", [...bhyts]);
+  Loading.hide();
+};
 export const dongBoDuLieu = async ({ commit }, payload) => {
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
   const bhyts = await timKiem(payload);
   commit("getAllBhyts", [...bhyts]);
+  Loading.hide();
 };
 
 export const taiTuc = async ({ commit }, payload) => {
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
   const bhyts = await timKiem(payload, true);
   commit("getAllBhyts", [...bhyts]);
+  Loading.hide();
 };
 
 export const getAllBhyts = async ({ commit }, payload) => {
