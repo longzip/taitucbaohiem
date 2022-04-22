@@ -3,6 +3,50 @@ import axios from "axios";
 import { Loading, QSpinnerIos } from "quasar";
 let bhyts = [];
 
+export const hoSoChuaXuLy = async ({ commit }, payload) => {
+  const denNgay = new Date();
+  const tuNgay = new Date();
+  tuNgay.setDate(denNgay.getDate() - 30);
+  const { data } = await client.post(
+    "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup",
+    {
+      dateForm: "ngayLap",
+      denNgay,
+      filterItems: [],
+      hoSoChuaThuTien: false,
+      hoSoQuaHan: 0,
+      keyMenu: "2",
+      mangLuoiId: 4580,
+      maxResultCount: 500,
+      skipCount: 0,
+      tuNgay,
+    }
+  );
+  return data;
+};
+
+export const hoSoDaXuLy = async ({ commit }, payload) => {
+  const denNgay = new Date();
+  const tuNgay = new Date();
+  tuNgay.setDate(denNgay.getDate() - 1);
+  const { data } = await client.post(
+    "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup",
+    {
+      dateForm: "ngayLap",
+      denNgay,
+      filterItems: [],
+      hoSoChuaThuTien: false,
+      hoSoQuaHan: 0,
+      keyMenu: "1",
+      mangLuoiId: 4580,
+      maxResultCount: 500,
+      skipCount: 0,
+      tuNgay,
+    }
+  );
+  return data;
+};
+
 export const xoaHoGd = async ({ commit }, payload) => {
   await client.get(`/api/xoaHoGd?maHoGd=${payload}`);
 };
@@ -108,7 +152,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
     hetHan,
   } = payload;
 
-  let url = "/api/bhyts?";
+  let url = "https://cmsbudientulap.herokuapp.com/api/bhyts?";
   if (thang) url += `thang=${thang}`;
   if (taiTuc) url += `&taiTuc=${taiTuc}`;
   if (hetHan) url += `&hetHan=${hetHan}`;
@@ -144,7 +188,10 @@ export const getBhytSsm = async ({ maSoBhxh, isLogin }) => {
 };
 
 export const updateBhyt = async (bhyt) => {
-  const { data } = await client.put(`/api/bhyts/${bhyt.maSoBhxh}`, bhyt);
+  const { data } = await client.put(
+    `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
+    bhyt
+  );
   return data;
 };
 
@@ -152,16 +199,22 @@ export const lamMoiDanhSach = () => commit("getAllBhyts", []);
 
 export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
   // console.log(maSoBhxh, disabled);
-  const { data } = await client.put(`/api/bhyts/${maSoBhxh}/disabled`, {
-    disabled: !disabled,
-  });
+  const { data } = await client.put(
+    `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/disabled`,
+    {
+      disabled: !disabled,
+    }
+  );
   commit("updateBhyt", data);
 };
 
 export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
   // console.log(maSoBhxh, completed);
-  const { data } = await client.put(`/api/bhyts/${maSoBhxh}/completed`, {
-    completed: !completed,
-  });
+  const { data } = await client.put(
+    `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/completed`,
+    {
+      completed: !completed,
+    }
+  );
   commit("updateBhyt", data);
 };

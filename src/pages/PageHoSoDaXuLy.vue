@@ -1,13 +1,14 @@
 <template>
   <q-page>
-    <ListHeader bgcolor="bg-orange-4">Phát sinh thẻ BHYT</ListHeader>
+    <ListHeader bgcolor="bg-orange-4">Hồ Sơ Chưa Xử Lý</ListHeader>
+
     <div class="q-gutter-y-md column">
       <q-input
         outlined
         v-model="searchText"
-        @keyup.enter="taiTuc(searchText)"
-        placeholder="Mã số BHXH"
-        hint="Mã số cách nhau bởi dấu phẩy, nhấn Enter để tìm kiếm"
+        @keyup.enter="traCuuTheoTen(searchText)"
+        placeholder="Họ và tên"
+        hint="Nhập họ và tên rồi nhấn Enter để tìm kiếm"
         dense
       >
         <template v-slot:append>
@@ -25,6 +26,7 @@
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
+    {{ items }}
   </q-page>
 </template>
 
@@ -37,19 +39,22 @@ export default {
   data() {
     return {
       searchText: "",
+      items: [],
     };
   },
   computed: {
+    ...mapGetters("auth", ["isLogin"]),
     ...mapGetters("bhyts", ["bhyts"]),
   },
   methods: {
-    ...mapActions("bhyts", ["getAllBhyts", "taiTuc"]),
+    ...mapActions("bhyts", ["hoSoDaXuLy", "taiTuc"]),
   },
   async mounted() {
     if (this.$route.query.q) {
       this.searchText = this.$route.query.q;
-      await this.taiTuc(this.$route.query.q);
     }
+    const { result } = await this.hoSoDaXuLy();
+    await this.taiTuc(result.items.map((i) => i.maSoBhxh).join());
   },
 };
 </script>

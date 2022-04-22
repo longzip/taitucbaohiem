@@ -1,11 +1,11 @@
-import { api } from "../boot/axios";
+import { apiServices } from "../boot/axios";
 import { Notify, Loading, QSpinnerIos } from "quasar";
 export default {
   import: async (url, payload) => {
     let result = {};
     if (navigator.onLine) {
       try {
-        result = await api.post(url, payload);
+        result = await apiServices.post(url, payload);
         if (result)
           Notify.create({
             type: "positive",
@@ -47,7 +47,7 @@ export default {
           delete storeCostcenter[key]
       );
       try {
-        result = await api.post(url, storeCostcenter);
+        result = await apiServices.post(url, storeCostcenter);
         if (result)
           Notify.create({
             type: "positive",
@@ -78,7 +78,7 @@ export default {
     let result = {};
     if (navigator.onLine) {
       try {
-        result = await api.delete(url);
+        result = await apiServices.delete(url);
         if (result)
           Notify.create({
             type: "positive",
@@ -119,7 +119,7 @@ export default {
           delete updateItem[key]
       );
       try {
-        result = await api.put(url, updateItem);
+        result = await apiServices.put(url, updateItem);
         // console.log(result);
         if (result)
           Notify.create({
@@ -155,7 +155,7 @@ export default {
         spinnerSize: "100px",
       });
       try {
-        result = await api.get(url);
+        result = await apiServices.get(url);
         // if (result)
         //   Notify.create({
         //     type: 'positive',
@@ -166,37 +166,6 @@ export default {
         //     type: 'negative',
         //     message: 'Không có dữ liệu!'
         //   })
-      } catch (error) {
-        if (error.toString().includes("Network", 0)) {
-          Notify.create({
-            message: "Không thể kế nối đến máy chủ !",
-            color: "red",
-          });
-        }
-      }
-    } else {
-      Notify.create({
-        message: "Không có kết nối Internet !",
-        color: "red",
-      });
-    }
-    Loading.hide();
-    return result;
-  },
-  getSsm: async (url, isLogin) => {
-    // console.log(isLogin);
-    let result = {};
-    if (navigator.onLine) {
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-      try {
-        result = await api.get(url, {
-          headers: {
-            Authorization: `Bearer ${isLogin}`,
-          },
-        });
       } catch (error) {
         if (error.toString().includes("Network", 0)) {
           Notify.create({

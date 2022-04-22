@@ -74,6 +74,16 @@ const routes = [
         component: () => import("pages/PageTraCuuAuto.vue"),
         meta: { requireAuth: false },
       },
+      {
+        path: "/ho-so-chua-xu-ly",
+        component: () => import("pages/PageHoSoChuaXuLy.vue"),
+        meta: { requireAuth: false },
+      },
+      {
+        path: "/ho-so-da-xu-ly",
+        component: () => import("pages/PageHoSoDaXuLy.vue"),
+        meta: { requireAuth: false },
+      },
     ],
   },
 
