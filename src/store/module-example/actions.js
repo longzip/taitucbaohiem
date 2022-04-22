@@ -3,6 +3,26 @@ import axios from "axios";
 import { Loading, QSpinnerIos } from "quasar";
 let bhyts = [];
 
+export const khachChuaNop = async ({ commit }, payload) => {
+  const denThang = new Date();
+  const tuThang = new Date();
+  tuThang.setDate(1);
+  denThang.setMonth(denThang.getMonth() + 1);
+  const { data } = await client.post(
+    "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
+    {
+      denThang,
+      filterItems: [],
+      loaiDichVu: 1,
+      mangLuoiId: 4580,
+      maxResultCount: 1500,
+      skipCount: 0,
+      tuThang,
+      type: -1,
+    }
+  );
+  return data;
+};
 export const hoSoChuaXuLy = async ({ commit }, payload) => {
   const denNgay = new Date();
   const tuNgay = new Date();

@@ -80,6 +80,11 @@ const routes = [
         meta: { requireAuth: false },
       },
       {
+        path: "/khach-hang-chua-nop",
+        component: () => import("pages/PageKhachHangChuaNop.vue"),
+        meta: { requireAuth: false },
+      },
+      {
         path: "/ho-so-da-xu-ly",
         component: () => import("pages/PageHoSoDaXuLy.vue"),
         meta: { requireAuth: false },
