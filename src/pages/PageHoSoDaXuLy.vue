@@ -26,7 +26,6 @@
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
-    {{ items }}
   </q-page>
 </template>
 
@@ -39,7 +38,6 @@ export default {
   data() {
     return {
       searchText: "",
-      items: [],
     };
   },
   computed: {
@@ -53,8 +51,8 @@ export default {
     if (this.$route.query.q) {
       this.searchText = this.$route.query.q;
     }
-    const { result } = await this.hoSoDaXuLy();
-    await this.taiTuc(result.items.map((i) => i.maSoBhxh).join());
+    await this.hoSoDaXuLy();
+    await this.taiTuc(this.bhyts.map((i) => i.maSoBhxh).join());
   },
 };
 </script>

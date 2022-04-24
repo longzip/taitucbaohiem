@@ -3,8 +3,9 @@ export const getAllBhyts = (state, payload) => {
 };
 
 export const updateBhyt = (state, payload) => {
-  let found = state.bhyts.find((x) => x.id === payload.id);
-  found.completed = payload.completed;
-  found.disabled = payload.disabled;
-  // state.bhyts = payload;
+  let found = state.bhyts.find(
+    (x) => x.maSoBhxh === payload.maSoBhxh || x.maSoBHXH === payload.maSoBhxh
+  );
+  if (found) Object.assign(found, payload);
+  else state.bhyts.push(payload);
 };

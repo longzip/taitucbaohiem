@@ -4,6 +4,10 @@ import { Loading, QSpinnerIos } from "quasar";
 let bhyts = [];
 
 export const khachChuaNop = async ({ commit }, payload) => {
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
   const denThang = new Date();
   const tuThang = new Date();
   tuThang.setDate(1);
@@ -11,7 +15,7 @@ export const khachChuaNop = async ({ commit }, payload) => {
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
     {
-      denThang,
+      denThang: "2022-01-01",
       filterItems: [],
       loaiDichVu: 1,
       mangLuoiId: 4580,
@@ -21,9 +25,14 @@ export const khachChuaNop = async ({ commit }, payload) => {
       type: -1,
     }
   );
-  return data;
+  commit("getAllBhyts", [...data.result.items]);
+  Loading.hide();
 };
 export const hoSoChuaXuLy = async ({ commit }, payload) => {
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
   const denNgay = new Date();
   const tuNgay = new Date();
   tuNgay.setDate(denNgay.getDate() - 30);
@@ -42,13 +51,18 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
       tuNgay,
     }
   );
-  return data;
+  commit("getAllBhyts", [...data.result.items]);
+  Loading.hide();
 };
 
 export const hoSoDaXuLy = async ({ commit }, payload) => {
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
   const denNgay = new Date();
   const tuNgay = new Date();
-  tuNgay.setDate(denNgay.getDate() - 1);
+  tuNgay.setDate(denNgay.getDate() - 3);
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup",
     {
@@ -64,7 +78,8 @@ export const hoSoDaXuLy = async ({ commit }, payload) => {
       tuNgay,
     }
   );
-  return data;
+  commit("getAllBhyts", [...data.result.items]);
+  Loading.hide();
 };
 
 export const xoaHoGd = async ({ commit }, payload) => {
@@ -109,7 +124,9 @@ export const xem = async (maSoBhxh, completed) => {
   let { thongTinTheHGD } = data.result;
   if (!thongTinTheHGD) {
     thongTinTheHGD = {
-      ngay5Nam: data.result.typeId,
+      ngay5Nam: data.result.typeId
+        ? data.result.typeId
+        : data.result.trangThaiThe.moTa,
       maSoBhxh,
     };
   }
@@ -121,7 +138,7 @@ export const xem = async (maSoBhxh, completed) => {
       completed,
     });
   else theBHYT = await luuBhyt({ ...thongTinTheHGD, completed });
-  bhyts.push(theBHYT);
+  return theBHYT;
 };
 
 export const traCuuTheoTen = async ({ commit }, payload) => {
@@ -141,23 +158,29 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
   Loading.hide();
 };
 export const dongBoDuLieu = async ({ commit }, payload) => {
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
-  const bhyts = await timKiem(payload);
-  commit("getAllBhyts", [...bhyts]);
-  Loading.hide();
+  const maSoBhxhs = payload.split(",");
+  for (let index = 0; index < maSoBhxhs.length; index++) {
+    const maSoBhxh = maSoBhxhs[index];
+    try {
+      const bhyt = await xem(maSoBhxh, false);
+      await commit("updateBhyt", bhyt);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 
 export const taiTuc = async ({ commit }, payload) => {
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
-  const bhyts = await timKiem(payload, true);
-  commit("getAllBhyts", [...bhyts]);
-  Loading.hide();
+  const maSoBhxhs = payload.split(",");
+  for (let index = 0; index < maSoBhxhs.length; index++) {
+    const maSoBhxh = maSoBhxhs[index];
+    try {
+      const bhyt = await xem(maSoBhxh, true);
+      await commit("updateBhyt", bhyt);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 
 export const getAllBhyts = async ({ commit }, payload) => {

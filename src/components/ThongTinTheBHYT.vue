@@ -11,6 +11,7 @@
         ><q-icon
           :class="bhyt.gioiTinh == 1 ? 'text-pink' : 'text-primary'"
           :name="bhyt.gioiTinh == 1 ? 'female' : 'male'" />{{ bhyt.hoTen }}
+        {{ bhyt.hoVaTen }}
         {{ bhyt.ngaySinhDt }}
 
         <q-icon
@@ -28,7 +29,9 @@
       <q-item-label caption lines="2"
         ><a
           target="_blank"
-          :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/tra-cuu?q=${bhyt.soTheBhyt}`"
+          :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/tra-cuu?q=${
+            bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh
+          }`"
           >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh }}</a
         >
       </q-item-label>

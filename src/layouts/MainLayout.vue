@@ -101,12 +101,12 @@ const linksList = [
     icon: "star",
     link: "/theo-doi",
   },
-  // {
-  //   title: "Khách hàng chưa nộp",
-  //   caption: "Danh sách khách hàng chưa nộp",
-  //   icon: "star",
-  //   link: "/khach-hang-chua-nop",
-  // },
+  {
+    title: "Khách hàng chưa nộp",
+    caption: "Danh sách khách hàng chưa nộp",
+    icon: "star",
+    link: "/khach-hang-chua-nop",
+  },
   {
     title: "Ngừng theo dõi",
     caption: "Mã số BHXH ngừng hoạt động",
