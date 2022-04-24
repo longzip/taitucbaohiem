@@ -1,12 +1,8 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT cần gia hạn<q-btn
-        rounded
-        color="primary"
-        label="Tải"
-        @click="dongBo()"
-        icon="sync"
+      >Danh sách thẻ BHYT cần gia hạn
+      <q-btn rounded color="primary" label="Tải" @click="dongBo()" icon="sync"
     /></ListHeader>
     <div class="q-gutter-y-md column">
       <q-input

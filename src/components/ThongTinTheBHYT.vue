@@ -10,9 +10,10 @@
       <q-item-label
         ><q-icon
           :class="bhyt.gioiTinh == 1 ? 'text-pink' : 'text-primary'"
-          :name="bhyt.gioiTinh == 1 ? 'female' : 'male'" />{{ bhyt.hoTen }}
-        {{ bhyt.hoVaTen }}
-        {{ bhyt.ngaySinhDt }}
+          :name="bhyt.gioiTinh == 1 ? 'female' : 'male'" />{{
+          bhyt.hoTen || bhyt.hoVaTen
+        }}
+        {{ bhyt.ngaySinhDt || bhyt.ngayThangNamSinh }}
 
         <q-icon
           @click="xacNhanLoaiBo(bhyt)"
@@ -36,7 +37,9 @@
         >
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
-      <q-item-label caption lines="2">5 năm:{{ bhyt.ngay5Nam }}</q-item-label>
+      <q-item-label caption lines="2"
+        >5 năm:{{ bhyt.ngay5Nam || bhyt.trangThaiHoSoName }}</q-item-label
+      >
 
       <q-item-label caption lines="2">
         <a :href="`tel:${bhyt.soDienThoai}`">{{ bhyt.soDienThoai }}</a>
@@ -47,7 +50,9 @@
       <q-item-label caption
         >{{ getDateDiff(bhyt.denNgayDt) }} ngày</q-item-label
       >
-      <q-item-label caption>Đến:{{ bhyt.denNgayDt }}</q-item-label>
+      <q-item-label caption
+        >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
+      >
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
         name="star"
@@ -55,7 +60,9 @@
       />
       <q-item-label caption
         >Cập nhật:{{
-          new Date(bhyt.updated_at).toLocaleDateString()
+          bhyt.updated_at
+            ? new Date(bhyt.updated_at).toLocaleDateString()
+            : bhyt.ngayLapString
         }}</q-item-label
       >
     </q-item-section>
@@ -70,6 +77,7 @@ export default {
   methods: {
     ...mapActions("bhyts", ["loaiBo", "theoDoi"]),
     xacNhanLoaiBo(bhyt) {
+      if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
       this.$q
         .dialog({
           title: "Confirm",
@@ -87,6 +95,7 @@ export default {
         });
     },
     xacNhanTheoDoi(bhyt) {
+      if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
       this.$q
         .dialog({
           title: "Confirm",

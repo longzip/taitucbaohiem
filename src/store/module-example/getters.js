@@ -3,7 +3,6 @@ export function bhyts(state) {
 }
 
 export const timBhyts = (state) => (searchText) => {
-  console.log(searchText);
   if (!searchText) return state.bhyts;
   return [
     ...state.bhyts.filter((item) =>

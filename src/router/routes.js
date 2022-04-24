@@ -9,6 +9,11 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "evn",
+        component: () => import("src/pages/PageEVN.vue"),
+        meta: { requireAuth: false },
+      },
+      {
         path: "/tai-tuc",
         component: () => import("pages/PageTaiTuc.vue"),
         meta: { requireAuth: true },

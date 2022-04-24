@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <ListHeader bgcolor="bg-orange-4"
-      >Hồ Sơ Chưa Xử Lý<q-btn
+      >Hồ Sơ Chưa Xử Lý: ({{ bhyts.length }})<q-btn
         rounded
         color="primary"
         label="Tải"

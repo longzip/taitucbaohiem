@@ -1,6 +1,8 @@
 <template>
   <q-page>
-    <ListHeader bgcolor="bg-orange-4">Tra cứu thẻ BHYT</ListHeader>
+    <ListHeader bgcolor="bg-orange-4"
+      >Tra cứu thẻ BHYT: ({{ bhyts.length }})</ListHeader
+    >
     <div class="q-gutter-y-md column">
       <q-input
         outlined

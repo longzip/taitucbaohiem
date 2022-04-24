@@ -54,21 +54,27 @@ const linksList = [
     link: "/",
   },
   {
+    title: "Tra khách hàng EVN",
+    caption: "Theo Tên, số đt, địa chỉ",
+    icon: "payment",
+    link: "/evn",
+  },
+  {
     title: "Tái tục",
     caption: "DS BHYT tái tục",
-    icon: "home",
+    icon: "history",
     link: "/tai-tuc",
   },
   {
     title: "Đã hết hạn",
     caption: "DS BHYT đã hết hạn",
-    icon: "sync",
+    icon: "alarm_off",
     link: "/het-han",
   },
   {
     title: "Tra cứu",
     caption: "Tìm theo mã BHXH",
-    icon: "search",
+    icon: "perm_identity",
     link: "/tra-cuu",
   },
   {
@@ -86,13 +92,13 @@ const linksList = [
   {
     title: "Hồ sơ chưa xử lý",
     caption: "Các hồ sơ chưa xử lý",
-    icon: "star",
+    icon: "timer",
     link: "/ho-so-chua-xu-ly",
   },
   {
     title: "Hồ sơ đã xử lý",
     caption: "Các hồ sơ đã xử lý",
-    icon: "star",
+    icon: "verified",
     link: "/ho-so-da-xu-ly",
   },
   {
@@ -104,7 +110,7 @@ const linksList = [
   {
     title: "Khách hàng chưa nộp",
     caption: "Danh sách khách hàng chưa nộp",
-    icon: "star",
+    icon: "contact_page",
     link: "/khach-hang-chua-nop",
   },
   {

@@ -1,12 +1,8 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT cần gia hạn<q-btn
-        rounded
-        color="primary"
-        label="Tải"
-        @click="dongBo()"
-        icon="sync"
+      >Danh sách thẻ BHYT cần gia hạn
+      <q-btn rounded color="primary" label="Tải" @click="dongBo()" icon="sync"
     /></ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
@@ -56,7 +52,7 @@ export default defineComponent({
           .map((bhyt) => bhyt.maSoBhxh)
           .join()
       );
-      this.$router.go();
+      // this.$router.go();
     },
     async loadData() {
       await this.getAllBhyts({ chuaDongBo: "updated_at" });

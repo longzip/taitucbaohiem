@@ -1,6 +1,13 @@
 <template>
   <q-page>
-    <ListHeader bgcolor="bg-orange-4">Hồ Sơ Chưa Xử Lý</ListHeader>
+    <ListHeader bgcolor="bg-orange-4"
+      >{{ bhyts.length }} Hồ Sơ Đã Xử Lý<q-btn
+        rounded
+        color="primary"
+        label="Tải"
+        @click="dongBo()"
+        icon="sync"
+    /></ListHeader>
 
     <div class="q-gutter-y-md column">
       <q-input
@@ -46,13 +53,15 @@ export default {
   },
   methods: {
     ...mapActions("bhyts", ["hoSoDaXuLy", "taiTuc"]),
+    dongBo() {
+      this.taiTuc(this.bhyts.map((i) => i.maSoBhxh).join());
+    },
   },
   async mounted() {
     if (this.$route.query.q) {
       this.searchText = this.$route.query.q;
     }
     await this.hoSoDaXuLy();
-    await this.taiTuc(this.bhyts.map((i) => i.maSoBhxh).join());
   },
 };
 </script>

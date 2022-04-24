@@ -15,7 +15,7 @@ export const khachChuaNop = async ({ commit }, payload) => {
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
     {
-      denThang: "2022-01-01",
+      denThang,
       filterItems: [],
       loaiDichVu: 1,
       mangLuoiId: 4580,
@@ -152,9 +152,7 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
       Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
     },
   });
-  const maSoBhxhs = data.result.value.map((x) => x.maSoBhxh);
-  const bhyts = await timKiem(maSoBhxhs.join());
-  commit("getAllBhyts", [...bhyts]);
+  commit("getAllBhyts", [...data.result.value]);
   Loading.hide();
 };
 export const dongBoDuLieu = async ({ commit }, payload) => {

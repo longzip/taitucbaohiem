@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT ngừng hoạt động<q-btn
+      >Danh sách thẻ BHYT ngừng hoạt động: ({{ bhyts.length }})<q-btn
         rounded
         color="primary"
         label="Tải"

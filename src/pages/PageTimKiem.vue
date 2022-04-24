@@ -1,6 +1,13 @@
 <template>
   <q-page>
-    <ListHeader bgcolor="bg-orange-4">Tìm thẻ BHYT</ListHeader>
+    <ListHeader bgcolor="bg-orange-4"
+      >Tìm thẻ BHYT<q-btn
+        rounded
+        color="primary"
+        label="Tải"
+        @click="dongBo()"
+        icon="sync"
+    /></ListHeader>
 
     <div class="q-gutter-y-md column">
       <q-input
@@ -45,7 +52,10 @@ export default {
     ...mapGetters("bhyts", ["bhyts"]),
   },
   methods: {
-    ...mapActions("bhyts", ["traCuuTheoTen"]),
+    ...mapActions("bhyts", ["traCuuTheoTen", "dongBoDuLieu"]),
+    dongBo() {
+      this.dongBoDuLieu(this.bhyts.map((i) => i.maSoBhxh).join());
+    },
   },
   async mounted() {
     if (this.$route.query.q) {

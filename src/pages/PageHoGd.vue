@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT theo hộ gia đình:
+      >Danh sách thẻ BHYT theo hộ gia đình - {{ bhyts.length }} thẻ :
       <a
         :href="`https://hgd.baohiemxahoi.gov.vn/doViewInfoHo.do?maHo=${maHoGd}`"
         target="_blank"
