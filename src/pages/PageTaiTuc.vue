@@ -6,7 +6,9 @@
         color="primary"
         label="Tải"
         @click="dongBo()"
-        icon="sync"
+        icon="sync" /><q-icon
+        name="content_copy"
+        @click="copyTextToClipboard()"
     /></ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
@@ -63,6 +65,25 @@ export default defineComponent({
         this.timBhyts(this.searchText)
           .map((bhyt) => bhyt.maSoBhxh)
           .join()
+      );
+    },
+    copyTextToClipboard() {
+      const sdts = this.timBhyts(this.searchText).map(
+        (bhyt) => bhyt.soDienThoai
+      );
+      navigator.clipboard.writeText([...new Set(sdts)].join()).then(
+        function () {
+          Notify.create({
+            type: "positive",
+            message: `Bạn đã sao chép thành công!`,
+          });
+        },
+        function (err) {
+          Notify.create({
+            type: "negative",
+            message: "Không thực hiện được!" + err,
+          });
+        }
       );
     },
   },
