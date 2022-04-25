@@ -52,7 +52,7 @@ export default defineComponent({
           .map((bhyt) => bhyt.maSoBhxh)
           .join()
       );
-      // this.$router.go();
+      this.$router.go();
     },
     async loadData() {
       await this.getAllBhyts({ chuaDongBo: "updated_at" });
