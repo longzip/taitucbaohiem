@@ -38,6 +38,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import { Notify } from "quasar";
 import { mapGetters, mapActions } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
