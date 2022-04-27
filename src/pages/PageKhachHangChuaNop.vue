@@ -1,13 +1,19 @@
 <template>
   <q-page>
     <ListHeader bgcolor="bg-orange-4"
-      >Hồ Sơ Chưa Xử Lý: ({{ bhyts.length }})<q-btn
+      >Danh sách BHYT tái tục tiếp: ({{ bhyts.length }})<q-btn
         rounded
         color="primary"
-        label="Tải"
         @click="dongBo()"
         icon="sync"
-    /></ListHeader>
+      />
+      <q-btn
+        rounded
+        color="primary"
+        @click="copyTextToClipboard()"
+        icon="content_copy"
+      />
+    </ListHeader>
 
     <div class="q-gutter-y-md column">
       <q-input
@@ -38,6 +44,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { Notify } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 export default {
@@ -50,12 +57,30 @@ export default {
   },
   computed: {
     ...mapGetters("auth", ["isLogin"]),
-    ...mapGetters("bhyts", ["bhyts"]),
+    ...mapGetters("bhyts", ["bhyts", "soDienThoais"]),
   },
   methods: {
     ...mapActions("bhyts", ["khachChuaNop", "taiTuc"]),
     dongBo() {
       this.taiTuc(this.bhyts.map((i) => i.maSoBHXH).join());
+    },
+    copyTextToClipboard() {
+      navigator.clipboard
+        .writeText([...new Set(this.soDienThoais)].join())
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
     },
   },
   async mounted() {

@@ -1,3 +1,5 @@
+import state from "./state";
+
 export function bhyts(state) {
   return state.bhyts;
 }
@@ -19,4 +21,8 @@ export const timBhyts = (state) => (searchText) => {
         .includes(searchText.toLowerCase())
     ),
   ];
+};
+
+export const soDienThoais = (state) => {
+  return state.bhyts.map((bhyt) => bhyt.soDienThoai);
 };

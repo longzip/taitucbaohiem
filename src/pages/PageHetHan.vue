@@ -2,8 +2,14 @@
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
       >Danh sách thẻ BHYT cần gia hạn
-      <q-btn rounded color="primary" label="Tải" @click="dongBo()" icon="sync"
-    /></ListHeader>
+      <q-btn rounded color="primary" @click="dongBo()" icon="sync" />
+      <q-btn
+        rounded
+        color="primary"
+        @click="copyTextToClipboard()"
+        icon="content_copy"
+      />
+    </ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
         outlined
@@ -33,6 +39,7 @@
 <script>
 import { defineComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
+import { Notify } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
@@ -60,10 +67,28 @@ export default defineComponent({
           .join()
       );
     },
+    copyTextToClipboard() {
+      navigator.clipboard
+        .writeText([...new Set(this.soDienThoais)].join())
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
   },
 
   computed: {
-    ...mapGetters("bhyts", ["timBhyts"]),
+    ...mapGetters("bhyts", ["timBhyts", "soDienThoais"]),
   },
 
   mounted() {
