@@ -8,24 +8,24 @@ export const khachChuaNop = async ({ commit }, payload) => {
     spinner: QSpinnerIos,
     spinnerSize: "100px",
   });
-  const denThang = new Date();
-  const tuThang = new Date();
-  tuThang.setDate(1);
-  denThang.setMonth(denThang.getMonth() + 1);
+  // const denThang = new Date();
+  // const tuThang = new Date();
+  // tuThang.setDate(1);
+  // denThang.setMonth(denThang.getMonth() + 1);
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
     {
-      denThang,
+      denThang: "2023-01-01 00:00:00",
       filterItems: [],
       loaiDichVu: 1,
       mangLuoiId: 4580,
       maxResultCount: 1500,
       skipCount: 0,
-      tuThang,
+      tuThang: "2022-01-01 00:00:00",
       type: -1,
     }
   );
-  commit("getAllBhyts", [...data.result.items]);
+  commit("getAllBhyts", [...data.result.items.reverse()]);
   Loading.hide();
 };
 export const hoSoChuaXuLy = async ({ commit }, payload) => {

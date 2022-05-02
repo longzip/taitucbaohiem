@@ -31,9 +31,9 @@
         ><a
           target="_blank"
           :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/tra-cuu?q=${
-            bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh
+            bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
           }`"
-          >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh }}</a
+          >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH }}</a
         >
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
