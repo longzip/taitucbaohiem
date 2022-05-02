@@ -52,8 +52,11 @@ export default defineComponent({
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
     async timKiem() {
+      const name = this.searchText.split(" ").map(value => value.charAt(0).toUpperCase() + value.slice(1)).join(" ");
+      const regex = /[0-9]/g;
+      const maSo = this.searchText.match(regex);
       await this.getAllBhyts({
-        name: this.searchText,
+        name: maSo ? maSo.join("") : name,
       });
     },
     async dongBo() {
@@ -67,12 +70,6 @@ export default defineComponent({
 
   computed: {
     ...mapGetters("bhyts", ["timBhyts"]),
-  },
-
-  mounted() {
-    // this.getAllBhyts({
-    //   name: "HT",
-    // });
   },
 });
 </script>
