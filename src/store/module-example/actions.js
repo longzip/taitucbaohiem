@@ -34,8 +34,9 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
     spinnerSize: "100px",
   });
   const denNgay = new Date();
+  denNgay.setDate(denNgay.getDate()+2);
   const tuNgay = new Date();
-  tuNgay.setDate(denNgay.getDate() - 30);
+  tuNgay.setDate(denNgay.getDate() - 32);
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup",
     {
@@ -61,6 +62,7 @@ export const hoSoDaXuLy = async ({ commit }, payload) => {
     spinnerSize: "100px",
   });
   const denNgay = new Date();
+  denNgay.setDate(denNgay.getDate() + 2);
   const tuNgay = new Date();
   tuNgay.setDate(denNgay.getDate() - 10);
   const { data } = await client.post(

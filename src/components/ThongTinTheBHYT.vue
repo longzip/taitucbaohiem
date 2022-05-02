@@ -19,7 +19,8 @@
           @click="xacNhanLoaiBo(bhyt)"
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
-      /></q-item-label>
+      />
+      </q-item-label>
       <q-item-label caption lines="2">
         Mã hộ:<a
           target="_blank"
@@ -35,6 +36,15 @@
           }`"
           >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH }}</a
         >
+        <q-icon class="q-ml-md"
+          @click="copyTextToClipboard(bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH)"
+          name="content_copy"
+        />
+
+        <q-icon class="q-ml-md"
+          @click="copyUrlToClipboard(bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH)"
+          name="share"
+        />
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2"
@@ -72,6 +82,7 @@
 <script>
 import { mapActions } from "vuex";
 import { date } from "quasar";
+import { Notify } from "quasar";
 export default {
   props: ["bhyt"],
   methods: {
@@ -114,6 +125,42 @@ export default {
     },
     getDateDiff(ngayHetHan) {
       return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
+    },
+    copyUrlToClipboard(maSoBhxh) {
+      navigator.clipboard
+        .writeText(`https://www.buudienxatulap.ga/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`)
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
+    copyTextToClipboard(maSoBhxh) {
+      navigator.clipboard
+        .writeText(maSoBhxh)
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
     },
   },
 };
