@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <ListHeader bgcolor="bg-orange-4"
-      >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (Tổng: {{ tongTien.toLocaleString()}}đ)<q-btn
+      >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (Tổng: {{ tongTien.toLocaleString()}}đ / {{ tongHoSo }} HS)<q-btn
         rounded
         color="primary"
         label="Tải"
@@ -47,6 +47,7 @@ export default {
       searchText: "",
       items: [],
       tongTien: 0,
+      tongHoSo: 0
     };
   },
   computed: {
@@ -54,9 +55,9 @@ export default {
     ...mapGetters("bhyts", ["bhyts"]),
   },
   methods: {
-    ...mapActions("bhyts", ["hoSoChuaXuLy", "taiTuc"]),
+    ...mapActions("bhyts", ["hoSoChuaXuLy", "giaHan"]),
     dongBo() {
-      this.taiTuc(this.bhyts.map((i) => i.maSoBhxh).join());
+      this.giaHan(this.bhyts);
     },
   },
   async mounted() {
@@ -68,7 +69,11 @@ export default {
       ( previousValue, currentValue ) => previousValue + currentValue,
       0
     );
-    // this.taiTuc(this.bhyts.map((i) => i.maSoBhxh).join());
+    this.tongHoSo = this.bhyts.filter(t=>t.userId == 3152 && t.trangThaiHoSo == 2).map(t=>t.tongTien).reduce(
+      ( previousValue, currentValue ) => previousValue + 1,
+      0
+    );
+    this.giaHan(this.bhyts);
   },
 };
 </script>

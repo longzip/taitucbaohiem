@@ -1,7 +1,14 @@
 <template>
   <q-page>
     <ListHeader bgcolor="bg-orange-4"
-      >{{ bhyts.length }} Hồ Sơ Đã Xử Lý
+      ><q-btn
+        rounded
+        color="primary"
+        label="Tháng trước"
+        @click="xemThangTruoc()"
+        icon="arrow_back"
+      />
+      {{ bhyts.length }} Hồ Sơ Đã Xử Lý (T-L: {{ tham.toLocaleString()}}-{{ tongTien.toLocaleString()}}đ)
       <q-btn rounded color="primary" @click="dongBo()" icon="sync" />
       <q-btn
         rounded
@@ -9,6 +16,7 @@
         @click="copyTextToClipboard()"
         icon="content_copy"
       />
+      
       </ListHeader>
 
     <div class="q-gutter-y-md column">
@@ -48,6 +56,9 @@ export default {
   data() {
     return {
       searchText: "",
+      tham: 0,
+      tongTien: 0,
+      thangTruoc: 0
     };
   },
   computed: {
@@ -77,12 +88,24 @@ export default {
           }
         );
     },
+    xemThangTruoc(){
+      this.thangTruoc = this.thangTruoc + 1;
+      this.loadData();
+    },
+    async loadData(){
+      await this.hoSoDaXuLy({thangTruoc: this.thangTruoc});
+      this.tham = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 9 && t.maThuTuc ===1).map(t=>t.tongTien).reduce(
+        ( previousValue, currentValue ) => previousValue + currentValue,
+        0
+      );
+      this.tongTien = await this.bhyts.filter(t=>t.userId === 3154 && t.trangThaiHoSo === 9 && t.maThuTuc ===1).map(t=>t.tongTien).reduce(
+        ( previousValue, currentValue ) => previousValue + currentValue,
+        0
+      );
+    }
   },
   async mounted() {
-    if (this.$route.query.q) {
-      this.searchText = this.$route.query.q;
-    }
-    await this.hoSoDaXuLy();
+    this.loadData();
   },
 };
 </script>

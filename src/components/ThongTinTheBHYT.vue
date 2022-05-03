@@ -48,7 +48,7 @@
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2"
-        >5 năm:{{ bhyt.ngay5Nam || bhyt.trangThaiHoSoName }} {{bhyt.userName}} {{bhyt.soBienLai}}</q-item-label
+        >5 năm:{{ bhyt.ngay5Nam || bhyt.trangThaiHoSoName }}</q-item-label
       >
 
       <q-item-label caption lines="2">
@@ -63,17 +63,23 @@
       <q-item-label caption
         >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
       >
+      <q-item-label caption
+        >đ <strong>{{ bhyt.tongTien?.toLocaleString() }}</strong></q-item-label
+      >
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
         name="star"
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
       />
       <q-item-label caption
-        >Cập nhật:{{
+        >Kỳ:{{
           bhyt.updated_at
             ? new Date(bhyt.updated_at).toLocaleDateString()
             : bhyt.ngayLapString
-        }}</q-item-label
+        }}<br />
+        {{bhyt.soBienLai ? `Số biên lai: ${bhyt.soBienLai}` : '' }}<br />
+        {{bhyt.userName}}
+        </q-item-label
       >
     </q-item-section>
   </q-item>

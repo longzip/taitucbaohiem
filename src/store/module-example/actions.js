@@ -1,5 +1,6 @@
 import client from "../../utils";
 import axios from "axios";
+import moment from "moment";
 import { Loading, QSpinnerIos } from "quasar";
 let bhyts = [];
 
@@ -57,14 +58,14 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
 };
 
 export const hoSoDaXuLy = async ({ commit }, payload) => {
+  const {thangTruoc = 0} = payload;
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
   });
-  const denNgay = new Date();
-  denNgay.setDate(denNgay.getDate() + 2);
-  const tuNgay = new Date();
-  tuNgay.setDate(denNgay.getDate() - 10);
+  const denNgay = moment().startOf('months').add(1-thangTruoc,'months').format();
+  const tuNgay = moment().startOf('months').subtract(thangTruoc,'months').format();
+
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup",
     {
@@ -182,6 +183,25 @@ export const taiTuc = async ({ commit }, payload) => {
     }
   }
 };
+
+export const giaHan = async ({ commit }, payload) => {
+  for (let index = 0; index < payload.length; index++) {
+    const {maSoBhxh, tongTien} = payload[index];
+    try {
+      const { data } = await client.put(
+        `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
+        {
+          tongTien
+        }
+      );
+      await commit("updateBhyt", data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+
 
 export const getAllBhyts = async ({ commit }, payload) => {
   const {
