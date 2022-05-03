@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <ListHeader bgcolor="bg-orange-4"
-      >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý<q-btn
+      >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (Tổng: {{ tongTien.toLocaleString()}}đ)<q-btn
         rounded
         color="primary"
         label="Tải"
@@ -46,6 +46,7 @@ export default {
     return {
       searchText: "",
       items: [],
+      tongTien: 0,
     };
   },
   computed: {
@@ -63,6 +64,10 @@ export default {
       this.searchText = this.$route.query.q;
     }
     await this.hoSoChuaXuLy();
+    this.tongTien = this.bhyts.filter(t=>t.userId == 3152 && t.trangThaiHoSo == 2).map(t=>t.tongTien).reduce(
+      ( previousValue, currentValue ) => previousValue + currentValue,
+      0
+    );
     // this.taiTuc(this.bhyts.map((i) => i.maSoBhxh).join());
   },
 };

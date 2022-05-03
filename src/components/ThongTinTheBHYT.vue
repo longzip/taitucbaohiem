@@ -24,14 +24,14 @@
       <q-item-label caption lines="2">
         Mã hộ:<a
           target="_blank"
-          :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/ho-gia-dinh/${bhyt.maHoGd}`"
+          :href="`https://longzip.github.io/todo-buudienxatulap/#/ho-gia-dinh/${bhyt.maHoGd}`"
           >{{ bhyt.maHoGd }}</a
         >
       </q-item-label>
       <q-item-label caption lines="2"
         ><a
           target="_blank"
-          :href="`https://www.buudienxatulap.ga/wordpress/wp-pwa/#/tra-cuu?q=${
+          :href="`https://longzip.github.io/todo-buudienxatulap/#/tra-cuu?q=${
             bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
           }`"
           >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH }}</a
@@ -48,7 +48,7 @@
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2"
-        >5 năm:{{ bhyt.ngay5Nam || bhyt.trangThaiHoSoName }}</q-item-label
+        >5 năm:{{ bhyt.ngay5Nam || bhyt.trangThaiHoSoName }} {{bhyt.userName}} {{bhyt.soBienLai}}</q-item-label
       >
 
       <q-item-label caption lines="2">
@@ -58,7 +58,7 @@
 
     <q-item-section side top>
       <q-item-label caption
-        >{{ getDateDiff(bhyt.denNgayDt) }} ngày</q-item-label
+        >{{ getDateDiff(bhyt.denNgayDt) || bhyt.tongTien }} ngày</q-item-label
       >
       <q-item-label caption
         >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
