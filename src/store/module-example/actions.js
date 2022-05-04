@@ -186,12 +186,35 @@ export const taiTuc = async ({ commit }, payload) => {
 
 export const giaHan = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
-    const {maSoBhxh, tongTien} = payload[index];
+    const {maSoBhxh, tongTien, ngayLap} = payload[index];
     try {
       const { data } = await client.put(
         `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
         {
-          tongTien
+          tongTien,
+          ngayLap,
+          disabled: true,
+          completed: true
+        }
+      );
+      await commit("updateBhyt", data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+export const daXyLy = async ({ commit }, payload) => {
+  for (let index = 0; index < payload.length; index++) {
+    const {maSoBhxh, tongTien, ngayLap, trangThaiHoSo} = payload[index];
+    try {
+      const { data } = await client.put(
+        `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
+        {
+          tongTien,
+          ngayLap,
+          disabled: trangThaiHoSo !== 9,
+          completed: trangThaiHoSo !==9
         }
       );
       await commit("updateBhyt", data);

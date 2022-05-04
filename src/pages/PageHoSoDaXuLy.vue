@@ -66,9 +66,9 @@ export default {
     ...mapGetters("bhyts", ["bhyts", "soDienThoais"]),
   },
   methods: {
-    ...mapActions("bhyts", ["hoSoDaXuLy", "taiTuc"]),
+    ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy"]),
     dongBo() {
-      this.taiTuc(this.bhyts.map((i) => i.maSoBhxh).join());
+      this.daXyLy(this.bhyts);
     },
     copyTextToClipboard() {
       navigator.clipboard

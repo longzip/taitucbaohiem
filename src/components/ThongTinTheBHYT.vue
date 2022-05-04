@@ -72,10 +72,8 @@
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
       />
       <q-item-label caption
-        >Kỳ:{{
-          bhyt.updated_at
-            ? new Date(bhyt.updated_at).toLocaleDateString()
-            : bhyt.ngayLapString
+        >Ngày:{{
+          bhyt.ngayLap || bhyt.updated_at
         }}<br />
         {{bhyt.soBienLai ? `Số biên lai: ${bhyt.soBienLai}` : '' }}<br />
         {{bhyt.userName}}
