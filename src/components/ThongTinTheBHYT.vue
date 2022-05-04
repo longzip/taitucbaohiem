@@ -64,7 +64,7 @@
         >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
       >
       <q-item-label caption
-        >đ <strong>{{ bhyt.tongTien?.toLocaleString() }}</strong></q-item-label
+        >đ <strong>{{ bhyt.tongTien ? parseInt(bhyt.tongTien).toLocaleString(): '0' }}</strong></q-item-label
       >
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
@@ -73,10 +73,10 @@
       />
       <q-item-label caption
         >Ngày:{{
-          bhyt.ngayLap || bhyt.updated_at
+          bhyt.ngayLap || new Date(bhyt.updated_at).toLocaleDateString()
         }}<br />
         {{bhyt.soBienLai ? `Số biên lai: ${bhyt.soBienLai}` : '' }}<br />
-        {{bhyt.userName}}
+        {{bhyt.userName || bhyt.ghiChu}}
         </q-item-label
       >
     </q-item-section>
@@ -167,5 +167,11 @@ export default {
         );
     },
   },
+  filters: {
+    tien: function (value) {
+      if (!value) return '0đ'          
+      return parseInt(value).toLocaleString();
+    },
+  }
 };
 </script>

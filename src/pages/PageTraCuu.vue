@@ -1,7 +1,14 @@
 <template>
   <q-page>
     <ListHeader bgcolor="bg-orange-4"
-      >Tra cứu thẻ BHYT: ({{ bhyts.length }})</ListHeader
+      >Tra cứu thẻ BHYT: ({{ bhyts.length }})
+      <q-btn
+        rounded
+        color="primary"
+        @click="copyTextToClipboard()"
+        icon="content_copy"
+      />
+      </ListHeader
     >
     <div class="q-gutter-y-md column">
       <q-input
@@ -43,10 +50,28 @@ export default {
   },
   computed: {
     ...mapGetters("auth", ["isLogin"]),
-    ...mapGetters("bhyts", ["bhyts"]),
+    ...mapGetters("bhyts", ["bhyts", "soDienThoais"]),
   },
   methods: {
     ...mapActions("bhyts", ["dongBoDuLieu"]),
+    copyTextToClipboard() {
+      navigator.clipboard
+        .writeText([...new Set(this.soDienThoais)].join())
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
   },
   mounted() {
     if (!localStorage.getItem("setIsLogin")) this.$router.push("/auth");

@@ -1,13 +1,15 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT<q-btn
+      >Danh sách thẻ BHYT
+      <q-btn rounded color="primary" @click="dongBo()" icon="sync" />
+      <q-btn
         rounded
         color="primary"
-        label="Tải"
-        @click="dongBo()"
-        icon="sync"
-    /></ListHeader>
+        @click="copyTextToClipboard()"
+        icon="content_copy"
+      />
+    </ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
         outlined
@@ -28,7 +30,7 @@
         </template>
       </q-input>
     </div>
-    <q-list v-for="bhyt in timBhyts()" :key="bhyt.id">
+    <q-list v-for="bhyt in timBhyts(this.searchText)" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
@@ -38,6 +40,7 @@
 <script>
 import { defineComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
+import { Notify } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
@@ -47,6 +50,7 @@ export default defineComponent({
   data() {
     return {
       searchText: "",
+      tong: 0
     };
   },
   methods: {
@@ -58,6 +62,7 @@ export default defineComponent({
       await this.getAllBhyts({
         name: maSo ? maSo.join("") : name,
       });
+      this.searchText ="";
     },
     async dongBo() {
       this.dongBoDuLieu(
@@ -66,10 +71,28 @@ export default defineComponent({
           .join()
       );
     },
+    copyTextToClipboard() {
+      navigator.clipboard
+        .writeText([...new Set(this.soDienThoais)].join())
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
   },
 
   computed: {
-    ...mapGetters("bhyts", ["timBhyts"]),
+    ...mapGetters("bhyts", ["timBhyts","soDienThoais"]),
   },
 });
 </script>
