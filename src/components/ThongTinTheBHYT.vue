@@ -26,7 +26,10 @@
           target="_blank"
           :href="`https://longzip.github.io/todo-buudienxatulap/#/ho-gia-dinh/${bhyt.maHoGd}`"
           >{{ bhyt.maHoGd }}</a
-        >
+        > {{ bhyt.mqhChuHo }}
+      </q-item-label>
+      <q-item-label caption lines="2">
+        Số CMND: {{ bhyt.soCmnd }}
       </q-item-label>
       <q-item-label caption lines="2"
         ><a

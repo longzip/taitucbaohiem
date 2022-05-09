@@ -137,7 +137,7 @@ export const xem = async (maSoBhxh, completed) => {
   if (data.result.thongTinTK1)
     theBHYT = await luuBhyt({
       ...thongTinTheHGD,
-      maHoGd: data.result.thongTinTK1.maHoGd,
+      ...data.result.thongTinTK1,
       completed,
     });
   else theBHYT = await luuBhyt({ ...thongTinTheHGD, completed });
