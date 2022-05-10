@@ -8,7 +8,7 @@
         @click="xemThangTruoc()"
         icon="arrow_back"
       />
-      {{ bhyts.length }} Hồ Sơ Đã Xử Lý (T-L: {{ tham.toLocaleString()}}-{{ tongTien.toLocaleString()}}đ)
+      {{ bhyts.length }} Hồ Sơ Đã Xử Lý (T-L: {{ tham.toLocaleString()}}-{{ tongTien.toLocaleString()}}đ) / Đã nộp BHYT: {{daNopBHYT.toLocaleString()}} - Đã nộp BHXH: {{daNopBHXH.toLocaleString()}}
       <q-btn rounded color="primary" @click="dongBo()" icon="sync" />
       <q-btn
         rounded
@@ -58,7 +58,9 @@ export default {
       searchText: "",
       tham: 0,
       tongTien: 0,
-      thangTruoc: 0
+      thangTruoc: 0,
+      daNopBHYT: 0,
+      daNopBHXH: 0
     };
   },
   computed: {
@@ -95,6 +97,14 @@ export default {
     async loadData(){
       await this.hoSoDaXuLy({thangTruoc: this.thangTruoc});
       this.tham = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 9 && t.maThuTuc ===1).map(t=>t.tongTien).reduce(
+        ( previousValue, currentValue ) => previousValue + currentValue,
+        0
+      );
+      this.daNopBHYT = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===1).map(t=>t.tongTien).reduce(
+        ( previousValue, currentValue ) => previousValue + currentValue,
+        0
+      );
+      this.daNopBHXH = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===0).map(t=>t.tongTien).reduce(
         ( previousValue, currentValue ) => previousValue + currentValue,
         0
       );
