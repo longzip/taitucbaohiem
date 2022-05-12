@@ -206,13 +206,14 @@ export const giaHan = async ({ commit }, payload) => {
 
 export const daXyLy = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
-    const {maSoBhxh, tongTien, ngayLap, trangThaiHoSo} = payload[index];
+    const {maSoBhxh, tongTien, ngayLap, userName, trangThaiHoSo} = payload[index];
     try {
       const { data } = await client.put(
         `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
         {
           tongTien,
           ngayLap,
+          userName,
           disabled: trangThaiHoSo !== 9,
           completed: trangThaiHoSo !==9
         }
