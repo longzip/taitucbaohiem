@@ -35,7 +35,9 @@
           <q-icon
             name="content_copy"
             @click="copyTextToClipboard(evn.ma)"
-          /> </q-item-section
+          /> 
+          <q-item-label caption>{{ evn.soTien }}</q-item-label>
+          </q-item-section
       ></q-item>
       <q-separator spaced inset />
     </q-list>

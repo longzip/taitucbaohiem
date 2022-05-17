@@ -149,13 +149,21 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
     spinner: QSpinnerIos,
     spinnerSize: "100px",
   });
-  let url = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${payload}&isCoDau=true&`;
-  let { data } = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
-    },
-  });
-  commit("getAllBhyts", [...data.result.value]);
+  const hoTens = payload.split(",");
+  const bhyts = new Map(); 
+  for (let index = 0; index < hoTens.length; index++) {
+    let url = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${hoTens[index]}&isCoDau=true&`;
+    let { data } = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
+      },
+    });
+    data.result.value.forEach(bhyt => {
+      bhyts.set(bhyt.maSoBhxh,bhyt);
+    });
+  }
+  
+  commit("getAllBhyts", [...bhyts.values()]);
   Loading.hide();
 };
 export const dongBoDuLieu = async ({ commit }, payload) => {
