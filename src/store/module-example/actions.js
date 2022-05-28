@@ -16,13 +16,13 @@ export const khachChuaNop = async ({ commit }, payload) => {
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
     {
-      denThang: "2023-01-01 00:00:00",
+      denThang: moment().startOf('months').add(1,'months').format(),
       filterItems: [],
       loaiDichVu: 1,
       mangLuoiId: 4580,
       maxResultCount: 1500,
       skipCount: 0,
-      tuThang: "2022-01-01 00:00:00",
+      tuThang: moment().startOf('months').format(),
       type: -1,
     }
   );

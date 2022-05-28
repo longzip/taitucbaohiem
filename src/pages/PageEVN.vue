@@ -1,6 +1,13 @@
 <template>
   <div class="q-pa-md">
-    <ListHeader bgcolor="bg-orange-4">Danh sách Khách hàng EVN</ListHeader>
+    <ListHeader bgcolor="bg-orange-4">Danh sách Khách hàng EVN
+      <q-btn
+        rounded
+        color="primary"
+        @click="copySoDienThoaiToClipboard()"
+        icon="content_copy"
+      />
+    </ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
         outlined
@@ -81,6 +88,24 @@ export default defineComponent({
           });
         }
       );
+    },
+    copySoDienThoaiToClipboard() {
+      navigator.clipboard
+        .writeText([...new Set(this.evns.map(e => e.soDienThoai))].join())
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
     },
   },
   mounted() {
