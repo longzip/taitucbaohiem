@@ -24,7 +24,7 @@
       <q-item-label caption lines="2">
         Mã hộ:<a
           target="_blank"
-          :href="`https://longzip.github.io/todo-buudienxatulap/#/ho-gia-dinh/${bhyt.maHoGd}`"
+          :href="`https://app.buudienxatulap.ga/#/ho-gia-dinh/${bhyt.maHoGd}`"
           >{{ bhyt.maHoGd }}</a
         > {{ bhyt.mqhChuHo }}
       </q-item-label>
@@ -34,7 +34,7 @@
       <q-item-label caption lines="2"
         ><a
           target="_blank"
-          :href="`https://longzip.github.io/todo-buudienxatulap/#/tra-cuu?q=${
+          :href="`https://app.buudienxatulap.ga/#/tra-cuu?q=${
             bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
           }`"
           >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH }}</a
