@@ -44,6 +44,7 @@
             @click="copyTextToClipboard(evn.ma)"
           /> 
           <q-item-label caption>{{ evn.soTien }}</q-item-label>
+          <q-item-label caption>{{ evn.updated_at }}</q-item-label>
           </q-item-section
       ></q-item>
       <q-separator spaced inset />
