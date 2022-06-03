@@ -72,6 +72,10 @@ export default {
     dongBo() {
       this.daXyLy(this.bhyts);
     },
+    traCuuTheoTen(searchText){
+      this.thangTruoc = parseInt(searchText);
+      this.xemThangTruoc();
+    },
     copyTextToClipboard() {
       navigator.clipboard
         .writeText([...new Set(this.soDienThoais)].join())
