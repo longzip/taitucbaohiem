@@ -16,6 +16,18 @@
         @click="copyTextToClipboard()"
         icon="content_copy"
       />
+      <q-btn
+        rounded
+        color="primary"
+        @click="download()"
+        icon="download"
+      />
+      <q-btn
+        rounded
+        color="primary"
+        @click="showDialog=true"
+        icon="print"
+      />
       
       </ListHeader>
 
@@ -43,6 +55,99 @@
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
+
+        <q-dialog v-model="showDialog">
+      <q-card class="my-card">
+        <q-card-section class="q-pt-none">
+          <div class="text-subtitle1">
+            Bảng kê các loại tiền
+          </div>
+          <div class="text-caption text-grey">
+            <div class="row">
+              <div class="col">
+                <q-input
+                dense
+                v-model="t500"
+                label="T500"
+              />
+              </div>
+              <div class="col">
+              <q-input
+              dense
+              v-model="t200"
+              label="T200"
+            />
+              </div>
+                  <div class="col">
+                  <q-input
+                  dense
+                  v-model="t100"
+                  label="T100"
+                />
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t50"
+                  label="T50"
+                />
+              </div>
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t20"
+                  label="T20"
+                />
+              </div>
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t10"
+                  label="T10"
+                />
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t5"
+                  label="T5"
+                />
+              </div>
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t2"
+                  label="T2"
+                />
+              </div>
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t1"
+                  label="T1"
+                />
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          Tổng: {{(500000*t500+200000*t200+100000*t100+50000*t50+20000*t20+10000*t10+5000*t5+2000*t2+1000*t1).toLocaleString()}}
+          <br>
+          Còn thiếu: {{((daNopBHYT+daNopBHXH) - (500000*t500+200000*t200+100000*t100+50000*t50+20000*t20+10000*t10+5000*t5+2000*t2+1000*t1)).toLocaleString()}}
+        </q-card-section>
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn v-close-popup flat color="primary" round icon="print" @click="print()" />
+        </q-card-actions>
+      </q-card>
+        </q-dialog>
   </q-page>
 </template>
 
@@ -60,7 +165,17 @@ export default {
       tongTien: 0,
       thangTruoc: 0,
       daNopBHYT: 0,
-      daNopBHXH: 0
+      daNopBHXH: 0,
+      showDialog: false,
+      t500: '',
+      t200: '',
+      t100: '',
+      t50: '',
+      t20: '',
+      t10: '',
+      t5: '',
+      t2: '',
+      t1: '',
     };
   },
   computed: {
@@ -68,7 +183,7 @@ export default {
     ...mapGetters("bhyts", ["bhyts", "soDienThoais"]),
   },
   methods: {
-    ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy"]),
+    ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy", "XuatD03OrD05Excel"]),
     dongBo() {
       this.daXyLy(this.bhyts);
     },
@@ -104,11 +219,11 @@ export default {
         ( previousValue, currentValue ) => previousValue + currentValue,
         0
       );
-      this.daNopBHYT = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===1).map(t=>t.tongTien).reduce(
+      this.daNopBHYT = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===1 && new Date().getDate() === new Date(t.ngayNopHoSo).getDate()).map(t=>t.tongTien).reduce(
         ( previousValue, currentValue ) => previousValue + currentValue,
         0
       );
-      this.daNopBHXH = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===0).map(t=>t.tongTien).reduce(
+      this.daNopBHXH = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===0 && new Date().getDate() === new Date(t.ngayNopHoSo).getDate()).map(t=>t.tongTien).reduce(
         ( previousValue, currentValue ) => previousValue + currentValue,
         0
       );
@@ -116,6 +231,34 @@ export default {
         ( previousValue, currentValue ) => previousValue + currentValue,
         0
       );
+    },
+    async download(){
+      const taiLieus = await this.XuatD03OrD05Excel(this.bhyts.filter(t=>t.userId === 3152).map(x=>x.transactionId));
+      taiLieus.forEach(taiLieu => {
+        let a = document.createElement('a');
+        a.href = `data:${taiLieu.fileType};base64,${taiLieu.base64}`;
+        a.download = taiLieu.fileName;
+        a.click();
+      });
+    },
+    async print(){
+      let a = document.createElement('a');
+      a.target = '_blank';
+      let lienKet = 'https://cmsbudientulap.herokuapp.com/nop-bhyt/1/pdf?'
+      if(this.daNopBHYT) lienKet += `tienBHYT=${this.daNopBHYT}`;
+      if(this.daNopBHXH) lienKet += `&tienBHXH=${this.daNopBHXH}`;
+      if(this.t500) lienKet += `&t500=${this.t500}`;
+      if(this.t200) lienKet += `&t200=${this.t200}`;
+      if(this.t100) lienKet += `&t100=${this.t100}`;
+      if(this.t50) lienKet += `&t50=${this.t50}`;
+      if(this.t20) lienKet += `&t20=${this.t20}`;
+      if(this.t10) lienKet += `&t10=${this.t10}`;
+      if(this.t5) lienKet += `&t5=${this.t5}`;
+      if(this.t2) lienKet += `&t2=${this.t2}`;
+      if(this.t1) lienKet += `&t1=${this.t1}`;
+      // a.href = `&tienBHYT=4988520&t500=3&t200=1&t100=4&t50=46&t20=100`;
+      a.href = lienKet;
+      a.click();
     }
   },
   async mounted() {

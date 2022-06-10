@@ -2,7 +2,27 @@ import client from "../../utils";
 import axios from "axios";
 import moment from "moment";
 import { Loading, QSpinnerIos } from "quasar";
+import { async } from "@firebase/util";
 let bhyts = [];
+
+export const XuatD03OrD05Excel = async ({ commit }, payload) =>{
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
+  const { data } = await client.post(
+    "https://ssm-api.vnpost.vn/api/services/app/KeKhai/XuatD03OrD05Excel",
+    {
+      daiLyIds: [
+          52401
+      ],
+      transactionIds: payload
+  }
+  );
+  Loading.hide();
+
+  return data.result;
+}
 
 export const khachChuaNop = async ({ commit }, payload) => {
   Loading.show({

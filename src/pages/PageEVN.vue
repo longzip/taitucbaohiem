@@ -1,11 +1,17 @@
 <template>
   <div class="q-pa-md">
-    <ListHeader bgcolor="bg-orange-4">Danh sách Khách hàng EVN
+    <ListHeader bgcolor="bg-orange-4">Danh sách Khách hàng EVN / Tổng: {{tongCong.toLocaleString()}}
       <q-btn
         rounded
         color="primary"
         @click="copySoDienThoaiToClipboard()"
         icon="content_copy"
+      />
+      <q-btn
+        rounded
+        color="primary"
+        @click="showDialog=true"
+        icon="print"
       />
     </ListHeader>
     <div class="q-gutter-y-md column">
@@ -49,6 +55,99 @@
       ></q-item>
       <q-separator spaced inset />
     </q-list>
+
+    <q-dialog v-model="showDialog">
+      <q-card class="my-card">
+        <q-card-section class="q-pt-none">
+          <div class="text-subtitle1">
+            Bảng kê các loại tiền
+          </div>
+          <div class="text-caption text-grey">
+            <div class="row">
+              <div class="col">
+                <q-input
+                dense
+                v-model="t500"
+                label="T500"
+              />
+              </div>
+              <div class="col">
+              <q-input
+              dense
+              v-model="t200"
+              label="T200"
+            />
+              </div>
+                  <div class="col">
+                  <q-input
+                  dense
+                  v-model="t100"
+                  label="T100"
+                />
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t50"
+                  label="T50"
+                />
+              </div>
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t20"
+                  label="T20"
+                />
+              </div>
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t10"
+                  label="T10"
+                />
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t5"
+                  label="T5"
+                />
+              </div>
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t2"
+                  label="T2"
+                />
+              </div>
+              <div class="col">
+                <q-input
+                  dense
+                  v-model="t1"
+                  label="T1"
+                />
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          Tổng: {{(500000*t500+200000*t200+100000*t100+50000*t50+20000*t20+10000*t10+5000*t5+2000*t2+1000*t1).toLocaleString()}}
+          <br>
+          Còn thiếu: {{(tongCong - (500000*t500+200000*t200+100000*t100+50000*t50+20000*t20+10000*t10+5000*t5+2000*t2+1000*t1)).toLocaleString()}}
+        </q-card-section>
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn v-close-popup flat color="primary" round icon="print" @click="print()" />
+        </q-card-actions>
+      </q-card>
+        </q-dialog>
   </div>
 </template>
 
@@ -65,6 +164,17 @@ export default defineComponent({
     return {
       searchText: "",
       evns: [],
+      tongCong: 0,
+      showDialog: false,
+      t500: '',
+      t200: '',
+      t100: '',
+      t50: '',
+      t20: '',
+      t10: '',
+      t5: '',
+      t2: '',
+      t1: '',
     };
   },
   methods: {
@@ -73,6 +183,10 @@ export default defineComponent({
         `https://evn-buudienxatulap.herokuapp.com/api/evns?name=${this.searchText}`
       );
       this.evns = data;
+      this.tongCong = await data.map(t=>t.soTien).reduce(
+        ( previousValue, currentValue ) => previousValue + parseInt(currentValue),
+        0
+      );
     },
     copyTextToClipboard(text) {
       navigator.clipboard.writeText(text).then(
@@ -108,9 +222,28 @@ export default defineComponent({
           }
         );
     },
+    async print(){
+      let a = document.createElement('a');
+      a.target = '_blank';
+      let lienKet = 'https://cmsbudientulap.herokuapp.com/nop-bhyt/1/pdf?'
+      if(this.tongCong) lienKet += `tienDien=${this.tongCong}`;
+      if(this.t500) lienKet += `&t500=${this.t500}`;
+      if(this.t200) lienKet += `&t200=${this.t200}`;
+      if(this.t100) lienKet += `&t100=${this.t100}`;
+      if(this.t50) lienKet += `&t50=${this.t50}`;
+      if(this.t20) lienKet += `&t20=${this.t20}`;
+      if(this.t10) lienKet += `&t10=${this.t10}`;
+      if(this.t5) lienKet += `&t5=${this.t5}`;
+      if(this.t2) lienKet += `&t2=${this.t2}`;
+      if(this.t1) lienKet += `&t1=${this.t1}`;
+      a.href = lienKet;
+      a.click();
+    }
   },
   mounted() {
-    // this.timKiem();
+    if (this.$route.query.q) {
+      this.tongCong = parseInt(this.$route.query.q);
+    }
   },
 });
 </script>
