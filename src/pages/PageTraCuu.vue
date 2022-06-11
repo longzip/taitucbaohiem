@@ -8,6 +8,13 @@
         @click="copyTextToClipboard()"
         icon="content_copy"
       />
+
+      <q-btn
+        rounded
+        color="primary"
+        @click="print()"
+        icon="print"
+      />
       </ListHeader
     >
     <div class="q-gutter-y-md column">
@@ -72,6 +79,12 @@ export default {
           }
         );
     },
+    async print(){
+      let a = document.createElement('a');
+      a.target = '_blank';
+      a.href = `https://cmsbudientulap.herokuapp.com/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts.filter(i=>i.completed).map(i=>i.disabled).join(',')}`;
+      a.click();
+    }
   },
   mounted() {
     if (!localStorage.getItem("setIsLogin")) this.$router.push("/auth");
