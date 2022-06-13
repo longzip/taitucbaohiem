@@ -20,7 +20,7 @@
         v-model="searchText"
         placeholder="Từ khóa"
         hint="Tìm kiếm theo thông tin thẻ BHYT"
-        @keyup.enter="timKiem"
+        @keyup.enter="timKiem(searchText)"
         dense
       >
         <template v-slot:append>
@@ -49,8 +49,8 @@
             name="content_copy"
             @click="copyTextToClipboard(evn.ma)"
           /> 
-          <q-item-label caption>{{ evn.soTien }}</q-item-label>
-          <q-item-label caption>{{ evn.updated_at }}</q-item-label>
+          <q-item-label caption>Số tiền: {{ parseInt(evn.soTien).toLocaleString() }}</q-item-label>
+          <q-item-label caption>{{ new Date(evn.updated_at).toLocaleString() }}</q-item-label>
           </q-item-section
       ></q-item>
       <q-separator spaced inset />
@@ -178,10 +178,11 @@ export default defineComponent({
     };
   },
   methods: {
-    async timKiem() {
-      const { data } = await axios.get(
-        `https://evn-buudienxatulap.herokuapp.com/api/evns?name=${this.searchText}`
-      );
+    async timKiem(searchText) {
+      let url = 'https://evn-buudienxatulap.herokuapp.com/api/evns?';
+      if(searchText)
+        url += `name=${searchText}`
+      const { data } = await axios.get(url);
       this.evns = data;
       this.tongCong = await data.map(t=>t.soTien).reduce(
         ( previousValue, currentValue ) => previousValue + parseInt(currentValue),
@@ -244,6 +245,8 @@ export default defineComponent({
     if (this.$route.query.q) {
       this.tongCong = parseInt(this.$route.query.q);
     }
+    else
+      this.timKiem('');
   },
 });
 </script>

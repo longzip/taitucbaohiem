@@ -60,6 +60,12 @@ const linksList = [
     link: "/evn",
   },
   {
+    title: "KHL",
+    caption: "Theo Tên, số đt, địa chỉ",
+    icon: "book",
+    link: "/khl",
+  },
+  {
     title: "Tái tục",
     caption: "DS BHYT tái tục",
     icon: "history",

@@ -61,6 +61,7 @@ export default {
     if (this.$route.query.q) {
       this.searchText = this.$route.query.q;
       await this.traCuuTheoTen(this.$route.query.q);
+      this.dongBo();
     }
   },
 };

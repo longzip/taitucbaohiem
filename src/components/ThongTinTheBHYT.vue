@@ -55,7 +55,7 @@
       >
 
       <q-item-label caption lines="2">
-        <a :href="`tel:${bhyt.soDienThoai}`">{{ bhyt.soDienThoai }}</a>
+        <a :href="`tel:${bhyt.soDienThoai}`">{{ bhyt.soDienThoai }}</a> <a target="_blank" :href="`https://zalo.me/${bhyt.soDienThoai}`">Zalo</a>
       </q-item-label>
     </q-item-section>
 
@@ -75,11 +75,11 @@
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
       />
       <q-item-label caption
-        >Ngày:{{
-          bhyt.ngayLap || new Date(bhyt.updated_at).toLocaleDateString()
+        >{{
+          bhyt.ngayLap || new Date(bhyt.updated_at).toLocaleString()
         }}<br />
-        {{bhyt.soBienLai ? `Số biên lai: ${bhyt.soBienLai}` : '' }}<br />
-        {{bhyt.userName || bhyt.ghiChu}}
+        {{bhyt.soBienLai ? `Số: ${bhyt.soBienLai}` : bhyt.ghiChu }}<br />
+        {{bhyt.userName }}
         </q-item-label
       >
     </q-item-section>
@@ -131,6 +131,7 @@ export default {
         });
     },
     getDateDiff(ngayHetHan) {
+      if(!ngayHetHan) return '';
       return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
     },
     copyUrlToClipboard(maSoBhxh) {

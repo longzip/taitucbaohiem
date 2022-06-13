@@ -94,6 +94,11 @@ const routes = [
         component: () => import("pages/PageHoSoDaXuLy.vue"),
         meta: { requireAuth: false },
       },
+      {
+        path: "/khl",
+        component: () => import("pages/PageKhl.vue"),
+        meta: { requireAuth: false },
+      },
     ],
   },
 
