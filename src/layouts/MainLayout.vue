@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> BHXH TỰ NGUYỆN VÀ BHYT </q-toolbar-title>
+        <q-toolbar-title>BHXH và BHYT</q-toolbar-title>
 
         <q-btn
           round
@@ -64,6 +64,12 @@ const linksList = [
     caption: "Theo Tên, số đt, địa chỉ",
     icon: "book",
     link: "/khl",
+  },
+  {
+    title: "Khách hàng Woocomer",
+    caption: "Theo Tên, số đt, địa chỉ",
+    icon: "contact_mail",
+    link: "/customer",
   },
   {
     title: "Tái tục",

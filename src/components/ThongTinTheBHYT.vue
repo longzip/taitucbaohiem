@@ -55,7 +55,7 @@
       >
 
       <q-item-label caption lines="2">
-        <a :href="`tel:${bhyt.soDienThoai}`">{{ bhyt.soDienThoai }}</a> <a target="_blank" :href="`https://zalo.me/${bhyt.soDienThoai}`">Zalo</a>
+        <a :href="`tel:${bhyt.soDienThoai}`">{{ bhyt.soDienThoai }}</a>
       </q-item-label>
     </q-item-section>
 

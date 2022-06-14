@@ -34,7 +34,7 @@
           <q-item-label>{{ khl.ten }}</q-item-label>
           <q-item-label caption lines="2">{{ khl.diaChi }}</q-item-label>
           <q-item-label caption lines="2">
-            <a target="_blank" :href="`https://zalo.me/${khl.soDienThoai}`">{{ khl.soDienThoai }}</a>
+            <a target="_blank" :href="`tel:${khl.soDienThoai}`">{{ khl.soDienThoai }}</a>
           </q-item-label>
           <q-item-label caption lines="2">{{ khl.ghiChu }}</q-item-label>
         </q-item-section>

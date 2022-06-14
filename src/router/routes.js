@@ -99,6 +99,11 @@ const routes = [
         component: () => import("pages/PageKhl.vue"),
         meta: { requireAuth: false },
       },
+      {
+        path: "/customer",
+        component: () => import("pages/PageCustomer.vue"),
+        meta: { requireAuth: false },
+      },
     ],
   },
 
