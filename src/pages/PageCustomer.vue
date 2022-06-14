@@ -30,8 +30,10 @@
     </div>
     <q-list v-for="product in products.nodes" :key="product.id">
       <q-item>
-        <q-item-section top thumbnail class="q-ml-none">
-          <img :src="product.image.sourceUrl">
+        <q-item-section avatar>
+          <q-avatar rounded>
+            <img :src="product.image.sourceUrl">
+          </q-avatar>
         </q-item-section>
 
         <q-item-section>
@@ -87,10 +89,12 @@ export default defineComponent({
         );
     },
     async loadData(){
+        //
+        this.products = JSON.parse(localStorage.getItem("products"));
         const API_URL = 'https://buudienxatulap.ngoclong.ga/wordpress/graphql';
         const  query = `
             query MyQuery {
-            products(first: 100) {
+            products(first: 50) {
                 nodes {
                 id
                 productId: databaseId
@@ -109,30 +113,6 @@ export default defineComponent({
                     regularPrice
                     id
                 }
-                ... on VariableProduct {
-                    price
-                    id
-                    regularPrice
-                }
-                ... on ExternalProduct {
-                    price
-                    id
-                    externalUrl
-                    regularPrice
-                    buttonText
-                }
-                ... on GroupProduct {
-                    id
-                    products {
-                    nodes {
-                        ... on SimpleProduct {
-                        id
-                        price
-                        regularPrice
-                        }
-                    }
-                    }
-                }
                 }
             }
             }
@@ -141,7 +121,11 @@ export default defineComponent({
 
         const {data} = await axios.post(API_URL, {query, variables: {}})
         
-        this.products = data.data.products;
+        
+        if(data.data){
+            this.products = data.data.products;
+            localStorage.setItem("products", JSON.stringify(this.products))
+        }
     }
   },
   mounted(){
