@@ -160,7 +160,7 @@ function drawPrintEVN(trans) {
     }
 
 
-    $('#bill-template-evn-1').html = `
+    $('#bill-template-evn-1').html(`
     <div class="bill-container" style="font-size: 13px;">
     <section class="top row">
         <div class="col-3">
@@ -316,3 +316,4 @@ function drawPrintEVN(trans) {
 
 </div>
     `
+    )
