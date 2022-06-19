@@ -159,7 +159,6 @@ function drawPrintEVN(trans) {
         });
     }
 
-
     $('#bill-template-evn-1').html(`
     <div class="bill-container" style="font-size: 13px;">
     <section class="top row">
@@ -315,5 +314,4 @@ function drawPrintEVN(trans) {
     </section>
 
 </div>
-    `
-    )
+    `)
