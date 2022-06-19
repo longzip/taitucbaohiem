@@ -316,12 +316,7 @@ const khoiTao = async () => {
     
 
     await sleep(1000);
-    document.getElementById("txt_tien_value").addEventListener("keydown",
-    function(event) {
-        if (event.keyCode == 13){
-            traLai();
-        }
-    }, true);
+    
     $('#bill-template-evn-1').html(`
     <div class="bill-container" style="font-size: 13px;">
     <section class="top row">
@@ -478,6 +473,13 @@ const khoiTao = async () => {
 
 </div>
     `)
+
+	document.getElementById("txt_tien_value").addEventListener("keydown",
+    function(event) {
+        if (event.keyCode == 13){
+            traLai();
+        }
+    }, true);
 }
 
 khoiTao();
