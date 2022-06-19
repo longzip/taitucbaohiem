@@ -136,7 +136,7 @@ function drawPrintEVN(trans) {
                 amount_text: DOCSO().doc(_bill.amount) + " đồng chẵn"
             };
 
-            let _base = $("<div />").append($("#bill-template-evn-1").html());
+            let _base = $("<div />").append($("#bill-template-evn").html());
 
             Object.keys(_data).forEach((k, i) => {
                 if (_base.find("#" + k).prop("tagName").toLowerCase() === 'img') {
