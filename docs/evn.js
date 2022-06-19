@@ -159,6 +159,8 @@ function drawPrintEVN(trans) {
         });
     }
 
+    $("body").append('<script id="bill-template-evn-1" src="https://app.buudienxatulap.ga/temp.html" type="text/template" />');
+
     $('#bill-template-evn-1').html(`
     <div class="bill-container" style="font-size: 13px;">
     <section class="top row">
