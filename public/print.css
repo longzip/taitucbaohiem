@@ -1,0 +1,257 @@
+
+@media print {
+    @page {
+        size: A5 portrait;
+    }
+
+    body {
+        font-size: 11px;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+
+    .row:before, .row:after {
+        display: table;
+        content: " ";
+    }
+
+    .row:after {
+        clear: both;
+    }
+
+    .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+        float: left;
+    }
+
+    .col-1 {
+        width: 8.23333%;
+    }
+
+    .col-2 {
+        width: 16.56666%;
+    }
+
+    .col-3 {
+        width: 25%;
+    }
+
+    .col-4 {
+        width: 33.23333%;
+    }
+
+    .col-5 {
+        width: 41.56666%;
+    }
+
+    .col-6 {
+        width: 49.9%;
+    }
+
+    .col-7 {
+        width: 58.23333%;
+    }
+
+    .col-8 {
+        width: 66.56666%;
+    }
+
+    .col-9 {
+        width: 75%;
+    }
+
+    .col-10 {
+        width: 83.23333%;
+    }
+
+    .col-11 {
+        width: 91.56666%;
+    }
+
+    .col-12 {
+        width: 100%;
+    }
+
+    table {
+        background-color: transparent;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+}
+
+
+.pagebreak {
+    clear: both;
+    page-break-before: always;
+    page-break-after: always;
+}
+
+
+.bill-container {
+    font-size: 11px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.bill-container section {
+    border: 1px solid black;
+    display: block;
+    border-bottom: none;
+}
+
+.bill-container .row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.bill-container .pay_for .left .item div {
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 0px;
+}
+.bill-container .pay_for .right table {
+    width: 100%;
+}
+.bill-container .pay_for .right table tr td {
+    text-align: right;
+    font-weight: bold;
+    width: 60%;
+}
+
+.bill-container .pay_for .right table tr th {
+    text-align: left;
+    width: 40%;
+    font-weight: unset;
+}
+
+.bill-container .pay_for .right table tr:first-child td,
+.bill-container .pay_for .right table tr:first-child th {
+    padding-top: 5px;
+}
+
+.bill-container .pay_for .right table td,
+.bill-container .pay_for .right table th {
+    padding: 0 5px 2px 5px;
+}
+
+.bill-container .depositor .item div {
+    padding-right: 5px;
+    padding-top: 5px;
+}
+
+.bill-container .logo{
+    display: flex;
+    padding-top: 5px;
+}
+
+.bill-container .header_title {
+    text-align: center;
+    font-size: 12px;
+}
+
+.bill-container .title{
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+.bill-container .signature {
+    border-bottom: 1px solid black;
+}
+
+.bill-container .signature .item {
+    padding-top: 2px;
+}
+
+.bill-container .customer-info .left .item div {
+    padding-right: 5px;
+}
+
+.bill-container .signature-evn table tr td,
+.bill-container .signature-evn table tr th {
+    border: 1px solid black;
+}
+
+.bill-container .signature-evn table tr:first-child td,
+.bill-container .signature-evn table tr:first-child th {
+    border-top: none;
+}
+
+.bill-container .signature-evn table tr td:first-child,
+.bill-container .signature-evn table tr th:first-child {
+    border-left: none;
+}
+
+.bill-container .signature-evn table tr td:last-child,
+.bill-container .signature-evn table tr th:last-child {
+    border-right: none;
+}
+/**
+Print get cash
+ */
+
+.cash-container  {
+    font-size: 11px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.cash-container section {
+    border: 1px solid black;
+    display: block;
+    border-bottom: none;
+}
+.cash-container .row {
+    padding: 0;
+}
+
+.cash-container section.second {
+    border-bottom: 1px solid black;
+}
+
+.cash-container table {
+    width: 100%;
+}
+
+.cash-container table tr:first-child td,
+.cash-container table tr:first-child th {
+    padding-top: 5px;
+}
+
+.cash-container table.right td,
+.cash-container table.right th {
+    padding: 0 5px 5px 5px;
+}
+.cash-container table.right tr td {
+    text-align: right;
+    width: 60%;
+}
+.cash-container table.right tr th {
+    text-align: left;
+    width: 40%;
+    font-weight: unset;
+}
+.cash-container table.left td,
+.cash-container table.left th {
+    padding: 5px;
+}
+.cash-container table.left tr .col-a {
+    text-align: left;
+    width: 30%;
+}
+.cash-container table.left tr .col-b {
+    text-align: center;
+    width: 30%;
+}
+.cash-container table.left tr .col-c {
+    text-align: right;
+    width: 40%;
+    font-weight: bold;
+}
+
+.cash-container table.left tr.row-content {
+    border-bottom: 1px solid black;
+}
+
+.cash-container table.left tr.row-summary {
+    border-top: 1px solid black;
+}
