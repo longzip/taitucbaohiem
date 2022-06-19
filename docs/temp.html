@@ -1,0 +1,148 @@
+<div class="bill-container" style="font-size: 13px;">
+    <section class="top row">
+        <div class="col-3">
+            <div class="logo" style="margin: 5px;">
+                <img src="/resources/assets/images/logo_vietnam_post.png" width="70px" height="70px">
+            </div>
+        </div>
+        <div class="col-6" style="padding-top: 5px;font-size: 17px;">
+            <div style="text-align: center">
+                <b>BIÊN NHẬN THANH TOÁN TIỀN ĐIỆN</b>
+            </div>
+            <div style="text-align: center;padding-top: 10px;font-size: 15px;">
+                (từ <span id="start_date">20/04/2019</span> đến <span id="end_date">20/04/2019</span>)
+                
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="logo" style="margin: 5px;float: right;">
+                <img id="provider_logo" src="/resources/assets/images/logo_vietnam_post.png" width="70px" height="70px">
+            </div>
+        </div>
+    </section>
+
+    <section class="customer-info row">
+        <div class="left col-6">
+            <div style="margin: 5px;">
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        Tên KH:
+                    </div>
+                    <div style="font-weight: bold;" id="customer_name">BUI ANH TRUNG</div>
+                </div>
+                <div class="item" style="display: flex;align-items: flex-start">
+                    <div style="min-width: -moz-max-content;min-width: max-content;">
+                        Địa chỉ:
+                    </div>
+                    <div style="font-weight: bold;" id="customer_address">
+                        379 PHUNG SON A TAN LONG PH PG
+                    </div>
+                </div>
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        Mã KH:
+                    </div>
+                    <div style="font-weight: bold;" id="customer_code">BUI ANH TRUNG</div>
+                </div>
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        Số công tơ:
+                    </div>
+                    <div style="font-weight: bold;" id="capacity_no">BUI ANH TRUNG</div>
+                </div>
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        Số hộ:
+                    </div>
+                    <div style="font-weight: bold;" id="home_no">BUI ANH TRUNG</div>
+                </div>
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        Seri HĐĐT:
+                    </div>
+                    <div style="font-weight: bold;" id="serial_number">BUI ANH TRUNG</div>
+                </div>
+            </div>
+        </div>
+        <div class="left col-6">
+            <div style="margin: 5px;">
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        ID hóa đơn:
+                    </div>
+                    <div style="font-weight: bold;" id="bill_id">BUI ANH TRUNG</div>
+                </div>
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        Hình thức thanh toán:
+                    </div>
+                    <div style="font-weight: bold;" id="payment_method">379 PHUNG SON A TAN LONG PH PG</div>
+                </div>
+                <div class="item" style="display: flex;align-items: start">
+                    <div style="min-width: -moz-max-content;min-width: max-content;">
+                        Nội dung:
+                    </div>
+                    <div style="font-weight: bold;word-wrap: break-word;">Thanh toán hóa đơn tiền điện kỳ <span id="period">20/04/2019</span> từ ngày <span id="content_start_date">20/04/2019</span> đến ngày <span id="content_end_date">20/04/2019</span></div>
+                </div>
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        CSĐK:
+                    </div>
+                    <div style="font-weight: bold;" id="start_stage_no">BUI ANH TRUNG</div>
+                </div>
+                <div class="item" style="display: flex;align-items: center">
+                    <div>
+                        CSCK:
+                    </div>
+                    <div style="font-weight: bold;" id="end_stage_no">BUI ANH TRUNG</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="signature-evn row">
+        <div class="col-12">
+            <table style="width: 100%;">
+                <colgroup>
+                    <col width="30%">
+                    <col width="30%">
+                    <col width="40%">
+                </colgroup>
+                <tr>
+                    <th>ĐNTT</th>
+                    <th>Đơn giá (VND)</th>
+                    <th>Thành tiền (VND)</th>
+                </tr>
+                <tr>
+                    <td style="text-align: right; padding-right: 5px;"><div id="price_DNTT" style="white-space: pre-line;"></div></td>
+                    <td style="text-align: right; padding-right: 5px;"><div id="price_detail" style="white-space: pre-line;"></div></td>
+                    <td style="text-align: right; padding-right: 5px;"><div id="amount_detail" style="white-space: pre-line;"></div></td>
+                </tr>
+                <tr>
+                    <td id="total_capacity_no" style="text-align: right; padding-right: 5px;"></td>
+                    <td></td>
+                    <td id="debt_amount" style="text-align: right; padding-right: 5px;"></td>
+                </tr>
+                <tr>
+                    <th colspan="2" style="text-align: left; padding-left: 5px;">
+                        Thuế GTGT
+                    </th>
+                    <td id="debt_fee" style="text-align: right; padding-right: 5px;"></td>
+                </tr>
+                <tr>
+                    <th colspan="2" style="text-align: left; padding-left: 5px;">
+                        Số tiền thanh toán
+                    </th>
+                    <td id="amount" style="text-align: right; padding-right: 5px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: left; padding-left: 5px;">
+                        <span style="font-weight: bold;">Số tiền bằng chữ: </span><span id="amount_text"></span>
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+    </section>
+
+</div>
