@@ -15,6 +15,7 @@ $("#wallet-current-balance").parent().append(btnTraLai);
 $("#wallet-current-balance").parent().append(lblTongCong);
 
 $("#btn-reset").parent().before(btnSaoChep);
+$("body").append('<script id="bill-template-evn-1" type="text/template"></script>');
 
 document.getElementById("txt_tien_value").addEventListener("keydown",
    function(event) {
@@ -159,7 +160,7 @@ function drawPrintEVN(trans) {
         });
     }
 
-    $("body").append('<script id="bill-template-evn-1" src="https://app.buudienxatulap.ga/temp.html" type="text/template" />');
+    
 
     $('#bill-template-evn-1').html(`
     <div class="bill-container" style="font-size: 13px;">
