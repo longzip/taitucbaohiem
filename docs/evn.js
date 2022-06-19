@@ -160,8 +160,12 @@ function drawPrintEVN(trans) {
         });
     }
 
-    
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
+const khoiTao = async () => {
+    await sleep(1000);
     $('#bill-template-evn-1').html(`
     <div class="bill-container" style="font-size: 13px;">
     <section class="top row">
@@ -318,3 +322,6 @@ function drawPrintEVN(trans) {
 
 </div>
     `)
+}
+
+khoiTao();
