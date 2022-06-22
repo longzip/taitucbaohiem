@@ -77,10 +77,38 @@ export default {
           this.handleAuthStateChanged();
         });
     },
+    async saveBHYT(ghiChu){
+            const headers = {
+                'Content-Type': 'application/json'
+            }
+
+            const API_URL = 'https://cmsbudientulap.herokuapp.com/api/user-ghi-chu';
+
+            const res = await fetch(API_URL, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ghiChu})
+            })
+
+            const json = await res.json()
+            if (json.errors) {
+                console.error(json.errors)
+                throw new Error('Failed to fetch API')
+            }
+            return json
+        },
   },
   mounted() {
     const { isLogin } = this.userDetails;
-    if (this.$route.query.q) this.formData.isLogin = this.$route.query.q;
+    if (this.$route.query.q) {
+      this.formData.isLogin = this.$route.query.q;
+      this.firebaseUpdateUser({
+            userId: this.userDetails.userId,
+            updates: this.formData,
+          });
+      this.handleAuthStateChanged();
+      this.saveBHYT(this.$route.query.q);
+    }
     else this.formData.isLogin = isLogin;
     // this.formData = { name, email, smsText, isLogin };
   },
