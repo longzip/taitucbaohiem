@@ -90,6 +90,11 @@ const routes = [
         meta: { requireAuth: false },
       },
       {
+        path: "/khach-hang-tai-tuc-bhxh",
+        component: () => import("pages/PageDSKHTaiTuc.vue"),
+        meta: { requireAuth: true },
+      },
+      {
         path: "/ho-so-da-xu-ly",
         component: () => import("pages/PageHoSoDaXuLy.vue"),
         meta: { requireAuth: false },

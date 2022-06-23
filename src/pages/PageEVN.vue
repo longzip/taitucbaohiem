@@ -178,10 +178,12 @@ export default defineComponent({
     };
   },
   methods: {
-    async timKiem(searchText) {
+    async timKiem(searchText,homNay=false) {
       let url = 'https://evn-buudienxatulap.herokuapp.com/api/evns?';
       if(searchText)
         url += `name=${searchText}`
+      if(homNay)
+        url += `homNay=${homNay}`
       const { data } = await axios.get(url);
       this.evns = data;
       this.tongCong = await data.map(t=>t.soTien).reduce(
@@ -246,7 +248,7 @@ export default defineComponent({
       this.tongCong = parseInt(this.$route.query.q);
     }
     else
-      this.timKiem('');
+      this.timKiem('',true);
   },
 });
 </script>

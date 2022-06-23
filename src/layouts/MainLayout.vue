@@ -120,10 +120,16 @@ const linksList = [
     link: "/theo-doi",
   },
   {
-    title: "Khách hàng chưa nộp",
+    title: "Danh sách khách hàng tái tục BHYT",
     caption: "Danh sách khách hàng chưa nộp",
     icon: "contact_page",
     link: "/khach-hang-chua-nop",
+  },
+  {
+    title: "Danh sách khách hàng tái tục BHXH",
+    caption: "Danh sách khách hàng chưa nộp",
+    icon: "contact_page",
+    link: "/khach-hang-tai-tuc-bhxh",
   },
   {
     title: "Ngừng theo dõi",
