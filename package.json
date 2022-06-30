@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "npx quasar build -m pwa",
-    "zip": "rm -rf wordpress && mkdir wordpress && npx quasar build -m pwa && mv dist/pwa wordpress/wp-pwa && zip -r wp-pwa.zip ./wordpress",
+    "zip": "rm -rf app && mkdir app && npx quasar build -m pwa && mv dist/pwa/ app/app && zip -r wp-pwa.zip ./app/app",
     "push": "rm -rf docs && npx quasar build -m pwa && mv dist/pwa docs && git add . && git commit -m build && git push",
     "start": "node server.js",
     "lint": "eslint --ext .js,.vue ./",

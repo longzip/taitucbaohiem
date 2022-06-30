@@ -228,7 +228,7 @@ export default defineComponent({
     async print(){
       let a = document.createElement('a');
       a.target = '_blank';
-      let lienKet = 'https://cmsbudientulap.herokuapp.com/nop-bhyt/1/pdf?'
+      let lienKet = `https://cmsbudientulap.herokuapp.com/nop-bhyt/${new Date().toISOString().slice(0,10)}/pdf?`
       if(this.tongCong) lienKet += `tienDien=${this.tongCong}`;
       if(this.t500) lienKet += `&t500=${this.t500}`;
       if(this.t200) lienKet += `&t200=${this.t200}`;

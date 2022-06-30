@@ -7,7 +7,7 @@
             <q-item>
                 <q-item-section>
                 <q-item-label>{{ khachHang.hoVaTen }} {{ khachHang.ngayThangNamSinh }}</q-item-label>
-                <q-item-label caption lines="2">Mã số BHXH: {{ khachHang.maSoBHXH }}</q-item-label>
+                <q-item-label caption lines="2">Mã số BHXH: <a target="_blank" :href="`https://app.buudienxatulap.ga/#/tra-cuu?q=${khachHang.maSoBHXH}`">{{ khachHang.maSoBHXH }}</a></q-item-label>
                 <q-item-label caption lines="2">{{ khachHang.diaChi }}</q-item-label>
                 <q-item-label caption lines="2"><a :href="`tel:${khachHang.soDienThoai}`">{{ khachHang.soDienThoai }}</a></q-item-label>
                 </q-item-section>
@@ -25,6 +25,7 @@
 <script>
 import ListHeader from 'src/components/Tasks/Modals/Shared/ListHeader.vue'
 import client from '../utils'
+import { Loading, QSpinnerIos } from "quasar";
 export default {
   components: { ListHeader },
     data(){
@@ -35,14 +36,18 @@ export default {
     },
     methods: {
         async loadData(){
+              Loading.show({
+                spinner: QSpinnerIos,
+                spinnerSize: "100px",
+            });
             const { data } = await client.post('https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc',{
-                denThang: "2022-07-01 00:00:00",
+                denThang: "2023-01-01 00:00:00",
                 filterItems: [],
                 loaiDichVu: 0,
                 mangLuoiId: 4580,
-                maxResultCount: 15,
+                maxResultCount: 500,
                 skipCount: 0,
-                tuThang: "2022-06-01 00:00:00",
+                tuThang: "2022-01-01 00:00:00",
                 type: -1
             })
             const {result, error} = data;
@@ -53,7 +58,7 @@ export default {
                     0
                 );
             }
-                
+            Loading.hide();  
         }
     },
     mounted(){

@@ -1,5 +1,22 @@
 <template>
   <div class="q-pa-md">
+    <ListHeader bgcolor="bg-orange-4">Giỏ hàng
+    </ListHeader>
+    <q-list bordered padding>
+      <q-item v-for="cartProduct in cartProducts" :key="cartProduct.id">
+          <q-item-section>
+            <q-item-label overline>{{cartProduct.name}}</q-item-label>
+              <q-item-label>{{cartProduct.price}}</q-item-label>
+            </q-item-section>
+
+          <q-item-section side top>
+            <q-item-label caption>x{{cartProduct.quantity}}</q-item-label>
+            <q-item-label>₫{{cartProduct.thanhTien.toLocaleString()}}</q-item-label>
+          </q-item-section>
+      </q-item>
+
+      <q-separator spaced />
+    </q-list>
     <ListHeader bgcolor="bg-orange-4">Danh sách KHL
       <q-btn
         rounded
@@ -44,6 +61,10 @@
         <q-item-section side top>
           <q-item-label caption>{{product.price}}</q-item-label>
           <q-item-label caption>{{product.sku}}</q-item-label>
+          <q-icon
+            name="add_shopping_cart"
+            @click="addShoppingCart(product)"
+          />
         </q-item-section>
       </q-item>
       
@@ -64,11 +85,24 @@ export default defineComponent({
   data() {
     return {
       searchText: "",
-      products: []
+      products: [],
+      cartProducts: []
     };
   },
   methods: {
     async timKiem() {
+    },
+    addShoppingCart({id,sku,name,price,quantity=1}){
+      const newCartProduct = {id,sku,name,price,quantity,thanhTien: parseInt((price.match(/[0-9]/g)).join(''))}
+      let cartProductExists = false;
+      this.cartProducts.map((cartProduct) => {
+        if (cartProduct.id === newCartProduct.id) {
+          cartProduct.quantity++;
+          cartProduct.thanhTien = parseInt((cartProduct.price.match(/[0-9]/g)).join(''))*cartProduct.quantity
+          cartProductExists = true;
+        }
+      });
+      if (!cartProductExists) this.cartProducts.push(newCartProduct);
     },
     copySoDienThoaiToClipboard() {
       navigator.clipboard
@@ -94,7 +128,7 @@ export default defineComponent({
         const API_URL = 'https://buudienxatulap.ngoclong.ga/wordpress/graphql';
         const  query = `
             query MyQuery {
-            products(first: 50) {
+            products(first: 1000) {
                 nodes {
                 id
                 productId: databaseId

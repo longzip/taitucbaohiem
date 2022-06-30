@@ -166,6 +166,7 @@ export default {
       thangTruoc: 0,
       daNopBHYT: 0,
       daNopBHXH: 0,
+      ngay: 0,
       showDialog: false,
       t500: '',
       t200: '',
@@ -219,11 +220,11 @@ export default {
         ( previousValue, currentValue ) => previousValue + currentValue,
         0
       );
-      this.daNopBHYT = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===1 && new Date().getDate() === new Date(t.ngayNopHoSo).getDate()).map(t=>t.tongTien).reduce(
+      this.daNopBHYT = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===1 && new Date().getDate()-this.ngay === new Date(t.ngayNopHoSo).getDate()).map(t=>t.tongTien).reduce(
         ( previousValue, currentValue ) => previousValue + currentValue,
         0
       );
-      this.daNopBHXH = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===0 && new Date().getDate() === new Date(t.ngayNopHoSo).getDate()).map(t=>t.tongTien).reduce(
+      this.daNopBHXH = await this.bhyts.filter(t=>t.userId === 3152 && t.trangThaiHoSo === 4 && t.maThuTuc ===0 && new Date().getDate()-this.ngay === new Date(t.ngayNopHoSo).getDate()).map(t=>t.tongTien).reduce(
         ( previousValue, currentValue ) => previousValue + currentValue,
         0
       );
@@ -244,7 +245,7 @@ export default {
     async print(){
       let a = document.createElement('a');
       a.target = '_blank';
-      let lienKet = 'https://cmsbudientulap.herokuapp.com/nop-bhyt/1/pdf?'
+      let lienKet = `https://cmsbudientulap.herokuapp.com/nop-bhyt/${new Date().toISOString().slice(0,10)}/pdf?`
       if(this.daNopBHYT) lienKet += `tienBHYT=${this.daNopBHYT}`;
       if(this.daNopBHXH) lienKet += `&tienBHXH=${this.daNopBHXH}`;
       if(this.t500) lienKet += `&t500=${this.t500}`;
@@ -262,6 +263,9 @@ export default {
     }
   },
   async mounted() {
+    if (this.$route.query.ngay) {
+      this.ngay = parseInt(this.$route.query.ngay);
+    }
     this.loadData();
   },
 };
