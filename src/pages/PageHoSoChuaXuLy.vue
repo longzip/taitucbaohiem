@@ -73,7 +73,7 @@ export default {
       ( previousValue, currentValue ) => previousValue + 1,
       0
     );
-    this.giaHan(this.bhyts.filter(t=>t.trangThaiHoSo == 2));
+    this.giaHan(this.bhyts.filter(t=>t.trangThaiHoSo == 2 && new Date().getDate() === new Date(t.ngayLap).getDate()));
   },
 };
 </script>

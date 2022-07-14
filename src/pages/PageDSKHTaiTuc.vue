@@ -47,7 +47,7 @@ export default {
                 mangLuoiId: 4580,
                 maxResultCount: 500,
                 skipCount: 0,
-                tuThang: "2022-01-01 00:00:00",
+                tuThang: "2022-04-01 00:00:00",
                 type: -1
             })
             const {result, error} = data;

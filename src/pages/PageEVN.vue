@@ -37,7 +37,13 @@
     <q-list v-for="evn in evns" :key="evn.id">
       <q-item>
         <q-item-section>
-          <q-item-label>{{ evn.ten }}</q-item-label>
+          <q-item-label>{{ evn.ten }}
+            <q-icon
+                @click="xacNhanLoaiBo(evn)"
+                :name="evn.soTien == 0 ? 'do_not_disturb_on' : 'delete_forever'"
+                :color="evn.soTien == 0 ? 'red' : 'gray'"
+            />
+          </q-item-label>
           <q-item-label caption lines="2">{{ evn.diaChi }}</q-item-label>
           <q-item-label caption lines="2">{{ evn.soDienThoai }}</q-item-label>
           <q-item-label caption lines="2">{{ evn.ghiChu }}</q-item-label>
@@ -178,6 +184,33 @@ export default defineComponent({
     };
   },
   methods: {
+    xacNhanLoaiBo(evn) {
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: "Bạn có muốn loại bỏ?",
+          ok: {
+            push: true,
+          },
+          cancel: {
+            color: "negative",
+          },
+          persistent: true,
+        })
+        .onOk(() => {
+          this.soTienBangKhong(evn);
+        });
+    },
+    async soTienBangKhong(evn){
+      const {data} = await axios.put(`https://evn-buudienxatulap.herokuapp.com/api/evns/${evn.ma}/so-tien`,{soTien: 0});
+      this.updateEVN(data);
+    },
+    updateEVN(evn){
+      let found = this.evns.find(
+        (x) => x.ma === evn.ma
+      );
+      if (found) Object.assign(found, evn);
+    },
     async timKiem(searchText,homNay=false) {
       let url = 'https://evn-buudienxatulap.herokuapp.com/api/evns?';
       if(searchText)

@@ -266,6 +266,9 @@ export default {
     if (this.$route.query.ngay) {
       this.ngay = parseInt(this.$route.query.ngay);
     }
+    if (this.$route.query.thang) {
+      this.thangTruoc = parseInt(this.$route.query.thang);
+    }
     this.loadData();
   },
 };
