@@ -78,6 +78,12 @@ const linksList = [
     link: "/tai-tuc",
   },
   {
+    title: "Tái tục 2",
+    caption: "DS BHYT tái tục",
+    icon: "history",
+    link: "/tai-tuc-2",
+  },
+  {
     title: "Đã hết hạn",
     caption: "DS BHYT đã hết hạn",
     icon: "alarm_off",
@@ -106,6 +112,12 @@ const linksList = [
     caption: "Các hồ sơ chưa xử lý",
     icon: "timer",
     link: "/ho-so-chua-xu-ly",
+  },
+  {
+    title: "Hồ sơ đã nộp BDH",
+    caption: "Các hồ sơ đã nộp",
+    icon: "verified",
+    link: "/ho-so-da-nop",
   },
   {
     title: "Hồ sơ đã xử lý",

@@ -19,6 +19,11 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "/tai-tuc-2",
+        component: () => import("pages/PageTaiTuc2.vue"),
+        meta: { requireAuth: true },
+      },
+      {
         path: "/het-han",
         component: () => import("pages/PageHetHan.vue"),
         meta: { requireAuth: true },
@@ -98,6 +103,11 @@ const routes = [
         path: "/ho-so-da-xu-ly",
         component: () => import("pages/PageHoSoDaXuLy.vue"),
         meta: { requireAuth: false },
+      },
+      {
+        path: "/ho-so-da-nop",
+        component: () => import("pages/PageHoSoDaNopBDH.vue"),
+        meta: { requireAuth: true },
       },
       {
         path: "/khl",

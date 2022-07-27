@@ -130,6 +130,10 @@ export const luuBhyt = async (bhyt) => {
     `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
     bhyt
   );
+  await axios.put(
+    `https://cmstulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
+    bhyt
+  );
   return data;
 };
 export const xem = async (maSoBhxh, completed) => {
@@ -225,6 +229,15 @@ export const giaHan = async ({ commit }, payload) => {
           completed: true
         }
       );
+      await client.put(
+        `https://cmstulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
+        {
+          tongTien,
+          ngayLap,
+          disabled: true,
+          completed: true
+        }
+      );
       await commit("updateBhyt", data);
     } catch (error) {
       console.log(error);
@@ -238,6 +251,16 @@ export const daXyLy = async ({ commit }, payload) => {
     try {
       const { data } = await client.put(
         `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
+        {
+          tongTien,
+          ngayLap,
+          userName,
+          disabled: trangThaiHoSo !== 9,
+          completed: trangThaiHoSo !==9
+        }
+      );
+      await client.put(
+        `https://cmstulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
         {
           tongTien,
           ngayLap,
@@ -268,6 +291,33 @@ export const getAllBhyts = async ({ commit }, payload) => {
   } = payload;
 
   let url = "https://cmsbudientulap.herokuapp.com/api/bhyts?";
+  if (thang) url += `thang=${thang}`;
+  if (taiTuc) url += `&taiTuc=${taiTuc}`;
+  if (hetHan) url += `&hetHan=${hetHan}`;
+  if (name) url += `&name=${name}`;
+  if (completed) url += `&completed=${completed}`;
+  if (disabled) url += `&disabled=${disabled}`;
+  if (maHoGd) url += `&maHoGd=${maHoGd}`;
+  if (chuaDongBo) url += `&chuaDongBo=${chuaDongBo}`;
+
+  const { data } = await client.get(url);
+
+  if (data) commit("getAllBhyts", data);
+};
+
+export const getAllBhyts2 = async ({ commit }, payload) => {
+  const {
+    completed,
+    disabled,
+    name,
+    thang,
+    maHoGd,
+    chuaDongBo,
+    taiTuc,
+    hetHan,
+  } = payload;
+
+  let url = "https://cmstulap.herokuapp.com/api/bhyts?";
   if (thang) url += `thang=${thang}`;
   if (taiTuc) url += `&taiTuc=${taiTuc}`;
   if (hetHan) url += `&hetHan=${hetHan}`;

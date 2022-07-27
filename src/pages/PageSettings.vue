@@ -82,7 +82,7 @@ export default {
                 'Content-Type': 'application/json'
             }
 
-            const API_URL = 'https://cmsbudientulap.herokuapp.com/api/user-ghi-chu';
+            const API_URL = 'https://cmstulap.herokuapp.com/api/user-ghi-chu';
 
             const res = await fetch(API_URL, {
                 method: 'PUT',
