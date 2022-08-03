@@ -42,11 +42,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
           if (snapshot.exists()) {
             let userDetails = snapshot.val();
             commit("setUserDetails", {
-              name: userDetails.name,
-              email: user.email,
-              smsText: userDetails.smsText,
-              isLogin: userDetails.isLogin,
-              userId,
+              ...userDetails,
             });
             commit("setIsLogin", userDetails.isLogin);
           } else {

@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -57,7 +57,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("auth", ["userDetails"]),
+    ...mapGetters("auth", ["userDetails"]),
   },
   methods: {
     ...mapActions("auth", ["firebaseUpdateUser", "handleAuthStateChanged"]),
@@ -77,39 +77,40 @@ export default {
           this.handleAuthStateChanged();
         });
     },
-    async saveBHYT(ghiChu){
-            const headers = {
-                'Content-Type': 'application/json'
-            }
+    async saveBHYT(ghiChu) {
+      const headers = {
+        "Content-Type": "application/json",
+      };
 
-            const API_URL = 'https://cmstulap.herokuapp.com/api/user-ghi-chu';
+      const API_URL = "https://cms.buudienhuyenmelinh.vn/api/user-ghi-chu";
 
-            const res = await fetch(API_URL, {
-                method: 'PUT',
-                headers,
-                body: JSON.stringify({ghiChu})
-            })
+      const res = await fetch(API_URL, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ ghiChu }),
+      });
 
-            const json = await res.json()
-            if (json.errors) {
-                console.error(json.errors)
-                throw new Error('Failed to fetch API')
-            }
-            return json
-        },
+      const json = await res.json();
+      if (json.errors) {
+        console.error(json.errors);
+        throw new Error("Failed to fetch API");
+      }
+      return json;
+    },
   },
-  mounted() {
-    const { isLogin } = this.userDetails;
+  created() {
+    // this.handleAuthStateChanged();
+    this.formData = { ...this.userDetails };
     if (this.$route.query.q) {
       this.formData.isLogin = this.$route.query.q;
       this.firebaseUpdateUser({
-            userId: this.userDetails.userId,
-            updates: this.formData,
-          });
-      this.handleAuthStateChanged();
+        userId: this.formData.userId,
+        updates: this.formData,
+      });
+
       this.saveBHYT(this.$route.query.q);
     }
-    else this.formData.isLogin = isLogin;
+    //else this.formData.isLogin = isLogin;
     // this.formData = { name, email, smsText, isLogin };
   },
 };

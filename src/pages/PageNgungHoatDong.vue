@@ -27,7 +27,7 @@
         </template>
       </q-input>
     </div>
-    <q-list v-for="bhyt in timBhyts(searchText)" :key="bhyt.id">
+    <q-list v-for="bhyt in bhyts" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
@@ -56,16 +56,12 @@ export default defineComponent({
       });
     },
     async dongBo() {
-      this.dongBoDuLieu(
-        this.timBhyts(this.searchText)
-          .map((bhyt) => bhyt.maSoBhxh)
-          .join()
-      );
+      this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
     },
   },
 
   computed: {
-    ...mapGetters("bhyts", ["timBhyts"]),
+    ...mapGetters("bhyts", ["bhyts"]),
   },
 
   mounted() {

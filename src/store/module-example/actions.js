@@ -5,7 +5,7 @@ import { Loading, QSpinnerIos } from "quasar";
 import { async } from "@firebase/util";
 let bhyts = [];
 
-export const XuatD03OrD05Excel = async ({ commit }, payload) =>{
+export const XuatD03OrD05Excel = async ({ commit }, payload) => {
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
@@ -13,16 +13,14 @@ export const XuatD03OrD05Excel = async ({ commit }, payload) =>{
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/KeKhai/XuatD03OrD05Excel",
     {
-      daiLyIds: [
-          52401
-      ],
-      transactionIds: payload
-  }
+      daiLyIds: [52401],
+      transactionIds: payload,
+    }
   );
   Loading.hide();
 
   return data.result;
-}
+};
 
 export const khachChuaNop = async ({ commit }, payload) => {
   Loading.show({
@@ -36,13 +34,13 @@ export const khachChuaNop = async ({ commit }, payload) => {
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
     {
-      denThang: moment().startOf('months').add(1,'months').format(),
+      denThang: moment().startOf("months").add(1, "months").format(),
       filterItems: [],
       loaiDichVu: 1,
       mangLuoiId: 4580,
       maxResultCount: 1500,
       skipCount: 0,
-      tuThang: moment().startOf('months').format(),
+      tuThang: moment().startOf("months").format(),
       type: -1,
     }
   );
@@ -55,7 +53,7 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
     spinnerSize: "100px",
   });
   const denNgay = new Date();
-  denNgay.setDate(denNgay.getDate()+2);
+  denNgay.setDate(denNgay.getDate() + 2);
   const tuNgay = new Date();
   tuNgay.setDate(denNgay.getDate() - 32);
   const { data } = await client.post(
@@ -78,13 +76,19 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
 };
 
 export const hoSoDaXuLy = async ({ commit }, payload) => {
-  const {thangTruoc = 0} = payload;
+  const { thangTruoc = 0 } = payload;
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
   });
-  const denNgay = moment().startOf('months').add(1-thangTruoc,'months').format();
-  const tuNgay = moment().startOf('months').subtract(thangTruoc,'months').format();
+  const denNgay = moment()
+    .startOf("months")
+    .add(1 - thangTruoc, "months")
+    .format();
+  const tuNgay = moment()
+    .startOf("months")
+    .subtract(thangTruoc, "months")
+    .format();
 
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup",
@@ -109,29 +113,9 @@ export const xoaHoGd = async ({ commit }, payload) => {
   await client.get(`/api/xoaHoGd?maHoGd=${payload}`);
 };
 
-const timKiem = async (searchText, completed = false) => {
-  if (searchText.length === 0 || localStorage.getItem("setIsLogin") === "")
-    return [];
-  bhyts = [];
-  const maSoBhxhs = searchText.split(",");
-  for (let index = 0; index < maSoBhxhs.length; index++) {
-    const maSoBhxh = maSoBhxhs[index];
-    try {
-      await xem(maSoBhxh, completed);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  return bhyts;
-};
-
 export const luuBhyt = async (bhyt) => {
-  let { data } = await axios.put(
-    `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
-    bhyt
-  );
-  await axios.put(
-    `https://cmstulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
+  let { data } = await axios.post(
+    "https://cms.buudienhuyenmelinh.vn/api/bhyts",
     bhyt
   );
   return data;
@@ -148,23 +132,28 @@ export const xem = async (maSoBhxh, completed) => {
     }
   );
 
-  let { thongTinTheHGD } = data.result;
-  if (!thongTinTheHGD) {
-    thongTinTheHGD = {
-      ngay5Nam: data.result.typeId
-        ? data.result.typeId
-        : data.result.trangThaiThe.moTa,
-      maSoBhxh,
-    };
-  }
-  let theBHYT = {};
-  if (data.result.thongTinTK1)
-    theBHYT = await luuBhyt({
-      ...thongTinTheHGD,
-      ...data.result.thongTinTK1,
-      completed,
-    });
-  else theBHYT = await luuBhyt({ ...thongTinTheHGD, completed });
+  const { thongTinTK1, thongTinTheHGD, trangThaiThe } = data.result;
+  // if (!thongTinTheHGD) {
+  //   thongTinTheHGD = {
+  //     ngay5Nam: data.result.typeId
+  //       ? data.result.typeId
+  //       : data.result.trangThaiThe.moTa,
+  //     maSoBhxh,
+  //   };
+  // }
+  // let theBHYT = {};
+  // if (data.result.thongTinTK1)
+  //   theBHYT = await luuBhyt({
+  //     ...thongTinTheHGD,
+  //     ...data.result.thongTinTK1,
+  //     completed,
+  //   });
+  // else theBHYT = await luuBhyt({ ...thongTinTheHGD, completed });
+  const theBHYT = await luuBhyt({
+    ...thongTinTheHGD,
+    ...thongTinTK1,
+    ...trangThaiThe,
+  });
   return theBHYT;
 };
 
@@ -174,7 +163,7 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
     spinnerSize: "100px",
   });
   const hoTens = payload.split(",");
-  const bhyts = new Map(); 
+  const bhyts = new Map();
   for (let index = 0; index < hoTens.length; index++) {
     let url = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${hoTens[index]}&isCoDau=true&`;
     let { data } = await axios.get(url, {
@@ -182,11 +171,11 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
         Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
       },
     });
-    data.result.value.forEach(bhyt => {
-      bhyts.set(bhyt.maSoBhxh,bhyt);
+    data.result.value.forEach((bhyt) => {
+      bhyts.set(bhyt.maSoBhxh, bhyt);
     });
   }
-  
+
   commit("getAllBhyts", [...bhyts.values()]);
   Loading.hide();
 };
@@ -218,7 +207,7 @@ export const taiTuc = async ({ commit }, payload) => {
 
 export const giaHan = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
-    const {maSoBhxh, tongTien, ngayLap} = payload[index];
+    const { maSoBhxh, tongTien, ngayLap } = payload[index];
     try {
       const { data } = await client.put(
         `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
@@ -226,16 +215,16 @@ export const giaHan = async ({ commit }, payload) => {
           tongTien,
           ngayLap,
           disabled: true,
-          completed: true
+          completed: true,
         }
       );
       await client.put(
-        `https://cmstulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
+        `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/tong-tien`,
         {
           tongTien,
           ngayLap,
           disabled: true,
-          completed: true
+          completed: true,
         }
       );
       await commit("updateBhyt", data);
@@ -247,7 +236,8 @@ export const giaHan = async ({ commit }, payload) => {
 
 export const daXyLy = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
-    const {maSoBhxh, tongTien, ngayLap, userName, trangThaiHoSo} = payload[index];
+    const { maSoBhxh, tongTien, ngayLap, userName, trangThaiHoSo } =
+      payload[index];
     try {
       const { data } = await client.put(
         `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
@@ -256,17 +246,17 @@ export const daXyLy = async ({ commit }, payload) => {
           ngayLap,
           userName,
           disabled: trangThaiHoSo !== 9,
-          completed: trangThaiHoSo !==9
+          completed: trangThaiHoSo !== 9,
         }
       );
       await client.put(
-        `https://cmstulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
+        `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/tong-tien`,
         {
           tongTien,
           ngayLap,
           userName,
           disabled: trangThaiHoSo !== 9,
-          completed: trangThaiHoSo !==9
+          completed: trangThaiHoSo !== 9,
         }
       );
       await commit("updateBhyt", data);
@@ -275,8 +265,6 @@ export const daXyLy = async ({ commit }, payload) => {
     }
   }
 };
-
-
 
 export const getAllBhyts = async ({ commit }, payload) => {
   const {
@@ -317,7 +305,7 @@ export const getAllBhyts2 = async ({ commit }, payload) => {
     hetHan,
   } = payload;
 
-  let url = "https://cmstulap.herokuapp.com/api/bhyts?";
+  let url = "https://cms.buudienhuyenmelinh.vn/api/bhyts?";
   if (thang) url += `thang=${thang}`;
   if (taiTuc) url += `&taiTuc=${taiTuc}`;
   if (hetHan) url += `&hetHan=${hetHan}`;

@@ -9,6 +9,12 @@
         @click="copyTextToClipboard()"
         icon="content_copy"
       />
+      <q-btn
+        rounded
+        color="primary"
+        @click="copyMaBhxhToClipboard()"
+        icon="content_copy"
+      />
     </ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
@@ -50,26 +56,25 @@ export default defineComponent({
   data() {
     return {
       searchText: "",
-      tong: 0
+      tong: 0,
     };
   },
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
     async timKiem() {
-      const name = this.searchText.split(" ").map(value => value.charAt(0).toUpperCase() + value.slice(1)).join(" ");
+      const name = this.searchText
+        .split(" ")
+        .map((value) => value.charAt(0).toUpperCase() + value.slice(1))
+        .join(" ");
       const regex = /[0-9]/g;
       const maSo = this.searchText.match(regex);
       await this.getAllBhyts({
         name: maSo ? maSo.join("") : name,
       });
-      this.searchText ="";
+      this.searchText = "";
     },
     async dongBo() {
-      this.dongBoDuLieu(
-        this.timBhyts()
-          .map((bhyt) => bhyt.maSoBhxh)
-          .join()
-      );
+      this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
     },
     copyTextToClipboard() {
       navigator.clipboard
@@ -89,10 +94,28 @@ export default defineComponent({
           }
         );
     },
+    copyMaBhxhToClipboard() {
+      navigator.clipboard
+        .writeText(this.bhyts.map((t) => t.maSoBhxh).join())
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
   },
 
   computed: {
-    ...mapGetters("bhyts", ["timBhyts","soDienThoais"]),
+    ...mapGetters("bhyts", ["timBhyts", "soDienThoais", "bhyts"]),
   },
 });
 </script>

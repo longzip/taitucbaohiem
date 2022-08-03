@@ -1,3 +1,5 @@
+import state from "./state";
+
 export const users = (state) => {
   let usersFiltered = {};
   Object.keys(state.users).forEach((key) => {
@@ -10,3 +12,5 @@ export const users = (state) => {
 export const findUser = (state) => (userId) => state.users[userId];
 
 export const isLogin = (state) => state.isLogin;
+
+export const userDetails = (state) => state.userDetails;
