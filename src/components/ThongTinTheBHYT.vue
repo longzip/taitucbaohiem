@@ -2,6 +2,7 @@
   <q-item
     :class="{
       'bg-warning': bhyt.coTheUuTienCaoHon,
+      'bg-warning': bhyt.coTheUuTienCaoHon == 1,
       'bg-positive': getDateDiff(bhyt.denNgayDt) > 30,
       'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 1,
     }"

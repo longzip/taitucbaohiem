@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT cần gia hạn
+      >Danh sách thẻ BHYT cần gia hạn {{ bhyts.length }}
       <q-btn rounded color="primary" @click="dongBo()" icon="sync" />
       <q-btn
         rounded
@@ -29,7 +29,7 @@
         </template>
       </q-input>
     </div>
-    <q-list v-for="bhyt in timBhyts(searchText)" :key="bhyt.id">
+    <q-list v-for="bhyt in bhyts" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
@@ -89,7 +89,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapGetters("bhyts", ["timBhyts", "soDienThoais"]),
+    ...mapGetters("bhyts", ["bhyts", "soDienThoais"]),
   },
 
   mounted() {

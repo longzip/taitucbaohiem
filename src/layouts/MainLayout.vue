@@ -78,12 +78,6 @@ const linksList = [
     link: "/tai-tuc",
   },
   {
-    title: "Tái tục 2",
-    caption: "DS BHYT tái tục",
-    icon: "history",
-    link: "/tai-tuc-2",
-  },
-  {
     title: "Đã hết hạn",
     caption: "DS BHYT đã hết hạn",
     icon: "alarm_off",
@@ -101,12 +95,6 @@ const linksList = [
     icon: "person_search",
     link: "/tim-kiem",
   },
-  // {
-  //   title: "Phát sinh",
-  //   caption: "Mã số BHXH phát sinh",
-  //   icon: "search",
-  //   link: "/phat-sinh",
-  // },
   {
     title: "Hồ sơ chưa xử lý",
     caption: "Các hồ sơ chưa xử lý",

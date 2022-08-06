@@ -2,8 +2,10 @@ import client from "../../utils";
 import axios from "axios";
 import moment from "moment";
 import { Loading, QSpinnerIos } from "quasar";
-import { async } from "@firebase/util";
-let bhyts = [];
+
+const sleep = () => {
+  return new Promise((resolve) => setTimeout(resolve, 300));
+};
 
 export const XuatD03OrD05Excel = async ({ commit }, payload) => {
   Loading.show({
@@ -27,10 +29,6 @@ export const khachChuaNop = async ({ commit }, payload) => {
     spinner: QSpinnerIos,
     spinnerSize: "100px",
   });
-  // const denThang = new Date();
-  // const tuThang = new Date();
-  // tuThang.setDate(1);
-  // denThang.setMonth(denThang.getMonth() + 1);
   const { data } = await client.post(
     "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
     {
@@ -133,22 +131,7 @@ export const xem = async (maSoBhxh, completed) => {
   );
 
   const { thongTinTK1, thongTinTheHGD, trangThaiThe } = data.result;
-  // if (!thongTinTheHGD) {
-  //   thongTinTheHGD = {
-  //     ngay5Nam: data.result.typeId
-  //       ? data.result.typeId
-  //       : data.result.trangThaiThe.moTa,
-  //     maSoBhxh,
-  //   };
-  // }
-  // let theBHYT = {};
-  // if (data.result.thongTinTK1)
-  //   theBHYT = await luuBhyt({
-  //     ...thongTinTheHGD,
-  //     ...data.result.thongTinTK1,
-  //     completed,
-  //   });
-  // else theBHYT = await luuBhyt({ ...thongTinTheHGD, completed });
+
   const theBHYT = await luuBhyt({
     ...thongTinTheHGD,
     ...thongTinTK1,
@@ -182,6 +165,7 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
 export const dongBoDuLieu = async ({ commit }, payload) => {
   const maSoBhxhs = payload.split(",");
   for (let index = 0; index < maSoBhxhs.length; index++) {
+    await sleep();
     const maSoBhxh = maSoBhxhs[index];
     try {
       const bhyt = await xem(maSoBhxh, false);
@@ -207,18 +191,10 @@ export const taiTuc = async ({ commit }, payload) => {
 
 export const giaHan = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
+    await sleep();
     const { maSoBhxh, tongTien, ngayLap } = payload[index];
     try {
       const { data } = await client.put(
-        `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
-        {
-          tongTien,
-          ngayLap,
-          disabled: true,
-          completed: true,
-        }
-      );
-      await client.put(
         `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/tong-tien`,
         {
           tongTien,
@@ -236,20 +212,11 @@ export const giaHan = async ({ commit }, payload) => {
 
 export const daXyLy = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
+    await sleep();
     const { maSoBhxh, tongTien, ngayLap, userName, trangThaiHoSo } =
       payload[index];
     try {
       const { data } = await client.put(
-        `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/tong-tien`,
-        {
-          tongTien,
-          ngayLap,
-          userName,
-          disabled: trangThaiHoSo !== 9,
-          completed: trangThaiHoSo !== 9,
-        }
-      );
-      await client.put(
         `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/tong-tien`,
         {
           tongTien,
@@ -278,7 +245,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
     hetHan,
   } = payload;
 
-  let url = "https://cmsbudientulap.herokuapp.com/api/bhyts?";
+  let url = "https://cms.buudienhuyenmelinh.vn/api/bhyts?";
   if (thang) url += `thang=${thang}`;
   if (taiTuc) url += `&taiTuc=${taiTuc}`;
   if (hetHan) url += `&hetHan=${hetHan}`;
@@ -342,7 +309,7 @@ export const getBhytSsm = async ({ maSoBhxh, isLogin }) => {
 
 export const updateBhyt = async (bhyt) => {
   const { data } = await client.put(
-    `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
+    `https://cms.buudienhuyenmelinh.vn/api/bhyts/${bhyt.maSoBhxh}`,
     bhyt
   );
   return data;
@@ -351,11 +318,10 @@ export const updateBhyt = async (bhyt) => {
 export const lamMoiDanhSach = () => commit("getAllBhyts", []);
 
 export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
-  // console.log(maSoBhxh, disabled);
   const { data } = await client.put(
-    `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/disabled`,
+    `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/disabled`,
     {
-      disabled: !disabled,
+      disabled: !disabled == 0,
     }
   );
   commit("updateBhyt", data);
@@ -364,9 +330,9 @@ export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
 export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
   // console.log(maSoBhxh, completed);
   const { data } = await client.put(
-    `https://cmsbudientulap.herokuapp.com/api/bhyts/${maSoBhxh}/completed`,
+    `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/completed`,
     {
-      completed: !completed,
+      completed: !completed == 0,
     }
   );
   commit("updateBhyt", data);
