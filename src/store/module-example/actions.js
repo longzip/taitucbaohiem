@@ -243,10 +243,12 @@ export const getAllBhyts = async ({ commit }, payload) => {
     chuaDongBo,
     taiTuc,
     hetHan,
+    maXa,
   } = payload;
 
   let url = "https://cms.buudienhuyenmelinh.vn/api/bhyts?";
   if (thang) url += `thang=${thang}`;
+  if (maXa) url += `&maXa=${maXa}`;
   if (taiTuc) url += `&taiTuc=${taiTuc}`;
   if (hetHan) url += `&hetHan=${hetHan}`;
   if (name) url += `&name=${name}`;
@@ -270,10 +272,12 @@ export const getAllBhyts2 = async ({ commit }, payload) => {
     chuaDongBo,
     taiTuc,
     hetHan,
+    maXa,
   } = payload;
 
-  let url = "https://cms.buudienhuyenmelinh.vn/api/bhyts?";
+  let url = "https://cmsbudientulap.herokuapp.com/api/bhyts?";
   if (thang) url += `thang=${thang}`;
+  if (maXa) url += `&maXa=${maXa}`;
   if (taiTuc) url += `&taiTuc=${taiTuc}`;
   if (hetHan) url += `&hetHan=${hetHan}`;
   if (name) url += `&name=${name}`;

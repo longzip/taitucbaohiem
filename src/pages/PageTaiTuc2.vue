@@ -53,15 +53,15 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
+    ...mapActions("bhyts", ["getAllBhyts2", "dongBoDuLieu"]),
     async loadData() {
-      await this.getAllBhyts({
+      await this.getAllBhyts2({
         name: this.searchText,
-        thang: 2,
-        completed: "0",
-        disabled: "0",
+        thang: 4,
+        // maXa: "08986",
+        // completed: "0",
+        // disabled: "0",
         taiTuc: "1",
-        maXa: "08986",
       });
     },
     async dongBo() {
