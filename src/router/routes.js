@@ -14,6 +14,11 @@ const routes = [
         meta: { requireAuth: false },
       },
       {
+        path: "evn2",
+        component: () => import("src/pages/PageEVN2.vue"),
+        meta: { requireAuth: false },
+      },
+      {
         path: "/tai-tuc",
         component: () => import("pages/PageTaiTuc.vue"),
         meta: { requireAuth: true },

@@ -60,6 +60,12 @@ const linksList = [
     link: "/evn",
   },
   {
+    title: "Tra khách hàng EVN2",
+    caption: "Theo Tên, số đt, địa chỉ",
+    icon: "payment",
+    link: "/evn2",
+  },
+  {
     title: "KHL",
     caption: "Theo Tên, số đt, địa chỉ",
     icon: "book",
