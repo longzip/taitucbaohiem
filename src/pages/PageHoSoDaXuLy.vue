@@ -20,7 +20,7 @@
         icon="content_copy"
       />
       <q-btn rounded color="primary" @click="download()" icon="download" />
-      <q-btn rounded color="primary" @click="showDialog = true" icon="print" />
+      <q-btn rounded color="primary" @click="truocKhiIn" icon="print" />
     </ListHeader>
 
     <div class="q-gutter-y-md column">
@@ -134,6 +134,14 @@
             icon="print"
             @click="print()"
           />
+          <q-btn
+            v-close-popup
+            flat
+            color="primary"
+            round
+            icon="download"
+            @click="printC17()"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -151,6 +159,7 @@ export default {
     return {
       searchText: "",
       tham: 0,
+      maSoBhxhs: [],
       tongTien: 0,
       thangTruoc: 0,
       daNopBHYT: 0,
@@ -174,6 +183,19 @@ export default {
   },
   methods: {
     ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy", "XuatD03OrD05Excel"]),
+    async truocKhiIn() {
+      this.showDialog = true;
+      this.daXyLy(
+        this.bhyts.filter(
+          (t) =>
+            t.userId === 3152 &&
+            t.trangThaiHoSo === 4 &&
+            new Date().getDate() - this.ngay ===
+              new Date(t.ngayNopHoSo).getDate()
+        )
+      );
+      // await this.printC17();
+    },
     dongBo() {
       this.daXyLy(this.bhyts);
     },
@@ -251,6 +273,17 @@ export default {
           (previousValue, currentValue) => previousValue + currentValue,
           0
         );
+
+      this.maSoBhxhs = this.bhyts
+        .filter(
+          (t) =>
+            t.userId === 3152 &&
+            t.trangThaiHoSo === 4 &&
+            new Date().getDate() - this.ngay ===
+              new Date(t.ngayNopHoSo).getDate()
+        )
+        .map((t) => t.maSoBhxh)
+        .join();
     },
     async download() {
       const taiLieus = await this.XuatD03OrD05Excel(
@@ -281,6 +314,18 @@ export default {
       if (this.t2) lienKet += `&t2=${this.t2}`;
       if (this.t1) lienKet += `&t1=${this.t1}`;
       // a.href = `&tienBHYT=4988520&t500=3&t200=1&t100=4&t50=46&t20=100`;
+      a.href = lienKet;
+      a.click();
+      // await this.printC17();
+    },
+    async printC17() {
+      let a = document.createElement("a");
+      a.target = "_blank";
+      let lienKet = `https://cms.buudienhuyenmelinh.vn/mau-c17/${new Date()
+        .toISOString()
+        .slice(0, 10)}/pdf?tongTien=${
+        this.daNopBHYT + this.daNopBHXH
+      }&maSoBhxhs=${this.maSoBhxhs}`;
       a.href = lienKet;
       a.click();
     },

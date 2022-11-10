@@ -192,13 +192,15 @@ export const taiTuc = async ({ commit }, payload) => {
 export const giaHan = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
     await sleep();
-    const { maSoBhxh, tongTien, ngayLap } = payload[index];
+    const { maSoBhxh, tongTien, ngayLap, maThuTuc, soBienLai } = payload[index];
     try {
       const { data } = await client.put(
         `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/tong-tien`,
         {
           tongTien,
           ngayLap,
+          maThuTuc,
+          ghiChu: soBienLai,
           disabled: true,
           completed: true,
         }
@@ -213,8 +215,15 @@ export const giaHan = async ({ commit }, payload) => {
 export const daXyLy = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
     await sleep();
-    const { maSoBhxh, tongTien, ngayLap, userName, trangThaiHoSo } =
-      payload[index];
+    const {
+      maSoBhxh,
+      tongTien,
+      ngayLap,
+      userName,
+      trangThaiHoSo,
+      maThuTuc,
+      soBienLai,
+    } = payload[index];
     try {
       const { data } = await client.put(
         `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/tong-tien`,
@@ -222,6 +231,8 @@ export const daXyLy = async ({ commit }, payload) => {
           tongTien,
           ngayLap,
           userName,
+          maThuTuc,
+          ghiChu: soBienLai,
           disabled: trangThaiHoSo !== 9,
           completed: trangThaiHoSo !== 9,
         }
