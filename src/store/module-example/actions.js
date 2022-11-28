@@ -4,7 +4,7 @@ import moment from "moment";
 import { Loading, QSpinnerIos } from "quasar";
 
 const sleep = () => {
-  return new Promise((resolve) => setTimeout(resolve, 300));
+  return new Promise((resolve) => setTimeout(resolve, 500));
 };
 
 export const XuatD03OrD05Excel = async ({ commit }, payload) => {
