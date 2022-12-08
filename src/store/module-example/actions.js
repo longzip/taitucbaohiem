@@ -236,7 +236,7 @@ export const daXyLy = async ({ commit }, payload) => {
           disabled: trangThaiHoSo !== 9,
           // completed: trangThaiHoSo !== 9,
           // disabled: 1,
-          completed: 1,
+          // completed: 1,
         }
       );
       await commit("updateBhyt", data);
