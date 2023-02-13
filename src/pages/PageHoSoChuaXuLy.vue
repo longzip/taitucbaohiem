@@ -1,7 +1,9 @@
 <template>
   <q-page>
     <ListHeader bgcolor="bg-orange-4"
-      >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (Tổng: {{ tongTien.toLocaleString()}}đ / {{ tongHoSo }} HS)<q-btn
+      >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (BHYT:
+      {{ tongTienBHYT.toLocaleString() }}đ / {{ soTheBHYT }} Thẻ + BHXH: :
+      {{ tongTienBHXH.toLocaleString() }}đ / {{ soSoBHXH }})<q-btn
         rounded
         color="primary"
         label="Tải"
@@ -46,8 +48,10 @@ export default {
     return {
       searchText: "",
       items: [],
-      tongTien: 0,
-      tongHoSo: 0
+      tongTienBHYT: 0,
+      tongTienBHXH: 0,
+      soTheBHYT: 0,
+      soSoBHXH: 0,
     };
   },
   computed: {
@@ -65,15 +69,33 @@ export default {
       this.searchText = this.$route.query.q;
     }
     await this.hoSoChuaXuLy();
-    this.tongTien = this.bhyts.filter(t=>t.userId == 3152 && t.trangThaiHoSo == 2).map(t=>t.tongTien).reduce(
-      ( previousValue, currentValue ) => previousValue + currentValue,
-      0
+    this.tongTienBHYT = this.bhyts
+      .filter(
+        (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 1
+      )
+      .map((t) => t.tongTien)
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    this.soTheBHYT = this.bhyts.filter(
+      (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 1
+    ).length;
+
+    this.tongTienBHXH = this.bhyts
+      .filter(
+        (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 0
+      )
+      .map((t) => t.tongTien)
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    this.soSoBHXH = this.bhyts.filter(
+      (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 0
+    ).length;
+
+    this.giaHan(
+      this.bhyts.filter(
+        (t) =>
+          t.trangThaiHoSo == 2 &&
+          new Date().getDate() === new Date(t.ngayLap).getDate()
+      )
     );
-    this.tongHoSo = this.bhyts.filter(t=>t.userId == 3152 && t.trangThaiHoSo == 2).map(t=>t.tongTien).reduce(
-      ( previousValue, currentValue ) => previousValue + 1,
-      0
-    );
-    this.giaHan(this.bhyts.filter(t=>t.trangThaiHoSo == 2 && new Date().getDate() === new Date(t.ngayLap).getDate()));
   },
 };
 </script>
