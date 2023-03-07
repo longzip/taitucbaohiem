@@ -9,8 +9,8 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
-        path: "evn",
-        component: () => import("src/pages/PageEVN.vue"),
+        path: "khl2",
+        component: () => import("src/pages/PageKHLNew.vue"),
         meta: { requireAuth: false },
       },
       {
