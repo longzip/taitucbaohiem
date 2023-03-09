@@ -82,7 +82,7 @@ export default {
         "Content-Type": "application/json",
       };
 
-      const API_URL = "https://cms.buudienhuyenmelinh.vn/api/user-ghi-chu";
+      const API_URL = "http://192.168.1.7:2023/api/user-ghi-chu";
 
       const res = await fetch(API_URL, {
         method: "PUT",

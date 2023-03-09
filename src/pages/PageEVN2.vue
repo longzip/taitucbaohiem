@@ -197,7 +197,7 @@ export default defineComponent({
     },
     async soTienBangKhong(evn) {
       const { data } = await axios.put(
-        `https://cms.buudienhuyenmelinh.vn/api/evns/${evn.ma}/so-tien`,
+        `http://192.168.1.7:2023/api/evns/${evn.ma}/so-tien`,
         { soTien: 0 }
       );
       this.updateEVN(data);
@@ -207,7 +207,7 @@ export default defineComponent({
       if (found) Object.assign(found, evn);
     },
     async timKiem(searchText, homNay = false) {
-      let url = "https://cms.buudienhuyenmelinh.vn/api/evns?";
+      let url = "http://192.168.1.7:2023/api/evns?";
       if (searchText) url += `name=${searchText}`;
       if (homNay) url += `homNay=${homNay}`;
       const { data } = await axios.get(url);
@@ -257,7 +257,7 @@ export default defineComponent({
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
-      let lienKet = `https://cms.buudienhuyenmelinh.vn/nop-bhyt/${new Date()
+      let lienKet = `http://192.168.1.7:2023/nop-bhyt/${new Date()
         .toISOString()
         .slice(0, 10)}/pdf?`;
       if (this.tongCong) lienKet += `tienDien=${this.tongCong}`;

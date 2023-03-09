@@ -2,6 +2,7 @@ import client from "../../utils";
 import axios from "axios";
 import moment from "moment";
 import { Loading, QSpinnerIos } from "quasar";
+import { api } from "src/boot/axios";
 
 const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
@@ -13,7 +14,7 @@ export const XuatD03OrD05Excel = async ({ commit }, payload) => {
     spinnerSize: "100px",
   });
   const { data } = await client.post(
-    "https://ssm-api.vnpost.vn/api/services/app/KeKhai/XuatD03OrD05Excel",
+    "/api/services/app/KeKhai/XuatD03OrD05Excel",
     {
       daiLyIds: [52401],
       transactionIds: payload,
@@ -30,7 +31,7 @@ export const khachChuaNop = async ({ commit }, payload) => {
     spinnerSize: "100px",
   });
   const { data } = await client.post(
-    "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
+    "/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
     {
       denThang: moment().startOf("months").add(1, "months").format(),
       filterItems: [],
@@ -45,6 +46,7 @@ export const khachChuaNop = async ({ commit }, payload) => {
   commit("getAllBhyts", [...data.result.items.reverse()]);
   Loading.hide();
 };
+
 export const hoSoChuaXuLy = async ({ commit }, payload) => {
   Loading.show({
     spinner: QSpinnerIos,
@@ -54,21 +56,18 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
   denNgay.setDate(denNgay.getDate() + 2);
   const tuNgay = new Date();
   tuNgay.setDate(denNgay.getDate() - 32);
-  const { data } = await client.post(
-    "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup",
-    {
-      dateForm: "ngayLap",
-      denNgay,
-      filterItems: [],
-      hoSoChuaThuTien: false,
-      hoSoQuaHan: 0,
-      keyMenu: "2",
-      mangLuoiId: 4580,
-      maxResultCount: 500,
-      skipCount: 0,
-      tuNgay,
-    }
-  );
+  const { data } = await client.post("/api/services/app/KeKhai/TraCuuNoGroup", {
+    dateForm: "ngayLap",
+    denNgay,
+    filterItems: [],
+    hoSoChuaThuTien: false,
+    hoSoQuaHan: 0,
+    keyMenu: "2",
+    mangLuoiId: 4580,
+    maxResultCount: 500,
+    skipCount: 0,
+    tuNgay,
+  });
   commit("getAllBhyts", [...data.result.items]);
   Loading.hide();
 };
@@ -88,21 +87,18 @@ export const hoSoDaXuLy = async ({ commit }, payload) => {
     .subtract(thangTruoc, "months")
     .format();
 
-  const { data } = await client.post(
-    "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup",
-    {
-      dateForm: "ngayLap",
-      denNgay,
-      filterItems: [],
-      hoSoChuaThuTien: false,
-      hoSoQuaHan: 0,
-      keyMenu: "1",
-      mangLuoiId: 4580,
-      maxResultCount: 500,
-      skipCount: 0,
-      tuNgay,
-    }
-  );
+  const { data } = await client.post("/api/services/app/KeKhai/TraCuuNoGroup", {
+    dateForm: "ngayLap",
+    denNgay,
+    filterItems: [],
+    hoSoChuaThuTien: false,
+    hoSoQuaHan: 0,
+    keyMenu: "1",
+    mangLuoiId: 4580,
+    maxResultCount: 500,
+    skipCount: 0,
+    tuNgay,
+  });
   commit("getAllBhyts", [...data.result.items]);
   Loading.hide();
 };
@@ -112,22 +108,15 @@ export const xoaHoGd = async ({ commit }, payload) => {
 };
 
 export const luuBhyt = async (bhyt) => {
-  let { data } = await axios.post(
-    "https://cms.buudienhuyenmelinh.vn/api/bhyts",
-    bhyt
-  );
+  let { data } = await api.post("/api/bhyts", bhyt);
   return data;
 };
+
 export const xem = async (maSoBhxh, completed) => {
-  let { data } = await axios.get(
-    `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
+  let { data } = await client.get(
+    `/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
       maSoBhxh.length - 10
-    )}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
-      },
-    }
+    )}`
   );
 
   const { thongTinTK1, thongTinTheHGD, trangThaiThe } = data.result;
@@ -148,12 +137,9 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
   const hoTens = payload.split(",");
   const bhyts = new Map();
   for (let index = 0; index < hoTens.length; index++) {
-    let url = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${hoTens[index]}&isCoDau=true&`;
-    let { data } = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
-      },
-    });
+    let { data } = await client.get(
+      `/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${hoTens[index]}&isCoDau=true&`
+    );
     data.result.value.forEach((bhyt) => {
       bhyts.set(bhyt.maSoBhxh, bhyt);
     });
@@ -162,6 +148,7 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
   commit("getAllBhyts", [...bhyts.values()]);
   Loading.hide();
 };
+
 export const dongBoDuLieu = async ({ commit }, payload) => {
   const maSoBhxhs = payload.split(",");
   for (let index = 0; index < maSoBhxhs.length; index++) {
@@ -194,17 +181,14 @@ export const giaHan = async ({ commit }, payload) => {
     await sleep();
     const { maSoBhxh, tongTien, ngayLap, maThuTuc, soBienLai } = payload[index];
     try {
-      const { data } = await client.put(
-        `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/tong-tien`,
-        {
-          tongTien,
-          ngayLap,
-          maThuTuc,
-          ghiChu: soBienLai,
-          disabled: true,
-          completed: true,
-        }
-      );
+      const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+        tongTien,
+        ngayLap,
+        maThuTuc,
+        ghiChu: soBienLai,
+        disabled: true,
+        completed: true,
+      });
       await commit("updateBhyt", data);
     } catch (error) {
       console.log(error);
@@ -225,20 +209,14 @@ export const daXyLy = async ({ commit }, payload) => {
       soBienLai,
     } = payload[index];
     try {
-      const { data } = await client.put(
-        `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/tong-tien`,
-        {
-          tongTien,
-          ngayLap,
-          userName,
-          maThuTuc,
-          ghiChu: soBienLai,
-          disabled: trangThaiHoSo !== 9,
-          // completed: trangThaiHoSo !== 9,
-          // disabled: 1,
-          // completed: 1,
-        }
-      );
+      const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+        tongTien,
+        ngayLap,
+        userName,
+        maThuTuc,
+        ghiChu: soBienLai,
+        disabled: trangThaiHoSo !== 9,
+      });
       await commit("updateBhyt", data);
     } catch (error) {
       console.log(error);
@@ -259,7 +237,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
     maXa,
   } = payload;
 
-  let url = "https://cms.buudienhuyenmelinh.vn/api/bhyts?";
+  let url = "/api/bhyts?";
   if (thang) url += `thang=${thang}`;
   if (maXa) url += `&maXa=${maXa}`;
   if (taiTuc) url += `&taiTuc=${taiTuc}`;
@@ -270,7 +248,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
   if (chuaDongBo) url += `&chuaDongBo=${chuaDongBo}`;
 
-  const { data } = await client.get(url);
+  const { data } = await api.get(url);
 
   if (data) commit("getAllBhyts", data);
 };
@@ -307,7 +285,7 @@ export const getAllBhyts2 = async ({ commit }, payload) => {
 export const findBhyts = async ({ searchText, isLogin }) => {
   // console.log(isLogin);
   const { data } = await client.getSsm(
-    `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${searchText}&isCoDau=true&`,
+    `/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${searchText}&isCoDau=true&`,
     isLogin
   );
   if (data) return data.result.value.map((x) => x.maSoBhxh);
@@ -316,7 +294,7 @@ export const findBhyts = async ({ searchText, isLogin }) => {
 
 export const getBhytSsm = async ({ maSoBhxh, isLogin }) => {
   const { data } = await client.getSsm(
-    `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh}`,
+    `/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh}`,
     isLogin
   );
   if (data)
@@ -325,32 +303,22 @@ export const getBhytSsm = async ({ maSoBhxh, isLogin }) => {
 };
 
 export const updateBhyt = async (bhyt) => {
-  const { data } = await client.put(
-    `https://cms.buudienhuyenmelinh.vn/api/bhyts/${bhyt.maSoBhxh}`,
-    bhyt
-  );
+  const { data } = await api.put(`/api/bhyts/${bhyt.maSoBhxh}`, bhyt);
   return data;
 };
 
 export const lamMoiDanhSach = () => commit("getAllBhyts", []);
 
 export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
-  const { data } = await client.put(
-    `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/disabled`,
-    {
-      disabled: !disabled == 0,
-    }
-  );
+  const { data } = await api.put(`/api/bhyts/${maSoBhxh}/disabled`, {
+    disabled: !disabled,
+  });
   commit("updateBhyt", data);
 };
 
 export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
-  // console.log(maSoBhxh, completed);
-  const { data } = await client.put(
-    `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/completed`,
-    {
-      completed: !completed == 0,
-    }
-  );
+  const { data } = await api.put(`/api/bhyts/${maSoBhxh}/completed`, {
+    completed: !completed,
+  });
   commit("updateBhyt", data);
 };
