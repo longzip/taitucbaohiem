@@ -22,13 +22,28 @@
         @click="xacNhanXoa(maHoGd)"
         icon="delete_forever"
       />
-      <q-btn
-        rounded
-        color="primary"
-        @click="print()"
-        icon="print"
-      />
+      <q-btn rounded color="primary" @click="print()" icon="print" />
     </ListHeader>
+    <div class="q-gutter-y-md column">
+      <q-input
+        outlined
+        v-model="searchText"
+        @keyup.enter="traCuuTheoTen(searchText)"
+        placeholder="Họ và tên"
+        hint="Nhập họ và tên rồi nhấn Enter để tìm kiếm"
+        dense
+      >
+        <template v-slot:append>
+          <q-icon
+            v-if="searchText !== ''"
+            name="close"
+            @click="searchText = ''"
+            class="cursor-pointer"
+          />
+          <q-icon name="search" />
+        </template>
+      </q-input>
+    </div>
     <q-list v-for="bhyt in bhyts" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
@@ -52,7 +67,12 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("bhyts", ["getAllBhyts", "xoaHoGd", "dongBoDuLieu"]),
+    ...mapActions("bhyts", [
+      "getAllBhyts",
+      "xoaHoGd",
+      "dongBoDuLieu",
+      "traCuuTheoTen",
+    ]),
     async loadData() {
       await this.getAllBhyts({
         maHoGd: this.maHoGd,
@@ -86,12 +106,15 @@ export default defineComponent({
           this.$router.go();
         });
     },
-    async print(){
-      let a = document.createElement('a');
-      a.target = '_blank';
-      a.href = `https://cmsbudientulap.herokuapp.com/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts.filter(i=>i.disabled).map(i=>i.maSoBhxh).join(',')}`;
+    async print() {
+      let a = document.createElement("a");
+      a.target = "_blank";
+      a.href = `http://192.168.1.7:2023/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
+        .filter((i) => i.completed)
+        .map((i) => i.maSoBhxh)
+        .join(",")}`;
       a.click();
-    }
+    },
   },
 
   computed: {

@@ -353,7 +353,6 @@ export default {
         .filter(
           (t) =>
             t.userId === 3152 &&
-            t.trangThaiHoSo === 4 &&
             t.maThuTuc === 1 &&
             new Date().getDate() - this.ngay ===
               new Date(t.ngayNopHoSo).getDate()
@@ -367,7 +366,6 @@ export default {
         .filter(
           (t) =>
             t.userId === 3152 &&
-            t.trangThaiHoSo === 4 &&
             t.maThuTuc === 0 &&
             new Date().getDate() - this.ngay ===
               new Date(t.ngayNopHoSo).getDate()

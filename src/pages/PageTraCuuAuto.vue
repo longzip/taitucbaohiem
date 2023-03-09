@@ -30,10 +30,12 @@
 
 <script>
 import { mapGetters } from "vuex";
-import axios from "axios";
+
 import { Loading, QSpinnerIos } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
+import { api } from "src/boot/axios";
+import client from "src/utils";
 export default {
   components: { ThongTinTheBHYT, ListHeader },
   data() {
@@ -69,22 +71,14 @@ export default {
       Loading.hide();
     },
     async luu(bhyt) {
-      let { data } = await axios.put(
-        `https://cmsbudientulap.herokuapp.com/api/bhyts/${bhyt.maSoBhxh}`,
-        bhyt
-      );
+      let { data } = await api.put(`/api/bhyts/${bhyt.maSoBhxh}`, bhyt);
       return data;
     },
     async xem(maSoBhxh) {
-      let { data } = await axios.get(
-        `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
+      let { data } = await client.get(
+        `/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
           maSoBhxh.length - 10
-        )}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("setIsLogin")}`,
-          },
-        }
+        )}`
       );
 
       let { thongTinTK1, thongTinTheHGD } = data.result;
@@ -104,14 +98,10 @@ export default {
   async mounted() {
     if (!localStorage.getItem("setIsLogin")) this.$router.push("/auth");
     if (this.$route.query.q) this.searchText = this.$route.query.q;
-    let { data } = await axios.get(
-      "https://cmsbudientulap.herokuapp.com/api/maSoBhxhs"
-    );
+    let { data } = await api.get("/api/maSoBhxhs");
     localStorage.setItem("dsMaSoBhxhsDaCapNhat", JSON.stringify(data));
 
-    let maHoGds = await axios.get(
-      "https://cmsbudientulap.herokuapp.com/api/maHoGd"
-    );
+    let maHoGds = await axios.get("/api/maHoGd");
     localStorage.setItem("maHoGds", JSON.stringify(maHoGds.data));
 
     let dsMaSoBhxhs = JSON.parse(localStorage.getItem("dsMaSoBhxhs"));

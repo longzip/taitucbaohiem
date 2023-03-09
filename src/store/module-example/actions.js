@@ -113,13 +113,15 @@ export const luuBhyt = async (bhyt) => {
 };
 
 export const xem = async (maSoBhxh, completed) => {
-  let { data } = await client.get(
+  let {
+    data: { result },
+  } = await client.get(
     `/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
       maSoBhxh.length - 10
     )}`
   );
 
-  const { thongTinTK1, thongTinTheHGD, trangThaiThe } = data.result;
+  const { thongTinTK1, thongTinTheHGD, trangThaiThe } = result;
 
   const theBHYT = await luuBhyt({
     ...thongTinTheHGD,

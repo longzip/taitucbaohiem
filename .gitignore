@@ -7,6 +7,7 @@ node_modules
 /dist
 /wordpress
 /app
+/push
 
 # Cordova related directories and files
 /src-cordova/node_modules

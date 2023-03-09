@@ -20,13 +20,21 @@
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
         />
+        <q-icon
+          class="q-ml-sm"
+          @click="
+            dongBoDuLieu(
+              bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
+            )
+          "
+          name="update"
+          color="blue"
+        />
       </q-item-label>
       <q-item-label caption lines="2">
-        Mã hộ:<a
-          target="_blank"
-          :href="`https://app.buudienxatulap.ga/#/ho-gia-dinh/${bhyt.maHoGd}`"
-          >{{ bhyt.maHoGd }}</a
-        >
+        Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
+          bhyt.maHoGd
+        }}</a>
         {{ bhyt.mqhChuHo }}
       </q-item-label>
       <q-item-label caption lines="2">
@@ -52,7 +60,7 @@
           name="content_copy"
         />
 
-        <q-icon
+        <!-- <q-icon
           class="q-ml-md"
           @click="
             copyUrlToClipboard(
@@ -60,7 +68,7 @@
             )
           "
           name="share"
-        />
+        /> -->
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2"
@@ -106,7 +114,7 @@ import { Notify } from "quasar";
 export default {
   props: ["bhyt"],
   methods: {
-    ...mapActions("bhyts", ["loaiBo", "theoDoi"]),
+    ...mapActions("bhyts", ["loaiBo", "theoDoi", "dongBoDuLieu"]),
     xacNhanLoaiBo(bhyt) {
       if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
       this.$q
@@ -168,20 +176,22 @@ export default {
         );
     },
     copyTextToClipboard(maSoBhxh) {
-      navigator.clipboard.writeText(maSoBhxh).then(
-        function () {
-          Notify.create({
-            type: "positive",
-            message: `Bạn đã sao chép thành công!`,
-          });
-        },
-        function (err) {
-          Notify.create({
-            type: "negative",
-            message: "Không thực hiện được!" + err,
-          });
-        }
-      );
+      navigator.clipboard
+        .writeText(maSoBhxh.toString().slice(maSoBhxh.length - 10))
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
     },
   },
   filters: {
