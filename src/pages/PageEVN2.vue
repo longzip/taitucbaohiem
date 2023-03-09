@@ -197,7 +197,7 @@ export default defineComponent({
     },
     async soTienBangKhong(evn) {
       const { data } = await axios.put(
-        `http://192.168.1.7:2023/api/evns/${evn.ma}/so-tien`,
+        `https://192.168.1.7:2023/api/evns/${evn.ma}/so-tien`,
         { soTien: 0 }
       );
       this.updateEVN(data);
@@ -207,7 +207,7 @@ export default defineComponent({
       if (found) Object.assign(found, evn);
     },
     async timKiem(searchText, homNay = false) {
-      let url = "http://192.168.1.7:2023/api/evns?";
+      let url = "https://192.168.1.7:2023/api/evns?";
       if (searchText) url += `name=${searchText}`;
       if (homNay) url += `homNay=${homNay}`;
       const { data } = await axios.get(url);
