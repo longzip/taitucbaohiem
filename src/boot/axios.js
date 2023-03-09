@@ -7,7 +7,7 @@ import axios from "axios";
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({ baseURL: "http://192.168.1.7:2023" });
+const api = axios.create({ baseURL: "https://192.168.1.7:2024" });
 
 const apiServices = axios.create({
   baseURL: "https://ssm-api.vnpost.vn",
