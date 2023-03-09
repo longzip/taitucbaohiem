@@ -82,6 +82,9 @@ export default defineComponent({
     };
   },
   methods: {
+    sleep() {
+      return new Promise((resolve) => setTimeout(resolve, 1500));
+    },
     async login() {
       var data = JSON.stringify({
         username: "142010_THAMHT",
@@ -113,6 +116,7 @@ export default defineComponent({
 
     async loadData() {
       if (!this.tokenFe) await this.login();
+
       const homNay = new Date()
         .toISOString()
         .slice(0, 10)
@@ -121,10 +125,10 @@ export default defineComponent({
         .join("/");
       var data = JSON.stringify({
         orgCode: "142010",
-        tuNgay: homNay,
+        tuNgay: "01/03/2023",
         denNgay: homNay,
         pageNum: 0,
-        pageSize: 10,
+        pageSize: 500,
         sourceSystem: "KHL",
       });
 
@@ -142,7 +146,28 @@ export default defineComponent({
       const {
         data: [soDonHang, dsDonHang],
       } = await axios(config);
+      for (let index = 0; index < soDonHang; index++) {
+        const item = dsDonHang[index];
+        await this.updateItem(item);
+        await this.sleep();
+      }
       this.dsDonHang = dsDonHang;
+    },
+    async updateItem({
+      ttNumber,
+      senderPhone,
+      totalFeeSpecial,
+      codAmount,
+      updatedDate,
+      createdDate,
+    }) {
+      axios.put(`https://192.168.1.7:2024/api/khls/${ttNumber}`, {
+        soTien: totalFeeSpecial,
+        ghiNo: codAmount,
+        ten: senderPhone,
+        updatedDate: updatedDate.toString().slice(0, 10),
+        createdDate: createdDate.toString().slice(0, 10),
+      });
     },
     copyTextToClipboard(ttNumber) {
       navigator.clipboard

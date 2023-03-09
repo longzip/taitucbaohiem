@@ -32,6 +32,9 @@
         />
       </q-item-label>
       <q-item-label caption lines="2">
+        {{ bhyt.diaChiLh }}
+      </q-item-label>
+      <q-item-label caption lines="2">
         Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
           bhyt.maHoGd
         }}</a>
@@ -60,15 +63,11 @@
           name="content_copy"
         />
 
-        <!-- <q-icon
+        <q-icon
           class="q-ml-md"
-          @click="
-            copyUrlToClipboard(
-              bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
-            )
-          "
+          @click="copyUrlToClipboard(bhyt)"
           name="share"
-        /> -->
+        />
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2"
@@ -82,7 +81,7 @@
 
     <q-item-section side top>
       <q-item-label caption
-        >{{ getDateDiff(bhyt.denNgayDt) || bhyt.tongTien }} ngày</q-item-label
+        >{{ getDateDiff(bhyt.denNgayDt) }} ngày</q-item-label
       >
       <q-item-label caption
         >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
@@ -155,10 +154,19 @@ export default {
       if (!ngayHetHan) return "";
       return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
     },
-    copyUrlToClipboard(maSoBhxh) {
+    copyUrlToClipboard(t) {
       navigator.clipboard
         .writeText(
-          `https://www.buudienxatulap.ga/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`
+          `Xin chào ${t.hoTen || t.hoVaTen} (${new Date(
+            t.ngaySinhDt
+          ).toLocaleDateString()}
+          ) thẻ BHYT mã số ${
+            t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+          } thời hạn sử dụng thẻ đến ngày ${new Date(
+            t.denNgayDt
+          ).toLocaleDateString()} (còn ${this.getDateDiff(
+            t.denNgayDt
+          )} ngày). Xem thêm Mức đóng bảo hiểm y tế hộ gia đình năm 2023 tại https://blog.hotham.vn/muc-dong-bao-hiem-y-te-ho-gia-dinh-nam-2023/ .  Người dân khi muốn gia hạn thẻ bảo hiểm y tế (BHYT) hộ gia đình có giảm trừ mức đóng chỉ cần đến trực tiếp Điểm thu BHXH, BHYT Bưu điện xã Tự Lập (cạnh trạm y tế xã) gặp chị Hồ Thị Thắm (thay anh Lập nghỉ) thông báo số BHXH (cung cấp mã thẻ BHYT cũ), nộp tiền đóng BHYT.`
         )
         .then(
           function () {

@@ -58,6 +58,7 @@ export default defineComponent({
         completed: "0",
         disabled: "0",
         hetHan: "1",
+        maXa: "08986",
       });
     },
     async dongBo() {
