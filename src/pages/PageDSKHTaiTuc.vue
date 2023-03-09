@@ -13,11 +13,9 @@
           >
           <q-item-label caption lines="2"
             >Mã số BHXH:
-            <a
-              target="_blank"
-              :href="`https://app.buudienxatulap.ga/#/tra-cuu?q=${khachHang.maSoBHXH}`"
-              >{{ khachHang.maSoBHXH }}</a
-            ></q-item-label
+            <a target="_blank" :href="`/#/tra-cuu?q=${khachHang.maSoBHXH}`">{{
+              khachHang.maSoBHXH
+            }}</a></q-item-label
           >
           <q-item-label caption lines="2">{{ khachHang.diaChi }}</q-item-label>
           <q-item-label caption lines="2"
@@ -61,13 +59,13 @@ export default {
       const { data } = await client.post(
         "/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
         {
-          denThang: "2023-01-01 00:00:00",
+          denThang: "2024-01-01 00:00:00",
           filterItems: [],
           loaiDichVu: 0,
           mangLuoiId: 4580,
           maxResultCount: 500,
           skipCount: 0,
-          tuThang: "2022-04-01 00:00:00",
+          tuThang: "2023-01-01 00:00:00",
           type: -1,
         }
       );

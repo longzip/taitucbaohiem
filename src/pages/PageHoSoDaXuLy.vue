@@ -339,10 +339,14 @@ export default {
       this.loadData();
     },
     async loadData() {
+      const ngayHomNay = new Date().getDate();
       await this.hoSoDaXuLy({ thangTruoc: this.thangTruoc });
       this.tham = await this.bhyts
         .filter(
-          (t) => t.userId === 3152 && t.trangThaiHoSo === 9 && t.maThuTuc === 1
+          (t) =>
+            t.userId === 3152 &&
+            [4, 8, 9].includes(t.trangThaiHoSo) &&
+            t.maThuTuc === 1
         )
         .map((t) => t.tongTien)
         .reduce(
@@ -353,9 +357,9 @@ export default {
         .filter(
           (t) =>
             t.userId === 3152 &&
+            [4].includes(t.trangThaiHoSo) &&
             t.maThuTuc === 1 &&
-            new Date().getDate() - this.ngay ===
-              new Date(t.ngayNopHoSo).getDate()
+            ngayHomNay - this.ngay === new Date(t.ngayNopHoSo).getDate()
         )
         .map((t) => t.tongTien)
         .reduce(
@@ -366,9 +370,9 @@ export default {
         .filter(
           (t) =>
             t.userId === 3152 &&
+            [4].includes(t.trangThaiHoSo) &&
             t.maThuTuc === 0 &&
-            new Date().getDate() - this.ngay ===
-              new Date(t.ngayNopHoSo).getDate()
+            ngayHomNay - this.ngay === new Date(t.ngayNopHoSo).getDate()
         )
         .map((t) => t.tongTien)
         .reduce(
@@ -377,7 +381,10 @@ export default {
         );
       this.tongTien = await this.bhyts
         .filter(
-          (t) => t.userId === 3154 && t.trangThaiHoSo === 9 && t.maThuTuc === 1
+          (t) =>
+            t.userId === 3154 &&
+            [4, 8, 9].includes(t.trangThaiHoSo) &&
+            t.maThuTuc === 1
         )
         .map((t) => t.tongTien)
         .reduce(
