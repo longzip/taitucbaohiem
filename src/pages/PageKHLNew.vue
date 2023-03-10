@@ -21,11 +21,18 @@
         </template>
       </q-input>
     </div>
-    <q-list v-for="donHang in dsDonHang" :key="donHang.id">
+    <q-list
+      v-for="khl in khls
+        .filter((t) => t.tongCOD)
+        .sort(function (a, b) {
+          return b.soLuong - a.soLuong;
+        })"
+      :key="khl.senderPhone"
+    >
       <q-item>
         <q-item-section>
           <q-item-label
-            >{{ donHang.senderName }}
+            >{{ khl.senderName }}
             <!-- <q-icon
               @click="xacNhanLoaiBo(evn)"
               :name="evn.soTien == 0 ? 'do_not_disturb_on' : 'delete_forever'"
@@ -33,6 +40,38 @@
             /> -->
           </q-item-label>
           <!-- <q-item-label caption lines="2">{{ evn.diaChi }}</q-item-label> -->
+          <q-item-label caption lines="2">
+            <a :href="`tel:${khl.senderPhone}`">{{ khl.senderPhone }}</a>
+          </q-item-label>
+          <q-item-label caption lines="2">{{ khl.senderAdd }}</q-item-label>
+        </q-item-section>
+
+        <q-item-section side top>
+          <q-item-label caption>{{ khl.soLuong }}</q-item-label>
+          <!-- <q-icon
+            name="content_copy"
+            @click="copyTextToClipboard(donHang.ttNumber)"
+          /> -->
+          <q-item-label caption
+            >COD: {{ parseInt(khl.tongCOD).toLocaleString() }}</q-item-label
+          >
+          <q-item-label caption
+            >Cước: {{ parseInt(khl.tongCuoc).toLocaleString() }}</q-item-label
+          >
+          <!-- <q-item-label caption>{{
+            new Date(donHang.updatedDate).toLocaleString()
+          }}</q-item-label> -->
+        </q-item-section></q-item
+      >
+      <q-separator spaced inset />
+    </q-list>
+    <!-- <q-list v-for="donHang in dsDonHang" :key="donHang.id">
+      <q-item>
+        <q-item-section>
+          <q-item-label
+            >{{ donHang.senderName }}
+          </q-item-label>
+          
           <q-item-label caption lines="2">
             <a :href="`tel:${donHang.senderPhone}`">{{
               donHang.senderPhone
@@ -61,7 +100,7 @@
         </q-item-section></q-item
       >
       <q-separator spaced inset />
-    </q-list>
+    </q-list> -->
   </div>
 </template>
 
@@ -77,8 +116,10 @@ export default defineComponent({
   data() {
     return {
       searchText: "",
-      tokenFe: "",
+      tokenFe:
+        "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJKRmNhcC1XZWJBcGkiLCJleHAiOjE2NzkwMTQ0MTcsIm5iZiI6MTY3ODQwOTMxNywiaWF0IjoxNjc4NDA5MzE3LCJhaWQiOiJLSEwiLCJ1aWQiOiIxNDIwMTBfVEhBTUhUIiwidWZuIjoiSOG7kyBUaOG7iyBUaOG6r20iLCJvcmciOiIxNDIwMTAiLCJvcmdFbXBsIjoiMTQyMDEwIiwiZGlkIjoiZWRkNjJlZWFhZGVjYjBiNjM1NDI4ODY3YjJlZDEwMGIiLCJsY3AiOjE2MzU4MTY3NDIwMDAsImV4cGlyYXRpb25EYXRlIjo5MH0.snnuvZdWzP94_9baQfbJITD_OiGA2gyVl1EJiPVX7x-nL7ej2jGmnNWSt7-G7x4h32zxz4rLe9SZtJP3OzRFsw",
       dsDonHang: [],
+      khls: [],
     };
   },
   methods: {
@@ -116,7 +157,10 @@ export default defineComponent({
 
     async loadData() {
       if (!this.tokenFe) await this.login();
-
+      const [nam, thang, ngay] = new Date()
+        .toISOString()
+        .slice(0, 10)
+        .split("-");
       const homNay = new Date()
         .toISOString()
         .slice(0, 10)
@@ -125,8 +169,13 @@ export default defineComponent({
         .join("/");
       var data = JSON.stringify({
         orgCode: "142010",
-        tuNgay: "01/03/2023",
-        denNgay: homNay,
+        tuNgay: [1, parseInt(thang) - 1, nam].join("/"),
+        denNgay: new Date(nam, parseInt(thang) - 1, 1)
+          .toISOString()
+          .slice(0, 10)
+          .split("-")
+          .reverse()
+          .join("/"),
         pageNum: 0,
         pageSize: 500,
         sourceSystem: "KHL",
@@ -146,13 +195,66 @@ export default defineComponent({
       const {
         data: [soDonHang, dsDonHang],
       } = await axios(config);
-      for (let index = 0; index < soDonHang; index++) {
-        const item = dsDonHang[index];
-        await this.updateItem(item);
-        await this.sleep();
-      }
+
       this.dsDonHang = dsDonHang;
+
+      const uniqueKhls = new Map();
+
+      const mapKhls = dsDonHang.map(
+        ({ senderPhone, senderName, senderAdd }) => ({
+          senderPhone,
+          senderName,
+          senderAdd,
+        })
+      );
+
+      for (let index = 0; index < mapKhls.length; index++) {
+        const item = mapKhls[index];
+        if (!uniqueKhls.has(item.senderPhone)) {
+          const items = dsDonHang.filter(
+            (t) => t.senderPhone === item.senderPhone
+          );
+          uniqueKhls.set(item.senderPhone, {
+            ...item,
+            soLuong: items.length,
+            tongCuoc: items.reduce(
+              (previousValue, { totalFeeSpecial }) =>
+                previousValue + parseInt(totalFeeSpecial),
+              0
+            ),
+            tongCOD: items
+              .filter((t) => t.codAmount)
+              .reduce(
+                (previousValue, { codAmount }) =>
+                  previousValue + parseInt(codAmount),
+                0
+              ),
+          });
+        }
+      }
+
+      this.khls = [...uniqueKhls.values()];
+      // console.log(this.khls);
+      // for (let index = 0; index < soDonHang; index++) {
+      //   const item = dsDonHang[index];
+      //   await this.updateItem(item);
+      //   await this.sleep();
+      // }
+      //
     },
+
+    async findItems(senderPhone) {
+      return this.dsDonHang.filter((item) => item.senderPhone === senderPhone);
+    },
+
+    async tongCuoc(items) {
+      return items.reduce(
+        (previousValue, { totalFeeSpecial }) =>
+          previousValue + parseInt(totalFeeSpecial),
+        0
+      );
+    },
+
     async updateItem({
       ttNumber,
       senderPhone,

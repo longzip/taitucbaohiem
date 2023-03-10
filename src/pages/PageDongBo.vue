@@ -56,7 +56,7 @@ export default defineComponent({
     },
     async loadData() {
       await this.getAllBhyts({ chuaDongBo: "updated_at" });
-      if (this.timBhyts(this.searchText).length) await this.dongBo();
+      // if (this.timBhyts(this.searchText).length) await this.dongBo();
     },
   },
 
