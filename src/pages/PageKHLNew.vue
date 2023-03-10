@@ -1,13 +1,22 @@
 <template>
   <div class="q-pa-md">
-    <ListHeader bgcolor="bg-orange-4">Khách hàng lớn </ListHeader>
+    <ListHeader bgcolor="bg-orange-4"
+      >KHL {{ searchText }} {{ doanhThu.toLocaleString() }}đ /
+      {{ tongSoBuuGui }} bưu gửi
+      <q-btn
+        rounded
+        color="primary"
+        @click="copySoDienThoaiToClipboard()"
+        icon="content_copy"
+      />
+    </ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
         outlined
         v-model="searchText"
         placeholder="Từ khóa"
         hint="Tìm kiếm theo thông tin thẻ BHYT"
-        @keyup.enter="loadData()"
+        @keyup.enter="traCuu()"
         dense
       >
         <template v-slot:append>
@@ -23,7 +32,7 @@
     </div>
     <q-list
       v-for="khl in khls
-        .filter((t) => t.tongCOD)
+        // .filter((t) => t.tongCOD)
         .sort(function (a, b) {
           return b.soLuong - a.soLuong;
         })"
@@ -107,25 +116,32 @@
 <script>
 import { defineComponent } from "vue";
 import axios from "axios";
-import { Notify } from "quasar";
+import { Notify, Loading, QSpinnerIos } from "quasar";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
 export default defineComponent({
   components: { ListHeader },
   name: "KHLPage",
   data() {
+    const [nam, thang, ngay] = new Date().toISOString().slice(0, 10).split("-");
     return {
-      searchText: "",
+      ngay,
+      thang,
+      nam,
+      searchText: [thang, nam].join("/"),
       tokenFe:
         "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJKRmNhcC1XZWJBcGkiLCJleHAiOjE2NzkwMTQ0MTcsIm5iZiI6MTY3ODQwOTMxNywiaWF0IjoxNjc4NDA5MzE3LCJhaWQiOiJLSEwiLCJ1aWQiOiIxNDIwMTBfVEhBTUhUIiwidWZuIjoiSOG7kyBUaOG7iyBUaOG6r20iLCJvcmciOiIxNDIwMTAiLCJvcmdFbXBsIjoiMTQyMDEwIiwiZGlkIjoiZWRkNjJlZWFhZGVjYjBiNjM1NDI4ODY3YjJlZDEwMGIiLCJsY3AiOjE2MzU4MTY3NDIwMDAsImV4cGlyYXRpb25EYXRlIjo5MH0.snnuvZdWzP94_9baQfbJITD_OiGA2gyVl1EJiPVX7x-nL7ej2jGmnNWSt7-G7x4h32zxz4rLe9SZtJP3OzRFsw",
       dsDonHang: [],
       khls: [],
+      tongSoBuuGui: 0,
+      doanhThu: 0,
     };
   },
   methods: {
     sleep() {
       return new Promise((resolve) => setTimeout(resolve, 1500));
     },
+
     async login() {
       var data = JSON.stringify({
         username: "142010_THAMHT",
@@ -156,28 +172,19 @@ export default defineComponent({
     },
 
     async loadData() {
+      this.dsDonHang = [];
       if (!this.tokenFe) await this.login();
-      const [nam, thang, ngay] = new Date()
-        .toISOString()
-        .slice(0, 10)
-        .split("-");
-      const homNay = new Date()
-        .toISOString()
-        .slice(0, 10)
-        .split("-")
-        .reverse()
-        .join("/");
       var data = JSON.stringify({
         orgCode: "142010",
-        tuNgay: [1, parseInt(thang) - 1, nam].join("/"),
-        denNgay: new Date(nam, parseInt(thang) - 1, 1)
+        tuNgay: [1, parseInt(this.thang), this.nam].join("/"),
+        denNgay: new Date(this.nam, parseInt(this.thang), 1)
           .toISOString()
           .slice(0, 10)
           .split("-")
           .reverse()
           .join("/"),
         pageNum: 0,
-        pageSize: 500,
+        pageSize: 5000,
         sourceSystem: "KHL",
       });
 
@@ -192,9 +199,22 @@ export default defineComponent({
         data: data,
       };
 
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
+
       const {
-        data: [soDonHang, dsDonHang],
+        data: [tongSoBuuGui, dsDonHang],
       } = await axios(config);
+
+      this.tongSoBuuGui = tongSoBuuGui;
+      this.doanhThu = dsDonHang.reduce(
+        (previousValue, { totalFeeSpecial }) =>
+          previousValue + parseInt(totalFeeSpecial),
+        0
+      );
+      Loading.hide();
 
       this.dsDonHang = dsDonHang;
 
@@ -243,6 +263,13 @@ export default defineComponent({
       //
     },
 
+    async traCuu() {
+      const [thang, nam] = this.searchText.split("/");
+      this.thang = thang;
+      this.nam = nam;
+      this.loadData();
+    },
+
     async findItems(senderPhone) {
       return this.dsDonHang.filter((item) => item.senderPhone === senderPhone);
     },
@@ -276,6 +303,24 @@ export default defineComponent({
         .writeText(
           `Để theo dõi định vị bưu gửi https://www.hotham.vn/tra-cuu-hang-buu-dien?q=${ttNumber}. (Bạn chỉ cần bấm vào link)`
         )
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
+    copySoDienThoaiToClipboard() {
+      navigator.clipboard
+        .writeText(this.khls.map((t) => t.senderPhone).join())
         .then(
           function () {
             Notify.create({
