@@ -129,8 +129,7 @@ export default defineComponent({
       thang,
       nam,
       searchText: [thang, nam].join("/"),
-      tokenFe:
-        "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJKRmNhcC1XZWJBcGkiLCJleHAiOjE2NzkwMTQ0MTcsIm5iZiI6MTY3ODQwOTMxNywiaWF0IjoxNjc4NDA5MzE3LCJhaWQiOiJLSEwiLCJ1aWQiOiIxNDIwMTBfVEhBTUhUIiwidWZuIjoiSOG7kyBUaOG7iyBUaOG6r20iLCJvcmciOiIxNDIwMTAiLCJvcmdFbXBsIjoiMTQyMDEwIiwiZGlkIjoiZWRkNjJlZWFhZGVjYjBiNjM1NDI4ODY3YjJlZDEwMGIiLCJsY3AiOjE2MzU4MTY3NDIwMDAsImV4cGlyYXRpb25EYXRlIjo5MH0.snnuvZdWzP94_9baQfbJITD_OiGA2gyVl1EJiPVX7x-nL7ej2jGmnNWSt7-G7x4h32zxz4rLe9SZtJP3OzRFsw",
+      tokenFe: "",
       dsDonHang: [],
       khls: [],
       tongSoBuuGui: 0,

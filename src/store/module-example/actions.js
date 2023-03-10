@@ -108,8 +108,13 @@ export const xoaHoGd = async ({ commit }, payload) => {
 };
 
 export const luuBhyt = async (bhyt) => {
-  let { data } = await api.post("/api/bhyts", bhyt);
-  return data;
+  try {
+    const { data } = await api.post("/api/bhyts", bhyt);
+
+    return data;
+  } catch (error) {
+    return {};
+  }
 };
 
 export const xem = async (maSoBhxh, completed) => {
@@ -128,7 +133,7 @@ export const xem = async (maSoBhxh, completed) => {
     ...thongTinTK1,
     ...trangThaiThe,
   });
-  return theBHYT;
+  return { ...thongTinTheHGD, ...theBHYT };
 };
 
 export const traCuuTheoTen = async ({ commit }, payload) => {
