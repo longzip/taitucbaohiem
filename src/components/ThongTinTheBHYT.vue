@@ -155,18 +155,45 @@ export default {
       return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
     },
     copyUrlToClipboard(t) {
+      const [nam, thang, ngay] = new Date()
+        .toISOString()
+        .slice(0, 10)
+        .split("-");
       navigator.clipboard
         .writeText(
-          `Xin chào ${t.hoTen || t.hoVaTen} (${new Date(
-            t.ngaySinhDt
-          ).toLocaleDateString()}
-          ) thẻ BHYT mã số ${
+          new Date(t.denNgayDt) < new Date(nam, parseInt(thang) + 1, 0)
+            ? `
+          Xin chào! Mã thẻ: ${
             t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
-          } thời hạn sử dụng thẻ đến ngày ${new Date(
-            t.denNgayDt
-          ).toLocaleDateString()} (còn ${this.getDateDiff(
-            t.denNgayDt
-          )} ngày). Xem thêm Mức đóng bảo hiểm y tế hộ gia đình năm 2023 tại https://blog.hotham.vn/muc-dong-bao-hiem-y-te-ho-gia-dinh-nam-2023/ .  Người dân khi muốn gia hạn thẻ bảo hiểm y tế (BHYT) hộ gia đình có giảm trừ mức đóng chỉ cần đến trực tiếp Điểm thu BHXH, BHYT Bưu điện xã Tự Lập (cạnh trạm y tế xã) gặp chị Hồ Thị Thắm (thay anh Lập nghỉ) thông báo số BHXH (cung cấp mã thẻ BHYT cũ), nộp tiền đóng BHYT.`
+          }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
+                t.ngaySinhDt
+              ).getFullYear()}; Hạn thẻ: ${new Date(
+                t.tuNgayDt
+              ).toLocaleDateString()} - ${new Date(
+                t.denNgayDt
+              ).toLocaleDateString()} (còn ${this.getDateDiff(
+                t.denNgayDt
+              )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam.slice(
+                6,
+                8
+              )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
+          Xem thêm Mức đóng bảo hiểm y tế hộ gia đình năm 2023 tại https://blog.hotham.vn/muc-dong-bao-hiem-y-te-ho-gia-dinh-nam-2023/ .  Người dân khi muốn gia hạn thẻ bảo hiểm y tế (BHYT) hộ gia đình có giảm trừ mức đóng chỉ cần đến trực tiếp Điểm thu BHXH, BHYT Bưu điện xã Tự Lập (cạnh trạm y tế xã) gặp chị Hồ Thị Thắm (thay anh Lập nghỉ) thông báo số BHXH (cung cấp mã thẻ BHYT cũ), nộp tiền đóng BHYT.`
+            : `
+          Xin chào! Mã thẻ: ${
+            t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+          }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
+                t.ngaySinhDt
+              ).getFullYear()}; Hạn thẻ: ${new Date(
+                t.tuNgayDt
+              ).toLocaleDateString()} - ${new Date(
+                t.denNgayDt
+              ).toLocaleDateString()} (còn ${this.getDateDiff(
+                t.denNgayDt
+              )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam.slice(
+                6,
+                8
+              )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
+          Xem thêm Những cách theo dõi quá trình tham gia và giá trị sử dụng thẻ BHYT, nhằm đảm bảo quyền lợi liên tục tại https://blog.hotham.vn/nhung-cach-theo-doi-qua-trinh-tham-gia-va-gia-tri-su-dung-the-bhyt-nham-dam-bao-quyen-loi-lien-tuc/ .  Để biết thêm thông tin, người dân có thể trực tiếp đến Điểm thu BHXH, BHYT Bưu điện xã Tự Lập (cạnh trạm y tế xã) gặp chị Hồ Thị Thắm (thay anh Lập nghỉ), hoặc liên hệ đến Tổng đài Chăm sóc khách hàng của BHXH Việt Nam theo số 1900 9068 để được hướng dẫn, hỗ trợ./.`
         )
         .then(
           function () {
