@@ -1,11 +1,59 @@
 import client from "../../utils";
-import axios from "axios";
 import moment from "moment";
 import { Loading, QSpinnerIos } from "quasar";
 import { api } from "src/boot/axios";
 
 const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
+};
+
+export const traCuuBhyts = async ({ commit }, payload) => {
+  commit("setBhyts", []);
+  const { searchText, maXa } = payload;
+  if (!searchText) return;
+  const danhSachTimKiem = searchText.split(",");
+  if (danhSachTimKiem.length === 1) {
+    const name = searchText
+      .split(" ")
+      .map(value => value.charAt(0).toUpperCase() + value.slice(1))
+      .join(" ");
+    let url = `/api/bhyts?name=${name}&maXa=${maXa}`;
+    const { data } = await api.get(url);
+    commit("setBhyts", data);
+    return;
+  }
+}
+
+export const resetBhyt = async ({ commit }, payload) => {
+  commit("setBhyts", payload);
+};
+export const getBhyts = async ({ commit }, payload) => {
+  const {
+    completed,
+    disabled,
+    name,
+    thang,
+    maHoGd,
+    chuaDongBo,
+    taiTuc,
+    hetHan,
+    maXa,
+    nam,
+  } = payload;
+
+  let url = "/api/bhyts?";
+  if (thang) url += `thang=${thang}`;
+  if (maXa) url += `&maXa=${maXa}`;
+  if (taiTuc) url += `&taiTuc=${taiTuc}`;
+  if (hetHan) url += `&hetHan=${hetHan}`;
+  if (name) url += `&name=${name}`;
+  if (nam) url += `&nam=${nam}`;
+  if (completed) url += `&completed=${completed}`;
+  if (disabled) url += `&disabled=${disabled}`;
+  if (maHoGd) url += `&maHoGd=${maHoGd}`;
+  if (chuaDongBo) url += `&chuaDongBo=${chuaDongBo}`;
+  const { data } = await api.get(url);
+  commit("setBhyts", data);
 };
 
 export const XuatD03OrD05Excel = async ({ commit }, payload) => {
@@ -73,19 +121,18 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
 };
 
 export const hoSoDaXuLy = async ({ commit }, payload) => {
-  const { thangTruoc = 0 } = payload;
+  let { thangTruoc = 0, tuNgay, denNgay } = payload;
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
   });
-  const denNgay = moment()
-    .startOf("months")
-    .add(1 - thangTruoc, "months")
-    .format();
-  const tuNgay = moment()
-    .startOf("months")
-    .subtract(thangTruoc, "months")
-    .format();
+  if (!denNgay)
+    denNgay = moment()
+      .startOf("months")
+      .add(1 - thangTruoc, "months")
+      .format();
+  if (!tuNgay)
+    tuNgay = moment().startOf("months").subtract(thangTruoc, "months").format();
 
   const { data } = await client.post("/api/services/app/KeKhai/TraCuuNoGroup", {
     dateForm: "ngayLap",
@@ -133,7 +180,7 @@ export const xem = async (maSoBhxh, completed) => {
     ...thongTinTK1,
     ...trangThaiThe,
   });
-  return { ...thongTinTheHGD, ...theBHYT };
+  return { ...thongTinTheHGD, ...trangThaiThe, ...theBHYT };
 };
 
 export const traCuuTheoTen = async ({ commit }, payload) => {
@@ -148,11 +195,12 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
       `/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${hoTens[index]}&isCoDau=true&`
     );
     data.result.value.forEach((bhyt) => {
-      bhyts.set(bhyt.maSoBhxh, bhyt);
+      // bhyts.set(bhyt.maSoBhxh, bhyt);
+      commit("updateBhyt",bhyt)
     });
   }
 
-  commit("getAllBhyts", [...bhyts.values()]);
+  // commit("getAllBhyts", [...bhyts.values()]);
   Loading.hide();
 };
 

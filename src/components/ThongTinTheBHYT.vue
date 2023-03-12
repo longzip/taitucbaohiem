@@ -71,7 +71,7 @@
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2"
-        >5 năm:{{ bhyt.ngay5Nam || bhyt.trangThaiHoSoName }}</q-item-label
+        >5 năm:{{ bhyt.ngay5Nam || bhyt.trangThaiHoSoName || bhyt.moTa }}</q-item-label
       >
 
       <q-item-label caption lines="2">
@@ -179,7 +179,7 @@ export default {
               )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
           Xem thêm Mức đóng bảo hiểm y tế hộ gia đình năm 2023 tại https://blog.hotham.vn/muc-dong-bao-hiem-y-te-ho-gia-dinh-nam-2023/ .  Người dân khi muốn gia hạn thẻ bảo hiểm y tế (BHYT) hộ gia đình có giảm trừ mức đóng chỉ cần đến trực tiếp Điểm thu BHXH, BHYT Bưu điện xã Tự Lập (cạnh trạm y tế xã) gặp chị Hồ Thị Thắm (thay anh Lập nghỉ) thông báo số BHXH (cung cấp mã thẻ BHYT cũ), nộp tiền đóng BHYT.`
             : `
-          Xin chào! Mã thẻ: ${
+          Thẻ đã được gia hạn! Mã thẻ: ${
             t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
           }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
                 t.ngaySinhDt

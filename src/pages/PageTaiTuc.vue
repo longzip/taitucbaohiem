@@ -57,7 +57,7 @@ export default defineComponent({
     async loadData() {
       await this.getAllBhyts({
         name: this.searchText,
-        thang: 2,
+        thang: 1,
         completed: "0",
         disabled: "0",
         taiTuc: "1",

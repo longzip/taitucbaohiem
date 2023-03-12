@@ -1,3 +1,7 @@
+export const setBhyts = (state, payload) => {
+  state.bhyts = payload;
+};
+
 export const getAllBhyts = (state, payload) => {
   state.bhyts = payload;
 };
