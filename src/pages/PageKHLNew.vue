@@ -9,6 +9,12 @@
         @click="copySoDienThoaiToClipboard()"
         icon="content_copy"
       />
+      <q-btn
+        rounded
+        color="primary"
+        @click="copyChiCODToClipboard()"
+        icon="done_all"
+      />
     </ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
@@ -79,10 +85,11 @@
             >COD: {{ parseInt(khl.tongCOD).toLocaleString() }}</q-item-label
           >
           <q-item-label caption
-            >Cước: {{ parseInt(khl.tongCuoc).toLocaleString() }}</q-item-label
+            ><strong class="text-bold	">Còn nợ: {{ parseInt(khl.tongCuoc-khl.soTienDaTruCongNo).toLocaleString() }}</strong> <span class="text-strike	">{{ parseInt(khl.soTienDaTruCongNo).toLocaleString() }}</span></q-item-label
           >
+
           <q-item-label caption
-            >Đã trừ cước: {{ tongSoTienBuTruCongNoDaTru(khl.senderPhone) }}</q-item-label
+            >Tổng cước: {{ parseInt(khl.tongCuoc).toLocaleString() }}</q-item-label
           >
           <!-- <q-item-label caption>{{
             new Date(donHang.updatedDate).toLocaleString()
@@ -210,6 +217,7 @@ export default defineComponent({
         ngayHopDong: "2022/10/19",
         soTienCODvePaypost: 4000000,
         soTienBuTruCongNo: 77500,
+        soTienDaTruCongNo: 0,
         tenNguoiHuong: "Nguyễn Văn Thìn",
         soTaiKhoanNganHang: "1618081988",
         tenNganHang: "MB",
@@ -339,6 +347,7 @@ export default defineComponent({
                   previousValue + parseInt(codAmount),
                 0
               ),
+            soTienDaTruCongNo: this.tongSoTienBuTruCongNoDaTru(item.senderPhone),
           });
         }
       }
@@ -387,13 +396,14 @@ export default defineComponent({
           previousValue + parseInt(soTienBuTruCongNo),
         0
       );
+      return tinh;
       // console.log(senderPhone, tinh)
-      return parseInt(tinh).toLocaleString();
+      // return parseInt(tinh).toLocaleString();
     },
 
     async updateKHL({soDienThoai, hoTen, hopDong, ngayHopDong,tenNguoiHuong, soTaiKhoanNganHang, tenNganHang, maCRM, soTienCODvePaypost, soTienBuTruCongNo}) {
       
-      await axios.post("https://192.168.1.7:2024/api/cods", {
+      const {data} = await axios.post("https://192.168.1.7:2024/api/cods", {
         soDienThoai,
         hoTen,
         hopDong,
@@ -406,6 +416,9 @@ export default defineComponent({
         soTienBuTruCongNo: soTienBuTruCongNo.replaceAll(".",""),
         ngayLamViec: this.ngayLamViec,
       });
+      const findCod = this.cods.find(c => c.soDienThoai === soDienThoai && new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10));
+      if(findCod) Object.assign(findCod, data);
+      else this.allCods.push(data);
 
       await axios.put(`https://192.168.1.7:2024/api/khls/${soDienThoai}`, {
         hoTen,
@@ -448,8 +461,6 @@ export default defineComponent({
       // if(findCod) console.log(findCod)
       this.showDialog = true;
     },
-
-
     copyTextToClipboard(ttNumber) {
       navigator.clipboard
         .writeText(
@@ -491,6 +502,28 @@ export default defineComponent({
     copyTextDienThoaiToClipboard(text) {
       navigator.clipboard
         .writeText(text)
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
+
+    copyChiCODToClipboard() {
+      navigator.clipboard
+        .writeText(
+`${this.allCods.filter(c=>new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10)).map(({hoTen,hopDong,ngayHopDong,soTienCODvePaypost,soTienBuTruCongNo,tenNguoiHuong,soTaiKhoanNganHang,tenNganHang,maCRM}) => [hoTen,hopDong,ngayHopDong,soTienCODvePaypost,soTienBuTruCongNo,soTienCODvePaypost-soTienBuTruCongNo,tenNguoiHuong,soTaiKhoanNganHang,tenNganHang,,maCRM].join("\t")).join("\r\n")}
+`
+        )
         .then(
           function () {
             Notify.create({
