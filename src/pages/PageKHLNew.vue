@@ -49,14 +49,15 @@
           </template>
         </q-input> -->
     </div>
-    <q-list
-      v-for="khl in khls
-        // .filter((t) => t.tongCOD)
-        .sort(function (a, b) {
-          return b.soLuong - a.soLuong;
-        })"
-      :key="khl.senderPhone"
-    >
+    <q-list>
+      <div
+        v-for="khl in khls
+            // .filter((t) => t.tongCOD)
+            .sort(function (a, b) {
+              return b.soLuong - a.soLuong;
+            })"
+          :key="khl.senderPhone"
+      >
       <q-item>
         <q-item-section>
           <q-item-label
@@ -76,7 +77,11 @@
         </q-item-section>
 
         <q-item-section side top>
-          <q-item-label caption>{{ khl.soLuong }}</q-item-label>
+          <q-item-label caption><q-icon
+            name="info"
+            @click="showItems(khl.senderPhone)"
+            class="cursor-pointer"
+          /> <q-badge color="teal" :label="khl.soLuong" /></q-item-label>
           <q-icon
             name="access_time"
             @click="showKHL(khl.senderPhone)"
@@ -97,43 +102,86 @@
         </q-item-section></q-item
       >
       <q-separator spaced inset />
+      </div>
+      
     </q-list>
-    <!-- <q-list v-for="donHang in dsDonHang" :key="donHang.id">
-      <q-item>
-        <q-item-section>
-          <q-item-label
-            >{{ donHang.senderName }}
-          </q-item-label>
-          
-          <q-item-label caption lines="2">
-            <a :href="`tel:${donHang.senderPhone}`">{{
-              donHang.senderPhone
-            }}</a>
-          </q-item-label>
-          <q-item-label caption lines="2">{{
-            donHang.contentNote
-          }}</q-item-label>
-        </q-item-section>
 
-        <q-item-section side top>
-          <q-item-label caption>{{ donHang.ttNumber }}</q-item-label>
-          <q-icon
-            name="content_copy"
-            @click="copyTextToClipboard(donHang.ttNumber)"
-          />
-          <q-item-label caption
-            >Số tiền:
-            {{
-              parseInt(donHang.totalFeeSpecial).toLocaleString()
-            }}</q-item-label
-          >
-          <q-item-label caption>{{
-            new Date(donHang.updatedDate).toLocaleString()
-          }}</q-item-label>
-        </q-item-section></q-item
-      >
-      <q-separator spaced inset />
-    </q-list> -->
+    <q-dialog
+      v-model="showSelectedItems"
+      full-height
+    >
+      <q-card class="column full-height" >
+        <q-card-section>
+          <div class="text-h6">{{ khl.hoTen }} <q-badge :label="selectItems.length" /></div>
+        </q-card-section>
+
+        <q-card-section class="col q-pt-none">
+          <q-list bordered >
+            <div v-for="cod in this.allCods.filter(c => c.soDienThoai == khl.soDienThoai)" :key="cod.id">
+              <q-item>
+                <q-item-section avatar>
+                <q-icon color="primary" name="paid" />
+              </q-item-section>
+                <q-item-section>
+                  <q-item-label overline>{{ cod.tenNguoiHuong }}</q-item-label>
+                  <q-item-label>{{ cod.soTaiKhoanNganHang }}-{{ cod.tenNganHang }}</q-item-label>
+                  <q-item-label caption>Đã chi: {{ parseInt(cod.soTienCODvePaypost - cod.soTienBuTruCongNo).toLocaleString() }}</q-item-label>
+                </q-item-section>
+
+                <q-item-section side top>
+                  <q-item-label caption>{{ cod.ngayLamViec }}</q-item-label>
+                  <q-item-label caption>COD: {{ parseInt(cod.soTienCODvePaypost).toLocaleString() }}</q-item-label>
+                  <q-item-label caption>Cước:{{ parseInt(cod.soTienBuTruCongNo).toLocaleString() }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+            <q-separator spaced inset="item" />
+            <div  v-for="donHang in selectItems" :key="donHang.id">
+            <q-item>
+              <q-item-section>
+                <q-item-label
+                  >{{ donHang.senderName }}
+                </q-item-label>
+                
+                <q-item-label caption lines="2">
+                  <a :href="`tel:${donHang.senderPhone}`">{{
+                    donHang.senderPhone
+                  }}</a>
+                </q-item-label>
+                <q-item-label caption lines="2">{{
+                  donHang.contentNote
+                }}</q-item-label>
+              </q-item-section>
+
+              <q-item-section side top>
+                <q-item-label caption>{{ donHang.ttNumber }}</q-item-label>
+                <q-icon
+                  name="content_copy"
+                  @click="copyTextToClipboard(donHang.ttNumber)"
+                />
+                <q-item-label caption
+                  >Số tiền:
+                  {{
+                    parseInt(donHang.totalFeeSpecial).toLocaleString()
+                  }}</q-item-label
+                >
+                <q-item-label caption>{{
+                  new Date(donHang.updatedDate).toLocaleString()
+                }}</q-item-label>
+              </q-item-section></q-item
+            >
+            <q-separator spaced inset />
+          </div>
+          </q-list>
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    
 
     <q-dialog
     v-model="showDialog"
@@ -200,11 +248,12 @@ export default defineComponent({
     return {
       ngayLamViec: [nam, thang, ngay].join("/"),
       showDialog: false,
+      showSelectedItems: false,
       ngay,
       thang,
       nam,
       searchText: [thang, nam].join("/"),
-      tokenFe: "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJKRmNhcC1XZWJBcGkiLCJleHAiOjE2NzkzOTM2MTQsIm5iZiI6MTY3ODc4ODUxNCwiaWF0IjoxNjc4Nzg4NTE0LCJhaWQiOiJLSEwiLCJ1aWQiOiIxNDIwMTBfVEhBTUhUIiwidWZuIjoiSOG7kyBUaOG7iyBUaOG6r20iLCJvcmciOiIxNDIwMTAiLCJvcmdFbXBsIjoiMTQyMDEwIiwiZGlkIjoiZWRkNjJlZWFhZGVjYjBiNjM1NDI4ODY3YjJlZDEwMGIiLCJsY3AiOjE2MzU4MTY3NDIwMDAsImV4cGlyYXRpb25EYXRlIjo5MH0.pEQagaUmtO98vcaJu9v4ZAgCKJoPN0v98ctFIUliZnsVMl7eYYqxY1xbXUuGr6JbIf5So-a52LEEp8MGqBd_VA",
+      tokenFe: "",
       dsDonHang: [],
       khls: [],
       tongSoBuuGui: 0,
@@ -223,6 +272,7 @@ export default defineComponent({
         tenNganHang: "MB",
         maCRM: "14200A04000622000"
       },
+      selectItems: [],
       cods: [],
       allCods: []
     };
@@ -461,6 +511,11 @@ export default defineComponent({
       // if(findCod) console.log(findCod)
       this.showDialog = true;
     },
+    async showItems(senderPhone){
+      await this.loadKHL(senderPhone);
+      this.selectItems = this.dsDonHang.filter(i => i.senderPhone === senderPhone);
+      this.showSelectedItems = true;
+    },
     copyTextToClipboard(ttNumber) {
       navigator.clipboard
         .writeText(
@@ -517,7 +572,6 @@ export default defineComponent({
           }
         );
     },
-
     copyChiCODToClipboard() {
       navigator.clipboard
         .writeText(
