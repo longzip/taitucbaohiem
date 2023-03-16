@@ -60,6 +60,12 @@ const linksList = [
     link: "/khl2",
   },
   {
+    title: "Danh sách đơn hàng",
+    caption: "Theo dõi bưu gửi",
+    icon: "payment",
+    link: "/items",
+  },
+  {
     title: "Tra khách hàng EVN2",
     caption: "Theo Tên, số đt, địa chỉ",
     icon: "payment",

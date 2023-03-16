@@ -19,6 +19,11 @@ const routes = [
         meta: { requireAuth: false },
       },
       {
+        path: "items",
+        component: () => import("src/pages/PageItems.vue"),
+        meta: { requireAuth: false },
+      },
+      {
         path: "evn2",
         component: () => import("src/pages/PageEVN2.vue"),
         meta: { requireAuth: false },

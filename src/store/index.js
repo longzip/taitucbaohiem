@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 
 import bhyts from "./module-example";
 import auth from "./module-auth";
+import items from "./module-item";
 
 /*
  * If not building with SSR mode, you can
@@ -18,6 +19,7 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       bhyts,
       auth,
+      items
     },
 
     // enable strict mode (adds overhead!)
