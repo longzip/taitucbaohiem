@@ -14,6 +14,11 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "san-pham",
+        component: () => import("src/pages/PageProducts.vue"),
+        meta: { requireAuth: true },
+      },
+      {
         path: "khl2",
         component: () => import("src/pages/PageKHLNew.vue"),
         meta: { requireAuth: false },
@@ -127,11 +132,6 @@ const routes = [
       {
         path: "/khl",
         component: () => import("pages/PageKhl.vue"),
-        meta: { requireAuth: false },
-      },
-      {
-        path: "/customer",
-        component: () => import("pages/PageCustomer.vue"),
         meta: { requireAuth: false },
       },
     ],

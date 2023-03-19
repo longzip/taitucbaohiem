@@ -72,16 +72,16 @@ const linksList = [
     link: "/evn2",
   },
   {
+    title: "Sản phẩm",
+    caption: "Sản phẩm",
+    icon: "payment",
+    link: "/san-pham",
+  },
+  {
     title: "KHL",
     caption: "Theo Tên, số đt, địa chỉ",
     icon: "book",
     link: "/khl",
-  },
-  {
-    title: "Khách hàng Woocomer",
-    caption: "Theo Tên, số đt, địa chỉ",
-    icon: "contact_mail",
-    link: "/customer",
   },
   {
     title: "Tái tục",
