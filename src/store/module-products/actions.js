@@ -1,8 +1,12 @@
 import { apiStore, client } from "src/boot/axios";
-import { Loading, QSpinnerIos } from "quasar";
+import { Loading, QSpinnerIos, Notify } from "quasar";
 import GET_CART_QUERY from "src/queries/get-cart";
 import ADD_TO_CART from "src/mutations/add-to-cart";
 import LOGIN_USER from "src/mutations/login-user";
+import CHECKOUT_MUTATION from "src/mutations/checkout";
+import PRODUCTS_QUERY from "src/queries/products";
+import CLEAR_CART_MUTATION from "src/mutations/clear-cart";
+import EMPTY_CART_MUTATION from "src/mutations/empty-cart";
 export async function loginUser ({commit}, {username,password}) {
     Loading.show({
       spinner: QSpinnerIos,
@@ -21,180 +25,171 @@ export async function loginUser ({commit}, {username,password}) {
     commit("setAuthToken", data.login)
 }
 
-export async function getCart ({commit,state,dispatch}) {
-    // if (!state.authToken) await dispatch('loginUser',{
-    //     username: "buudienvhxtulap",
-    //     password: "%1TDM95hFS!CM8Gw0(8Xju1B"
-    // });
-    
-    // const data = JSON.stringify({
-    //     query: ``,
-    //     variables: {}
-    //   });
-    // const config = {
-    //     method: 'post',
-    //     maxBodyLength: Infinity,
-    //     url: '/graphql',
-    //     headers: { 
-    //       'Content-Type': 'application/json', 
-    //       'Authorization': `Bearer ${state.authToken}`
-    //     },
-    //     data : data
-    //   };
+export async function getCart ({commit}) {
       Loading.show({
         spinner: QSpinnerIos,
         spinnerSize: "100px",
       });
-      const {data} = await client.query({
-        query: GET_CART_QUERY,
-      });
+      try {
+        const {data} = await client.query({
+          query: GET_CART_QUERY,
+        });
+        commit("setCart", data)
+      } catch (error) {
+        Notify.create({
+          type: "negative",
+          message: `Đã xảy ra lỗi!`,
+        });
+      }
       Loading.hide();
-      commit("setCart", data)
 }
-export async function addToCart ({commit,state,dispatch},{productId}) {
-    // if (!state.authToken) await dispatch('loginUser',{
-    //     username: "buudienvhxtulap",
-    //     password: "%1TDM95hFS!CM8Gw0(8Xju1B"
-    // });
-    
-    // const data = JSON.stringify({
-    //     query: `mutation ($input: AddToCartInput!) {
-    //         addToCart(input: $input) {
-    //           cart {
-    //             contents {
-    //               nodes {
-    //                 key
-    //                 product {
-    //                   node {
-    //                     id
-    //                     databaseId
-    //                     name
-    //                     type
-    //                     featuredImage {
-    //                       node {
-    //                         id
-    //                         sourceUrl
-    //                       }
-    //                     }
-    //                   }
-    //                 }
-    //                 variation {
-    //                   node {
-    //                     id
-    //                     databaseId
-    //                     name
-    //                     description
-    //                     type
-    //                     onSale
-    //                     price
-    //                     regularPrice
-    //                     salePrice
-    //                     featuredImage {
-    //                       node {
-    //                         id
-    //                         sourceUrl
-    //                       }
-    //                     }
-    //                     attributes {
-    //                       nodes {
-    //                         id
-    //                         name
-    //                         value
-    //                       }
-    //                     }
-    //                   }
-    //                 }
-    //                 quantity
-    //                 total
-    //                 subtotal
-    //                 subtotalTax
-    //               }
-    //             }
-    //             subtotal
-    //             subtotalTax
-    //             shippingTax
-    //             shippingTotal
-    //             total
-    //             totalTax
-    //             feeTax
-    //             feeTotal
-    //             discountTax
-    //             discountTotal
-    //           }
-    //         }
-    //       }`,
-    //     variables: {
-    //         input: {
-    //           productId: parseInt(productId)
-    //         }
-    //       }
-    //   });
-    // const config = {
-    //     method: 'post',
-    //     maxBodyLength: Infinity,
-    //     url: '/graphql',
-    //     headers: { 
-    //       'Content-Type': 'application/json', 
-    //       'Authorization': `Bearer ${state.authToken}`
-    //     },
-    //     data : data
-    //   };
+export async function addToCart ({commit},{productId}) {
       Loading.show({
         spinner: QSpinnerIos,
         spinnerSize: "100px",
       });
-      const {data} = await client.query({
-        query: ADD_TO_CART,
-        variables: {
-          input: {
-            productId: parseInt(productId)
+      try {
+        const {data} = await client.mutate({
+          mutation: ADD_TO_CART,
+          variables: {
+            input: {
+              productId: parseInt(productId)
+            }
           }
+        });
+        Loading.hide();
+        commit("setCart", data.addToCart)
+        Notify.create({
+          type: "positive",
+          message: `Đã thêm vào giỏ hàng!`,
+        });
+      } catch (error) {
+        Notify.create({
+          type: "negative",
+          message: `Không thể thêm sản phẩm hết hàng!`,
+        });
+      }
+      
+}
+export async function removeItemsFromCart ({commit},{keys}) {
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
+      try {
+        const {data} = await client.mutate({
+          mutation: CLEAR_CART_MUTATION,
+          variables: {
+            input: {
+              keys
+            }
+          }
+        });
+        Loading.hide();
+        commit("setCart", data.removeItemsFromCart)
+        Notify.create({
+          type: "positive",
+          message: `Đã xóa sản phẩm giỏ hàng!`,
+        });
+      } catch (error) {
+        Notify.create({
+          type: "negative",
+          message: `Không thể xóa sản phẩm giỏ hàng!`,
+        });
+      }
+      
+}
+export async function emptyCart ({commit}) {
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
+      try {
+        const {data} = await client.mutate({
+          mutation: EMPTY_CART_MUTATION,
+          variables: {
+            input: {
+              
+            }
+          }
+        });
+        Loading.hide();
+        commit("setCart", data.emptyCart)
+        Notify.create({
+          type: "positive",
+          message: `Đã xóa sản phẩm giỏ hàng!`,
+        });
+      } catch (error) {
+        Notify.create({
+          type: "negative",
+          message: `Không thể xóa sản phẩm giỏ hàng!`,
+        });
+      }
+      
+}
+
+export async function checkout ({commit,state,dispatch},{email}) {
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
+      try {
+        const {data} = await client.mutate({
+          mutation: CHECKOUT_MUTATION,
+          variables: {
+            input: {
+              paymentMethod: "cod",
+              billing: {
+              //   address1: "tự lập, mê linh",
+                email,
+              //   phone: "0374638603",
+              //   lastName: "Long",
+              //   firstName: "Lỗ ",
+              //   country: "VN",
+              //   city: "Hà Nội",
+              //   state: "HN"
+              }
+            }
+        }});
+        dispatch("getCart");
+        const {checkout: {redirect}} = data;
+        const a = document.createElement("a");
+        a.target = "_blank";
+        a.href = redirect;
+        a.click();
+      } catch (error) {
+        Notify.create({
+          type: "negative",
+          message: `Không thể tạo đơn hàng hàng!`,
+        });
+      }
+      Loading.hide();
+}
+
+export async function getProducts({commit}){
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
+  try {
+    const {data} = await client.query({
+      query: PRODUCTS_QUERY,
+      variables: {
+          first: 100,
+          where: {
+            stockStatus: "IN_STOCK",
+            supportedTypesOnly: true,
+  
         }
-      });
-      Loading.hide();
-      commit("setCart", data.data.addToCart)
+      }
+    });
+    commit("setProducts", data)
+  } catch (error) {
+    Notify.create({
+      type: "negative",
+      message: `Lỗi khi tải dữ liệu sản phẩm!`,
+    });
+  }
+  Loading.hide();
+  
 }
-
-export async function checkout ({commit,state,dispatch}) {
-    // if (!state.authToken) await dispatch('loginUser',{
-    //     username: "buudienvhxtulap",
-    //     password: "%1TDM95hFS!CM8Gw0(8Xju1B"
-    // });
-    
-    const data = JSON.stringify({
-        query: `mutation {
-          checkout(
-            input: {account: {password: "%1TDM95hFS!CM8Gw0(8Xju1B", username: "buudienvhxtulap"}, customerNote: "Test thử", paymentMethod: "bacs"}
-          ) {
-            customer {
-              id
-            }
-            order {
-              id
-            }
-            redirect
-            result
-          }
-        }`,
-        variables: {}
-      });
-    const config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: '/graphql',
-        headers: { 
-          'Content-Type': 'application/json', 
-          'Authorization': `Bearer ${state.authToken}`
-        },
-        data : data
-      };
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-      const {data: respon} = await apiStore.request(config);
-      Loading.hide();
-      console.log(respon);
-      // commit("setCart", respon.data.addToCart)
-}
-

@@ -2,6 +2,7 @@ export default function () {
   return {
     authToken: "",
     user: {},
-    cart: {}
+    cart: {},
+    products: []
   }
 }

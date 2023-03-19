@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import { ApolloClient } from 'apollo-client'
 import { ApolloLink } from 'apollo-link'
 import { createHttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import { InMemoryCache, IntrospectionFragmentMatcher  } from 'apollo-cache-inmemory'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -33,7 +33,8 @@ export const middleware = new ApolloLink( ( operation, forward ) => {
 	/**
 	 * If session data exist in local storage, set value as session header.
 	 */
-	const session = ( process.browser ) ?  localStorage.getItem( "woo-session" ) : null;
+	// const session = ( process.browser ) ?  localStorage.getItem( "woo-session" ) : null;
+	const session = localStorage.getItem( "woo-session" );
 
 	if ( session ) {
 		operation.setContext( ( { headers = {} } ) => ( {
@@ -56,9 +57,9 @@ export const afterware = new ApolloLink( ( operation, forward ) => {
 
 	return forward( operation ).map( response => {
 
-		if ( !process.browser ) {
-			return response;
-		}
+		// if ( !process.browser ) {
+		// 	return response;
+		// }
 
 		/**
 		 * Check for session header and update session in local storage accordingly.
@@ -87,13 +88,21 @@ export const afterware = new ApolloLink( ( operation, forward ) => {
 	} );
 } );
 
+export const fragmentMatcher = new IntrospectionFragmentMatcher({
+	introspectionQueryResultData: {
+		__schema: {
+		types: [], // no types provided
+		},
+	},
+});
+
 // Apollo GraphQL client.
 export const client = new ApolloClient({
 	link: middleware.concat( afterware.concat( createHttpLink({
 		uri: 'https://store.hotham.vn/wordpress/graphql',
 		fetch: fetch
 	}) ) ),
-	cache: new InMemoryCache(),
+	cache: new InMemoryCache({ fragmentMatcher }),
 });
 
 export default boot(({ app }) => {
