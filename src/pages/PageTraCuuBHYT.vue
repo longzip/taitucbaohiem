@@ -48,6 +48,9 @@
             <q-item clickable @click="inC17" v-close-popup>
               <q-item-section>In C17</q-item-section>
             </q-item>
+            <q-item clickable @click="loadTaiTucBHXH" v-close-popup>
+              <q-item-section>Tái tục BHXH</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytsTaiTuc2020" v-close-popup>
               <q-item-section>Tải dữ liệu tái tục mới nhất</q-item-section>
             </q-item>
@@ -115,9 +118,23 @@ export default {
       "hoSoDaXuLy",
       "dongBoDuLieu",
       "traCuuTheoTen",
+      "getDanhSachKhachHangTaiTuc"
     ]),
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+
+    async loadTaiTucBHXH(){
+      this.getDanhSachKhachHangTaiTuc({
+        filterItems:[],
+        maxResultCount:500,
+        skipCount:0,
+        mangLuoiId:4580,
+        tuThang:"2023-03-01 00:00:00",
+        denThang:"2023-04-01 00:00:00",
+        type:-1,
+        loaiDichVu:0
+      });
     },
 
     async fetchAPIByName(searchText) {

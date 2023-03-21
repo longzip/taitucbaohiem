@@ -7,6 +7,42 @@ const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
 };
 
+export const getTraCuuThongTinBHXHTN = async ({commit}, {
+  maSoBhxh
+}) =>{
+    try {
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
+      const {data} = await apiServices.get(`/api/services/app/TraCuu/TraCuuThongTinBHXHTN?maSoBhxh=${maSoBhxh}`);
+      Loading.hide();
+      return data.result.value.thongTinTns[0];
+    } catch (error) {
+      Notify.create({
+        type: "negative",
+        message: `Đã xảy ra lỗi!`,
+      });
+    }
+    return null;
+}
+export const getDanhSachKhachHangTaiTuc = async ({commit}, payload) =>{
+    commit("setBhyts", []);
+    Loading.show({
+      spinner: QSpinnerIos,
+      spinnerSize: "100px",
+    });
+    try {
+      const {data} = await apiServices.post("/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",payload);
+      commit("setBhyts", data.result.items);
+    } catch (error) {
+      Notify.create({
+        type: "negative",
+        message: `Đã xảy ra lỗi!`,
+      });
+    }
+    Loading.hide();
+}
 export const getBaoCaoChiTietGiaoDich = async ({commit}, {
   tuThang ="2023-01-01 00:00:00",
   denThang="2024-01-01 00:00:00"

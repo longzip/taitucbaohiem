@@ -68,6 +68,11 @@
           @click="copyUrlToClipboard(bhyt)"
           name="share"
         />
+        <q-icon
+          class="q-ml-md"
+          @click="copyBHXHToClipboard(bhyt.maSoBHXH)"
+          name="share"
+        />
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2"
@@ -89,7 +94,7 @@
       <q-item-label caption
         >đ
         <strong>{{
-          bhyt.tongTien || bhyt.soTienThu ? parseInt(bhyt.tongTien || bhyt.soTienThu).toLocaleString() : "0"
+          bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong ? parseInt(bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong).toLocaleString() : "0"
         }}</strong></q-item-label
       >
       <q-icon
@@ -113,7 +118,7 @@ import { Notify } from "quasar";
 export default {
   props: ["bhyt"],
   methods: {
-    ...mapActions("bhyts", ["loaiBo", "theoDoi", "dongBoDuLieu"]),
+    ...mapActions("bhyts", ["loaiBo", "theoDoi", "dongBoDuLieu", "getTraCuuThongTinBHXHTN"]),
     xacNhanLoaiBo(bhyt) {
       if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
       this.$q
@@ -153,6 +158,28 @@ export default {
     getDateDiff(ngayHetHan) {
       if (!ngayHetHan) return "";
       return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
+    },
+    async copyBHXHToClipboard(maSoBhxh) {
+      const t = await this.getTraCuuThongTinBHXHTN({maSoBhxh});
+      if(!t) return null;
+      navigator.clipboard
+        .writeText(`Xin chào! Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${t.hoTen}, Ngày sinh: **/**/${new Date(
+                t.ngaySinhDt
+              ).getFullYear()}; Đóng BHXH TN tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(0,4)} số tiền ${parseInt(t.tienNldPhaiNop).toLocaleString()}đ/${t.phuongThucDong}; Tên đơn vị tham gia: ${t.tenDonVi} ngày đăng ký ${t.ngayDk} mức đóng ${t.mucDong} (tiền ngân sách hỗ trợ ${t.tienNsnnHoTro}). Tham khảo https://blog.hotham.vn/thoi-han-nop-tien-tiep-bao-hiem-xa-hoi-tu-nguyen/`)
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
     },
     copyUrlToClipboard(t) {
       const [nam, thang, ngay] = new Date()
