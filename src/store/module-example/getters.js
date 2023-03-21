@@ -10,10 +10,12 @@ export const timBhyts = (state) => (searchText) => {
     ...state.bhyts.filter((item) =>
       (
         item.hoTen +
+        item.hoVaTen +
         item.maSoBhxh +
         item.maHoGd +
         item.soDienThoai +
         item.maKCB +
+        item.soBienLai+
         "-" +
         item.denNgayDt
       )
@@ -26,3 +28,18 @@ export const timBhyts = (state) => (searchText) => {
 export const soDienThoais = (state) => {
   return state.bhyts.map((bhyt) => bhyt.soDienThoai);
 };
+
+export const tongTien = (state) => {
+  if(state.bhyts.length === 0) return 0;
+  return state.bhyts
+        .map((t) => t.tongTien || t.soTienThu)
+        .reduce(
+          (previousValue, currentValue) =>
+            previousValue + parseInt(currentValue),
+          0
+  );
+}
+
+export const tongSoThe = (state) => {
+  return state.bhyts.length;
+}

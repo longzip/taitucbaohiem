@@ -1,11 +1,40 @@
 import client from "../../utils";
 import moment from "moment";
-import { Loading, QSpinnerIos } from "quasar";
-import { api } from "src/boot/axios";
+import { Loading, QSpinnerIos, Notify } from "quasar";
+import { api, apiServices } from "src/boot/axios";
 
 const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
 };
+
+export const getBaoCaoChiTietGiaoDich = async ({commit}, {
+  tuThang ="2023-01-01 00:00:00",
+  denThang="2024-01-01 00:00:00"
+}) =>{
+    commit("setBhyts", []);
+    Loading.show({
+      spinner: QSpinnerIos,
+      spinnerSize: "100px",
+    });
+    try {
+      const {data} = await apiServices.post("/api/services/app/BaoCaoTongHopGDThu/BaoCaoChiTietGiaoDich",{
+        filterItems:[],
+        maxResultCount:5000,
+        skipCount:0,
+        mangLuoiId:4580,
+        tuThang,
+        denThang,
+        loaiGiaoDich:0
+      });
+      commit("setBhyts", data.result.items);
+    } catch (error) {
+      Notify.create({
+        type: "negative",
+        message: `Đã xảy ra lỗi!`,
+      });
+    }
+    Loading.hide();
+}
 
 export const traCuuBhyts = async ({ commit }, payload) => {
   commit("setBhyts", []);

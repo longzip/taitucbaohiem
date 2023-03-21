@@ -89,7 +89,7 @@
       <q-item-label caption
         >đ
         <strong>{{
-          bhyt.tongTien ? parseInt(bhyt.tongTien).toLocaleString() : "0"
+          bhyt.tongTien || bhyt.soTienThu ? parseInt(bhyt.tongTien || bhyt.soTienThu).toLocaleString() : "0"
         }}</strong></q-item-label
       >
       <q-icon
@@ -98,7 +98,7 @@
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
       />
       <q-item-label caption
-        >{{ bhyt.ngayLap || new Date(bhyt.updated_at).toLocaleString() }}<br />
+        >{{ bhyt.ngayLap || bhyt.ngayBienLai || new Date(bhyt.updated_at).toLocaleString() }}<br />
         {{ bhyt.soBienLai ? `Số: ${bhyt.soBienLai}` : bhyt.ghiChu }}<br />
         {{ bhyt.userName }}
       </q-item-label>

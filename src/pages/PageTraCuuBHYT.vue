@@ -455,7 +455,7 @@ export default {
       }
       await this.sleep(1000);
       const res = await fetch(
-        `http://192.168.1.7:2023/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
+        `https://192.168.1.7:2024/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
           .filter((t) => t.maThuTuc == 1)
           .map((t) => t.tongTien)
           .reduce(

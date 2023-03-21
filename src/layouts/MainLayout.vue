@@ -126,6 +126,18 @@ const linksList = [
     link: "/ho-so-da-xu-ly",
   },
   {
+    title: "Chi tiết giao dịch 2023",
+    caption: "Báo cáo chi tiết giao dịch",
+    icon: "verified",
+    link: "/export-chi-tiet?tuThang=2023-01-01&denThang=2024-01-01",
+  },
+  {
+    title: "Chi tiết giao dịch 2022",
+    caption: "Báo cáo chi tiết giao dịch",
+    icon: "verified",
+    link: "/export-chi-tiet?tuThang=2022-01-01&denThang=2023-01-01",
+  },
+  {
     title: "Đang theo dõi",
     caption: "Mã số BHXH đang theo dõi",
     icon: "star",

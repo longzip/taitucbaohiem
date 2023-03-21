@@ -9,6 +9,11 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "/export-chi-tiet",
+        component: () => import("src/pages/PageBaoCaoChiTietGiaoDich.vue"),
+        meta: { requireAuth: true },
+      },
+      {
         path: "old",
         component: () => import("src/pages/PageTheHT.vue"),
         meta: { requireAuth: true },
