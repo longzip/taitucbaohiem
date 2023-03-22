@@ -7,7 +7,7 @@
     >
       <div class="inline bg-orange-4 rounded-borders cursor-pointer">
         <div class="fit flex flex-center text-center non-selectable q-pa-md">
-          Tra cứu {{ bhyts.length }}!<br />(Bấm vào đây và lựa chọn)
+          Tra cứu {{ bhyts.length }}/{{ parseInt(tongTien).toLocaleString() }}đ!<br />(Bấm vào đây và lựa chọn)
         </div>
 
         <q-menu touch-position>
@@ -106,12 +106,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("bhyts", ["bhyts"]),
+    ...mapGetters("bhyts", ["bhyts","tongTien"]),
     ...mapState("store", ["userDetails"]),
   },
   methods: {
     ...mapActions("bhyts", [
       "getBhyts",
+      "resetBhyt",
       "traCuuBhyts",
       "updateBhyt",
       "resetBhyt",
@@ -677,6 +678,7 @@ export default {
       }
     },
     async khoiTao() {
+      this.resetBhyt([])
       if (this.$route.query.key) {
         this.key = await this.saveBHYT(this.$route.query.key);
       }

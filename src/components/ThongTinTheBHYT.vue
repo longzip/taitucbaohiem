@@ -70,7 +70,7 @@
         />
         <q-icon
           class="q-ml-md"
-          @click="copyBHXHToClipboard(bhyt.maSoBHXH)"
+          @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
           name="share"
         />
       </q-item-label>
@@ -161,7 +161,13 @@ export default {
     },
     async copyBHXHToClipboard(maSoBhxh) {
       const t = await this.getTraCuuThongTinBHXHTN({maSoBhxh});
-      if(!t) return null;
+      if(!t) {
+        Notify.create({
+          type: "negative",
+          message: "Không tham gia BHXH Tự Nguyện",
+        });
+        return null;
+      }
       navigator.clipboard
         .writeText(`Xin chào! Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${t.hoTen}, Ngày sinh: **/**/${new Date(
                 t.ngaySinhDt
