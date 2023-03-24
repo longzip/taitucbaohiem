@@ -452,8 +452,8 @@ export default defineComponent({
     },
 
     async updateKHL({soDienThoai, hoTen, hopDong, ngayHopDong,tenNguoiHuong, soTaiKhoanNganHang, tenNganHang, maCRM, soTienCODvePaypost, soTienBuTruCongNo}) {
-      
-      const {data} = await axios.post("https://192.168.1.7:2024/api/cods", {
+      try {
+        const {data} = await axios.post("https://192.168.1.7:2024/api/cods", {
         soDienThoai,
         hoTen,
         hopDong,
@@ -469,26 +469,54 @@ export default defineComponent({
       const findCod = this.cods.find(c => c.soDienThoai === soDienThoai && new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10));
       if(findCod) Object.assign(findCod, data);
       else this.allCods.push(data);
-
-      await axios.put(`https://192.168.1.7:2024/api/khls/${soDienThoai}`, {
-        hoTen,
-        hopDong,
-        ngayHopDong,
-        tenNguoiHuong,
-        soTaiKhoanNganHang,
-        tenNganHang,
-        maCRM,
-      });
-      this.showDialog = false;
+        await axios.put(`https://192.168.1.7:2024/api/khls/${soDienThoai}`, {
+          hoTen,
+          hopDong,
+          ngayHopDong,
+          tenNguoiHuong,
+          soTaiKhoanNganHang,
+          tenNganHang,
+          maCRM,
+        });
+        this.showDialog = false;
+        Notify.create({
+              type: "positive",
+              message: `Đã ghi nhận thành công!`,
+            });
+      } catch (error) {
+        Notify.create({
+              type: "negative",
+              message: "Không lưu được thông tin khách hàng!" + err,
+        });
+      }
     },
 
     async loadKHL(soDienThoai){
-      const {data} = await axios.get(`https://192.168.1.7:2024/api/khls/${soDienThoai}`);
-      this.khl = data
+      try {
+        const {data} = await axios.get(`https://192.168.1.7:2024/api/khls/${soDienThoai}`);
+        this.khl = data
+      } catch (error) {
+        Notify.create({
+              type: "negative",
+              message: "Lỗi hệ thống!" + err,
+        });
+      }
     },
     async loadCods(soDienThoai){
-      const {data} = await axios.get(`https://192.168.1.7:2024/api/cods?name=${soDienThoai}`);
-      this.cods = data
+      try {
+        Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
+        const {data} = await axios.get(`https://192.168.1.7:2024/api/cods?name=${soDienThoai}`);
+        this.cods = data
+        Loading.hide();
+      } catch (error) {
+        Notify.create({
+              type: "negative",
+              message: "Lỗi hệ thống!" + err,
+        });
+      }
     },
     async loadAllCods(){
       const {data} = await axios.get("https://192.168.1.7:2024/api/cods");
@@ -507,7 +535,10 @@ export default defineComponent({
       
       this.khl.soTienBuTruCongNo = await this.tongSoTienBuTruCongNo(soDienThoai);
       const findCod = this.cods.find(c => c.soDienThoai === soDienThoai && new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10))
-      if(findCod) this.khl.soTienCODvePaypost = parseInt(findCod.soTienCODvePaypost).toLocaleString();
+      if(findCod) {
+        this.khl.soTienCODvePaypost = parseInt(findCod.soTienCODvePaypost).toLocaleString();
+        this.khl.soTienBuTruCongNo = parseInt(findCod.soTienBuTruCongNo).toLocaleString();
+      }
       // if(findCod) console.log(findCod)
       this.showDialog = true;
     },
@@ -572,7 +603,8 @@ export default defineComponent({
           }
         );
     },
-    copyChiCODToClipboard() {
+    async copyChiCODToClipboard() {
+      await this.loadAllCods();
       navigator.clipboard
         .writeText(
 `${this.allCods.filter(c=>new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10)).map(({hoTen,hopDong,ngayHopDong,soTienCODvePaypost,soTienBuTruCongNo,tenNguoiHuong,soTaiKhoanNganHang,tenNganHang,maCRM}) => [hoTen,hopDong,ngayHopDong,soTienCODvePaypost,soTienBuTruCongNo,soTienCODvePaypost-soTienBuTruCongNo,tenNguoiHuong,soTaiKhoanNganHang,tenNganHang,,maCRM].join("\t")).join("\r\n")}
