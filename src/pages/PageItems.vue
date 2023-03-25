@@ -30,9 +30,13 @@
                 </q-item-label>
                 
                 <q-item-label caption lines="2">
-                  <a :href="`tel:${donHang.senderPhone}`">{{
+                  <a target="_blank" :href="`https://zalo.me/${donHang.senderPhone}`">{{
                     donHang.senderPhone
                   }}</a>
+                  <q-icon
+                  name="content_copy"
+                  @click="copyPhoneToClipboard(donHang.senderPhone)"
+                />
                 </q-item-label>
                 <q-item-label caption lines="2">{{
                   donHang.contentNote
@@ -81,6 +85,26 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("items", ["getItems"]),
+    copyPhoneToClipboard(phone) {
+      navigator.clipboard
+        .writeText(
+          phone
+        )
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
     copyTextToClipboard({ttNumber,recName,recPhone, recAdd}) {
       navigator.clipboard
         .writeText(

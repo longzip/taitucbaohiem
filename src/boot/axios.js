@@ -13,10 +13,17 @@ import { InMemoryCache, IntrospectionFragmentMatcher  } from 'apollo-cache-inmem
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-export const api = axios.create({ baseURL: "https://192.168.1.7:2024" });
+// export const api = axios.create({ baseURL: "https://192.168.1.7:2024" });
 export const apiKHL = axios.create({ baseURL: "https://api-portalkhl.vnpost.vn" });
 export const apiStore = axios.create({ baseURL: "https://store.hotham.vn/wordpress" });
 
+export const api = axios.create({
+  baseURL: "https://app.hotham.vn",
+  headers: {
+    Authorization: `Bearer 2|N04KZuJ0sVeHX3puFzxXW9yEOWWvffrQh7El9e95`,
+  },
+});
+//
 export const apiServices = axios.create({
   baseURL: "https://ssm-api.vnpost.vn",
   headers: {
