@@ -1,4 +1,5 @@
 import { route } from "quasar/wrappers";
+import { getCurrentUser } from "src/boot/firebase";
 import {
   createRouter,
   createMemoryHistory,
@@ -35,10 +36,10 @@ export default route(function ({ store /*, ssrContext */ }) {
     ),
   });
 
-  Router.beforeEach((to, from, next) => {
+  Router.beforeEach(async (to, from, next) => {
     if (
       to.matched.some((record) => record.meta.requireAuth) &&
-      !(localStorage.getItem("setIsLogin") !== "")
+      !await getCurrentUser()
     ) {
       next({ path: "/auth", query: { next: to.fullPath } });
     } else {

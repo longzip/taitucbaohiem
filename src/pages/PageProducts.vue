@@ -47,7 +47,7 @@
             </template>
         </q-input>
         <ListHeader bgcolor="bg-orange-4">
-            Sản phẩm
+            Sản phẩm {{ parseInt(tongTien).toLocaleString() }}đ
         </ListHeader>
         <div class="q-gutter-y-md column">
       <q-input
@@ -80,6 +80,7 @@
                     <q-item-section>
                         <q-item-label>{{product.name}}</q-item-label>
                         <q-item-label caption>Mã:{{product.sku}}</q-item-label>
+                        <q-item-label caption>Kho còn:{{product.stockQuantity}}</q-item-label>
                     </q-item-section>
                     <q-item-section side top>
                         <q-item-label caption>{{product.price}}</q-item-label>
@@ -110,7 +111,7 @@ export default {
     ...mapActions("products", ["getCart","addToCart","checkout","loginUser","getProducts","removeItemsFromCart","emptyCart"]),
   },
   computed: {
-    ...mapGetters("products", ["authToken", "user", "cart","products","productsByName"])
+    ...mapGetters("products", ["authToken", "user", "cart","products","productsByName","tongTien"])
   },
   mounted(){
     this.getCart();

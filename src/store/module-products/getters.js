@@ -14,6 +14,20 @@ export function cart (state) {
 export function products (state) {
     return state.products;
 }
+
+export function tongTien (state) {
+    if(state.products.length === 0) return 0;
+    return state.products.filter(p=>p.stockQuantity && p.price)
+        .map((t) => parseInt(t.stockQuantity) * parseInt(t.price.replace(/[^\d]*/g, '')))
+        .reduce(
+            (previousValue, currentValue) =>
+                previousValue + parseInt(currentValue),
+            0
+    );
+}
+
+
+
 export const productsByName = (state) => (searchText) => {
     if (!searchText) return state.products;
     return [

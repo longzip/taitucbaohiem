@@ -179,7 +179,7 @@ export async function getProducts({commit}){
           where: {
             stockStatus: "IN_STOCK",
             supportedTypesOnly: true,
-  
+            categoryNotIn: ["dGVybTo2MQ==","dGVybTo2NQ=="]
         }
       }
     });

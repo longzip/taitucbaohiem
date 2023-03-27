@@ -22,10 +22,12 @@ const PRODUCTS_QUERY = gql`query ($first: Int, $after: String, $where: RootQuery
         ... on SimpleProduct {
           price
           regularPrice
+          stockQuantity
           id
         }
         ... on VariableProduct {
           price
+          stockQuantity
           id
           regularPrice
         }
