@@ -453,7 +453,7 @@ export default defineComponent({
 
     async updateKHL({soDienThoai, hoTen, hopDong, ngayHopDong,tenNguoiHuong, soTaiKhoanNganHang, tenNganHang, maCRM, soTienCODvePaypost, soTienBuTruCongNo}) {
       try {
-        const {data} = await axios.post("https://192.168.1.7:2024/api/cods", {
+        const {data} = await this.$api.post("https://app.hotham.vn/api/cods", {
         soDienThoai,
         hoTen,
         hopDong,
@@ -469,7 +469,7 @@ export default defineComponent({
       const findCod = this.cods.find(c => c.soDienThoai === soDienThoai && new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10));
       if(findCod) Object.assign(findCod, data);
       else this.allCods.push(data);
-        await axios.put(`https://192.168.1.7:2024/api/khls/${soDienThoai}`, {
+        await this.$api.put(`https://app.hotham.vn/api/khls/${soDienThoai}`, {
           hoTen,
           hopDong,
           ngayHopDong,
@@ -493,7 +493,7 @@ export default defineComponent({
 
     async loadKHL(soDienThoai){
       try {
-        const {data} = await axios.get(`https://192.168.1.7:2024/api/khls/${soDienThoai}`);
+        const {data} = await this.$api.get(`https://app.hotham.vn/api/khls/${soDienThoai}`);
         this.khl = data
       } catch (error) {
         Notify.create({
@@ -508,7 +508,7 @@ export default defineComponent({
         spinner: QSpinnerIos,
         spinnerSize: "100px",
       });
-        const {data} = await axios.get(`https://192.168.1.7:2024/api/cods?name=${soDienThoai}`);
+        const {data} = await this.$api.get(`https://app.hotham.vn/api/cods?name=${soDienThoai}`);
         this.cods = data
         Loading.hide();
       } catch (error) {
@@ -519,7 +519,7 @@ export default defineComponent({
       }
     },
     async loadAllCods(){
-      const {data} = await axios.get("https://192.168.1.7:2024/api/cods");
+      const {data} = await this.$api.get("https://app.hotham.vn/api/cods");
       this.allCods = data
       this.tongCuocDaThanhToan = this.allCods.reduce(
         (previousValue, { soTienBuTruCongNo }) =>

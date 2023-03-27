@@ -109,7 +109,7 @@ export default defineComponent({
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `http://192.168.1.7:2023/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
+      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
         .filter((i) => i.completed)
         .map((i) => i.maSoBhxh)
         .join(",")}`;

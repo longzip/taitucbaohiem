@@ -256,7 +256,7 @@ export default defineComponent({
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
-      let lienKet = `http://192.168.1.7:2023/nop-bhyt/${new Date()
+      let lienKet = `https://app.hotham.vn/nop-bhyt/${new Date()
         .toISOString()
         .slice(0, 10)}/pdf?`;
       if (this.tongCong) lienKet += `tienDien=${this.tongCong}`;
