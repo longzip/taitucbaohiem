@@ -153,7 +153,6 @@
 
 <script>
 import { defineComponent } from "vue";
-import axios from "axios";
 import { Notify } from "quasar";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
@@ -196,8 +195,8 @@ export default defineComponent({
         });
     },
     async soTienBangKhong(evn) {
-      const { data } = await axios.put(
-        `https://192.168.1.7:2024/api/evns/${evn.ma}/so-tien`,
+      const { data } = await this.$api.put(
+        `/api/evns/${evn.ma}/so-tien`,
         { soTien: 0 }
       );
       this.updateEVN(data);
@@ -207,10 +206,10 @@ export default defineComponent({
       if (found) Object.assign(found, evn);
     },
     async timKiem(searchText, homNay = false) {
-      let url = "https://192.168.1.7:2024/api/evns?";
+      let url = "/api/evns?";
       if (searchText) url += `name=${searchText}`;
       if (homNay) url += `homNay=${homNay}`;
-      const { data } = await axios.get(url);
+      const { data } = await this.$api.get(url);
       this.evns = data;
       this.tongCong = await data
         .map((t) => t.soTien)

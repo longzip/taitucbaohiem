@@ -26,12 +26,12 @@ const routes = [
       {
         path: "khl2",
         component: () => import("src/pages/PageKHLNew.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "items",
         component: () => import("src/pages/PageItems.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "evn2",
@@ -92,32 +92,32 @@ const routes = [
         path: "/auth",
         name: "auth",
         component: () => import("pages/PageAuth.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "/tra-cuu/:id",
         component: () => import("pages/PageTraCuu.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "/tra-cuu",
         component: () => import("pages/PageTraCuu.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "/tra-cuu-tu-dong",
         component: () => import("pages/PageTraCuuAuto.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "/ho-so-chua-xu-ly",
         component: () => import("pages/PageHoSoChuaXuLy.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "/khach-hang-chua-nop",
         component: () => import("pages/PageKhachHangChuaNop.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "/khach-hang-tai-tuc-bhxh",
@@ -127,7 +127,7 @@ const routes = [
       {
         path: "/ho-so-da-xu-ly",
         component: () => import("pages/PageHoSoDaXuLy.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "/ho-so-da-nop",
@@ -137,7 +137,7 @@ const routes = [
       {
         path: "/khl",
         component: () => import("pages/PageKhl.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
     ],
   },

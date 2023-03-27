@@ -336,7 +336,7 @@ export default {
         "Content-Type": "application/json",
       };
 
-      const API_URL = "http://192.168.1.7:2023/api/user-ghi-chu";
+      const API_URL = "https://app.hotham.vn/api/user-ghi-chu";
 
       const res = await fetch(API_URL, {
         method: "PUT",
@@ -354,7 +354,7 @@ export default {
         "Content-Type": "application/json",
       };
 
-      const API_URL = "http://192.168.1.7:2023/api/bhyts";
+      const API_URL = "https://app.hotham.vn/api/bhyts";
 
       const res = await fetch(API_URL, {
         method: "POST",
@@ -473,7 +473,7 @@ export default {
       }
       await this.sleep(1000);
       const res = await fetch(
-        `https://192.168.1.7:2024/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
+        `https://app.hotham.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
           .filter((t) => t.maThuTuc == 1)
           .map((t) => t.tongTien)
           .reduce(
@@ -575,7 +575,7 @@ export default {
     async print(maSoBhxhs) {
       let a = document.createElement("a");
       a.target = "_blank";
-      let lienKet = `http://192.168.1.7:2023/mau-c17/${new Date()
+      let lienKet = `https://app.hotham.vn/mau-c17/${new Date()
         .toISOString()
         .slice(0, 10)}/pdf?maSoBhxhs=${maSoBhxhs}`;
       a.href = lienKet;

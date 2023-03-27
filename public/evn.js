@@ -82,8 +82,9 @@ const doCopy = async () => {
   }
   if(evn.ma)
     $.ajax({
-     url: `https://192.168.1.7:2024/api/evns`,
+     url: 'https://app.hotham.vn/api/evns',
      type: "POST",
+     headers: headerParams,
      async: true,
      data: evn
    });
