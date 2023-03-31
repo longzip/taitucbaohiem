@@ -158,7 +158,7 @@ export default {
             { label: '563.220', value: '563220' },
             { label: '482.760', value: '482760' },
             { label: '402.300', value: '402300' },
-            { label: '312.840', value: '312840' },
+            { label: '321.840', value: '321840' },
             { label: 'Không', value: '0' },
           ]
         },

@@ -619,6 +619,13 @@ export default {
       });
     },
     loadBhytByUserName() {
+      if(!this.searchText)
+      {
+        Notify.create({
+              type: "negative",
+              message: "Nhập 1 hoặc 0!" + err,
+            });
+      }
       this.getBhyts({
         userName: this.searchText,
       });
