@@ -12,6 +12,9 @@
 
         <q-menu touch-position>
           <q-list style="min-width: 100px">
+            <q-item clickable @click="loadBhytByUserName" v-close-popup>
+              <q-item-section>Đã thu tiền</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
               <q-item-section>Tìm theo năm sinh</q-item-section>
             </q-item>
@@ -613,6 +616,11 @@ export default {
         disabled: "0",
         maXa: "08986",
         nam: this.searchText,
+      });
+    },
+    loadBhytByUserName() {
+      this.getBhyts({
+        userName: this.searchText,
       });
     },
     loadBhytByName() {

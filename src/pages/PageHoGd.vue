@@ -2,33 +2,14 @@
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
       >Danh sách thẻ BHYT theo hộ gia đình - {{ bhyts.length }} thẻ :
-      <a
-        :href="`https://hgd.baohiemxahoi.gov.vn/doViewInfoHo.do?maHo=${maHoGd}`"
-        target="_blank"
-        >{{ maHoGd }}</a
-      >
-
-      <q-btn
-        rounded
-        color="primary"
-        label="Tải"
-        @click="dongBo()"
-        icon="sync"
-      />
-      <q-btn
-        color="deep-orange"
-        rounded
-        label="Xóa"
-        @click="xacNhanXoa(maHoGd)"
-        icon="delete_forever"
-      />
+      đ {{ parseInt(tongTien).toLocaleString() }}
       <q-btn rounded color="primary" @click="print()" icon="print" />
     </ListHeader>
     <div class="q-gutter-y-md column">
       <q-input
         outlined
         v-model="searchText"
-        @keyup.enter="traCuuTheoTen(searchText)"
+        @keyup.enter="dongBoDuLieu(searchText)"
         placeholder="Họ và tên"
         hint="Nhập họ và tên rồi nhấn Enter để tìm kiếm"
         dense
@@ -69,48 +50,17 @@ export default defineComponent({
   methods: {
     ...mapActions("bhyts", [
       "getAllBhyts",
-      "xoaHoGd",
       "dongBoDuLieu",
-      "traCuuTheoTen",
     ]),
     async loadData() {
       await this.getAllBhyts({
         maHoGd: this.maHoGd,
       });
-      // console.log("đồng bộ dữ liệu");
-      // console.log(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
-    },
-    async dongBo() {
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-      await this.dongBoDuLieu(this.bhyts.map((bhyt) => bhyt.maSoBhxh).join());
-      Loading.hide();
-    },
-    async xacNhanXoa(maHoGd) {
-      this.$q
-        .dialog({
-          title: "Confirm",
-          message: "Bạn có muốn xóa hộ gia đình?",
-          ok: {
-            push: true,
-          },
-          cancel: {
-            color: "negative",
-          },
-          persistent: true,
-        })
-        .onOk(async () => {
-          await this.xoaHoGd(maHoGd);
-          this.$router.go();
-        });
     },
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
       a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
-        .filter((i) => i.completed)
         .map((i) => i.maSoBhxh)
         .join(",")}`;
       a.click();
@@ -118,7 +68,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapGetters("bhyts", ["bhyts"]),
+    ...mapGetters("bhyts", ["bhyts","tongTien"]),
   },
 
   mounted() {

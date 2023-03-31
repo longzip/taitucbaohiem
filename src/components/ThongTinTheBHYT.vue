@@ -30,6 +30,7 @@
           name="update"
           color="blue"
         />
+        
       </q-item-label>
       <q-item-label caption lines="2">
         {{ bhyt.diaChiLh }}
@@ -92,10 +93,14 @@
         >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
       >
       <q-item-label caption
-        >đ
-        <strong>{{
+        ><q-icon
+        class="q-mr-sm"
+        @click="xacNhanGiaHan(bhyt)"
+        name="person_add_alt_1"
+      /> 
+        <strong class="text-subtitle2 text-weight-bold">{{
           bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong ? parseInt(bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong).toLocaleString() : "0"
-        }}</strong></q-item-label
+        }}</strong>đ</q-item-label
       >
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
@@ -107,6 +112,10 @@
         {{ bhyt.soBienLai ? `Số: ${bhyt.soBienLai}` : bhyt.ghiChu }}<br />
         {{ bhyt.userName }}
       </q-item-label>
+      <q-icon
+        @click="xoaThanhVienHGD(bhyt.maSoBhxh)"
+        name="person_remove_alt_1"
+      />
     </q-item-section>
   </q-item>
 </template>
@@ -118,11 +127,10 @@ import { Notify } from "quasar";
 export default {
   props: ["bhyt"],
   methods: {
-    ...mapActions("bhyts", ["loaiBo", "theoDoi", "dongBoDuLieu", "getTraCuuThongTinBHXHTN"]),
+    ...mapActions("bhyts", ["loaiBo", "theoDoi", "dongBoDuLieu", "getTraCuuThongTinBHXHTN","thuTien","xoaThanhVienHGD"]),
     xacNhanLoaiBo(bhyt) {
       if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
-      this.$q
-        .dialog({
+      this.$q.dialog({
           title: "Confirm",
           message: "Bạn có muốn loại bỏ?",
           ok: {
@@ -136,6 +144,36 @@ export default {
         .onOk(() => {
           this.loaiBo(bhyt);
         });
+    },
+    xacNhanGiaHan (bhyt) {
+      this.$q.dialog({
+        title: 'Gia hạn thẻ BHYT',
+        message: 'Mức đóng bảo hiểm',
+        options: {
+          type: 'radio',
+          model: bhyt.tongTien,
+          // inline: true
+          items: [
+            { label: '804.600', value: '804600', color: 'secondary' },
+            { label: '563.220', value: '563220' },
+            { label: '482.760', value: '482760' },
+            { label: '402.300', value: '402300' },
+            { label: '312.840', value: '312840' },
+            { label: 'Không', value: '0' },
+          ]
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(data => {
+        this.thuTien({
+          tongTien: data,
+          maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH
+        })
+      }).onCancel(() => {
+        // console.log('>>>> Cancel')
+      }).onDismiss(() => {
+        // console.log('I am triggered on both OK and Cancel')
+      })
     },
     xacNhanTheoDoi(bhyt) {
       if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;

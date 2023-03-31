@@ -7,6 +7,10 @@ const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
 };
 
+export const xoaThanhVienHGD = ({commit},payload) => {
+  commit("removeBhyt",payload)
+}
+
 export const getTraCuuThongTinBHXHTN = async ({commit}, {
   maSoBhxh
 }) =>{
@@ -104,6 +108,7 @@ export const getBhyts = async ({ commit }, payload) => {
     hetHan,
     maXa,
     nam,
+    userName,
   } = payload;
 
   let url = "/api/bhyts?";
@@ -113,6 +118,7 @@ export const getBhyts = async ({ commit }, payload) => {
   if (hetHan) url += `&hetHan=${hetHan}`;
   if (name) url += `&name=${name}`;
   if (nam) url += `&nam=${nam}`;
+  if (userName) url += `&userName=${userName}`;
   if (completed) url += `&completed=${completed}`;
   if (disabled) url += `&disabled=${disabled}`;
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
@@ -222,7 +228,6 @@ export const xoaHoGd = async ({ commit }, payload) => {
 export const luuBhyt = async (bhyt) => {
   try {
     const { data } = await api.post("/api/bhyts", bhyt);
-
     return data;
   } catch (error) {
     return {};
@@ -320,6 +325,19 @@ export const giaHan = async ({ commit }, payload) => {
     }
   }
 };
+
+export const thuTien = async ({commit}, {maSoBhxh,tongTien}) =>{
+  try {
+    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+      tongTien,
+      ngayLap: new Date().toISOString().slice(0,10),
+      userName: "1",
+    });
+    await commit("updateBhyt", data);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export const daXyLy = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
@@ -436,14 +454,14 @@ export const lamMoiDanhSach = () => commit("getAllBhyts", []);
 
 export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/disabled`, {
-    disabled: !disabled,
+    disabled: !disabled==1,
   });
   commit("updateBhyt", data);
 };
 
 export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/completed`, {
-    completed: !completed,
+    completed: !completed==1,
   });
   commit("updateBhyt", data);
 };
