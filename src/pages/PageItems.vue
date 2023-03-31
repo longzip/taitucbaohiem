@@ -69,7 +69,7 @@
 <script>
 import { defineComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
-import { Notify } from "quasar";
+import { Notify, date } from "quasar";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
 export default defineComponent({
@@ -128,8 +128,10 @@ export default defineComponent({
   },
   mounted() {
     const [nam, thang, ngay] = new Date().toISOString().slice(0, 10).split("-");
-    const homNay = [ngay,thang,nam].join("/");
-    this.getItems({tuNgay:homNay, denNgay: homNay});
+    const denNgay = [ngay,thang,nam].join("/");
+    // const tuNgay = date.subtractFromDate(new Date(nam, thang, ngay), { days: 1 }).toISOString().slice(0, 10).split("-").reverse().join("/");
+    const tuNgay = [parseInt(ngay) - 1 || 1,thang,nam].join("/");
+    this.getItems({tuNgay, denNgay});
   },
 });
 </script>

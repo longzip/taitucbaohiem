@@ -32,7 +32,7 @@ export const soDienThoais = (state) => {
 export const tongTien = (state) => {
   if(state.bhyts.length === 0) return 0;
   return state.bhyts
-        .map((t) => t.tongTien || t.soTienThu)
+        .map((t) => t.tongTien || t.soTienThu || 0)
         .reduce(
           (previousValue, currentValue) =>
             previousValue + parseInt(currentValue),

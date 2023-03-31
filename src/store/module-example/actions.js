@@ -248,7 +248,7 @@ export const xem = async (maSoBhxh, completed) => {
   return { ...thongTinTheHGD, ...trangThaiThe, ...theBHYT };
 };
 
-export const traCuuTheoTen = async ({ commit }, payload) => {
+export const traCuuTheoTen = async ({ commit, dispatch }, payload) => {
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
@@ -263,6 +263,11 @@ export const traCuuTheoTen = async ({ commit }, payload) => {
       // bhyts.set(bhyt.maSoBhxh, bhyt);
       commit("updateBhyt",bhyt)
     });
+    try {
+      await dispatch('dongBoDuLieu', data.result.value.map(i => i.maSoBhxh).join())
+    } catch (error) {
+      
+    }
   }
 
   // commit("getAllBhyts", [...bhyts.values()]);
@@ -442,3 +447,22 @@ export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
   });
   commit("updateBhyt", data);
 };
+
+export const copyHoTenToClipboard = ({state}) => {
+  navigator.clipboard
+    .writeText(state.bhyts.map((bhyt) => bhyt.hoTen))
+    .then(
+      function () {
+        Notify.create({
+          type: "positive",
+          message: `Bạn đã sao chép thành công!`,
+        });
+      },
+      function (err) {
+        Notify.create({
+          type: "negative",
+          message: "Không thực hiện được!" + err,
+        });
+      }
+    );
+}

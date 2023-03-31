@@ -63,6 +63,9 @@
             <q-item clickable @click="copyMaSoBhxhToClipboard" v-close-popup>
               <q-item-section>Copy tất cả mã số BHXH</q-item-section>
             </q-item>
+            <q-item clickable @click="copyHoTenToClipboard" v-close-popup>
+              <q-item-section>Copy tất cả họ tên</q-item-section>
+            </q-item>
             <q-item clickable @click="copySoDienThoaiToClipboard" v-close-popup>
               <q-item-section>Copy tất cả số điện thoại</q-item-section>
             </q-item>
@@ -119,7 +122,8 @@ export default {
       "hoSoDaXuLy",
       "dongBoDuLieu",
       "traCuuTheoTen",
-      "getDanhSachKhachHangTaiTuc"
+      "getDanhSachKhachHangTaiTuc",
+      "copyHoTenToClipboard"
     ]),
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
@@ -651,8 +655,10 @@ export default {
       });
     },
     async timKiem(searchText) {
-      this.traCuuBhyts({ searchText, maXa: "08986" });
+      
       const danhSachTimKiem = searchText.split(",");
+      if(danhSachTimKiem.length > 1)
+        await this.traCuuBhyts({ searchText, maXa: "08986" });
       const regex = /[0-9]/g;
       for (let index = 0; index < danhSachTimKiem.length; index++) {
         const name = danhSachTimKiem[index]
@@ -666,13 +672,11 @@ export default {
         } else {
           try {
             await this.traCuuTheoTen(name);
-            // for (let index = 0; index < dsBhyts.length; index++) {
-            //   // const { maSoBhxh } = dsBhyts[index];
-            //   await this.dongBoDuLieu(dsBhyts[index]);
-            //   await this.sleep(500);
-            // }
           } catch (error) {
-            console.log(error);
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + error,
+            });
           }
         }
       }
