@@ -55,6 +55,12 @@
                     parseInt(donHang.totalFeeSpecial).toLocaleString()
                   }}</q-item-label
                 >
+                <q-item-label caption
+                  >COD:
+                  {{
+                    donHang.codAmount ? parseInt(donHang.codAmount).toLocaleString() : ''
+                  }}</q-item-label
+                >
                 <q-item-label caption>{{
                   new Date(donHang.updatedDate).toLocaleString()
                 }}</q-item-label>
@@ -130,7 +136,7 @@ export default defineComponent({
     const [nam, thang, ngay] = new Date().toISOString().slice(0, 10).split("-");
     const denNgay = [ngay,thang,nam].join("/");
     // const tuNgay = date.subtractFromDate(new Date(nam, thang, ngay), { days: 1 }).toISOString().slice(0, 10).split("-").reverse().join("/");
-    const tuNgay = [parseInt(ngay) - 1 || 1,thang,nam].join("/");
+    const tuNgay = parseInt(ngay) === 1 ? new Date(nam,thang-1,0).toISOString().slice(0,10).split("-").reverse().join("/") : [ ngay,thang,nam].join("/");
     this.getItems({tuNgay, denNgay});
   },
 });

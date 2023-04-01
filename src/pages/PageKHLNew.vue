@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >KHL cước {{ (doanhThu - tongCuocDaThanhToan).toLocaleString() }}đ : {{ tongCuocDaThanhToan.toLocaleString() }}đ / {{ doanhThu.toLocaleString() }}đ /
+      >KHL {{ doanhThu.toLocaleString() }}đ /
       {{ tongSoBuuGui }} bưu gửi
       <q-btn
         rounded
@@ -21,7 +21,7 @@
         outlined
         v-model="searchText"
         placeholder="Từ khóa"
-        hint="Tháng tra cứu"
+        :hint="`Cước còn: ${ (doanhThu - tongCuocDaThanhToan).toLocaleString() }đ / đã trừ: ${ tongCuocDaThanhToan.toLocaleString() }đ / `"
         @keyup.enter="traCuu()"
         dense
       >
@@ -48,6 +48,7 @@
             </q-icon>
           </template>
         </q-input> -->
+        <!-- {{ (doanhThu - tongCuocDaThanhToan).toLocaleString() }}đ : {{ tongCuocDaThanhToan.toLocaleString() }}đ /  -->
     </div>
     <q-list>
       <div
@@ -87,7 +88,7 @@
             @click="showKHL(khl.senderPhone)"
           />
           <q-item-label caption
-            >COD: {{ parseInt(khl.tongCOD).toLocaleString() }}</q-item-label
+            ><strong>COD: {{ parseInt(khl.tongCOD-khl.soTienDaChiCOD).toLocaleString() }}</strong> <span class="text-strike	">{{ parseInt(khl.tongCOD).toLocaleString() }}</span></q-item-label
           >
           <q-item-label caption
             ><strong class="text-bold	">Còn nợ: {{ parseInt(khl.tongCuoc-khl.soTienDaTruCongNo).toLocaleString() }}</strong> <span class="text-strike	">{{ parseInt(khl.soTienDaTruCongNo).toLocaleString() }}</span></q-item-label
@@ -311,13 +312,13 @@ export default defineComponent({
       this.tokenFe = tokenFe;
     },
 
-    async loadData() {
+    async loadData(thangTruoc = 0) {
       this.dsDonHang = [];
       if (!this.tokenFe) await this.login();
       var data = JSON.stringify({
         orgCode: "142010",
-        tuNgay: [1, parseInt(this.thang), this.nam].join("/"),
-        denNgay: new Date(this.nam, parseInt(this.thang), 1)
+        tuNgay: [1, parseInt(this.thang - thangTruoc || 12), this.nam].join("/"),
+        denNgay: new Date(this.nam, parseInt(this.thang - thangTruoc), 1)
           .toISOString()
           .slice(0, 10)
           .split("-")
@@ -396,8 +397,9 @@ export default defineComponent({
                 (previousValue, { codAmount }) =>
                   previousValue + parseInt(codAmount),
                 0
-              ),
+            ),
             soTienDaTruCongNo: this.tongSoTienBuTruCongNoDaTru(item.senderPhone),
+            soTienDaChiCOD: this.tongSoTienDaChiCOD(item.senderPhone),
           });
         }
       }
@@ -447,8 +449,14 @@ export default defineComponent({
         0
       );
       return tinh;
-      // console.log(senderPhone, tinh)
-      // return parseInt(tinh).toLocaleString();
+    },
+    tongSoTienDaChiCOD(senderPhone) {
+      const tinh = this.allCods.filter(c => c.soDienThoai == senderPhone).reduce(
+        (previousValue, { soTienCODvePaypost }) =>
+          previousValue + parseInt(soTienCODvePaypost),
+        0
+      );
+      return tinh;
     },
 
     async updateKHL({soDienThoai, hoTen, hopDong, ngayHopDong,tenNguoiHuong, soTaiKhoanNganHang, tenNganHang, maCRM, soTienCODvePaypost, soTienBuTruCongNo}) {
@@ -627,6 +635,11 @@ export default defineComponent({
     },
     async khoiTao(){
       await this.loadAllCods();
+      if(this.ngay < 3){
+        await this.loadData(1);
+        this.searchText = [this.thang -1 || 12, this.nam].join("/")
+      }
+      else
       await this.loadData();
     }
   },
