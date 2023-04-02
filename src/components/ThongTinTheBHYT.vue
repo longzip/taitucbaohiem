@@ -20,12 +20,7 @@
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
         />
-        <q-icon
-          class="q-ml-sm"
-          @click="xacNhanTheoDoi(bhyt)"
-          name="star"
-          :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
-        />
+        
         <q-icon
           class="q-ml-sm"
           @click="
@@ -85,43 +80,48 @@
       <q-item-label caption lines="2"
         >5 năm:{{ bhyt.ngay5Nam || bhyt.trangThaiHoSoName || bhyt.moTa }}</q-item-label
       >
-
       <q-item-label caption lines="2">
+        {{ bhyt.ghiChu || 'Ghi chú:' }}
+        <q-icon
+          @click="xacNhanGhiChu(bhyt)"
+          name="edit"
+        />
+      </q-item-label>
+      <q-item-label v-if="bhyt.soDienThoai" caption>
         <a :href="`tel:${bhyt.soDienThoai}`">{{ bhyt.soDienThoai }}</a>
+        <q-icon
+          class="q-ml-md"
+          @click="copySDTToClipboard(bhyt.soDienThoai)"
+          name="content_copy"
+        />
       </q-item-label>
     </q-item-section>
 
     <q-item-section side top>
       <q-item-label caption
-        >{{ getDateDiff(bhyt.denNgayDt) }} ngày</q-item-label
+        >{{ getDateDiff(bhyt.denNgayDt) }} ngày <q-icon
+        @click="xoaThanhVienHGD(bhyt.maSoBhxh)"
+        name="person_remove_alt_1"
+      /></q-item-label
       >
       <q-item-label caption
         >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
       >
-      <q-item-label caption
-        ><q-icon
-        class="q-mr-sm"
-        @click="xacNhanGiaHan(bhyt)"
-        name="paid"
-      /> 
+      <q-item-label @click="xacNhanGiaHan(bhyt)" caption
+        >
         <strong class="text-subtitle2 text-weight-bold">{{
           bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong ? parseInt(bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong).toLocaleString() : "0"
         }}</strong>đ</q-item-label
       >
       <q-icon
-        @click="xoaThanhVienHGD(bhyt.maSoBhxh)"
-        name="person_remove_alt_1"
-      />
+          @click="xacNhanTheoDoi(bhyt)"
+          name="star"
+          :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
+        />
       <q-item-label caption
         >{{ bhyt.ngayLap || bhyt.ngayBienLai || new Date(bhyt.updated_at).toLocaleString() }}<br />
-        <q-badge v-if="bhyt.soBienLai">{{ `Số: ${bhyt.soBienLai}` }}</q-badge>
-        <q-badge v-if="bhyt.ghiChu" color="blue">{{ `Số: ${bhyt.ghiChu}` }}</q-badge>
+        {{ bhyt.soBienLai }}<br />
         <q-badge v-if="bhyt.userName" color="gray">{{ bhyt.userName }}</q-badge>
-        <q-icon
-        @click="xacNhanGhiChu(bhyt)"
-        name="edit"
-        :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
-      />
       </q-item-label>
     </q-item-section>
   </q-item>
@@ -187,7 +187,7 @@ export default {
             { label: 'T3: 482.760đ', value: '482760' },
             { label: 'T4: 402.300đ', value: '402300' },
             { label: 'T5: 321.840đ', value: '321840' },
-            { label: 'Không', value: '0' },
+            { label: 'Không', value: '' },
           ]
         },
         cancel: true,
@@ -231,10 +231,11 @@ export default {
         });
         return null;
       }
+      const tienHaNoiHoTro = t.tienNsnnHoTro == parseInt(t.phuongThucDong) * 33000 ? t.tienNsnnHoTro : 0
       navigator.clipboard
         .writeText(`Xin chào! Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${t.hoTen}, Ngày sinh: **/**/${new Date(
                 t.ngaySinhDt
-              ).getFullYear()}; Đóng BHXH TN tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(0,4)} số tiền ${parseInt(t.tienNldPhaiNop).toLocaleString()}đ/${t.phuongThucDong}; Tên đơn vị tham gia: ${t.tenDonVi} ngày đăng ký ${t.ngayDk} mức đóng ${t.mucDong} (tiền ngân sách hỗ trợ ${t.tienNsnnHoTro}). Tham khảo https://blog.hotham.vn/thoi-han-nop-tien-tiep-bao-hiem-xa-hoi-tu-nguyen/`)
+              ).toLocaleDateString()}; Tên đơn vị đang tham gia: Hồ Thị Thắm - Đại lý ${t.tenDonVi}, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(t.mucDong).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(t.tienNsnnHoTro + tienHaNoiHoTro).toLocaleString()}đ). Đóng tiếp ${t.phuongThucDong} BHXH TN, tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(0,4)} số tiền phải đóng ${parseInt(t.tienNldPhaiNop - tienHaNoiHoTro).toLocaleString()}đ. Kết nối với Hồ Thị Thắm tại m.hotham.vn`)
         .then(
           function () {
             Notify.create({
@@ -253,9 +254,9 @@ export default {
         title: 'Thu BHXH',
         message: `Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${t.hoTen}, Ngày sinh: **/**/${new Date(
                 t.ngaySinhDt
-              ).toLocaleDateString()}; Đóng BHXH TN tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(0,4)} số tiền ${parseInt(t.tienNldPhaiNop).toLocaleString()}đ/${t.phuongThucDong}; Tên đơn vị tham gia: ${t.tenDonVi} ngày đăng ký ${t.ngayDk} mức đóng ${t.mucDong} (tiền ngân sách hỗ trợ ${t.tienNsnnHoTro}).`,
+              ).toLocaleDateString()}; Tên đơn vị đang tham gia: Hồ Thị Thắm - Đại lý ${t.tenDonVi}, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(t.mucDong).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(t.tienNsnnHoTro + tienHaNoiHoTro).toLocaleString()}đ). Đóng tiếp ${t.phuongThucDong} BHXH TN, tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(0,4)} số tiền phải đóng ${parseInt(t.tienNldPhaiNop - tienHaNoiHoTro).toLocaleString()}đ.`,
         prompt: {
-          model: t.tienNldPhaiNop,
+          model: (t.tienNldPhaiNop - tienHaNoiHoTro).toLocaleString(),
           type: 'text' // optional
         },
         cancel: true,
@@ -333,6 +334,24 @@ export default {
     copyTextToClipboard(maSoBhxh) {
       navigator.clipboard
         .writeText(maSoBhxh.toString().slice(maSoBhxh.length - 10))
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
+    copySDTToClipboard(soDienThoai) {
+      navigator.clipboard
+        .writeText(soDienThoai.toString().slice(soDienThoai.length - 10))
         .then(
           function () {
             Notify.create({

@@ -632,8 +632,6 @@ export default {
     },
     loadBhytByName() {
       this.getBhyts({
-        completed: "0",
-        disabled: "0",
         name: this.searchText,
       });
     },

@@ -337,6 +337,7 @@ export const updateGhiChu = async ({commit}, {maSoBhxh,ghiChu}) =>{
   }
 }
 export const thuTien = async ({commit}, {maSoBhxh,tongTien, userName = 1}) =>{
+  tongTien = tongTien.replace(/\D/g, '');
   try {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       tongTien,
