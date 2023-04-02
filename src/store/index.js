@@ -1,7 +1,7 @@
 import { store } from "quasar/wrappers";
 import { createStore } from "vuex";
 
-import bhyts from "./module-example";
+import bhyts from "./module-bhyts";
 import auth from "./module-auth";
 import items from "./module-item";
 import products from "./module-products";

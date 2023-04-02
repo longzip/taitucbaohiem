@@ -22,6 +22,12 @@
         />
         <q-icon
           class="q-ml-sm"
+          @click="xacNhanTheoDoi(bhyt)"
+          name="star"
+          :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
+        />
+        <q-icon
+          class="q-ml-sm"
           @click="
             dongBoDuLieu(
               bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
@@ -72,7 +78,7 @@
         <q-icon
           class="q-ml-md"
           @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
-          name="share"
+          name="paid"
         />
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
@@ -96,26 +102,27 @@
         ><q-icon
         class="q-mr-sm"
         @click="xacNhanGiaHan(bhyt)"
-        name="person_add_alt_1"
+        name="paid"
       /> 
         <strong class="text-subtitle2 text-weight-bold">{{
           bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong ? parseInt(bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong).toLocaleString() : "0"
         }}</strong>đ</q-item-label
       >
       <q-icon
-        @click="xacNhanTheoDoi(bhyt)"
-        name="star"
-        :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
-      />
-      <q-item-label caption
-        >{{ bhyt.ngayLap || bhyt.ngayBienLai || new Date(bhyt.updated_at).toLocaleString() }}<br />
-        {{ bhyt.soBienLai ? `Số: ${bhyt.soBienLai}` : bhyt.ghiChu }}<br />
-        {{ bhyt.userName }}
-      </q-item-label>
-      <q-icon
         @click="xoaThanhVienHGD(bhyt.maSoBhxh)"
         name="person_remove_alt_1"
       />
+      <q-item-label caption
+        >{{ bhyt.ngayLap || bhyt.ngayBienLai || new Date(bhyt.updated_at).toLocaleString() }}<br />
+        <q-badge v-if="bhyt.soBienLai">{{ `Số: ${bhyt.soBienLai}` }}</q-badge>
+        <q-badge v-if="bhyt.ghiChu" color="blue">{{ `Số: ${bhyt.ghiChu}` }}</q-badge>
+        <q-badge v-if="bhyt.userName" color="gray">{{ bhyt.userName }}</q-badge>
+        <q-icon
+        @click="xacNhanGhiChu(bhyt)"
+        name="edit"
+        :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
+      />
+      </q-item-label>
     </q-item-section>
   </q-item>
 </template>
@@ -127,7 +134,7 @@ import { Notify } from "quasar";
 export default {
   props: ["bhyt"],
   methods: {
-    ...mapActions("bhyts", ["loaiBo", "theoDoi", "dongBoDuLieu", "getTraCuuThongTinBHXHTN","thuTien","xoaThanhVienHGD"]),
+    ...mapActions("bhyts", ["updateGhiChu","loaiBo", "theoDoi", "dongBoDuLieu", "getTraCuuThongTinBHXHTN","thuTien","xoaThanhVienHGD"]),
     xacNhanLoaiBo(bhyt) {
       if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
       this.$q.dialog({
@@ -145,6 +152,27 @@ export default {
           this.loaiBo(bhyt);
         });
     },
+    xacNhanGhiChu (bhyt) {
+      this.$q.dialog({
+        title: 'Ghi chú',
+        message: 'Nội dung ghi chú?',
+        prompt: {
+          model: bhyt.ghiChu,
+          type: 'text' // optional
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(data => {
+        this.updateGhiChu({
+          ghiChu: data,
+          maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH
+        })
+      }).onCancel(() => {
+        // console.log('>>>> Cancel')
+      }).onDismiss(() => {
+        // console.log('I am triggered on both OK and Cancel')
+      })
+    },
     xacNhanGiaHan (bhyt) {
       this.$q.dialog({
         title: 'Gia hạn thẻ BHYT',
@@ -154,11 +182,11 @@ export default {
           model: bhyt.tongTien,
           // inline: true
           items: [
-            { label: '804.600', value: '804600', color: 'secondary' },
-            { label: '563.220', value: '563220' },
-            { label: '482.760', value: '482760' },
-            { label: '402.300', value: '402300' },
-            { label: '321.840', value: '321840' },
+            { label: 'T1: 804.600đ', value: '804600', color: 'secondary' },
+            { label: 'T2: 563.220đ', value: '563220' },
+            { label: 'T3: 482.760đ', value: '482760' },
+            { label: 'T4: 402.300đ', value: '402300' },
+            { label: 'T5: 321.840đ', value: '321840' },
             { label: 'Không', value: '0' },
           ]
         },
@@ -169,10 +197,6 @@ export default {
           tongTien: data,
           maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH
         })
-      }).onCancel(() => {
-        // console.log('>>>> Cancel')
-      }).onDismiss(() => {
-        // console.log('I am triggered on both OK and Cancel')
       })
     },
     xacNhanTheoDoi(bhyt) {
@@ -198,6 +222,7 @@ export default {
       return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
     },
     async copyBHXHToClipboard(maSoBhxh) {
+      try {
       const t = await this.getTraCuuThongTinBHXHTN({maSoBhxh});
       if(!t) {
         Notify.create({
@@ -224,6 +249,30 @@ export default {
             });
           }
         );
+        this.$q.dialog({
+        title: 'Thu BHXH',
+        message: `Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${t.hoTen}, Ngày sinh: **/**/${new Date(
+                t.ngaySinhDt
+              ).toLocaleDateString()}; Đóng BHXH TN tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(0,4)} số tiền ${parseInt(t.tienNldPhaiNop).toLocaleString()}đ/${t.phuongThucDong}; Tên đơn vị tham gia: ${t.tenDonVi} ngày đăng ký ${t.ngayDk} mức đóng ${t.mucDong} (tiền ngân sách hỗ trợ ${t.tienNsnnHoTro}).`,
+        prompt: {
+          model: t.tienNldPhaiNop,
+          type: 'text' // optional
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(data => {
+        this.thuTien({
+          tongTien: data,
+          maSoBhxh,
+          userName: 0
+        })
+      })
+    } catch (error) {
+      Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + error,
+            });
+      }
     },
     copyUrlToClipboard(t) {
       const [nam, thang, ngay] = new Date()

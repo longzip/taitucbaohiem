@@ -326,12 +326,23 @@ export const giaHan = async ({ commit }, payload) => {
   }
 };
 
-export const thuTien = async ({commit}, {maSoBhxh,tongTien}) =>{
+export const updateGhiChu = async ({commit}, {maSoBhxh,ghiChu}) =>{
+  try {
+    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+      ghiChu
+    });
+    await commit("updateBhyt", data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+export const thuTien = async ({commit}, {maSoBhxh,tongTien, userName = 1}) =>{
   try {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       tongTien,
       ngayLap: new Date().toISOString().slice(0,10),
-      userName: "1",
+      userName: tongTien ? userName : null,
+      disabled: 1
     });
     await commit("updateBhyt", data);
   } catch (error) {
