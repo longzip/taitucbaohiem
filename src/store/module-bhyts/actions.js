@@ -7,74 +7,80 @@ const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
 };
 
-export const xoaThanhVienHGD = ({commit},payload) => {
-  commit("removeBhyt",payload)
-}
+export const xoaThanhVienHGD = ({ commit }, payload) => {
+  commit("removeBhyt", payload);
+};
 
-export const getTraCuuThongTinBHXHTN = async ({commit}, {
-  maSoBhxh
-}) =>{
-    try {
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-      const {data} = await apiServices.get(`/api/services/app/TraCuu/TraCuuThongTinBHXHTN?maSoBhxh=${maSoBhxh}`);
-      Loading.hide();
-      return data.result.value.thongTinTns[0];
-    } catch (error) {
-      Notify.create({
-        type: "negative",
-        message: `Đã xảy ra lỗi!`,
-      });
-    }
-    return null;
-}
-export const getDanhSachKhachHangTaiTuc = async ({commit}, payload) =>{
-    commit("setBhyts", []);
+export const getTraCuuThongTinBHXHTN = async ({ commit }, { maSoBhxh }) => {
+  try {
     Loading.show({
       spinner: QSpinnerIos,
       spinnerSize: "100px",
     });
-    try {
-      const {data} = await apiServices.post("/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",payload);
-      commit("setBhyts", data.result.items);
-    } catch (error) {
-      Notify.create({
-        type: "negative",
-        message: `Đã xảy ra lỗi!`,
-      });
-    }
+    const { data } = await apiServices.get(
+      `/api/services/app/TraCuu/TraCuuThongTinBHXHTN?maSoBhxh=${maSoBhxh}`
+    );
     Loading.hide();
-}
-export const getBaoCaoChiTietGiaoDich = async ({commit}, {
-  tuThang ="2023-01-01 00:00:00",
-  denThang="2024-01-01 00:00:00"
-}) =>{
-    commit("setBhyts", []);
-    Loading.show({
-      spinner: QSpinnerIos,
-      spinnerSize: "100px",
+    return data.result.value.thongTinTns[0];
+  } catch (error) {
+    Notify.create({
+      type: "negative",
+      message: `Đã xảy ra lỗi!`,
     });
-    try {
-      const {data} = await apiServices.post("/api/services/app/BaoCaoTongHopGDThu/BaoCaoChiTietGiaoDich",{
-        filterItems:[],
-        maxResultCount:5000,
-        skipCount:0,
-        mangLuoiId:4580,
+  }
+  return null;
+};
+export const getDanhSachKhachHangTaiTuc = async ({ commit }, payload) => {
+  commit("setBhyts", []);
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
+  try {
+    const { data } = await apiServices.post(
+      "/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
+      payload
+    );
+    commit("setBhyts", data.result.items);
+  } catch (error) {
+    Notify.create({
+      type: "negative",
+      message: `Đã xảy ra lỗi!`,
+    });
+  }
+  Loading.hide();
+};
+export const getBaoCaoChiTietGiaoDich = async (
+  { commit },
+  { tuThang = "2023-01-01 00:00:00", denThang = "2024-01-01 00:00:00" }
+) => {
+  commit("setBhyts", []);
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
+  try {
+    const { data } = await apiServices.post(
+      "/api/services/app/BaoCaoTongHopGDThu/BaoCaoChiTietGiaoDich",
+      {
+        filterItems: [],
+        maxResultCount: 5000,
+        skipCount: 0,
+        mangLuoiId: 4580,
         tuThang,
         denThang,
-        loaiGiaoDich:0
-      });
-      commit("setBhyts", data.result.items);
-    } catch (error) {
-      Notify.create({
-        type: "negative",
-        message: `Đã xảy ra lỗi!`,
-      });
-    }
-    Loading.hide();
-}
+        loaiGiaoDich: 0,
+      }
+    );
+    commit("setBhyts", data.result.items);
+  } catch (error) {
+    Notify.create({
+      type: "negative",
+      message: `Đã xảy ra lỗi!`,
+    });
+  }
+  Loading.hide();
+};
 
 export const traCuuBhyts = async ({ commit }, payload) => {
   commit("setBhyts", []);
@@ -84,14 +90,14 @@ export const traCuuBhyts = async ({ commit }, payload) => {
   if (danhSachTimKiem.length === 1) {
     const name = searchText
       .split(" ")
-      .map(value => value.charAt(0).toUpperCase() + value.slice(1))
+      .map((value) => value.charAt(0).toUpperCase() + value.slice(1))
       .join(" ");
     let url = `/api/bhyts?name=${name}&maXa=${maXa}`;
     const { data } = await api.get(url);
     commit("setBhyts", data);
     return;
   }
-}
+};
 
 export const resetBhyt = async ({ commit }, payload) => {
   commit("setBhyts", payload);
@@ -266,13 +272,14 @@ export const traCuuTheoTen = async ({ commit, dispatch }, payload) => {
     );
     data.result.value.forEach((bhyt) => {
       // bhyts.set(bhyt.maSoBhxh, bhyt);
-      commit("updateBhyt",bhyt)
+      commit("updateBhyt", bhyt);
     });
     try {
-      await dispatch('dongBoDuLieu', data.result.value.map(i => i.maSoBhxh).join())
-    } catch (error) {
-      
-    }
+      await dispatch(
+        "dongBoDuLieu",
+        data.result.value.map((i) => i.maSoBhxh).join()
+      );
+    } catch (error) {}
   }
 
   // commit("getAllBhyts", [...bhyts.values()]);
@@ -315,7 +322,7 @@ export const giaHan = async ({ commit }, payload) => {
         tongTien,
         ngayLap,
         maThuTuc,
-        ghiChu: soBienLai,
+        soBienLai,
         disabled: true,
         completed: true,
       });
@@ -326,30 +333,33 @@ export const giaHan = async ({ commit }, payload) => {
   }
 };
 
-export const updateGhiChu = async ({commit}, {maSoBhxh,ghiChu}) =>{
+export const updateGhiChu = async ({ commit }, { maSoBhxh, ghiChu }) => {
   try {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
-      ghiChu
+      ghiChu,
     });
     await commit("updateBhyt", data);
   } catch (error) {
     console.log(error);
   }
-}
-export const thuTien = async ({commit}, {maSoBhxh,tongTien, userName = 1}) =>{
-  tongTien = tongTien.replace(/\D/g, '');
+};
+export const thuTien = async (
+  { commit },
+  { maSoBhxh, tongTien, userName = 1 }
+) => {
+  tongTien = tongTien.replace(/\D/g, "");
   try {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       tongTien,
-      ngayLap: new Date().toISOString().slice(0,10),
+      ngayLap: new Date().toISOString().slice(0, 10),
       userName: tongTien ? userName : null,
-      disabled: 1
+      disabled: 1,
     });
     await commit("updateBhyt", data);
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 export const daXyLy = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
@@ -369,7 +379,7 @@ export const daXyLy = async ({ commit }, payload) => {
         ngayLap,
         userName,
         maThuTuc,
-        ghiChu: soBienLai,
+        soBienLai,
         disabled: trangThaiHoSo !== 9,
       });
       await commit("updateBhyt", data);
@@ -466,33 +476,31 @@ export const lamMoiDanhSach = () => commit("getAllBhyts", []);
 
 export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/disabled`, {
-    disabled: !disabled==1,
+    disabled: !disabled == 1,
   });
   commit("updateBhyt", data);
 };
 
 export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/completed`, {
-    completed: !completed==1,
+    completed: !completed == 1,
   });
   commit("updateBhyt", data);
 };
 
-export const copyHoTenToClipboard = ({state}) => {
-  navigator.clipboard
-    .writeText(state.bhyts.map((bhyt) => bhyt.hoTen))
-    .then(
-      function () {
-        Notify.create({
-          type: "positive",
-          message: `Bạn đã sao chép thành công!`,
-        });
-      },
-      function (err) {
-        Notify.create({
-          type: "negative",
-          message: "Không thực hiện được!" + err,
-        });
-      }
-    );
-}
+export const copyHoTenToClipboard = ({ state }) => {
+  navigator.clipboard.writeText(state.bhyts.map((bhyt) => bhyt.hoTen)).then(
+    function () {
+      Notify.create({
+        type: "positive",
+        message: `Bạn đã sao chép thành công!`,
+      });
+    },
+    function (err) {
+      Notify.create({
+        type: "negative",
+        message: "Không thực hiện được!" + err,
+      });
+    }
+  );
+};
