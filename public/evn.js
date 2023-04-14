@@ -1,169 +1,227 @@
 const resetCong = async () => {
-    localStorage.setItem("tongcong",JSON.stringify({tongCong:0, soHoaDon:[]}));
+  localStorage.setItem(
+    "tongcong",
+    JSON.stringify({ tongCong: 0, soHoaDon: [] })
+  );
   document.getElementById("lbl_tien").textContent = 0;
-  document.getElementById("btn-minus").textContent= 'Cộng:';
-  document.getElementById('txt_customer_value').value = '';
-}
+  document.getElementById("btn-minus").textContent = "Cộng:";
+  document.getElementById("txt_customer_value").value = "";
+};
 const searchBHYT = async (searchText) => {
-    let a = document.createElement('a');
-    a.target = '_blank';
-    a.href = `https://thambuudien.ga/tra-thoi-han-bao-hiem-y-te?q=${searchText}`;
-    a.click();
-}
+  let a = document.createElement("a");
+  a.target = "_blank";
+  a.href = `https://thambuudien.ga/tra-thoi-han-bao-hiem-y-te?q=${searchText}`;
+  a.click();
+};
 
-const luuVi = () =>{
-localStorage.setItem("ourarraykey",JSON.stringify(parseInt($("#wallet-current-balance").text().replaceAll(".",""))));
-}
+const luuVi = () => {
+  localStorage.setItem(
+    "ourarraykey",
+    JSON.stringify(
+      parseInt($("#wallet-current-balance").text().replaceAll(".", ""))
+    )
+  );
+};
 
-const saveWallet = ()=> {
+const saveWallet = () => {
   luuVi();
   resetCong();
-  document.getElementById("btn-save").disabled = true
-}
+  document.getElementById("btn-save").disabled = true;
+};
 
 let tongTien = 0;
 
 const daThanhToan = () =>
-  Math.round((parseInt(localStorage.getItem("ourarraykey"))-parseInt($("#wallet-current-balance").text().replaceAll(".","")))/1000+0.4)
+  Math.round(
+    (parseInt(localStorage.getItem("ourarraykey")) -
+      parseInt($("#wallet-current-balance").text().replaceAll(".", ""))) /
+      1000 +
+      0.4
+  );
 
-const showWallet = ()=> {
-// 	alert("Tổng: " + daThanhToan());
+const showWallet = () => {
+  // 	alert("Tổng: " + daThanhToan());
   const templ = document.getElementById("lbl_tien");
   templ.textContent = templ.textContent + ` = ${daThanhToan()}`;
-}
+};
 
 const unLock = () => {
   //document.getElementById("btn-save").disabled = false;
   luuVi();
   resetCong();
-}
+};
 const tienThua = () => {
-  const {tongCong} = JSON.parse(localStorage.getItem("tongcong"))
-  if(tongCong === parseInt(localStorage.getItem("ourarraykey"))-parseInt($("#wallet-current-balance").text().replaceAll(".","")))
-  return parseInt(document.getElementById("txt_tien_value").value) - daThanhToan()
-  else
-  return 0;
-}
+  const { tongCong } = JSON.parse(localStorage.getItem("tongcong"));
+  if (
+    tongCong ===
+    parseInt(localStorage.getItem("ourarraykey")) -
+      parseInt($("#wallet-current-balance").text().replaceAll(".", ""))
+  )
+    return (
+      parseInt(document.getElementById("txt_tien_value").value) - daThanhToan()
+    );
+  else return 0;
+};
 
-const tienTra = () => Math.floor((parseInt(document.getElementById("txt_tien_value").value)*1000 - parseInt(document.getElementsByClassName("total-amount")[0].textContent.replaceAll(".","")))/1000)
+const tienTra = () =>
+  Math.floor(
+    (parseInt(document.getElementById("txt_tien_value").value) * 1000 -
+      parseInt(
+        document
+          .getElementsByClassName("total-amount")[0]
+          .textContent.replaceAll(".", "")
+      )) /
+      1000
+  );
 
 const traLai = () => {
-    let {soHoaDon} = JSON.parse(localStorage.getItem("tongcong"));
-    if(!soHoaDon) return
-  if(soHoaDon.length === 0)
-      alert("Trả lại: " + tienTra())
-  else
-      alert("Trả lại: " + tienThua())
-}
+  let { soHoaDon } = JSON.parse(localStorage.getItem("tongcong"));
+  if (!soHoaDon) return;
+  if (soHoaDon.length === 0) alert("Trả lại: " + tienTra());
+  else alert("Trả lại: " + tienThua());
+};
 const readEvn = async () => {
-
   return {
-      ma: document.getElementById("customer-code").textContent,
-      ten: document.getElementById("customer-name").textContent,
-      soDienThoai: document.getElementById("customer-phone").textContent,
-      diaChi: document.getElementById("customer-address").textContent,
-      soTien: document.getElementsByClassName("total-amount")[0].textContent.replaceAll(".",""),
-      ghiChu: document.getElementById("depositor_note").value,
-  }
-}
+    ma: document.getElementById("customer-code").textContent,
+    ten: document.getElementById("customer-name").textContent,
+    soDienThoai: document.getElementById("customer-phone").textContent,
+    diaChi: document.getElementById("customer-address").textContent,
+    soTien: document
+      .getElementsByClassName("total-amount")[0]
+      .textContent.replaceAll(".", ""),
+    ghiChu: document.getElementById("depositor_note").value,
+  };
+};
 
 const doCopy = async () => {
   const evn = await readEvn();
   document.getElementById("depositor_name").value = evn.ten;
   document.getElementById("depositor_address").value = evn.diaChi;
-  let {soHoaDon, tongCong} = JSON.parse(localStorage.getItem("tongcong"));
-  if(evn.ma && !soHoaDon.includes(evn.ma)){
-      tongCong += parseInt(evn.soTien);
-      soHoaDon.push(evn.ma);
-      localStorage.setItem("tongcong",JSON.stringify({tongCong, soHoaDon}));
-      document.getElementById("lbl_tien").textContent= tongCong.toLocaleString();
-      document.getElementById("btn-minus").textContent= `Cộng ${soHoaDon.length}:`;
-      document.getElementById('txt_customer_value').value = '';
+  let { soHoaDon, tongCong } = JSON.parse(localStorage.getItem("tongcong"));
+  if (evn.ma && !soHoaDon.includes(evn.ma)) {
+    tongCong += parseInt(evn.soTien);
+    soHoaDon.push(evn.ma);
+    localStorage.setItem("tongcong", JSON.stringify({ tongCong, soHoaDon }));
+    document.getElementById("lbl_tien").textContent = tongCong.toLocaleString();
+    document.getElementById(
+      "btn-minus"
+    ).textContent = `Cộng ${soHoaDon.length}:`;
+    document.getElementById("txt_customer_value").value = "";
   }
-  if(evn.ma)
+  if (evn.ma)
     $.ajax({
-     url: 'https://app.hotham.vn/api/evns',
-     type: "POST",
-     headers: headerParams,
-     async: true,
-     data: evn
-   });
-//if(evn.ten) await searchBHYT(evn.ten)
-}
+      url: "https://app.hotham.vn/api/evns",
+      type: "POST",
+      headers: headerParams,
+      async: true,
+      data: evn,
+    });
+  //if(evn.ten) await searchBHYT(evn.ten)
+};
 
 function drawPrintEVN(trans) {
-      let providerMap = JSON.parse('{"CNBENTRE":{"logo":"https:\/\/static.paysmart.com.vn\/billing\/15.%20Bien_nhan_Cap_Nuoc_Ben_Tre.jpg","name":"Nước Bến Tre","type":"WACO","phone":"","district_id":"","iconUrl":"https:\/\/static.paysmart.com.vn\/billing\/icon-water\/Water_Ben_Tre@3x.png","default":"true","province_id":"83","active":"true","service_code":"water","provider_code":"CNBENTRE"},"CNTHOTNOT":{"logo":"https:\/\/dev-stc.paysmart.com.vn\/billing\/12.%20Bien_nhan_Cap_Nuoc_Can_Tho_2.jpg","name":"Nước Thốt Nốt","type":"WACO","phone":"","district_id":"","iconUrl":"https:\/\/dev-stc.paysmart.com.vn\/billing\/icon-water\/Water_ThotNot_CT@3x.png","default":"false","province_id":"92","active":"true","service_code":"water","provider_code":"CNTHOTNOT"},"CNCT":{"logo":"https:\/\/static.paysmart.com.vn\/billing\/11.%20Bien_Nhan_Cap_Nuoc_Can_Tho.png","name":"Nước Cần Thơ","type":"WACO","phone":"","district_id":"","iconUrl":"https:\/\/static.paysmart.com.vn\/billing\/icon-water\/Water_Can_Tho@3x.png","default":"true","province_id":"92","active":"true","service_code":"water","provider_code":"CNCT"},"CNCAIRANG":{"logo":"https:\/\/dev-stc.paysmart.com.vn\/billing\/12.%20Bien_nhan_Cap_Nuoc_Can_Tho_2.jpg","name":"Nước Cái Răng","type":"WACO","phone":"","district_id":"","iconUrl":"https:\/\/dev-stc.paysmart.com.vn\/billing\/icon-water\/Water_Cai_Rang_CT@3x.png","default":"false","province_id":"92","active":"true","service_code":"water","provider_code":"CNCAIRANG"},"CNTRANOC":{"logo":"https:\/\/dev-stc.paysmart.com.vn\/billing\/21.%20Bien_nhan_Cap_Nuoc_Tra_Noc_O_Mon.jpg","name":"Nước Trà Nóc - Ô Môn","type":"WACO","phone":"","district_id":"","iconUrl":"https:\/\/dev-stc.paysmart.com.vn\/billing\/icon-water\/Water_Tra_Noc%403x.png","default":"false","province_id":"92","active":"true","service_code":"water","provider_code":"CNTRANOC"},"EVNS":{"logo":"https:\/\/static.paysmart.com.vn\/icon\/EVNSPC.png","name":"EVN Miền Nam","type":"EVN","phone":"","default":"true","district_id":"","province_id":"60","service_code":"electric","provider_code":"EVNS"},"EVNHN":{"logo":"https:\/\/dev-stc.paysmart.com.vn\/billing\/dien-evnhn.jpg","name":"EVN Hà Nội","type":"EVN","phone":"","district_id":"","iconUrl":"https:\/\/dev-stc.paysmart.com.vn\/icon\/EVNHN.png","default":"true","province_id":"01","active":"true","service_code":"electric","provider_code":"EVNHN"},"CNCANTHO2":{"logo":"https:\/\/static.paysmart.com.vn\/billing\/12.%20Bien_nhan_Cap_Nuoc_Can_Tho_2.jpg","name":"Nước Cần Thơ 2","type":"WACO","phone":"","district_id":"","iconUrl":"https:\/\/static.paysmart.com.vn\/billing\/icon-water\/Water_Can_Tho2@3x.png","default":"false","province_id":"92","active":"true","service_code":"water","provider_code":"CNCANTHO2"}}');
+  let providerMap = JSON.parse(
+    '{"CNBENTRE":{"logo":"https://static.paysmart.com.vn/billing/15.%20Bien_nhan_Cap_Nuoc_Ben_Tre.jpg","name":"Nước Bến Tre","type":"WACO","phone":"","district_id":"","iconUrl":"https://static.paysmart.com.vn/billing/icon-water/Water_Ben_Tre@3x.png","default":"true","province_id":"83","active":"true","service_code":"water","provider_code":"CNBENTRE"},"CNTHOTNOT":{"logo":"https://dev-stc.paysmart.com.vn/billing/12.%20Bien_nhan_Cap_Nuoc_Can_Tho_2.jpg","name":"Nước Thốt Nốt","type":"WACO","phone":"","district_id":"","iconUrl":"https://dev-stc.paysmart.com.vn/billing/icon-water/Water_ThotNot_CT@3x.png","default":"false","province_id":"92","active":"true","service_code":"water","provider_code":"CNTHOTNOT"},"CNCT":{"logo":"https://static.paysmart.com.vn/billing/11.%20Bien_Nhan_Cap_Nuoc_Can_Tho.png","name":"Nước Cần Thơ","type":"WACO","phone":"","district_id":"","iconUrl":"https://static.paysmart.com.vn/billing/icon-water/Water_Can_Tho@3x.png","default":"true","province_id":"92","active":"true","service_code":"water","provider_code":"CNCT"},"CNCAIRANG":{"logo":"https://dev-stc.paysmart.com.vn/billing/12.%20Bien_nhan_Cap_Nuoc_Can_Tho_2.jpg","name":"Nước Cái Răng","type":"WACO","phone":"","district_id":"","iconUrl":"https://dev-stc.paysmart.com.vn/billing/icon-water/Water_Cai_Rang_CT@3x.png","default":"false","province_id":"92","active":"true","service_code":"water","provider_code":"CNCAIRANG"},"CNTRANOC":{"logo":"https://dev-stc.paysmart.com.vn/billing/21.%20Bien_nhan_Cap_Nuoc_Tra_Noc_O_Mon.jpg","name":"Nước Trà Nóc - Ô Môn","type":"WACO","phone":"","district_id":"","iconUrl":"https://dev-stc.paysmart.com.vn/billing/icon-water/Water_Tra_Noc%403x.png","default":"false","province_id":"92","active":"true","service_code":"water","provider_code":"CNTRANOC"},"EVNS":{"logo":"https://static.paysmart.com.vn/icon/EVNSPC.png","name":"EVN Miền Nam","type":"EVN","phone":"","default":"true","district_id":"","province_id":"60","service_code":"electric","provider_code":"EVNS"},"EVNHN":{"logo":"https://dev-stc.paysmart.com.vn/billing/dien-evnhn.jpg","name":"EVN Hà Nội","type":"EVN","phone":"","district_id":"","iconUrl":"https://dev-stc.paysmart.com.vn/icon/EVNHN.png","default":"true","province_id":"01","active":"true","service_code":"electric","provider_code":"EVNHN"},"CNCANTHO2":{"logo":"https://static.paysmart.com.vn/billing/12.%20Bien_nhan_Cap_Nuoc_Can_Tho_2.jpg","name":"Nước Cần Thơ 2","type":"WACO","phone":"","district_id":"","iconUrl":"https://static.paysmart.com.vn/billing/icon-water/Water_Can_Tho2@3x.png","default":"false","province_id":"92","active":"true","service_code":"water","provider_code":"CNCANTHO2"}}'
+  );
 
-      let _container = $("<div />");
-      let _bills = trans.bills;
-      for (let k in _bills) {
-          let _bill = _bills[k];
-          let _billDetail = _bill.billDetail || {};
-          let _data = {
-              start_date: formatDataEmpty(_billDetail.startDate),
-              end_date: formatDataEmpty(_billDetail.endDate),
-              provider_logo: providerMap[trans.provider_code].iconUrl,
-              customer_name: formatDataEmpty(trans.customer_name),
-              customer_address: formatDataEmpty(trans.customer_address),
-              customer_code: formatDataEmpty(trans.customer_code),
-              capacity_no: formatDataEmpty(_billDetail.kwhNo),
-              home_no: formatDataEmpty(_billDetail.homeNo),
-              serial_number: formatDataEmpty(_billDetail.serialNumber),
-              bill_id: formatDataEmpty(_bill.billId),
-              payment_method: formatDataEmpty(_billDetail.paymentMethod),
-              period: formatDataEmpty(_bill.period),
-              content_start_date: formatDataEmpty(_billDetail.startDate),
-              content_end_date: formatDataEmpty(_billDetail.endDate),
-              start_stage_no: formatDataEmpty(_billDetail.startStageNo),
-              end_stage_no: formatDataEmpty(_billDetail.endStageNo),
-              price_DNTT: _billDetail.priceDNTT ? _billDetail.priceDNTT.replace(/;/g, "\n") : "\n",
-              price_detail: formatNumberArray(_billDetail.priceDetail),
-              amount_detail: formatNumberArray(_billDetail.amountDetail),
-              total_capacity_no: formatDataEmpty(_billDetail.capacityNo),
-              debt_amount: formatNumber(_billDetail.debtAmount),
-              debt_fee: formatNumber(_billDetail.debtFee),
-              amount: formatNumber(_bill.amount),
-              amount_text: DOCSO().doc(_bill.amount) + " đồng chẵn"
-          };
+  let _container = $("<div />");
+  let _bills = trans.bills;
+  for (let k in _bills) {
+    let _bill = _bills[k];
+    let _billDetail = _bill.billDetail || {};
+    let _data = {
+      start_date: formatDataEmpty(_billDetail.startDate),
+      end_date: formatDataEmpty(_billDetail.endDate),
+      provider_logo: providerMap[trans.provider_code].iconUrl,
+      customer_name: formatDataEmpty(trans.customer_name),
+      customer_address: formatDataEmpty(trans.customer_address),
+      customer_code: formatDataEmpty(trans.customer_code),
+      capacity_no: formatDataEmpty(_billDetail.kwhNo),
+      home_no: formatDataEmpty(_billDetail.homeNo),
+      serial_number: formatDataEmpty(_billDetail.serialNumber),
+      bill_id: formatDataEmpty(_bill.billId),
+      payment_method: formatDataEmpty(_billDetail.paymentMethod),
+      period: formatDataEmpty(_bill.period),
+      content_start_date: formatDataEmpty(_billDetail.startDate),
+      content_end_date: formatDataEmpty(_billDetail.endDate),
+      start_stage_no: formatDataEmpty(_billDetail.startStageNo),
+      end_stage_no: formatDataEmpty(_billDetail.endStageNo),
+      price_DNTT: _billDetail.priceDNTT
+        ? _billDetail.priceDNTT.replace(/;/g, "\n")
+        : "\n",
+      price_detail: formatNumberArray(_billDetail.priceDetail),
+      amount_detail: formatNumberArray(_billDetail.amountDetail),
+      total_capacity_no: formatDataEmpty(_billDetail.capacityNo),
+      debt_amount: formatNumber(_billDetail.debtAmount),
+      debt_fee: formatNumber(_billDetail.debtFee),
+      amount: formatNumber(_bill.amount),
+      amount_text: DOCSO().doc(_bill.amount) + " đồng chẵn",
+    };
 
-          let _base = $("<div />").append($("#bill-template-evn-1").html());
+    let _base = $("<div />").append($("#bill-template-evn-1").html());
 
-          Object.keys(_data).forEach((k, i) => {
-              if (_base.find("#" + k).prop("tagName").toLowerCase() === 'img') {
-                  _base.find("#" + k).prop("src", _data[k]);
-              } else if (_base.find("#" + k).hasClass("price_DNTT") || _base.find("#" + k).hasClass("price_detail") || _base.find("#" + k).hasClass("amount_detail")) {
-                  _base.find("#" + k).empty().html(_data[k]);
-              } else {
-                  _base.find("#" + k).empty().text(_data[k]);
-              }
-          });
-
-          if (k > 0) {
-              _container.append($("<div style='page-break-before: always;'></div>"));
-          }
-          _container.append(_base.clone());
+    Object.keys(_data).forEach((k, i) => {
+      if (
+        _base
+          .find("#" + k)
+          .prop("tagName")
+          .toLowerCase() === "img"
+      ) {
+        _base.find("#" + k).prop("src", _data[k]);
+      } else if (
+        _base.find("#" + k).hasClass("price_DNTT") ||
+        _base.find("#" + k).hasClass("price_detail") ||
+        _base.find("#" + k).hasClass("amount_detail")
+      ) {
+        _base
+          .find("#" + k)
+          .empty()
+          .html(_data[k]);
+      } else {
+        _base
+          .find("#" + k)
+          .empty()
+          .text(_data[k]);
       }
+    });
 
-      _container.print({
-          globalStyles: false,
-          stylesheet: "https://app.buudienxatulap.ga/printv2.css"
-      });
+    if (k > 0) {
+      _container.append($("<div style='page-break-before: always;'></div>"));
+    }
+    _container.append(_base.clone());
   }
 
-  function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  _container.print({
+    globalStyles: false,
+    stylesheet: "https://app.buudienxatulap.ga/printv2.css",
+  });
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const khoiTao = async () => {
   await sleep(1000);
-  const txtTien = $('<input type="text" id="txt_tien_value" name="txt_tien_value" required="" data-parsley-trigger="change" data-parsley-length="[1,100]">')
+  const txtTien = $(
+    '<input type="text" id="txt_tien_value" name="txt_tien_value" required="" data-parsley-trigger="change" data-parsley-length="[1,100]">'
+  );
   //const btnSave = $('<button class="btn btn-info" type="button" onclick="saveWallet()" id="btn-save" disabled = true><i class="fa fa-save"></i> Lưu HĐ</button>');
-  const btnShow = $('<button class="btn btn-primary" type="button" onclick="showWallet()" id="btn-eye"><i class="fa fa-eye"></i> Xem</button>');
-  const btnLock = $('<button class="btn btn-success" type="button" onclick="unLock()" id="btn-lock"><i class="fa fa-lock"></i> Xóa</button>');
-  const btnTraLai = $('<button class="btn btn-secondary" type="button" onclick="traLai()" id="btn-minus">Cộng</button>');
-  const btnSaoChep = $('<button class="btn btn-primary" type="button" onclick="doCopy()" id="btn-copy"><i class="fa fa-copy"></i> Copy</button>');
-  const lblTongCong = $('<span id="lbl_tien" style="font-size: 28px; font-weight: 900;">0</span>');
-
+  const btnShow = $(
+    '<button class="btn btn-primary" type="button" onclick="showWallet()" id="btn-eye"><i class="fa fa-eye"></i> Xem</button>'
+  );
+  const btnLock = $(
+    '<button class="btn btn-success" type="button" onclick="unLock()" id="btn-lock"><i class="fa fa-lock"></i> Xóa</button>'
+  );
+  const btnTraLai = $(
+    '<button class="btn btn-secondary" type="button" onclick="traLai()" id="btn-minus">Cộng</button>'
+  );
+  const btnSaoChep = $(
+    '<button class="btn btn-primary" type="button" onclick="doCopy()" id="btn-copy"><i class="fa fa-copy"></i> Copy</button>'
+  );
+  const lblTongCong = $(
+    '<span id="lbl_tien" style="font-size: 28px; font-weight: 900;">0</span>'
+  );
 
   //$("#wallet-current-balance").parent().append(btnSave);
   $("#wallet-current-balance").parent().append(btnShow);
@@ -173,11 +231,10 @@ const khoiTao = async () => {
   $("#wallet-current-balance").parent().append(lblTongCong);
 
   $("#btn-reset").parent().before(btnSaoChep);
-  
 
   await sleep(1000);
-  
-  $('#bill-template-evn-1').html(`
+
+  $("#bill-template-evn-1").html(`
   <div class="bill-container" style="font-size: 13px;">
   <section class="top row">
       <div class="col-2">
@@ -766,7 +823,7 @@ width="70px" height="70px" viewBox="0 0 1160 1160" enable-background="new 0 0 11
               </tr>
               <tr>
                   <td colspan="3" style="text-align: left; padding-left: 5px; font-size: 18px;">
-                      🎁🎁 Thông báo: Tham gia bảo hiểm xã hội tự nguyện được hỗ trợ mức đóng, về già có <strong>lương hưu</strong>, đỡ gánh lo cho con cháu. Để đăng ký tham gia bạn chỉ cần đến trực tiếp điểm <strong>Bưu điện xã Tự Lập</strong> cạnh trạm y tế gặp chị <strong>Hồ Thị Thắm 0978333963</strong> (<em>thay anh Lập nghỉ</em>). Quét <strong>mã QR</strong> ở góc trên hoặc Truy cập ngay website <strong><em>www.hotham.vn</em></strong> để biết thêm thông tin chi tiết.
+                      🎁🎁 Thông báo: Tham gia bảo hiểm xã hội tự nguyện được Nhà nước hỗ trợ tiền đóng theo tỷ lệ phần trăm (%) trên mức đóng BHXH hằng tháng theo mức chuẩn hộ nghèo của khu vực nông thôn, về già có <strong>lương hưu + thẻ BHYT</strong> và chế độ tử tuất, đỡ gánh lo cho con cháu. Kết bạn Zalo số điện thoại <strong>0978333963</strong> để được chị Hồ Thị Thắm tư vấn thêm và đăng ký tham gia ngay.
                   </td>
 
               </tr>
@@ -775,23 +832,26 @@ width="70px" height="70px" viewBox="0 0 1160 1160" enable-background="new 0 0 11
   </section>
 
 </div>
-  `)
+  `);
 
   try {
-      document.getElementById("txt_tien_value").addEventListener("keydown",
-  function(event) {
-      if (event.keyCode == 13){
+    document.getElementById("txt_tien_value").addEventListener(
+      "keydown",
+      function (event) {
+        if (event.keyCode == 13) {
           traLai();
-      }
-  }, true);
-  } catch (error) {
-      
-  }
-  try{
-      let {soHoaDon, tongCong} = JSON.parse(localStorage.getItem("tongcong"));
-  document.getElementById("lbl_tien").textContent= tongCong.toLocaleString();
-      document.getElementById("btn-minus").textContent= `Cộng ${soHoaDon.length}:`;
-  }catch (error) {}
-}
+        }
+      },
+      true
+    );
+  } catch (error) {}
+  try {
+    let { soHoaDon, tongCong } = JSON.parse(localStorage.getItem("tongcong"));
+    document.getElementById("lbl_tien").textContent = tongCong.toLocaleString();
+    document.getElementById(
+      "btn-minus"
+    ).textContent = `Cộng ${soHoaDon.length}:`;
+  } catch (error) {}
+};
 
 khoiTao();

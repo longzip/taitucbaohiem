@@ -7,7 +7,9 @@
     >
       <div class="inline bg-orange-4 rounded-borders cursor-pointer">
         <div class="fit flex flex-center text-center non-selectable q-pa-md">
-          Tra cứu {{ bhyts.length }}/{{ parseInt(tongTien).toLocaleString() }}đ!<br />(Bấm vào đây và lựa chọn)
+          Tra cứu {{ bhyts.length }}/{{
+            parseInt(tongTien).toLocaleString()
+          }}đ!<br />(Bấm vào đây và lựa chọn)
         </div>
 
         <q-menu touch-position>
@@ -72,6 +74,9 @@
             <q-item clickable @click="copySoDienThoaiToClipboard" v-close-popup>
               <q-item-section>Copy tất cả số điện thoại</q-item-section>
             </q-item>
+            <q-item clickable @click="copyNamePhoneClipboard" v-close-popup>
+              <q-item-section>Copy danh bạ</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </div>
@@ -112,7 +117,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("bhyts", ["bhyts","tongTien"]),
+    ...mapGetters("bhyts", ["bhyts", "tongTien"]),
     ...mapState("store", ["userDetails"]),
   },
   methods: {
@@ -126,22 +131,22 @@ export default {
       "dongBoDuLieu",
       "traCuuTheoTen",
       "getDanhSachKhachHangTaiTuc",
-      "copyHoTenToClipboard"
+      "copyHoTenToClipboard",
     ]),
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
 
-    async loadTaiTucBHXH(){
+    async loadTaiTucBHXH() {
       this.getDanhSachKhachHangTaiTuc({
-        filterItems:[],
-        maxResultCount:500,
-        skipCount:0,
-        mangLuoiId:4580,
-        tuThang:"2023-03-01 00:00:00",
-        denThang:"2023-04-01 00:00:00",
-        type:-1,
-        loaiDichVu:0
+        filterItems: [],
+        maxResultCount: 500,
+        skipCount: 0,
+        mangLuoiId: 4580,
+        tuThang: "2023-03-01 00:00:00",
+        denThang: "2023-04-01 00:00:00",
+        type: -1,
+        loaiDichVu: 0,
       });
     },
 
@@ -619,12 +624,11 @@ export default {
       });
     },
     loadBhytByUserName() {
-      if(!this.searchText)
-      {
+      if (!this.searchText) {
         Notify.create({
-              type: "negative",
-              message: "Nhập 1 hoặc 0!" + err,
-            });
+          type: "negative",
+          message: "Nhập 1 hoặc 0!" + err,
+        });
       }
       this.getBhyts({
         userName: this.searchText,
@@ -668,9 +672,8 @@ export default {
       });
     },
     async timKiem(searchText) {
-      
       const danhSachTimKiem = searchText.split(",");
-      if(danhSachTimKiem.length > 1)
+      if (danhSachTimKiem.length > 1)
         await this.traCuuBhyts({ searchText, maXa: "08986" });
       const regex = /[0-9]/g;
       for (let index = 0; index < danhSachTimKiem.length; index++) {
@@ -695,7 +698,7 @@ export default {
       }
     },
     async khoiTao() {
-      this.resetBhyt([])
+      this.resetBhyt([]);
       if (this.$route.query.key) {
         this.key = await this.saveBHYT(this.$route.query.key);
       }
@@ -721,7 +724,41 @@ export default {
     },
     copySoDienThoaiToClipboard() {
       navigator.clipboard
-        .writeText(this.bhyts.map((bhyt) => bhyt.soDienThoai))
+        .writeText(
+          [...new Set(this.bhyts.map((bhyt) => bhyt.soDienThoai))].join("\r\n")
+        )
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
+    },
+    copyNamePhoneClipboard() {
+      navigator.clipboard
+        .writeText(
+          "Name\tPhone\r\n" +
+            [
+              ...new Map(
+                this.bhyts.map(({ soDienThoai, hoTen, ngaySinhDt }) => [
+                  soDienThoai,
+                  hoTen +
+                    " " +
+                    new Date(ngaySinhDt).getFullYear() +
+                    "\t" +
+                    soDienThoai,
+                ])
+              ).values(),
+            ].join("\r\n")
+        )
         .then(
           function () {
             Notify.create({
