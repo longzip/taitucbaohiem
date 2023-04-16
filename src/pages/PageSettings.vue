@@ -20,13 +20,14 @@
           label="Tên đăng nhập"
           disable
         />
-        <q-input
+        <!-- <q-input
           v-model="formData.smsText"
           class="q-mb-md"
           outlined
           type="textarea"
           label="Mẫu gửi tin SMS"
-        />
+        /> -->
+        <q-icon name="update" @click="taoKhoaMoi({})" />
         <q-input
           v-model="formData.isLogin"
           class="q-mb-md"
@@ -34,6 +35,7 @@
           type="textarea"
           label="Khóa bí mật"
         />
+
         <div>
           <q-btn label="Cập nhật" type="submit" color="primary" />
         </div>
@@ -43,6 +45,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -97,21 +100,31 @@ export default {
       }
       return json;
     },
-  },
-  created() {
-    // this.handleAuthStateChanged();
-    this.formData = { ...this.userDetails };
-    if (this.$route.query.q) {
-      this.formData.isLogin = this.$route.query.q;
+    async taoKhoaMoi() {
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://ssm-api.vnpost.vn/api/TokenAuth/Authenticate",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        data: this.userDetails.smsText,
+      };
+
+      const { data } = await axios.request(config);
+
+      this.formData.isLogin = data.result.accessToken;
+
       this.firebaseUpdateUser({
-        userId: this.formData.userId,
+        userId: this.userDetails.userId,
         updates: this.formData,
       });
-
-      this.saveBHYT(this.$route.query.q);
-    }
-    //else this.formData.isLogin = isLogin;
-    // this.formData = { name, email, smsText, isLogin };
+      this.handleAuthStateChanged();
+    },
+  },
+  created() {
+    this.formData = { ...this.userDetails };
   },
 };
 </script>

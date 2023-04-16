@@ -1,7 +1,7 @@
 <template>
-    <div class="q-pa-md">
-        <ListHeader bgcolor="bg-orange-4">Danh sách bưu gửi</ListHeader>
-        <div class="q-gutter-y-md column">
+  <div class="q-pa-md">
+    <ListHeader bgcolor="bg-orange-4">Danh sách bưu gửi</ListHeader>
+    <div class="q-gutter-y-md column">
       <q-input
         outlined
         v-model="searchText"
@@ -21,55 +21,54 @@
         </template>
       </q-input>
     </div>
-        <q-list bordered >
-            <div v-for="donHang in itemBy(searchText)" :key="donHang.id">
-            <q-item>
-              <q-item-section>
-                <q-item-label
-                  >{{ donHang.senderName }}
-                </q-item-label>
-                
-                <q-item-label caption lines="2">
-                  <a target="_blank" :href="`https://zalo.me/${donHang.senderPhone}`">{{
-                    donHang.senderPhone
-                  }}</a>
-                  <q-icon
-                  name="content_copy"
-                  @click="copyPhoneToClipboard(donHang.senderPhone)"
-                />
-                </q-item-label>
-                <q-item-label caption lines="2">{{
-                  donHang.contentNote
-                }}</q-item-label>
-              </q-item-section>
+    <q-list bordered>
+      <div v-for="donHang in itemBy(searchText)" :key="donHang.id">
+        <q-item>
+          <q-item-section>
+            <q-item-label>{{ donHang.senderName }} </q-item-label>
 
-              <q-item-section side top>
-                <q-item-label caption>{{ donHang.ttNumber }}</q-item-label>
-                <q-icon
-                  name="content_copy"
-                  @click="copyTextToClipboard(donHang)"
-                />
-                <q-item-label caption
-                  >Số tiền:
-                  {{
-                    parseInt(donHang.totalFeeSpecial).toLocaleString()
-                  }}</q-item-label
-                >
-                <q-item-label caption
-                  >COD:
-                  {{
-                    donHang.codAmount ? parseInt(donHang.codAmount).toLocaleString() : ''
-                  }}</q-item-label
-                >
-                <q-item-label caption>{{
-                  new Date(donHang.updatedDate).toLocaleString()
-                }}</q-item-label>
-              </q-item-section></q-item
+            <q-item-label caption lines="2">
+              <a
+                target="_blank"
+                :href="`https://zalo.me/${donHang.senderPhone}`"
+                >{{ donHang.senderPhone }}</a
+              >
+              <q-icon
+                name="content_copy"
+                @click="copyPhoneToClipboard(donHang.senderPhone)"
+              />
+            </q-item-label>
+            <q-item-label caption lines="2">{{
+              donHang.contentNote
+            }}</q-item-label>
+          </q-item-section>
+
+          <q-item-section side top>
+            <q-item-label caption>{{ donHang.ttNumber }}</q-item-label>
+            <q-icon name="content_copy" @click="copyTextToClipboard(donHang)" />
+            <q-item-label caption
+              >Số tiền:
+              {{
+                parseInt(donHang.totalFeeSpecial).toLocaleString()
+              }}</q-item-label
             >
-            <q-separator spaced inset />
-          </div>
-          </q-list>
-    </div>
+            <q-item-label caption
+              >COD:
+              {{
+                donHang.codAmount
+                  ? parseInt(donHang.codAmount).toLocaleString()
+                  : ""
+              }}</q-item-label
+            >
+            <q-item-label caption>{{
+              new Date(donHang.updatedDate).toLocaleString()
+            }}</q-item-label>
+          </q-item-section></q-item
+        >
+        <q-separator spaced inset />
+      </div>
+    </q-list>
+  </div>
 </template>
 
 <script>
@@ -83,8 +82,8 @@ export default defineComponent({
   name: "PageItem",
   data() {
     return {
-        searchText: "",
-    }
+      searchText: "",
+    };
   },
   computed: {
     ...mapGetters("items", ["itemBy"]),
@@ -92,29 +91,29 @@ export default defineComponent({
   methods: {
     ...mapActions("items", ["getItems"]),
     copyPhoneToClipboard(phone) {
-      navigator.clipboard
-        .writeText(
-          phone
-        )
-        .then(
-          function () {
-            Notify.create({
-              type: "positive",
-              message: `Bạn đã sao chép thành công!`,
-            });
-          },
-          function (err) {
-            Notify.create({
-              type: "negative",
-              message: "Không thực hiện được!" + err,
-            });
-          }
-        );
+      navigator.clipboard.writeText(phone).then(
+        function () {
+          Notify.create({
+            type: "positive",
+            message: `Bạn đã sao chép thành công!`,
+          });
+        },
+        function (err) {
+          Notify.create({
+            type: "negative",
+            message: "Không thực hiện được!" + err,
+          });
+        }
+      );
     },
-    copyTextToClipboard({ttNumber,recName,recPhone, recAdd}) {
+    copyTextToClipboard({ ttNumber, recName, recPhone, recAdd }) {
       navigator.clipboard
         .writeText(
-          `https://www.hotham.vn/tra-cuu-hang-buu-dien?q=${ttNumber}. (${[recName,recPhone, recAdd].join('\t')})`
+          `http://www.vnpost.vn/vi-vn/dinh-vi/buu-pham?key=${ttNumber}. (${[
+            recName,
+            recPhone,
+            recAdd,
+          ].join("\t")})`
         )
         .then(
           function () {
@@ -134,10 +133,18 @@ export default defineComponent({
   },
   mounted() {
     const [nam, thang, ngay] = new Date().toISOString().slice(0, 10).split("-");
-    const denNgay = [ngay,thang,nam].join("/");
+    const denNgay = [ngay, thang, nam].join("/");
     // const tuNgay = date.subtractFromDate(new Date(nam, thang, ngay), { days: 1 }).toISOString().slice(0, 10).split("-").reverse().join("/");
-    const tuNgay = parseInt(ngay) === 1 ? new Date(nam,thang-1,0).toISOString().slice(0,10).split("-").reverse().join("/") : [ ngay,thang,nam].join("/");
-    this.getItems({tuNgay, denNgay});
+    const tuNgay =
+      parseInt(ngay) === 1
+        ? new Date(nam, thang - 1, 0)
+            .toISOString()
+            .slice(0, 10)
+            .split("-")
+            .reverse()
+            .join("/")
+        : [parseInt(ngay - 1), thang, nam].join("/");
+    this.getItems({ tuNgay, denNgay });
   },
 });
 </script>
