@@ -109,7 +109,7 @@ export default defineComponent({
     copyTextToClipboard({ ttNumber, recName, recPhone, recAdd }) {
       navigator.clipboard
         .writeText(
-          `http://www.vnpost.vn/vi-vn/dinh-vi/buu-pham?key=${ttNumber}. (${[
+          `https://www.hotham.vn/tra-cuu-hang-buu-dien?q=${ttNumber}. (${[
             recName,
             recPhone,
             recAdd,
