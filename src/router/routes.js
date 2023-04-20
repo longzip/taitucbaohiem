@@ -92,7 +92,7 @@ const routes = [
         path: "/auth",
         name: "auth",
         component: () => import("pages/PageAuth.vue"),
-        meta: { requireAuth: false },
+        meta: { requireAuth: true },
       },
       {
         path: "/tra-cuu/:id",
