@@ -316,13 +316,21 @@ export const taiTuc = async ({ commit }, payload) => {
 export const giaHan = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
     await sleep();
-    const { maSoBhxh, tongTien, ngayLap, maThuTuc, soBienLai } = payload[index];
+    const {
+      maSoBhxh,
+      tongTien,
+      ngayLap,
+      maThuTuc,
+      soBienLai,
+      userId: userName,
+    } = payload[index];
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         tongTien,
         ngayLap,
         maThuTuc,
         soBienLai,
+        userName,
         disabled: true,
         completed: true,
       });
