@@ -368,7 +368,7 @@ export const daXyLy = async ({ commit }, payload) => {
       maSoBhxh,
       tongTien,
       ngayLap,
-      userName,
+      userId: userName,
       trangThaiHoSo,
       maThuTuc,
       soBienLai,
