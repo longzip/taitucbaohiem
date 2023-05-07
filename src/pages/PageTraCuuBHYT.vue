@@ -431,7 +431,7 @@ export default {
       const year = date.getFullYear();
       const month = date.getMonth();
       await this.hoSoDaXuLy({
-        tuNgay: new Date(year, month - 1, 1).toISOString(),
+        tuNgay: new Date(year, month - 2, 1).toISOString(),
         denNgay: new Date(2024, 12, 31).toISOString(),
       });
 

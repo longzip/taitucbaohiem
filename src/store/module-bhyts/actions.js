@@ -484,14 +484,14 @@ export const lamMoiDanhSach = () => commit("getAllBhyts", []);
 
 export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/disabled`, {
-    disabled: !disabled == 1,
+    disabled: !(disabled == "1"),
   });
   commit("updateBhyt", data);
 };
 
 export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/completed`, {
-    completed: !completed == 1,
+    completed: !(completed == "1"),
   });
   commit("updateBhyt", data);
 };
