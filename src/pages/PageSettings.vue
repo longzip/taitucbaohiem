@@ -116,11 +116,12 @@ export default {
 
       this.formData.isLogin = data.result.accessToken;
 
-      this.firebaseUpdateUser({
+      await this.firebaseUpdateUser({
         userId: this.userDetails.userId,
         updates: this.formData,
       });
-      this.handleAuthStateChanged();
+      await this.handleAuthStateChanged();
+      window.location.href = "https://app.buudienxatulap.ga/";
     },
   },
   created() {
