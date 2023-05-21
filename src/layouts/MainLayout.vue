@@ -126,6 +126,12 @@ const linksList = [
     link: "/ho-so-da-xu-ly",
   },
   {
+    title: "Cập nhật ngày biên lai",
+    caption: "Báo cáo chi tiết giao dịch",
+    icon: "verified",
+    link: `/export-chi-tiet?tuThang=2023-${new Date().getMonth()}-01&denThang=2024-01-01`,
+  },
+  {
     title: "Chi tiết giao dịch 2023",
     caption: "Báo cáo chi tiết giao dịch",
     icon: "verified",

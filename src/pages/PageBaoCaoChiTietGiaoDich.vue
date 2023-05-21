@@ -1,9 +1,17 @@
 <template>
-    <div class="q-pa-md">
-        <ListHeader bgcolor="bg-orange-4">
-            Báo cáo chi tiết giao dịch: {{ parseInt(tongTien).toLocaleString() }} / {{ parseInt(tongSoThe).toLocaleString() }}
-        </ListHeader>
-        <div class="q-gutter-y-md column">
+  <div class="q-pa-md">
+    <ListHeader bgcolor="bg-orange-4">
+      Báo cáo chi tiết giao dịch: {{ parseInt(tongTien).toLocaleString() }} /
+      {{ parseInt(tongSoThe).toLocaleString()
+      }}<q-btn
+        rounded
+        color="primary"
+        label="Tải"
+        @click="dongBo()"
+        icon="sync"
+      />
+    </ListHeader>
+    <div class="q-gutter-y-md column">
       <q-input
         outlined
         v-model="searchText"
@@ -23,39 +31,42 @@
       </q-input>
     </div>
     <q-list>
-        <div v-for="bhyt in timBhyts(this.searchText)" :key="bhyt.id">
-            <ThongTinTheBHYT :bhyt="bhyt" />
-             <q-separator spaced inset />
-        </div>
+      <div v-for="bhyt in timBhyts(this.searchText)" :key="bhyt.id">
+        <ThongTinTheBHYT :bhyt="bhyt" />
+        <q-separator spaced inset />
+      </div>
     </q-list>
-    </div>
-    
+  </div>
 </template>
 <script>
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { mapGetters, mapActions } from "vuex";
 export default {
-    components: { ThongTinTheBHYT, ListHeader },
-    data(){
-        return {
-            searchText: "",
-            tuThang: "2023-01-01 00:00:00",
-            denThang: "2024-01-01 00:00:00"
-        }
+  components: { ThongTinTheBHYT, ListHeader },
+  data() {
+    return {
+      searchText: "",
+      tuThang: "2023-01-01 00:00:00",
+      denThang: "2024-01-01 00:00:00",
+    };
+  },
+  methods: {
+    ...mapActions("bhyts", ["getBaoCaoChiTietGiaoDich", "capNhatBienLai"]),
+    dongBo() {
+      this.capNhatBienLai(this.timBhyts());
     },
-    methods: {
-        ...mapActions("bhyts", ["getBaoCaoChiTietGiaoDich"]),
-    },
-    computed: {
-        ...mapGetters("bhyts", ["timBhyts", "tongSoThe","tongTien"]),
-    },
-    mounted(){
-        if(this.$route.query.tuThang)
-        this.tuThang = this.$route.query.tuThang;
-        if(this.$route.query.denThang)
-        this.denThang = this.$route.query.denThang;
-        this.getBaoCaoChiTietGiaoDich({tuThang: this.tuThang, denThang: this.denThang});
-    }
-}
+  },
+  computed: {
+    ...mapGetters("bhyts", ["timBhyts", "tongSoThe", "tongTien"]),
+  },
+  mounted() {
+    if (this.$route.query.tuThang) this.tuThang = this.$route.query.tuThang;
+    if (this.$route.query.denThang) this.denThang = this.$route.query.denThang;
+    this.getBaoCaoChiTietGiaoDich({
+      tuThang: this.tuThang,
+      denThang: this.denThang,
+    });
+  },
+};
 </script>

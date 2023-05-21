@@ -319,7 +319,6 @@ export const giaHan = async ({ commit }, payload) => {
     const {
       maSoBhxh,
       tongTien,
-      ngayLap,
       maThuTuc,
       soBienLai,
       userId: userName,
@@ -327,7 +326,6 @@ export const giaHan = async ({ commit }, payload) => {
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         tongTien,
-        ngayLap,
         maThuTuc,
         soBienLai,
         userName,
@@ -368,6 +366,20 @@ export const thuTien = async (
     console.log(error);
   }
 };
+export const capNhatBienLai = async ({ commit }, payload) => {
+  for (let index = 0; index < payload.length; index++) {
+    await sleep();
+    const { maSoBHXH, ngayBienLai } = payload[index];
+    try {
+      const { data } = await api.put(`/api/bhyts/${maSoBHXH}/tong-tien`, {
+        ngayLap: ngayBienLai,
+      });
+      await commit("updateBhyt", data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
 
 export const daXyLy = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
@@ -375,7 +387,6 @@ export const daXyLy = async ({ commit }, payload) => {
     const {
       maSoBhxh,
       tongTien,
-      ngayLap,
       userId: userName,
       trangThaiHoSo,
       maThuTuc,
@@ -384,7 +395,6 @@ export const daXyLy = async ({ commit }, payload) => {
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         tongTien,
-        ngayLap,
         userName,
         maThuTuc,
         soBienLai,
