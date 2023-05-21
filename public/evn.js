@@ -685,13 +685,13 @@ width="70px" height="70px" viewBox="0 0 1160 1160" enable-background="new 0 0 11
       </div>
       <div class="col-8" style="padding-top: 5px;font-size: 14px;">
           <div style="text-align: center">
-              <b>HỒ THỊ THẮM: THU TIỀN ĐIỆN TRỰC TIẾP BĐ XÃ TỰ LẬP</b>
+              <b>THANH TOÁN TIỀN ĐIỆN QUA BƯU ĐIỆN XÃ TỰ LẬP</b>
           </div>
           <div style="text-align: center;padding-top: 2px;font-size: 10px;">
-              (từ <span id="start_date">20/04/2019</span> đến <span id="end_date">20/04/2019</span>)<br>
+              (Buổi sáng: 8h00 - 11h00, từ ngày 13 đến 20 hàng tháng)<br>
           </div>
           <div style="text-align: center;padding-top: 5px;font-size: 18px;">
-              💥Danh sách đầy đủ các dịch vụ và lịch làm việc có trên www.hotham.vn.
+              💥Danh sách đầy đủ các dịch vụ và lịch làm việc của bưu điện xã truy cập website www.hotham.vn.
           </div>
       </div>
       <div class="col-2">
@@ -822,8 +822,13 @@ width="70px" height="70px" viewBox="0 0 1160 1160" enable-background="new 0 0 11
 
               </tr>
               <tr>
-                  <td colspan="3" style="text-align: left; padding-left: 5px; font-size: 18px;">
-                      🎁🎁 Thông báo: Tham gia bảo hiểm xã hội tự nguyện được Nhà nước hỗ trợ tiền đóng theo tỷ lệ phần trăm (%) trên mức đóng BHXH hằng tháng theo mức chuẩn hộ nghèo của khu vực nông thôn, về già có <strong>lương hưu + thẻ BHYT</strong> và chế độ tử tuất, đỡ gánh lo cho con cháu. Kết bạn Zalo số điện thoại <strong>0978333963</strong> để được chị Hồ Thị Thắm tư vấn thêm và đăng ký tham gia ngay.
+                  <td colspan="3" style="text-align: left; padding-left: 5px; font-size: 11px;">
+                  📌Lưu ý:
+                      <ul>
+                      <li>Để thanh toán tiền điện bạn cần thông báo mã khách hàng Điện lực (cung cấp mã thẻ khách hàng), nộp tiền cho nhân viên bưu điện.</li>
+                      <li>Quý khách hàng nhận biên lai thu tiền và giữ lại làm căn cứ đã thanh toán tiền điện qua bưu điện.</li>
+                      </ul>
+                      Khi cần hỗ trợ bạn liên hệ/zalo 0978333963 (chị Hồ Thị Thắm) - thay anh Lập nghỉ. Hoặc đến trực tiếp điểm Bưu điện xã để được hỗ trợ.
                   </td>
 
               </tr>
