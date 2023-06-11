@@ -121,7 +121,7 @@ export default {
         updates: this.formData,
       });
       await this.handleAuthStateChanged();
-      window.location.href = "https://app.buudienxatulap.ga/";
+      window.location.href = "https://todo.hotham.vn/";
     },
   },
   created() {

@@ -85,6 +85,7 @@
       <q-input
         outlined
         v-model="searchText"
+        ref="inputSearch"
         @keyup.enter="timKiem(searchText)"
         dense
       >
@@ -672,6 +673,10 @@ export default {
       });
     },
     async timKiem(searchText) {
+      const thongSoTheBHYTs = searchText.split("|");
+      if(thongSoTheBHYTs.length > 1) {
+        this.searchText = searchText = thongSoTheBHYTs[0];
+      }
       const danhSachTimKiem = searchText.split(",");
       if (danhSachTimKiem.length > 1)
         await this.traCuuBhyts({ searchText, maXa: "08986" });
@@ -696,6 +701,7 @@ export default {
           }
         }
       }
+      this.$refs.inputSearch.select();
     },
     async khoiTao() {
       this.resetBhyt([]);

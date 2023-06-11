@@ -16,5 +16,5 @@ export const updateBhyt = (state, payload) => {
     (x) => x.maSoBhxh === payload.maSoBhxh || x.maSoBHXH === payload.maSoBhxh
   );
   if (found) Object.assign(found, payload);
-  else state.bhyts.push(payload);
+  else state.bhyts.unshift(payload);
 };

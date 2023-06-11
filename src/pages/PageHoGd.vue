@@ -9,7 +9,8 @@
       <q-input
         outlined
         v-model="searchText"
-        @keyup.enter="dongBoDuLieu(searchText)"
+        ref="inputSearch"
+        @keyup.enter="timKiem(searchText)"
         placeholder="Họ và tên"
         hint="Nhập họ và tên rồi nhấn Enter để tìm kiếm"
         dense
@@ -45,6 +46,7 @@ export default defineComponent({
   data() {
     return {
       maHoGd: "",
+      searchText: ""
     };
   },
   methods: {
@@ -52,6 +54,12 @@ export default defineComponent({
       "getAllBhyts",
       "dongBoDuLieu",
     ]),
+    async timKiem(searchText){
+      const thongSoTheBHYTs = searchText.split("|");
+      if(thongSoTheBHYTs.length > 1) this.searchText = thongSoTheBHYTs[0]
+      await this.dongBoDuLieu(this.searchText)
+      this.$refs.inputSearch.select();
+    },
     async loadData() {
       await this.getAllBhyts({
         maHoGd: this.maHoGd,
