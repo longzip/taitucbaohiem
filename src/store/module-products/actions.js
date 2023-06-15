@@ -43,7 +43,7 @@ export async function getCart ({commit}) {
       }
       Loading.hide();
 }
-export async function addToCart ({commit},{productId}) {
+export async function addToCart ({commit},{productId,quantity=1}) {
       Loading.show({
         spinner: QSpinnerIos,
         spinnerSize: "100px",
@@ -53,7 +53,8 @@ export async function addToCart ({commit},{productId}) {
           mutation: ADD_TO_CART,
           variables: {
             input: {
-              productId: parseInt(productId)
+              productId: parseInt(productId),
+              quantity
             }
           }
         });
@@ -69,7 +70,7 @@ export async function addToCart ({commit},{productId}) {
           message: `Không thể thêm sản phẩm hết hàng!`,
         });
       }
-      
+
 }
 export async function removeItemsFromCart ({commit},{keys}) {
       Loading.show({
@@ -97,7 +98,7 @@ export async function removeItemsFromCart ({commit},{keys}) {
           message: `Không thể xóa sản phẩm giỏ hàng!`,
         });
       }
-      
+
 }
 export async function emptyCart ({commit}) {
       Loading.show({
@@ -109,7 +110,7 @@ export async function emptyCart ({commit}) {
           mutation: EMPTY_CART_MUTATION,
           variables: {
             input: {
-              
+
             }
           }
         });
@@ -125,7 +126,7 @@ export async function emptyCart ({commit}) {
           message: `Không thể xóa sản phẩm giỏ hàng!`,
         });
       }
-      
+
 }
 
 export async function checkout ({commit,state,dispatch},{email}) {
@@ -175,11 +176,11 @@ export async function getProducts({commit}){
     const {data} = await client.query({
       query: PRODUCTS_QUERY,
       variables: {
-          first: 100,
+          first: 500,
           where: {
             stockStatus: "IN_STOCK",
             supportedTypesOnly: true,
-            categoryNotIn: ["dGVybTo2MQ==","dGVybTo2NQ=="]
+            categoryNotIn: ["dGVybTo2MQ==","dGVybTo2NQ==",""]
         }
       }
     });
@@ -191,5 +192,5 @@ export async function getProducts({commit}){
     });
   }
   Loading.hide();
-  
+
 }

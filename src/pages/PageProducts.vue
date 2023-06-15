@@ -87,13 +87,13 @@
                         <q-item-label caption>{{product.regularPrice}}</q-item-label>
                         <q-icon
                             name="add_shopping_cart"
-                            @click="addToCart({productId: product.productId})"
+                            @click="confirmAddToCart(product.productId)"
                         />
                     </q-item-section>
                 </q-item>
             </div>
         </q-list>
-        
+
     </div>
 </template>
 <script>
@@ -109,6 +109,27 @@ export default {
     },
   methods: {
     ...mapActions("products", ["getCart","addToCart","checkout","loginUser","getProducts","removeItemsFromCart","emptyCart"]),
+    confirmAddToCart(productId){
+
+      this.$q
+          .dialog({
+            title: "Thêm vào giỏ hàng",
+            message: "Số lượng",
+            prompt: {
+              model: 1,
+              type: "text", // optional
+            },
+            cancel: true,
+            persistent: true,
+          })
+          .onOk((data) => {
+
+            this.addToCart({
+              productId,
+              quantity: parseInt(data)
+            });
+          });
+    }
   },
   computed: {
     ...mapGetters("products", ["authToken", "user", "cart","products","productsByName","tongTien"])
