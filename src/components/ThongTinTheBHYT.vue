@@ -81,6 +81,9 @@
           bhyt.ngay5Nam || bhyt.trangThaiHoSoName || bhyt.moTa
         }}</q-item-label
       >
+      <q-item-label v-if="bhyt.isBHXHTN == '1'" caption lines="2"
+        ><strong>BHXH TN:</strong> {{ bhyt.mucDong }} - {{ bhyt.denThangDt.slice(0,7) }}</q-item-label
+      >
       <q-item-label caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
         <q-icon @click="xacNhanGhiChu(bhyt)" name="edit" />
@@ -146,6 +149,7 @@ export default {
       "theoDoi",
       "dongBoDuLieu",
       "getTraCuuThongTinBHXHTN",
+      "capNhatBHXHTN",
       "thuTien",
       "xoaThanhVienHGD",
     ]),
@@ -252,6 +256,7 @@ export default {
           });
           return null;
         }
+        this.capNhatBHXHTN([t]);
         const tienHaNoiHoTro =
           t.tienNsnnHoTro == parseInt(t.phuongThucDong) * 33000
             ? t.tienNsnnHoTro
@@ -320,9 +325,11 @@ export default {
             persistent: true,
           })
           .onOk((data) => {
+
             this.thuTien({
               tongTien: data,
               maSoBhxh,
+              isBHXHTN: 1,
               userName: 0,
             });
           });

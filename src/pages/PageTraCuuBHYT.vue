@@ -29,6 +29,9 @@
             <q-item clickable @click="loadBhyts({ thang: 2 })" v-close-popup>
               <q-item-section>Tái tục 2 tháng</q-item-section>
             </q-item>
+            <q-item clickable @click="loadBhyts({ thang: 1, isBHXHTN: 1 })" v-close-popup>
+              <q-item-section>Tái tục BHXH TN</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytsHetHan" v-close-popup>
               <q-item-section>Đã hết hạn</q-item-section>
             </q-item>
@@ -640,7 +643,7 @@ export default {
         name: this.searchText,
       });
     },
-    loadBhyts({ thang = 1 }) {
+    loadBhyts({ thang = 1, isBHXHTN = null }) {
       this.getBhyts({
         thang,
         completed: "0",
@@ -648,6 +651,7 @@ export default {
         taiTuc: "1",
         maXa: "08986",
         name: this.searchText,
+        isBHXHTN
       });
     },
     loadBhytsHetHan() {

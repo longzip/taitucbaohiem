@@ -115,6 +115,7 @@ export const getBhyts = async ({ commit }, payload) => {
     maXa,
     nam,
     userName,
+    isBHXHTN,
   } = payload;
 
   let url = "/api/bhyts?";
@@ -129,6 +130,7 @@ export const getBhyts = async ({ commit }, payload) => {
   if (disabled) url += `&disabled=${disabled}`;
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
   if (chuaDongBo) url += `&chuaDongBo=${chuaDongBo}`;
+  if (isBHXHTN) url += `&isBHXHTN=${isBHXHTN}`;
   const { data } = await api.get(url);
   commit("setBhyts", data);
 };
@@ -373,6 +375,23 @@ export const capNhatBienLai = async ({ commit }, payload) => {
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBHXH}/tong-tien`, {
         ngayLap: ngayBienLai,
+      });
+      await commit("updateBhyt", data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+export const capNhatBHXHTN = async ({ commit }, payload) => {
+  for (let index = 0; index < payload.length; index++) {
+    await sleep();
+    const { maSoBhxh, mucDong, maPhuongThucDong, thangBd } = payload[index];
+    const t={1:1,3:3,6:4,12:7}
+    try {
+      const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+        isBHXHTN: 1,
+        denThangDt: moment(thangBd).add(t[maPhuongThucDong]-1,'months').endOf('month').format().slice(0,10),
+        mucDong
       });
       await commit("updateBhyt", data);
     } catch (error) {
