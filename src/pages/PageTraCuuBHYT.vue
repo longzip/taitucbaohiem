@@ -74,6 +74,9 @@
             <q-item clickable @click="inC17" v-close-popup>
               <q-item-section>In C17</q-item-section>
             </q-item>
+            <q-item clickable @click="printDanhSachTraThe" v-close-popup>
+              <q-item-section>In Danh sách trả thẻ</q-item-section>
+            </q-item>
             <q-item clickable @click="loadTaiTucBHXH" v-close-popup>
               <q-item-section>Tái tục BHXH</q-item-section>
             </q-item>
@@ -744,6 +747,14 @@ export default {
         this.key = await this.saveBHYT(this.$route.query.key);
       }
       await this.getAuth();
+    },
+    async printDanhSachTraThe() {
+      let a = document.createElement("a");
+      a.target = "_blank";
+      a.href = `https://app.hotham.vn/danh-sach-tra-the/1/pdf?maSoBhxhs=${this.bhyts
+        .map((i) => i.maSoBhxh)
+        .join(",")}`;
+      a.click();
     },
     copyMaSoBhxhToClipboard() {
       navigator.clipboard
