@@ -455,9 +455,19 @@ export default {
       const date = new Date();
       const year = date.getFullYear();
       const month = date.getMonth();
+
+      if (this.searchText.split(" - ").length !== 2) {
+        this.searchText = `${new Date(
+          year,
+          month - 2,
+          1
+        ).toISOString()} - ${new Date(2024, 12, 31).toISOString()}`;
+      }
+
+      const ngays = this.searchText.split(" - ");
       await this.hoSoDaXuLy({
-        tuNgay: new Date(year, month - 2, 1).toISOString(),
-        denNgay: new Date(2024, 12, 31).toISOString(),
+        tuNgay: ngays[0],
+        denNgay: ngays[1],
       });
 
       // const maSos = this.bhyts.map((t) => ({ maSoBhxh: t.maSoBHXH }));
