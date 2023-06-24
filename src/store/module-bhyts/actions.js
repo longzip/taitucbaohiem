@@ -102,6 +102,18 @@ export const traCuuBhyts = async ({ commit }, payload) => {
 export const resetBhyt = async ({ commit }, payload) => {
   commit("setBhyts", payload);
 };
+
+export const getBhytsBySoBienLai = async ({ commit }, payload) => {
+  const { data } = await api.get(`/api/bhyts?soBienLai=${payload}`);
+  data.forEach((bhyt) => {
+    // bhyts.set(bhyt.maSoBhxh, bhyt);
+    commit("updateBhyt", bhyt);
+  });
+  try {
+    await dispatch("dongBoDuLieu", data.map((i) => i.maSoBhxh).join());
+  } catch (error) {}
+};
+
 export const getBhyts = async ({ commit }, payload) => {
   const {
     completed,
@@ -117,6 +129,7 @@ export const getBhyts = async ({ commit }, payload) => {
     userName,
     isBHXHTN,
     taiTucBHXH,
+    soBienLai,
   } = payload;
 
   let url = "/api/bhyts?";
@@ -133,6 +146,7 @@ export const getBhyts = async ({ commit }, payload) => {
   if (chuaDongBo) url += `&chuaDongBo=${chuaDongBo}`;
   if (isBHXHTN) url += `&isBHXHTN=${isBHXHTN}`;
   if (taiTucBHXH) url += `&taiTucBHXH=${taiTucBHXH}`;
+  if (soBienLai) url += `&soBienLai=${soBienLai}`;
   const { data } = await api.get(url);
   commit("setBhyts", data);
 };
@@ -388,12 +402,16 @@ export const capNhatBHXHTN = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
     await sleep();
     const { maSoBhxh, mucDong, maPhuongThucDong, thangBd } = payload[index];
-    const t={1:1,3:3,6:4,12:7}
+    const t = { 1: 1, 3: 3, 6: 4, 12: 7 };
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         isBHXHTN: 1,
-        denThangDt: moment(thangBd).add(t[maPhuongThucDong]-1,'months').endOf('month').format().slice(0,10),
-        mucDong
+        denThangDt: moment(thangBd)
+          .add(t[maPhuongThucDong] - 1, "months")
+          .endOf("month")
+          .format()
+          .slice(0, 10),
+        mucDong,
       });
       await commit("updateBhyt", data);
     } catch (error) {

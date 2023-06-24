@@ -82,7 +82,8 @@
         }}</q-item-label
       >
       <q-item-label v-if="bhyt.isBHXHTN == '1'" caption lines="2"
-        ><strong>BHXH TN:</strong> {{ bhyt.mucDong }} - {{ bhyt.denThangDt.slice(0,7) }}</q-item-label
+        ><strong>BHXH TN:</strong> {{ bhyt.mucDong }} -
+        {{ bhyt.denThangDt.slice(0, 7) }}</q-item-label
       >
       <q-item-label caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
@@ -129,7 +130,13 @@
           bhyt.ngayBienLai ||
           new Date(bhyt.updated_at).toLocaleString()
         }}<br />
-        {{ bhyt.soBienLai }}<br />
+        <a
+          v-if="bhyt.soBienLai"
+          href="javascript:void(0);"
+          @click="timTheoSoBienLai(bhyt.soBienLai)"
+          >{{ bhyt.soBienLai }}</a
+        >
+        <br />
         <q-badge v-if="bhyt.userName" color="gray">{{ bhyt.userName }}</q-badge>
       </q-item-label>
     </q-item-section>
@@ -152,7 +159,11 @@ export default {
       "capNhatBHXHTN",
       "thuTien",
       "xoaThanhVienHGD",
+      "getBhytsBySoBienLai",
     ]),
+    timTheoSoBienLai(soBienLai) {
+      this.getBhytsBySoBienLai(soBienLai);
+    },
     xacNhanLoaiBo(bhyt) {
       if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
       this.$q
@@ -325,7 +336,6 @@ export default {
             persistent: true,
           })
           .onOk((data) => {
-
             this.thuTien({
               tongTien: data,
               maSoBhxh,

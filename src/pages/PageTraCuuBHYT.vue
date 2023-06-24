@@ -457,11 +457,11 @@ export default {
       const month = date.getMonth();
 
       if (this.searchText.split(" - ").length !== 2) {
-        this.searchText = `${new Date(
-          year,
-          month - 2,
-          1
-        ).toISOString()} - ${new Date(2024, 12, 31).toISOString()}`;
+        this.searchText = `${new Date(year, month - 2, 1)
+          .toISOString()
+          .slice(0, 10)} - ${new Date(2024, 12, 31)
+          .toISOString()
+          .slice(0, 10)}`;
       }
 
       const ngays = this.searchText.split(" - ");
