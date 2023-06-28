@@ -45,15 +45,7 @@
         Số CMND: {{ bhyt.soCmnd }}
       </q-item-label>
       <q-item-label caption lines="2"
-        ><a
-          target="_blank"
-          :href="`https://thambuudien.ga/tra-thoi-han-bao-hiem-y-te?q=${
-            bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
-          }`"
-          >{{
-            bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
-          }}</a
-        >
+        >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH }}
         <q-icon
           class="q-ml-md"
           @click="
@@ -217,11 +209,11 @@ export default {
             model: bhyt.tongTien,
             // inline: true
             items: [
-              { label: "T1: 804.600đ", value: "804600", color: "secondary" },
-              { label: "T2: 563.220đ", value: "563220" },
-              { label: "T3: 482.760đ", value: "482760" },
-              { label: "T4: 402.300đ", value: "402300" },
-              { label: "T5: 321.840đ", value: "321840" },
+              { label: "T1: 972.000đ", value: "972000", color: "secondary" },
+              { label: "T2: 680.400đ", value: "680400" },
+              { label: "T3: 583.200đ", value: "583200" },
+              { label: "T4: 486.000đ", value: "486000" },
+              { label: "T5: 388.800đ", value: "388800" },
               { label: "Không", value: "" },
             ],
           },

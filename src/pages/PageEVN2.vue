@@ -1,7 +1,9 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách Khách hàng EVN / Tổng: {{ tongCong.toLocaleString() }}
+      >Danh sách {{ evns.length }} Khách hàng EVN / Tổng:
+      {{ tongCong.toLocaleString() }} /
+      {{ evns.filter((t) => t.soTien > 0).length }}
       <q-btn
         rounded
         color="primary"
@@ -195,10 +197,9 @@ export default defineComponent({
         });
     },
     async soTienBangKhong(evn) {
-      const { data } = await this.$api.put(
-        `/api/evns/${evn.ma}/so-tien`,
-        { soTien: 0 }
-      );
+      const { data } = await this.$api.put(`/api/evns/${evn.ma}/so-tien`, {
+        soTien: 0,
+      });
       this.updateEVN(data);
     },
     updateEVN(evn) {
@@ -237,7 +238,9 @@ export default defineComponent({
     },
     copySoDienThoaiToClipboard() {
       navigator.clipboard
-        .writeText([...new Set(this.evns.map((e) => e.soDienThoai))].join())
+        .writeText(
+          [...new Set(this.evns.map((e) => e.soDienThoai))].join("\r\n")
+        )
         .then(
           function () {
             Notify.create({
