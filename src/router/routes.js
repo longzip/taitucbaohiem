@@ -39,6 +39,11 @@ const routes = [
         meta: { requireAuth: false },
       },
       {
+        path: "dons",
+        component: () => import("src/pages/PageDon.vue"),
+        meta: { requireAuth: false },
+      },
+      {
         path: "/tai-tuc",
         component: () => import("pages/PageTaiTuc.vue"),
         meta: { requireAuth: true },

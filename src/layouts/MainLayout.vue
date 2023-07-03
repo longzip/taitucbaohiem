@@ -72,6 +72,12 @@ const linksList = [
     link: "/evn2",
   },
   {
+    title: "Khách tạo đơn",
+    caption: "Theo Tên, số đt, địa chỉ",
+    icon: "payment",
+    link: "/dons",
+  },
+  {
     title: "Sản phẩm",
     caption: "Sản phẩm",
     icon: "payment",
