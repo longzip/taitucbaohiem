@@ -150,11 +150,14 @@ export async function checkout({ commit, state, dispatch }, { email }) {
     });
     dispatch("getCart");
     const {
-      checkout: { order },
+      checkout: { order, redirect },
     } = data;
     const a = document.createElement("a");
+
     a.target = "_blank";
-    a.href = `https://store.hotham.vn/wordpress/wp-admin/admin-ajax.php?action=generate_wpo_wcpdf&document_type=invoice&order_ids=${order.orderNumber}&access_key=6a47fe246d`;
+    a.href = `https://store.hotham.vn/wordpress/wp-admin/admin-ajax.php?action=generate_wpo_wcpdf&document_type=invoice&order_ids=${
+      order.orderNumber
+    }&order_key=${new URL(redirect).searchParams.get("key")}`;
     a.click();
   } catch (error) {
     Notify.create({
