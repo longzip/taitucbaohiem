@@ -37,6 +37,7 @@
                   taiTucBHXH: 1,
                   completed: '0',
                   disabled: '0',
+                  maXa: userDetails.maXa,
                 })
               "
               v-close-popup
@@ -45,7 +46,7 @@
             </q-item>
             <q-item
               clickable
-              @click="loadBHXHTNs({ isBHXHTN: 1 })"
+              @click="loadBHXHTNs({ isBHXHTN: 1, maXa: userDetails.maXa })"
               v-close-popup
             >
               <q-item-section>Tái tục BHXH TN (All)</q-item-section>
@@ -59,15 +60,6 @@
             <q-item clickable @click="loadBhytsCompleted" v-close-popup>
               <q-item-section>Đánh dấu sao</q-item-section>
             </q-item>
-            <q-item clickable @click="loadHoSoChuaXuLy" v-close-popup>
-              <q-item-section>Hồ sơ chưa xử lý</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadHoSoDaNopBD" v-close-popup>
-              <q-item-section>Hồ sơ đã nộp</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadHoSoDaXuLy" v-close-popup>
-              <q-item-section>Hồ sơ đã xử lý</q-item-section>
-            </q-item>
             <q-item clickable @click="loadBaoCaoChiTietGiaoDich" v-close-popup>
               <q-item-section>Báo cáo Chi Tiết Giao Dịch</q-item-section>
             </q-item>
@@ -79,15 +71,6 @@
             </q-item>
             <q-item clickable @click="loadTaiTucBHXH" v-close-popup>
               <q-item-section>Tái tục BHXH</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadBhytsTaiTuc2020" v-close-popup>
-              <q-item-section>Tải dữ liệu tái tục mới nhất</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadBhytsTaiTuc2021" v-close-popup>
-              <q-item-section>Tải dữ liệu tái tục 2021 từ SSM</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadBhytsTaiTuc2022" v-close-popup>
-              <q-item-section>Tải dữ liệu tái tục 2022 từ SSM</q-item-section>
             </q-item>
             <q-item clickable @click="copyMaSoBhxhToClipboard" v-close-popup>
               <q-item-section>Copy tất cả mã số BHXH</q-item-section>
@@ -167,7 +150,7 @@ export default {
         filterItems: [],
         maxResultCount: 500,
         skipCount: 0,
-        mangLuoiId: 4580,
+        mangLuoiId: this.userDetails.mangLuoiId,
         tuThang: "2023-03-01 00:00:00",
         denThang: "2023-04-01 00:00:00",
         type: -1,
@@ -175,277 +158,6 @@ export default {
       });
     },
 
-    async fetchAPIByName(searchText) {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.key}`,
-      };
-
-      const { maXa } = this.userDetails;
-
-      const API_URL = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=${maXa}&hoTen=${searchText}&isCoDau=true&`;
-
-      const res = await fetch(API_URL, {
-        method: "GET",
-        headers,
-      });
-
-      const json = await res.json();
-      if (json.errors) {
-        console.error(json.errors);
-        throw new Error("Failed to fetch API");
-      }
-
-      return json.result.value;
-    },
-
-    async fetchAPIByMaSoBhxh(maSoBhxh) {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.key}`,
-      };
-
-      const API_URL = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuThongTinBHYT?maSoBhxh=${maSoBhxh.slice(
-        maSoBhxh.length - 10
-      )}`;
-
-      const res = await fetch(API_URL, {
-        method: "GET",
-        headers,
-      });
-
-      const json = await res.json();
-      if (json.errors) {
-        console.error(json.errors);
-        throw new Error("Failed to fetch API");
-      }
-      return json.result;
-    },
-
-    async fetchAPIHoSoDaXuLy({ tuNgay, denNgay }) {
-      const docSo = parseInt(this.searchText);
-      let soThang = 0;
-      if (docSo) soThang = docSo;
-
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.key}`,
-      };
-
-      const API_URL =
-        "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup";
-
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth();
-
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          dateForm: "ngayLap",
-          denNgay:
-            denNgay ?? new Date(year, month - soThang + 2, 1).toISOString(),
-          filterItems: [],
-          hoSoChuaThuTien: false,
-          hoSoQuaHan: 0,
-          keyMenu: "1",
-          mangLuoiId: parseInt(this.userDetails.mangLuoiId),
-          maxResultCount: 5000,
-          skipCount: 0,
-          tuNgay: tuNgay ?? new Date(year, month - soThang, 1).toISOString(),
-        }),
-      });
-
-      const json = await res.json();
-      if (json.errors) {
-        console.error(json.errors);
-        throw new Error("Failed to fetch API");
-      }
-      return json.result;
-    },
-    async fetchAPIHoSoChuaXuLy() {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.key}`,
-      };
-
-      const API_URL =
-        "https://ssm-api.vnpost.vn/api/services/app/KeKhai/TraCuuNoGroup";
-
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth();
-
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          dateForm: "ngayLap",
-          denNgay: new Date(year, month + 2, 1).toISOString(),
-          filterItems: [],
-          hoSoChuaThuTien: false,
-          hoSoQuaHan: 0,
-          keyMenu: "2",
-          mangLuoiId: parseInt(this.userDetails.mangLuoiId),
-          maxResultCount: 5000,
-          skipCount: 0,
-          tuNgay: new Date(year, month, 1).toISOString(),
-        }),
-      });
-
-      const json = await res.json();
-      if (json.errors) {
-        console.error(json.errors);
-        throw new Error("Failed to fetch API");
-      }
-      return json.result;
-    },
-    async fetchAPIBaoCaoChiTietGiaoDich({ denThang, tuThang }) {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.key}`,
-      };
-
-      const API_URL =
-        "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/BaoCaoChiTietGiaoDich";
-
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          denThang,
-          filterItems: [],
-          loaiGiaoDich: 0,
-          mangLuoiId: parseInt(parseInt(this.userDetails.mangLuoiId)),
-          maxResultCount: 5000,
-          skipCount: 0,
-          tuThang,
-        }),
-      });
-
-      const json = await res.json();
-      if (json.errors) {
-        console.error(json.errors);
-        throw new Error("Failed to fetch API");
-      }
-      return json.result;
-    },
-    async fetchAPITaiTucBHYT({ denThang, tuThang }) {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.key}`,
-      };
-
-      const API_URL =
-        "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc";
-
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          denThang,
-          filterItems: [],
-          loaiDichVu: parseInt(this.searchText),
-          mangLuoiId: parseInt(parseInt(this.userDetails.mangLuoiId)),
-          maxResultCount: 5000,
-          skipCount: 0,
-          tuThang,
-          type: -1,
-        }),
-      });
-
-      const json = await res.json();
-      if (json.errors) {
-        console.error(json.errors);
-        throw new Error("Failed to fetch API");
-      }
-      return json.result;
-    },
-
-    async saveBHYT(ghiChu) {
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      const API_URL = "https://app.hotham.vn/api/user-ghi-chu";
-
-      const res = await fetch(API_URL, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ ghiChu }),
-      });
-
-      const text = await res.text();
-
-      return text;
-    },
-
-    async save(bhyt) {
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      const API_URL = "https://app.hotham.vn/api/bhyts";
-
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(bhyt),
-      });
-
-      const json = await res.json();
-      if (json.errors) {
-        console.error(json.errors);
-        throw new Error("Failed to fetch API");
-      }
-      return json;
-    },
-
-    async dongBoDanhSach(dsBhyts) {
-      this.$q
-        .dialog({
-          title: "Confirm",
-          message: `Bạn có muốn đồng bộ ${dsBhyts.length} thẻ BHYT?`,
-          ok: {
-            push: true,
-          },
-          cancel: {
-            color: "negative",
-          },
-          persistent: true,
-        })
-        .onOk(async () => {
-          Loading.show({
-            spinner: QSpinnerIos,
-            spinnerSize: "100px",
-          });
-          this.resetBhyt([]);
-          for (let index = 0; index < dsBhyts.length; index++) {
-            const { maSoBhxh } = dsBhyts[index];
-            const found = this.bhyts.find((b) => b.maSoBhxh === maSoBhxh);
-            if (!found) await this.dongBoDuLieu(dsBhyts[index]);
-            await this.sleep(500);
-          }
-          Loading.hide();
-        });
-    },
-    async dongBo(bhyt) {
-      try {
-        const { maSoBhxh } = bhyt;
-        const { thongTinTK1, thongTinTheHGD, trangThaiThe } =
-          await this.fetchAPIByMaSoBhxh(maSoBhxh);
-        const bhytUpdate = await this.save({
-          ...bhyt,
-          ...thongTinTheHGD,
-          ...thongTinTK1,
-          ...trangThaiThe,
-        });
-        this.updateBhyt(bhytUpdate);
-      } catch (error) {
-        console.log(error);
-      }
-    },
     async loadBaoCaoChiTietGiaoDich() {
       const date = new Date();
       const year = date.getFullYear();
@@ -460,14 +172,24 @@ export default {
       }
 
       const ngays = this.searchText.split(" - ");
+
+      try {
+        Loading.show({
+          spinner: QSpinnerIos,
+          spinnerSize: "100px",
+        });
+      } catch (error) {
+        Notify.create({
+          message: "Không thể kế nối đến máy chủ !",
+          color: "red",
+        });
+      }
       await this.hoSoDaXuLy({
         tuNgay: ngays[0],
         denNgay: ngays[1],
         mangLuoiId: this.userDetails.mangLuoiId,
       });
-
-      // const maSos = this.bhyts.map((t) => ({ maSoBhxh: t.maSoBHXH }));
-      // await this.dongBoDuLieuDanhSach(maSos);
+      Loading.hide();
     },
     async inC17() {
       const ds = new Map();
@@ -501,7 +223,7 @@ export default {
       );
       for (let index = 0; index < this.bhyts.length; index++) {
         const t = this.bhyts[index];
-        if (t.userId === 3152 && ds.has(t.soBienLai)) {
+        if (t.userId === this.userDetails.id && ds.has(t.soBienLai)) {
           const g = ds.get(t.soBienLai);
           ds.set(t.soBienLai, {
             ...g,
@@ -552,69 +274,7 @@ export default {
         .slice(0, 10)}-tham-tu-lap-c17.pdf`;
       link.click();
     },
-    async loadBhytsTaiTuc2020() {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const { items } = await this.fetchAPITaiTucBHYT({
-        denThang: new Date(year, month + 2, 1).toISOString(),
-        tuThang: new Date(year, month, 1).toISOString(),
-      });
-      this.resetBhyt(items);
-      const maSos = items.map((t) => ({ maSoBhxh: t.maSoBHXH }));
-      await this.dongBoDuLieuDanhSach(maSos);
-    },
-    async loadBhytsTaiTuc2021() {
-      const { items } = await this.fetchAPITaiTucBHYT({
-        denThang: "2022-01-01 00:00:00",
-        tuThang: "2021-01-01 00:00:00",
-      });
-      this.resetBhyt(items);
-      const maSos = items.map((t) => ({ maSoBhxh: t.maSoBHXH }));
-      await this.dongBoDuLieuDanhSach(maSos);
-    },
-    async loadHoSoDaXuLy() {
-      const [year, month] = new Date().toISOString().slice(0, 10).split("-");
-      const { items } = await this.fetchAPIHoSoDaXuLy({
-        denNgay: new Date(year, month, 1).toISOString(),
-        tuNgay: new Date(year, month - 1, 1).toISOString(),
-      });
-      this.resetBhyt(items);
-      const maSos = items.map((t) => ({
-        ...t,
-        userName: t.userName,
-        ngayLap: t.ngayLap,
-        tongTien: t.tongTien,
-        disabled: t.trangThaiHoSo !== 9,
-      }));
-      await this.dongBoDuLieuDanhSach(maSos);
-    },
-    async loadHoSoDaNopBD() {
-      const [year, month] = new Date().toISOString().slice(0, 10).split("-");
-      const { items } = await this.fetchAPIHoSoDaXuLy({
-        denNgay: new Date(year, month, 1).toISOString(),
-        tuNgay: new Date(year, month - 1, 1).toISOString(),
-      });
-      this.resetBhyt(items);
-      const maSos = items
-        .filter(
-          (t) =>
-            t.userId == 3152 &&
-            t.trangThaiHoSo == 4 &&
-            new Date().toISOString().slice(0, 10) ===
-              new Date(t.ngayNopHoSo).toISOString().slice(0, 10)
-        )
-        .map((t) => ({
-          ...t,
-          userName: t.userName,
-          ngayLap: t.ngayLap,
-          tongTien: t.tongTien,
-          // completed: t.trangThaiHoSo !== 9,
-          disabled: t.trangThaiHoSo !== 9,
-        }));
-      await this.dongBoDuLieuDanhSach(maSos);
-      // await this.print(maSos.map(t => t.maSoBhxh).join());
-    },
+
     async print(maSoBhxhs) {
       let a = document.createElement("a");
       a.target = "_blank";
@@ -624,28 +284,7 @@ export default {
       a.href = lienKet;
       a.click();
     },
-    async loadHoSoChuaXuLy() {
-      const { items } = await this.fetchAPIHoSoChuaXuLy();
-      this.resetBhyt(items);
-      const maSos = items.map((t) => ({
-        ...t,
-        userName: t.userName,
-        ngayLap: t.ngayLap,
-        tongTien: t.tongTien,
-        completed: 1,
-        disabled: 1,
-      }));
-      await this.dongBoDuLieuDanhSach(maSos);
-    },
-    async loadBhytsTaiTuc2022() {
-      const { items } = await this.fetchAPITaiTucBHYT({
-        denThang: "2023-01-01 00:00:00",
-        tuThang: "2022-01-01 00:00:00",
-      });
-      this.resetBhyt(items);
-      const maSos = items.map((t) => ({ maSoBhxh: t.maSoBHXH }));
-      await this.dongBoDuLieuDanhSach(maSos);
-    },
+
     loadBhytByNamSinh() {
       this.getBhyts({
         completed: "0",
@@ -680,18 +319,10 @@ export default {
         name: this.searchText,
       });
     },
-    loadBHXHTNs({
-      isBHXHTN = null,
-      completed = null,
-      disabled = null,
-      taiTucBHXH = null,
-    }) {
+    loadBHXHTNs(data) {
       this.getBhyts({
+        ...data,
         name: this.searchText,
-        isBHXHTN,
-        completed,
-        disabled,
-        taiTucBHXH,
       });
     },
     loadBhytsHetHan() {

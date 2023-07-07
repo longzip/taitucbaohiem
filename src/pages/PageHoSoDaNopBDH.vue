@@ -65,11 +65,15 @@ export default {
     dongBo() {
       this.giaHan(this.bhyts);
     },
+    sleep(t) {
+      return new Promise((resolve) => setTimeout(resolve, t));
+    },
   },
   async mounted() {
     if (this.$route.query.q) {
       this.searchText = this.$route.query.q;
     }
+    await this.sleep(1000);
     await this.hoSoDaXuLy({
       thangTruoc: 0,
       mangLuoiId: this.userDetails.mangLuoiId,

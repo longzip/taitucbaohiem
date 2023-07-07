@@ -8,7 +8,7 @@
         @click="xemThangTruoc()"
         icon="arrow_back"
       />
-      {{ bhyts.length }} Hồ Sơ Đã Xử Lý (T-L: {{ tham.toLocaleString() }}-{{
+      {{ bhyts.length }} Hồ Sơ Đã Xử Lý ({{ tham.toLocaleString() }}-{{
         tongTien.toLocaleString()
       }}đ) / Đã nộp BHYT: {{ daNopBHYT.toLocaleString() }} - Đã nộp BHXH:
       {{ daNopBHXH.toLocaleString() }}
@@ -286,7 +286,7 @@ export default {
       this.daXyLy(
         this.bhyts.filter(
           (t) =>
-            t.userId === 3152 &&
+            t.userId === this.userDetails.id &&
             t.trangThaiHoSo === 4 &&
             t.maThuTuc === 1 &&
             new Date().getDate() - this.ngay ===
@@ -300,7 +300,7 @@ export default {
       this.daXyLy(
         this.bhyts.filter(
           (t) =>
-            t.userId === 3152 &&
+            t.userId === this.userDetails.id &&
             t.trangThaiHoSo === 4 &&
             t.maThuTuc === 0 &&
             new Date().getDate() - this.ngay ===
@@ -338,8 +338,12 @@ export default {
       this.thangTruoc = this.thangTruoc + 1;
       this.loadData();
     },
+    sleep(t) {
+      return new Promise((resolve) => setTimeout(resolve, t));
+    },
     async loadData() {
       const ngayHomNay = new Date().getDate();
+      await this.sleep(1000);
       await this.hoSoDaXuLy({
         thangTruoc: this.thangTruoc,
         mangLuoiId: this.userDetails.mangLuoiId,
@@ -347,7 +351,7 @@ export default {
       this.tham = await this.bhyts
         .filter(
           (t) =>
-            t.userId === 3152 &&
+            t.userId === this.userDetails.id &&
             [4, 8, 9].includes(t.trangThaiHoSo) &&
             t.maThuTuc === 1
         )
@@ -359,7 +363,7 @@ export default {
       this.daNopBHYT = await this.bhyts
         .filter(
           (t) =>
-            t.userId === 3152 &&
+            t.userId === this.userDetails.id &&
             [4].includes(t.trangThaiHoSo) &&
             t.maThuTuc === 1 &&
             ngayHomNay - this.ngay === new Date(t.ngayNopHoSo).getDate()
@@ -372,7 +376,7 @@ export default {
       this.daNopBHXH = await this.bhyts
         .filter(
           (t) =>
-            t.userId === 3152 &&
+            t.userId === this.userDetails.id &&
             [4].includes(t.trangThaiHoSo) &&
             t.maThuTuc === 0 &&
             ngayHomNay - this.ngay === new Date(t.ngayNopHoSo).getDate()
@@ -385,7 +389,7 @@ export default {
       this.tongTien = await this.bhyts
         .filter(
           (t) =>
-            t.userId === 3154 &&
+            t.userId !== this.userDetails.id &&
             [4, 8, 9].includes(t.trangThaiHoSo) &&
             t.maThuTuc === 1
         )
@@ -398,7 +402,7 @@ export default {
       this.dsTheBHYT = this.bhyts
         .filter(
           (t) =>
-            t.userId === 3152 &&
+            t.userId === this.userDetails.id &&
             t.trangThaiHoSo === 4 &&
             t.maThuTuc === 1 &&
             new Date().getDate() - this.ngay ===
@@ -409,7 +413,7 @@ export default {
       this.dsSoBHXH = this.bhyts
         .filter(
           (t) =>
-            t.userId === 3152 &&
+            t.userId === this.userDetails.id &&
             t.trangThaiHoSo === 4 &&
             t.maThuTuc === 0 &&
             new Date().getDate() - this.ngay ===
@@ -421,7 +425,9 @@ export default {
     },
     async download() {
       const taiLieus = await this.XuatD03OrD05Excel(
-        this.bhyts.filter((t) => t.userId === 3152).map((x) => x.transactionId)
+        this.bhyts
+          .filter((t) => t.userId === this.userDetails.id)
+          .map((x) => x.transactionId)
       );
       taiLieus.forEach((taiLieu) => {
         let a = document.createElement("a");
