@@ -390,9 +390,13 @@ export default {
       this.$refs.inputSearch.select();
     },
     async timMoi(searchText) {
-      const dsTimMois = searchText.split(",");
-      for (let index = 0; index < dsTimMois.length; index++) {
-        const element = dsTimMois[index];
+      const ds = searchText.split(",");
+      const daDongBos = JSON.parse(localStorage.getItem("hoTens")) || [];
+      let difference = [];
+      if (daDongBos.length)
+        difference = ds.filter((x) => !daDongBos.includes(x));
+      for (let index = 0; index < difference.length; index++) {
+        const element = difference[index];
         this.resetBhyt([]);
         this.searchText = element;
         await this.timKiem(element);
