@@ -392,15 +392,9 @@ export default {
     async timMoi(searchText) {
       const ds = searchText.split(",");
       const daDongBos = JSON.parse(localStorage.getItem("hoTens")) || [];
-      let difference = [];
-      if (daDongBos.length)
-        difference = ds.filter((x) => !daDongBos.includes(x));
-      for (let index = 0; index < difference.length; index++) {
-        const element = difference[index];
-        this.resetBhyt([]);
-        this.searchText = element;
-        await this.timKiem(element);
-      }
+      const difference = ds.filter((x) => !daDongBos.includes(x));
+      this.searchText = difference.join();
+      this.timKiem(this.searchText);
     },
     async khoiTao() {
       this.resetBhyt([]);
