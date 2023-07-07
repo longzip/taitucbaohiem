@@ -190,7 +190,7 @@ export const khachChuaNop = async ({ commit }, payload) => {
   Loading.hide();
 };
 
-export const hoSoChuaXuLy = async ({ commit }, payload) => {
+export const hoSoChuaXuLy = async ({ commit }, { mangLuoiId = 4580 }) => {
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
@@ -206,7 +206,7 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
     hoSoChuaThuTien: false,
     hoSoQuaHan: 0,
     keyMenu: "2",
-    mangLuoiId: 4580,
+    mangLuoiId,
     maxResultCount: 500,
     skipCount: 0,
     tuNgay,
@@ -216,7 +216,7 @@ export const hoSoChuaXuLy = async ({ commit }, payload) => {
 };
 
 export const hoSoDaXuLy = async ({ commit }, payload) => {
-  let { thangTruoc = 0, tuNgay, denNgay } = payload;
+  let { thangTruoc = 0, tuNgay, denNgay, mangLuoiId = 4580 } = payload;
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
@@ -236,7 +236,7 @@ export const hoSoDaXuLy = async ({ commit }, payload) => {
     hoSoChuaThuTien: false,
     hoSoQuaHan: 0,
     keyMenu: "1",
-    mangLuoiId: 4580,
+    mangLuoiId,
     maxResultCount: 500,
     skipCount: 0,
     tuNgay,
@@ -277,27 +277,29 @@ export const xem = async (maSoBhxh, completed) => {
   return { ...thongTinTheHGD, ...trangThaiThe, ...theBHYT };
 };
 
-export const traCuuTheoTen = async ({ commit, dispatch }, payload) => {
+export const traCuuTheoTen = async ({ commit, dispatch }, { name, maXa }) => {
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
   });
-  const hoTens = payload.split(",");
+  const hoTens = name.split(",");
   const bhyts = new Map();
   for (let index = 0; index < hoTens.length; index++) {
     let { data } = await client.get(
-      `/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${hoTens[index]}&isCoDau=true&`
+      `/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=${maXa}&hoTen=${hoTens[index]}&isCoDau=true&`
     );
-    data.result.value.forEach((bhyt) => {
-      // bhyts.set(bhyt.maSoBhxh, bhyt);
-      commit("updateBhyt", bhyt);
-    });
-    try {
-      await dispatch(
-        "dongBoDuLieu",
-        data.result.value.map((i) => i.maSoBhxh).join()
-      );
-    } catch (error) {}
+    if (data.result.value.length) {
+      data.result.value.forEach((bhyt) => {
+        // bhyts.set(bhyt.maSoBhxh, bhyt);
+        commit("updateBhyt", bhyt);
+      });
+      try {
+        await dispatch(
+          "dongBoDuLieu",
+          data.result.value.map((i) => i.maSoBhxh).join()
+        );
+      } catch (error) {}
+    }
   }
 
   // commit("getAllBhyts", [...bhyts.values()]);

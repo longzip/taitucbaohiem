@@ -276,7 +276,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("auth", ["isLogin"]),
+    ...mapGetters("auth", ["isLogin", "userDetails"]),
     ...mapGetters("bhyts", ["bhyts", "soDienThoais"]),
   },
   methods: {
@@ -340,7 +340,10 @@ export default {
     },
     async loadData() {
       const ngayHomNay = new Date().getDate();
-      await this.hoSoDaXuLy({ thangTruoc: this.thangTruoc });
+      await this.hoSoDaXuLy({
+        thangTruoc: this.thangTruoc,
+        mangLuoiId: this.userDetails.mangLuoiId,
+      });
       this.tham = await this.bhyts
         .filter(
           (t) =>

@@ -1,7 +1,8 @@
 <template>
   <q-page>
     <ListHeader bgcolor="bg-orange-4"
-      >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (Tổng: {{ tongTien.toLocaleString()}}đ / {{ tongHoSo }} HS)<q-btn
+      >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (Tổng:
+      {{ tongTien.toLocaleString() }}đ / {{ tongHoSo }} HS)<q-btn
         rounded
         color="primary"
         label="Tải"
@@ -47,11 +48,11 @@ export default {
       searchText: "",
       items: [],
       tongTien: 0,
-      tongHoSo: 0
+      tongHoSo: 0,
     };
   },
   computed: {
-    ...mapGetters("auth", ["isLogin"]),
+    ...mapGetters("auth", ["isLogin", "userDetails"]),
     ...mapGetters("bhyts", ["bhyts"]),
   },
   methods: {
@@ -64,16 +65,22 @@ export default {
     if (this.$route.query.q) {
       this.searchText = this.$route.query.q;
     }
-    await this.hoSoChuaXuLy();
-    this.tongTien = this.bhyts.filter(t=>t.userId == 3152 && t.trangThaiHoSo == 2).map(t=>t.tongTien).reduce(
-      ( previousValue, currentValue ) => previousValue + currentValue,
-      0
+    await this.hoSoChuaXuLy({ mangLuoiId: this.userDetails.mangLuoiId });
+    this.tongTien = this.bhyts
+      .filter((t) => t.userId == 3152 && t.trangThaiHoSo == 2)
+      .map((t) => t.tongTien)
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    this.tongHoSo = this.bhyts
+      .filter((t) => t.userId == 3152 && t.trangThaiHoSo == 2)
+      .map((t) => t.tongTien)
+      .reduce((previousValue, currentValue) => previousValue + 1, 0);
+    this.giaHan(
+      this.bhyts.filter(
+        (t) =>
+          t.trangThaiHoSo == 2 &&
+          new Date().getDate() === new Date(t.ngayLap).getDate()
+      )
     );
-    this.tongHoSo = this.bhyts.filter(t=>t.userId == 3152 && t.trangThaiHoSo == 2).map(t=>t.tongTien).reduce(
-      ( previousValue, currentValue ) => previousValue + 1,
-      0
-    );
-    this.giaHan(this.bhyts.filter(t=>t.trangThaiHoSo == 2 && new Date().getDate() === new Date(t.ngayLap).getDate()));
   },
 };
 </script>

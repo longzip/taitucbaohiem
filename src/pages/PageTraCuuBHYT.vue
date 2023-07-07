@@ -143,7 +143,7 @@ export default {
   },
   computed: {
     ...mapGetters("bhyts", ["bhyts", "tongTien"]),
-    ...mapState("store", ["userDetails"]),
+    ...mapState("auth", ["userDetails"]),
   },
   methods: {
     ...mapActions("bhyts", [
@@ -176,7 +176,6 @@ export default {
     },
 
     async fetchAPIByName(searchText) {
-      if (!this.key) await this.getAuth();
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.key}`,
@@ -201,7 +200,6 @@ export default {
     },
 
     async fetchAPIByMaSoBhxh(maSoBhxh) {
-      if (!this.key) await this.getAuth();
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.key}`,
@@ -228,7 +226,7 @@ export default {
       const docSo = parseInt(this.searchText);
       let soThang = 0;
       if (docSo) soThang = docSo;
-      if (!this.key) await this.getAuth();
+
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.key}`,
@@ -267,7 +265,6 @@ export default {
       return json.result;
     },
     async fetchAPIHoSoChuaXuLy() {
-      if (!this.key) await this.getAuth();
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.key}`,
@@ -305,7 +302,6 @@ export default {
       return json.result;
     },
     async fetchAPIBaoCaoChiTietGiaoDich({ denThang, tuThang }) {
-      if (!this.key) await this.getAuth();
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.key}`,
@@ -336,7 +332,6 @@ export default {
       return json.result;
     },
     async fetchAPITaiTucBHYT({ denThang, tuThang }) {
-      if (!this.key) await this.getAuth();
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.key}`,
@@ -468,6 +463,7 @@ export default {
       await this.hoSoDaXuLy({
         tuNgay: ngays[0],
         denNgay: ngays[1],
+        mangLuoiId: this.userDetails.mangLuoiId,
       });
 
       // const maSos = this.bhyts.map((t) => ({ maSoBhxh: t.maSoBHXH }));
@@ -654,7 +650,7 @@ export default {
       this.getBhyts({
         completed: "0",
         disabled: "0",
-        maXa: "08986",
+        maXa: this.userDetails.maXa,
         nam: this.searchText,
       });
     },
@@ -680,7 +676,7 @@ export default {
         completed: "0",
         disabled: "0",
         taiTuc: "1",
-        maXa: "08986",
+        maXa: this.userDetails.maXa,
         name: this.searchText,
       });
     },
@@ -700,7 +696,7 @@ export default {
     },
     loadBhytsHetHan() {
       this.getBhyts({
-        maXa: "08986",
+        maXa: this.userDetails.maXa,
         completed: "0",
         disabled: "0",
         hetHan: "1",
@@ -709,13 +705,13 @@ export default {
     },
     loadBhytsDisable() {
       this.getBhyts({
-        maXa: "08986",
+        maXa: this.userDetails.maXa,
         disabled: 1,
       });
     },
     loadBhytsCompleted() {
       this.getBhyts({
-        maXa: "08986",
+        maXa: this.userDetails.maXa,
         completed: 1,
         disabled: "0",
       });
@@ -727,7 +723,7 @@ export default {
       }
       const danhSachTimKiem = searchText.split(",");
       if (danhSachTimKiem.length > 1)
-        await this.traCuuBhyts({ searchText, maXa: "08986" });
+        await this.traCuuBhyts({ searchText, maXa: this.userDetails.maXa });
       const regex = /[0-9]/g;
       for (let index = 0; index < danhSachTimKiem.length; index++) {
         const name = danhSachTimKiem[index]
@@ -740,7 +736,7 @@ export default {
           await this.sleep(500);
         } else {
           try {
-            await this.traCuuTheoTen(name);
+            await this.traCuuTheoTen({ name, maXa: this.userDetails.maXa });
           } catch (error) {
             Notify.create({
               type: "negative",
@@ -756,7 +752,6 @@ export default {
       if (this.$route.query.key) {
         this.key = await this.saveBHYT(this.$route.query.key);
       }
-      await this.getAuth();
     },
     async printDanhSachTraThe() {
       let a = document.createElement("a");
