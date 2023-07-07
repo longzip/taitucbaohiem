@@ -248,7 +248,7 @@
 import { mapGetters, mapActions } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
-import { Notify } from "quasar";
+import { Loading, QSpinnerIos, Notify } from "quasar";
 export default {
   components: { ThongTinTheBHYT, ListHeader },
   data() {
@@ -343,11 +343,25 @@ export default {
     },
     async loadData() {
       const ngayHomNay = new Date().getDate();
-      await this.sleep(1000);
-      await this.hoSoDaXuLy({
-        thangTruoc: this.thangTruoc,
-        mangLuoiId: this.userDetails.mangLuoiId,
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
       });
+      try {
+        await this.sleep(1000);
+        await this.hoSoDaXuLy({
+          thangTruoc: this.thangTruoc,
+          mangLuoiId: this.userDetails.mangLuoiId,
+        });
+      } catch (error) {
+        Notify.create({
+          message: "Không thể kế nối đến máy chủ !",
+          color: "red",
+        });
+      }
+
+      Loading.hide();
+
       this.tham = await this.bhyts
         .filter(
           (t) =>

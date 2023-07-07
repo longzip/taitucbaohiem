@@ -67,7 +67,7 @@ export default defineComponent({
   },
   methods: {},
   async mounted() {
-    const { data } = await axios.get("http://app.hotham.vn/api/dons");
+    const { data } = await axios.get("https://app.hotham.vn/api/dons");
     this.dons = data;
   },
 });

@@ -141,6 +141,7 @@ export default {
       "getDanhSachKhachHangTaiTuc",
       "copyHoTenToClipboard",
     ]),
+
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
@@ -172,11 +173,15 @@ export default {
       }
 
       const ngays = this.searchText.split(" - ");
-
+      Loading.show({
+        spinner: QSpinnerIos,
+        spinnerSize: "100px",
+      });
       try {
-        Loading.show({
-          spinner: QSpinnerIos,
-          spinnerSize: "100px",
+        await this.hoSoDaXuLy({
+          tuNgay: ngays[0],
+          denNgay: ngays[1],
+          mangLuoiId: this.userDetails.mangLuoiId,
         });
       } catch (error) {
         Notify.create({
@@ -184,11 +189,7 @@ export default {
           color: "red",
         });
       }
-      await this.hoSoDaXuLy({
-        tuNgay: ngays[0],
-        denNgay: ngays[1],
-        mangLuoiId: this.userDetails.mangLuoiId,
-      });
+
       Loading.hide();
     },
     async inC17() {
