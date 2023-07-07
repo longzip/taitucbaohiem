@@ -136,11 +136,14 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import { date } from "quasar";
 import { Notify } from "quasar";
 export default {
   props: ["bhyt"],
+  computed: {
+    ...mapState("auth", ["userDetails"]),
+  },
   methods: {
     ...mapActions("bhyts", [
       "updateGhiChu",
@@ -224,6 +227,7 @@ export default {
           this.thuTien({
             tongTien: data,
             maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            userName: this.userDetails.userName,
           });
         });
     },
@@ -332,7 +336,7 @@ export default {
               tongTien: data,
               maSoBhxh,
               isBHXHTN: 1,
-              userName: 0,
+              userName: this.userDetails.userBHXH,
             });
           });
       } catch (error) {
