@@ -115,6 +115,7 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
+import axios from "axios";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { Loading, QSpinnerIos, Notify } from "quasar";
 export default {
@@ -141,7 +142,7 @@ export default {
       "getDanhSachKhachHangTaiTuc",
       "copyHoTenToClipboard",
     ]),
-
+    ...mapActions("auth", ["firebaseUpdateUser", "handleAuthStateChanged"]),
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
@@ -463,6 +464,36 @@ export default {
           }
         );
     },
+    async taoKhoaMoi() {
+      await this.sleep(1000);
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://ssm-api.vnpost.vn/api/TokenAuth/Authenticate",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        data: this.userDetails.smsText,
+      };
+
+      const { data } = await axios.request(config);
+
+      await this.firebaseUpdateUser({
+        userId: this.userDetails.userId,
+        updates: { ...this.userDetails, isLogin: data.result.accessToken },
+      });
+      await this.handleAuthStateChanged();
+      const expirationDate = new Date(new Date().getTime() + 12 * 60 * 1000);
+      localStorage.setItem("expiration", expirationDate.toISOString());
+    },
+  },
+  async created() {
+    const expirationDate = localStorage.getItem("expiration");
+    if (!expirationDate || new Date(expirationDate) < new Date()) {
+      console.log("tao khoa mới!");
+      this.taoKhoaMoi();
+    }
   },
 };
 </script>

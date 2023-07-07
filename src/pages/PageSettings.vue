@@ -2,7 +2,7 @@
   <q-page>
     <q-card class="q-pa-md">
       <q-form @submit="luuThongTin" class="q-gutter-md">
-        <q-input
+        <!-- <q-input
           filled
           v-model="formData.name"
           label="Tên của bạn *"
@@ -11,15 +11,15 @@
           :rules="[
             (val) => (val && val.length > 0) || 'Vui lòng cho biết tên của bạn',
           ]"
-        />
-        <q-input
+        /> -->
+        <!-- <q-input
           v-model="formData.email"
           class="q-mb-md"
           outlined
           type="email"
           label="Tên đăng nhập"
           disable
-        />
+        /> -->
         <!-- <q-input
           v-model="formData.smsText"
           class="q-mb-md"
@@ -36,9 +36,9 @@
           label="Khóa bí mật"
         />
 
-        <div>
+        <!-- <div>
           <q-btn label="Cập nhật" type="submit" color="primary" />
-        </div>
+        </div> -->
       </q-form>
     </q-card>
   </q-page>
