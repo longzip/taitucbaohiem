@@ -283,7 +283,8 @@ export const traCuuTheoTen = async ({ commit, dispatch }, { name, maXa }) => {
     spinnerSize: "100px",
   });
   const hoTens = name.split(",");
-  const bhyts = new Map();
+  const hoTenDaTims = JSON.parse(localStorage.getItem("hoTens")) || [];
+
   for (let index = 0; index < hoTens.length; index++) {
     let { data } = await client.get(
       `/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=${maXa}&hoTen=${hoTens[index]}&isCoDau=true&`
@@ -293,12 +294,16 @@ export const traCuuTheoTen = async ({ commit, dispatch }, { name, maXa }) => {
         // bhyts.set(bhyt.maSoBhxh, bhyt);
         commit("updateBhyt", bhyt);
       });
-      try {
-        await dispatch(
-          "dongBoDuLieu",
-          data.result.value.map((i) => i.maSoBhxh).join()
-        );
-      } catch (error) {}
+      if (!hoTenDaTims.includes(hoTens[index])) {
+        try {
+          await dispatch(
+            "dongBoDuLieu",
+            data.result.value.map((i) => i.maSoBhxh).join()
+          );
+        } catch (error) {}
+        hoTenDaTims.push(hoTens[index]);
+        localStorage.setItem("hoTens", JSON.stringify(hoTenDaTims));
+      }
     }
   }
 
