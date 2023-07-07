@@ -84,6 +84,12 @@
             <q-item clickable @click="copyNamePhoneClipboard" v-close-popup>
               <q-item-section>Copy danh bạ</q-item-section>
             </q-item>
+            <q-item clickable @click="batTatRemove" v-close-popup>
+              <q-item-section>Tắt/Bật danh sách</q-item-section>
+            </q-item>
+            <q-item clickable @click="resetBhyt([])" v-close-popup>
+              <q-item-section>Xóa danh sách</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </div>
@@ -135,12 +141,12 @@ export default {
       "resetBhyt",
       "traCuuBhyts",
       "updateBhyt",
-      "resetBhyt",
       "hoSoDaXuLy",
       "dongBoDuLieu",
       "traCuuTheoTen",
       "getDanhSachKhachHangTaiTuc",
       "copyHoTenToClipboard",
+      "batTatRemove",
     ]),
     ...mapActions("auth", ["firebaseUpdateUser", "handleAuthStateChanged"]),
     sleep(ms) {

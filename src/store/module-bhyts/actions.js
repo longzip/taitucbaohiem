@@ -7,6 +7,9 @@ const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
 };
 
+export const batTatRemove = ({ commit }, payload) => {
+  commit("setIsRemove", payload);
+};
 export const xoaThanhVienHGD = ({ commit }, payload) => {
   commit("removeBhyt", payload);
 };
