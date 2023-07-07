@@ -43,6 +43,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
             let userDetails = snapshot.val();
             commit("setUserDetails", {
               ...userDetails,
+              userId,
             });
             commit("setIsLogin", userDetails.isLogin);
           } else {
@@ -73,14 +74,14 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
   });
 };
 
-export const firebaseUpdateUser = ({}, { userId="Tb2NycH5FvRMZmkID4meXAHHsQR2", updates }) => {
-
-    const db = getDatabase();
-    set(ref(db, "users/" + userId + "/isLogin"), updates.isLogin)
-    .then(()=>{
-      console.log("cap nhat")
-    })
-
+export const firebaseUpdateUser = (
+  {},
+  { userId = "Tb2NycH5FvRMZmkID4meXAHHsQR2", updates }
+) => {
+  const db = getDatabase();
+  set(ref(db, "users/" + userId + "/isLogin"), updates.isLogin).then(() => {
+    console.log("cap nhat");
+  });
 };
 
 export const firebaseGetUsers = ({ commit }) => {
