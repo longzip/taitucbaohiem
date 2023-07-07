@@ -387,6 +387,7 @@ export default {
           }
         }
       }
+      if (this.bhyts.length > 50) this.resetBhyt([]);
       this.$refs.inputSearch.select();
     },
     async timMoi(searchText) {
