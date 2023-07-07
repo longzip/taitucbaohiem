@@ -87,6 +87,9 @@
             <q-item clickable @click="batTatRemove" v-close-popup>
               <q-item-section>Tắt/Bật danh sách</q-item-section>
             </q-item>
+            <q-item clickable @click="timMoi(searchText)" v-close-popup>
+              <q-item-section>Tìm mới</q-item-section>
+            </q-item>
             <q-item clickable @click="resetBhyt([])" v-close-popup>
               <q-item-section>Xóa danh sách</q-item-section>
             </q-item>
@@ -385,6 +388,15 @@ export default {
         }
       }
       this.$refs.inputSearch.select();
+    },
+    async timMoi(searchText) {
+      const dsTimMois = searchText.split(",");
+      for (let index = 0; index < dsTimMois.length; index++) {
+        const element = dsTimMois[index];
+        this.resetBhyt([]);
+        this.searchText = element;
+        await this.timKiem(element);
+      }
     },
     async khoiTao() {
       this.resetBhyt([]);
