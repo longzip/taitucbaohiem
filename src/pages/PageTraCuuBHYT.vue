@@ -379,6 +379,7 @@ export default {
         } else {
           try {
             await this.traCuuTheoTen({ name, maXa: this.userDetails.maXa });
+            if (this.bhyts.length > 50) this.resetBhyt([]);
           } catch (error) {
             Notify.create({
               type: "negative",
@@ -387,7 +388,7 @@ export default {
           }
         }
       }
-      if (this.bhyts.length > 50) this.resetBhyt([]);
+
       this.$refs.inputSearch.select();
     },
     async timMoi(searchText) {
