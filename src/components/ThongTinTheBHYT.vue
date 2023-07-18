@@ -310,7 +310,7 @@ export default {
               t.hoTen
             }, Ngày sinh: **/**/${new Date(
               t.ngaySinhDt
-            ).toLocaleDateString()}; Tên đơn vị đang tham gia: Hồ Thị Thắm - Đại lý ${
+            ).getFullYear()}; Tên đơn vị đang tham gia: Đại lý ${
               t.tenDonVi
             }, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(
               t.mucDong
@@ -369,7 +369,7 @@ export default {
                 6,
                 8
               )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
-          Xem thêm Mức đóng bảo hiểm y tế hộ gia đình năm 2023 tại https://blog.hotham.vn/muc-dong-bao-hiem-y-te-ho-gia-dinh-nam-2023/ .  Người dân khi muốn gia hạn thẻ bảo hiểm y tế (BHYT) hộ gia đình có giảm trừ mức đóng chỉ cần đến trực tiếp Điểm thu BHXH, BHYT Bưu điện xã Tự Lập (cạnh trạm y tế xã) gặp chị Hồ Thị Thắm (thay anh Lập nghỉ) thông báo số BHXH (cung cấp mã thẻ BHYT cũ), nộp tiền đóng BHYT.`
+          `
             : `
           Thẻ hợp lệ! Mã thẻ: ${
             t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
@@ -385,7 +385,7 @@ export default {
                 6,
                 8
               )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
-          Xem thêm Những cách theo dõi quá trình tham gia và giá trị sử dụng thẻ BHYT, nhằm đảm bảo quyền lợi liên tục tại https://blog.hotham.vn/nhung-cach-theo-doi-qua-trinh-tham-gia-va-gia-tri-su-dung-the-bhyt-nham-dam-bao-quyen-loi-lien-tuc/ .  Để biết thêm thông tin, người dân có thể trực tiếp đến Điểm thu BHXH, BHYT Bưu điện xã Tự Lập (cạnh trạm y tế xã) gặp chị Hồ Thị Thắm (thay anh Lập nghỉ), hoặc liên hệ đến Tổng đài Chăm sóc khách hàng của BHXH Việt Nam theo số 1900 9068 để được hướng dẫn, hỗ trợ./.`
+          `
         )
         .then(
           function () {
