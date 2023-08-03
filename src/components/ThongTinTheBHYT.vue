@@ -56,11 +56,12 @@
           name="content_copy"
         />
 
-        <q-icon
-          class="q-ml-md"
-          @click="copyUrlToClipboard(bhyt)"
-          name="share"
-        />
+        <a :href="`tel:${bhyt.soDienThoai}`"
+          ><q-icon
+            class="q-ml-md"
+            @click="copyUrlToClipboard(bhyt)"
+            name="share"
+        /></a>
         <q-icon
           class="q-ml-md"
           @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
@@ -274,7 +275,7 @@ export default {
               t.hoTen
             }, Ngày sinh: **/**/${new Date(
               t.ngaySinhDt
-            ).toLocaleDateString()}; Tên đơn vị đang tham gia: Hồ Thị Thắm - Đại lý ${
+            ).toLocaleDateString()}; Tên đơn vị đang tham gia: Đại lý ${
               t.tenDonVi
             }, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(
               t.mucDong
@@ -287,7 +288,7 @@ export default {
               4
             )} số tiền phải đóng ${parseInt(
               t.tienNldPhaiNop - tienHaNoiHoTro
-            ).toLocaleString()}đ. Kết nối với Hồ Thị Thắm tại m.hotham.vn`
+            ).toLocaleString()}đ.\r\n` + this.userDetails.bhxhSMSText
           )
           .then(
             function () {
@@ -368,8 +369,8 @@ export default {
               )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam.slice(
                 6,
                 8
-              )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
-          `
+              )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.\r\n
+          ` + this.userDetails.bhytHetHanSMSText
             : `
           Thẻ hợp lệ! Mã thẻ: ${
             t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
@@ -384,8 +385,8 @@ export default {
               )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam.slice(
                 6,
                 8
-              )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
-          `
+              )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}. \r\n
+          ` + this.userDetails.bhytSMSText
         )
         .then(
           function () {

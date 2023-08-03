@@ -83,6 +83,15 @@ export const firebaseUpdateUser = (
     console.log("cap nhat");
   });
 };
+export const firebaseUpdateUserAll = (
+  {},
+  { userId = "Tb2NycH5FvRMZmkID4meXAHHsQR2", updates }
+) => {
+  const db = getDatabase();
+  set(ref(db, "users/" + userId), updates).then(() => {
+    console.log("cap nhat all");
+  });
+};
 
 export const firebaseGetUsers = ({ commit }) => {
   firebaseDb.ref("users").on("child_added", (snapshot) => {

@@ -35,10 +35,31 @@
           type="textarea"
           label="Khóa bí mật"
         />
+        <q-input
+          v-model="formData.bhytSMSText"
+          class="q-mb-md"
+          outlined
+          type="textarea"
+          label="Mẫu tin nhắn BHYT"
+        />
+        <q-input
+          v-model="formData.bhytHetHanSMSText"
+          class="q-mb-md"
+          outlined
+          type="textarea"
+          label="Mẫu tin nhắn BHYT hết hạn"
+        />
+        <q-input
+          v-model="formData.bhxhSMSText"
+          class="q-mb-md"
+          outlined
+          type="textarea"
+          label="Mẫu tin nhắn BHXH"
+        />
 
-        <!-- <div>
+        <div>
           <q-btn label="Cập nhật" type="submit" color="primary" />
-        </div> -->
+        </div>
       </q-form>
     </q-card>
   </q-page>
@@ -55,7 +76,10 @@ export default {
         name: "Bưu điện xã Tự Lập",
         email: "info@buudienxatulap.ga",
         smsText: "sss",
-        isLogin: "a",
+        isLogin: "",
+        bhytSMSText: "",
+        bhytHetHanSMSText: "",
+        bhxhSMSText: "",
       },
     };
   },
@@ -63,8 +87,13 @@ export default {
     ...mapGetters("auth", ["userDetails"]),
   },
   methods: {
-    ...mapActions("auth", ["firebaseUpdateUser", "handleAuthStateChanged"]),
+    ...mapActions("auth", [
+      "firebaseUpdateUser",
+      "firebaseUpdateUserAll",
+      "handleAuthStateChanged",
+    ]),
     luuThongTin() {
+      if (!this.formData.isLogin) return;
       this.$q
         .dialog({
           title: "Xác nhận",
@@ -73,7 +102,7 @@ export default {
           persistent: true,
         })
         .onOk(() => {
-          this.firebaseUpdateUser({
+          this.firebaseUpdateUserAll({
             userId: this.userDetails.userId,
             updates: this.formData,
           });
