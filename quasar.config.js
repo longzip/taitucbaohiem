@@ -144,9 +144,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Buu dien xa Tu Lap`,
-        short_name: `Buu dien xa Tu Lap`,
-        description: `Buu dien xa tu lap goi bhyt`,
+        name: `Todo`,
+        short_name: `Todo`,
+        description: `Todo`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",

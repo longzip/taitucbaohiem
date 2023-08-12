@@ -64,6 +64,11 @@
         /></a>
         <q-icon
           class="q-ml-md"
+          @click="copyMaTraCuuToClipboard(bhyt)"
+          name="history"
+        />
+        <q-icon
+          class="q-ml-md"
           @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
           name="paid"
         />
@@ -156,6 +161,7 @@ export default {
       "thuTien",
       "xoaThanhVienHGD",
       "getBhytsBySoBienLai",
+      "maTraCuu",
     ]),
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
@@ -346,6 +352,29 @@ export default {
           message: "Không thực hiện được!" + error,
         });
       }
+    },
+    async copyMaTraCuuToClipboard({ bienLaiId, hoTen }) {
+      const maTraCuu = await this.maTraCuu(bienLaiId);
+      navigator.clipboard
+        .writeText(
+          this.userDetails.xacNhanSMSText
+            .replace("maTraCuu", maTraCuu)
+            .replace("hoTen", hoTen)
+        )
+        .then(
+          function () {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`,
+            });
+          },
+          function (err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err,
+            });
+          }
+        );
     },
     copyUrlToClipboard(t) {
       const [nam, thang, ngay] = new Date()

@@ -261,6 +261,16 @@ export const luuBhyt = async (bhyt) => {
   }
 };
 
+export const maTraCuu = async ({}, bienLaiId) => {
+  let {
+    data: { result, success },
+  } = await client.get(
+    `/api/services/app/KeKhai/GetDSBienLai?bienlaiId=${bienLaiId}`
+  );
+  if (!success) return null;
+  return result[0].maXacNhan;
+};
+
 export const xem = async (maSoBhxh, completed) => {
   let {
     data: { result },
@@ -440,6 +450,7 @@ export const daXyLy = async ({ commit }, payload) => {
       trangThaiHoSo,
       maThuTuc,
       soBienLai,
+      bienLaiId,
     } = payload[index];
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
@@ -447,6 +458,7 @@ export const daXyLy = async ({ commit }, payload) => {
         userName,
         maThuTuc,
         soBienLai,
+        bienLaiId,
         disabled: trangThaiHoSo !== 9,
       });
       await commit("updateBhyt", data);

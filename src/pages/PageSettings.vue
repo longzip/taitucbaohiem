@@ -50,6 +50,13 @@
           label="Mẫu tin nhắn BHYT hết hạn"
         />
         <q-input
+          v-model="formData.xacNhanSMSText"
+          class="q-mb-md"
+          outlined
+          type="textarea"
+          label="Mẫu tin nhắn xác nhận đóng tiền"
+        />
+        <q-input
           v-model="formData.bhxhSMSText"
           class="q-mb-md"
           outlined
@@ -80,6 +87,7 @@ export default {
         bhytSMSText: "",
         bhytHetHanSMSText: "",
         bhxhSMSText: "",
+        xacNhanSMSText: "",
       },
     };
   },
