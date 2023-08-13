@@ -73,7 +73,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 import { Notify, date } from "quasar";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
@@ -87,6 +87,7 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters("items", ["itemBy"]),
+    ...mapState("auth", ["userDetails"]),
   },
   methods: {
     ...mapActions("items", ["getItems"]),
@@ -106,14 +107,16 @@ export default defineComponent({
         }
       );
     },
-    copyTextToClipboard({ ttNumber, recName, recPhone, recAdd }) {
+    copyTextToClipboard({ ttNumber, senderName, recPhone, recAdd }) {
+      const { guiHangSMSText } = this.userDetails;
       navigator.clipboard
         .writeText(
-          `https://www.hotham.vn/tra-cuu-hang-buu-dien?q=${ttNumber}. (${[
-            recName,
-            recPhone,
-            recAdd,
-          ].join("\t")})`
+          guiHangSMSText
+            .replace("[Tên khách hàng]", senderName)
+            .replace(
+              "[Mã theo dõi]",
+              `https://www.hotham.vn/tra-cuu-hang-buu-dien?q=${ttNumber}`
+            )
         )
         .then(
           function () {

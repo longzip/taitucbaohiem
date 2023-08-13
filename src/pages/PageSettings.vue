@@ -63,6 +63,13 @@
           type="textarea"
           label="Mẫu tin nhắn BHXH"
         />
+        <q-input
+          v-model="formData.guiHangSMSText"
+          class="q-mb-md"
+          outlined
+          type="textarea"
+          label="Mẫu tin nhắn gửi hàng bưu điện."
+        />
 
         <div>
           <q-btn label="Cập nhật" type="submit" color="primary" />
@@ -88,6 +95,7 @@ export default {
         bhytHetHanSMSText: "",
         bhxhSMSText: "",
         xacNhanSMSText: "",
+        guiHangSMSText: "",
       },
     };
   },
