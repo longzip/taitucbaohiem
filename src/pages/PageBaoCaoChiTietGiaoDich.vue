@@ -7,6 +7,13 @@
         rounded
         color="primary"
         label="Tải"
+        @click="loadData()"
+        icon="sync"
+      />
+      <q-btn
+        rounded
+        color="primary"
+        label="Đồng bộ"
         @click="dongBo()"
         icon="sync"
       />
@@ -41,7 +48,7 @@
 <script>
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 export default {
   components: { ThongTinTheBHYT, ListHeader },
   data() {
@@ -54,19 +61,23 @@ export default {
   methods: {
     ...mapActions("bhyts", ["getBaoCaoChiTietGiaoDich", "capNhatBienLai"]),
     dongBo() {
-      this.capNhatBienLai(this.timBhyts());
+      this.capNhatBienLai([...this.timBhyts()].reverse());
+    },
+    loadData() {
+      if (this.$route.query.tuThang) this.tuThang = this.$route.query.tuThang;
+      if (this.$route.query.denThang)
+        this.denThang = this.$route.query.denThang;
+      this.getBaoCaoChiTietGiaoDich({
+        tuThang: this.tuThang,
+        denThang: this.denThang,
+        mangLuoiId: this.userDetails.mangLuoiId,
+      });
     },
   },
   computed: {
     ...mapGetters("bhyts", ["timBhyts", "tongSoThe", "tongTien"]),
+    ...mapState("auth", ["userDetails"]),
   },
-  mounted() {
-    if (this.$route.query.tuThang) this.tuThang = this.$route.query.tuThang;
-    if (this.$route.query.denThang) this.denThang = this.$route.query.denThang;
-    this.getBaoCaoChiTietGiaoDich({
-      tuThang: this.tuThang,
-      denThang: this.denThang,
-    });
-  },
+  mounted() {},
 };
 </script>

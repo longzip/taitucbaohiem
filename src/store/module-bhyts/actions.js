@@ -55,7 +55,11 @@ export const getDanhSachKhachHangTaiTuc = async ({ commit }, payload) => {
 };
 export const getBaoCaoChiTietGiaoDich = async (
   { commit },
-  { tuThang = "2023-01-01 00:00:00", denThang = "2024-01-01 00:00:00" }
+  {
+    tuThang = "2023-01-01 00:00:00",
+    denThang = "2024-01-01 00:00:00",
+    mangLuoiId = 4580,
+  }
 ) => {
   commit("setBhyts", []);
   Loading.show({
@@ -69,7 +73,7 @@ export const getBaoCaoChiTietGiaoDich = async (
         filterItems: [],
         maxResultCount: 5000,
         skipCount: 0,
-        mangLuoiId: 4580,
+        mangLuoiId,
         tuThang,
         denThang,
         loaiGiaoDich: 0,
@@ -407,10 +411,14 @@ export const thuTien = async (
 export const capNhatBienLai = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
     await sleep();
-    const { maSoBHXH, ngayBienLai } = payload[index];
+    const { maSoBHXH, ngayBienLai, bienLaiId, soBienLai, soTienThu } =
+      payload[index];
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBHXH}/tong-tien`, {
         ngayLap: ngayBienLai,
+        bienLaiId,
+        soBienLai,
+        tongTien: soTienThu,
       });
       await commit("updateBhyt", data);
     } catch (error) {
