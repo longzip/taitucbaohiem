@@ -42,6 +42,13 @@
         {{ bhyt.mqhChuHo }}
       </q-item-label>
       <q-item-label caption lines="2">
+        Tờ khai:<a
+          target="_blank"
+          :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
+          >{{ bhyt.uniqid }}</a
+        >
+      </q-item-label>
+      <q-item-label caption lines="2">
         Số CMND: {{ bhyt.soCmnd }}
       </q-item-label>
       <q-item-label caption lines="2"
@@ -78,6 +85,9 @@
         >5 năm:{{
           bhyt.ngay5Nam || bhyt.trangThaiHoSoName || bhyt.moTa
         }}</q-item-label
+      >
+      <q-item-label caption lines="2"
+        >Mã xác nhận:{{ bhyt.maXacNhan }}</q-item-label
       >
       <q-item-label v-if="bhyt.isBHXHTN == '1'" caption lines="2"
         ><strong>BHXH TN:</strong> {{ bhyt.mucDong }} -
@@ -153,6 +163,7 @@ export default {
   methods: {
     ...mapActions("bhyts", [
       "updateGhiChu",
+      "updateMaXacNhan",
       "loaiBo",
       "theoDoi",
       "dongBoDuLieu",
@@ -353,8 +364,19 @@ export default {
         });
       }
     },
-    async copyMaTraCuuToClipboard({ bienLaiId, hoTen }) {
+    async copyMaTraCuuToClipboard({ bienLaiId, hoTen, maSoBhxh }) {
       const maTraCuu = await this.maTraCuu(bienLaiId);
+      if (!maTraCuu) {
+        Notify.create({
+          type: "negative",
+          message: "Không có mã xác nhận",
+        });
+        return null;
+      }
+      await this.updateMaXacNhan({
+        maSoBhxh,
+        maXacNhan: maTraCuu,
+      });
       navigator.clipboard
         .writeText(
           this.userDetails.xacNhanSMSText

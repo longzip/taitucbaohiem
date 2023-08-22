@@ -391,6 +391,16 @@ export const updateGhiChu = async ({ commit }, { maSoBhxh, ghiChu }) => {
     console.log(error);
   }
 };
+export const updateMaXacNhan = async ({ commit }, { maSoBhxh, maXacNhan }) => {
+  try {
+    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+      maXacNhan,
+    });
+    await commit("updateBhyt", data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const thuTien = async (
   { commit },
   { maSoBhxh, tongTien, userName = 1 }
@@ -416,7 +426,6 @@ export const capNhatBienLai = async ({ commit }, payload) => {
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBHXH}/tong-tien`, {
         ngayLap: ngayBienLai,
-        bienLaiId,
         soBienLai,
         tongTien: soTienThu,
       });
@@ -451,6 +460,7 @@ export const capNhatBHXHTN = async ({ commit }, payload) => {
 export const daXyLy = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
     await sleep();
+
     const {
       maSoBhxh,
       tongTien,
@@ -460,9 +470,17 @@ export const daXyLy = async ({ commit }, payload) => {
       soBienLai,
       bienLaiId,
     } = payload[index];
+    let {
+      data: { result, success },
+    } = await client.get(
+      `/api/services/app/KeKhai/GetDSBienLai?bienlaiId=${bienLaiId}`
+    );
+    let maXacNhan = null;
+    if (success) maXacNhan = result[0].maXacNhan;
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         tongTien,
+        maXacNhan,
         userName,
         maThuTuc,
         soBienLai,
