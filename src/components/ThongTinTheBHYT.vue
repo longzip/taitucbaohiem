@@ -133,11 +133,12 @@
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
       />
       <q-item-label caption
-        >{{
+        ><span @click="capNhapNgayBienLai(bhyt)">{{
           bhyt.ngayLap ||
           bhyt.ngayBienLai ||
           new Date(bhyt.updated_at).toLocaleString()
-        }}<br />
+        }}</span>
+        <br />
         <a
           v-if="bhyt.soBienLai"
           href="javascript:void(0);"
@@ -164,6 +165,7 @@ export default {
     ...mapActions("bhyts", [
       "updateGhiChu",
       "updateMaXacNhan",
+      "updateNgayLap",
       "loaiBo",
       "theoDoi",
       "dongBoDuLieu",
@@ -246,6 +248,26 @@ export default {
             tongTien: data,
             maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
             userName: this.userDetails.userName,
+          });
+        });
+    },
+    capNhapNgayBienLai(bhyt) {
+      this.$q
+        .dialog({
+          title: "Cập nhật ngày biên lai",
+          message: "Ngày biên lai?",
+          prompt: {
+            model: bhyt.ngayLap,
+            isValid: (val) => val.length == 10, // << here is the magic
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          this.updateNgayLap({
+            ngayLap: data,
+            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
           });
         });
     },

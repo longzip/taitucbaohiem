@@ -401,6 +401,16 @@ export const updateMaXacNhan = async ({ commit }, { maSoBhxh, maXacNhan }) => {
     console.log(error);
   }
 };
+export const updateNgayLap = async ({ commit }, { maSoBhxh, ngayLap }) => {
+  try {
+    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+      ngayLap,
+    });
+    await commit("updateBhyt", data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const thuTien = async (
   { commit },
   { maSoBhxh, tongTien, userName = 1 }
