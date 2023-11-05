@@ -33,6 +33,12 @@
       </div>
     </q-list>
     <!-- <q-btn @click="checkout()" color="white" text-color="black" label="Thanh toán" /> -->
+    <q-checkbox
+      @click="updateMaGiamGia"
+      left-label
+      v-model="maGiamGia"
+      label="Giảm giá 5%"
+    />
     <q-input
       outlined
       bottom-slots
@@ -118,6 +124,7 @@ export default {
     return {
       email: "lovanlong",
       searchText: "",
+      maGiamGia: false,
     };
   },
   methods: {
@@ -127,9 +134,28 @@ export default {
       "checkout",
       "loginUser",
       "getProducts",
+      "applyCoupon",
       "removeItemsFromCart",
       "emptyCart",
     ]),
+    updateMaGiamGia() {
+      this.$q
+        .dialog({
+          title: "Mã Giảm Giá",
+          message: "Nhập mã giảm giá",
+          prompt: {
+            model: "TODO5",
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          this.applyCoupon({
+            code: data,
+          });
+        });
+    },
     confirmAddToCart(productId) {
       this.$q
         .dialog({

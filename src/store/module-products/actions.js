@@ -7,6 +7,7 @@ import CHECKOUT_MUTATION from "src/mutations/checkout";
 import PRODUCTS_QUERY from "src/queries/products";
 import CLEAR_CART_MUTATION from "src/mutations/clear-cart";
 import EMPTY_CART_MUTATION from "src/mutations/empty-cart";
+import APPLY_COUPON from "src/mutations/apply-coupon";
 export async function loginUser({ commit }, { username, password }) {
   Loading.show({
     spinner: QSpinnerIos,
@@ -43,6 +44,35 @@ export async function getCart({ commit }) {
   }
   Loading.hide();
 }
+
+export async function applyCoupon({ commit }, { code = "TODO5" }) {
+  Loading.show({
+    spinner: QSpinnerIos,
+    spinnerSize: "100px",
+  });
+  try {
+    const { data } = await client.mutate({
+      mutation: APPLY_COUPON,
+      variables: {
+        input: {
+          code,
+        },
+      },
+    });
+    Loading.hide();
+    commit("setCart", data.addToCart);
+    Notify.create({
+      type: "positive",
+      message: `Đã thêm vào giỏ hàng!`,
+    });
+  } catch (error) {
+    Notify.create({
+      type: "negative",
+      message: `Không thể thêm sản phẩm hết hàng!`,
+    });
+  }
+}
+
 export async function addToCart({ commit }, { productId, quantity = 1 }) {
   Loading.show({
     spinner: QSpinnerIos,
