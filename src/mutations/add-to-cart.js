@@ -1,9 +1,12 @@
-import gql from 'graphql-tag'
+import gql from "graphql-tag";
 
 const ADD_TO_CART = gql`
-mutation ($input: AddToCartInput!) {
+  mutation ($input: AddToCartInput!) {
     addToCart(input: $input) {
       cart {
+        appliedCoupons {
+          code
+        }
         contents {
           nodes {
             key

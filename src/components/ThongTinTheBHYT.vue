@@ -443,7 +443,11 @@ export default {
                 6,
                 8
               )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.\r\n
-          ` + this.userDetails.bhytHetHanSMSText
+          ` +
+                this.userDetails.bhytHetHanSMSText.replace(
+                  "_soTheBhyt",
+                  t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+                )
             : `
           Thẻ hợp lệ! Mã thẻ: ${
             t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
@@ -459,7 +463,11 @@ export default {
                 6,
                 8
               )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}. \r\n
-          ` + this.userDetails.bhytSMSText
+          ` +
+                this.userDetails.bhytSMSText.replace(
+                  "_soTheBhyt",
+                  t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+                )
         )
         .then(
           function () {

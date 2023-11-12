@@ -59,16 +59,17 @@ export async function applyCoupon({ commit }, { code = "TODO5" }) {
         },
       },
     });
+
     Loading.hide();
-    commit("setCart", data.addToCart);
+    commit("setCart", data.applyCoupon);
     Notify.create({
       type: "positive",
-      message: `Đã thêm vào giỏ hàng!`,
+      message: `Áp dụng mã giảm giá!`,
     });
   } catch (error) {
     Notify.create({
       type: "negative",
-      message: `Không thể thêm sản phẩm hết hàng!`,
+      message: `${error}`,
     });
   }
 }
