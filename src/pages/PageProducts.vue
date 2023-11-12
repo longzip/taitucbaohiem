@@ -3,7 +3,7 @@
     <ListHeader bgcolor="bg-orange-4">
       Giỏ hàng {{ cart?.total }}
       <q-icon name="remove_shopping_cart" @click="emptyCart()" />
-      Mã giảm giá: {{ cart?.appliedCoupons.map((c) => c.code).join() }}
+      Mã giảm giá: {{ cart?.appliedCoupons?.map((c) => c.code).join() }}
     </ListHeader>
     <q-list v-if="cart?.contents?.nodes">
       <div v-for="cartItem in cart.contents.nodes" :key="cartItem.key">
