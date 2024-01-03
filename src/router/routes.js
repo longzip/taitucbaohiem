@@ -100,6 +100,12 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "/dang-ky-142010",
+        name: "dka",
+        component: () => import("pages/PageAuth.vue"),
+        meta: { requireAuth: false },
+      },
+      {
         path: "/tra-cuu/:id",
         component: () => import("pages/PageTraCuu.vue"),
         meta: { requireAuth: true },
