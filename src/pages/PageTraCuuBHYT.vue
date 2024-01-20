@@ -90,7 +90,17 @@
             <q-item clickable @click="timMoi(searchText)" v-close-popup>
               <q-item-section>Tìm mới</q-item-section>
             </q-item>
-            <q-item clickable @click="resetBhyt([])" v-close-popup>
+            <q-item
+              clickable
+              @click="
+                resetBhyt(
+                  searchText
+                    ? bhyts.filter((bhyt) => bhyt.userName !== searchText)
+                    : []
+                )
+              "
+              v-close-popup
+            >
               <q-item-section>Xóa danh sách</q-item-section>
             </q-item>
           </q-list>
