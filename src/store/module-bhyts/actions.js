@@ -272,7 +272,7 @@ export const maTraCuu = async ({}, bienLaiId) => {
     `/api/services/app/KeKhai/GetDSBienLai?bienlaiId=${bienLaiId}`
   );
   if (!success) return null;
-  return result[0].maXacNhan;
+  return result[0];
 };
 
 export const xem = async (maSoBhxh, completed) => {

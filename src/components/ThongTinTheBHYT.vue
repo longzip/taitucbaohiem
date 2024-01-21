@@ -387,8 +387,10 @@ export default {
       }
     },
     async copyMaTraCuuToClipboard({ bienLaiId, hoTen, maSoBhxh }) {
-      const maTraCuu = await this.maTraCuu(bienLaiId);
-      if (!maTraCuu) {
+      const { maXacNhan, ngayBienLai, soBienLai } = await this.maTraCuu(
+        bienLaiId
+      );
+      if (!maXacNhan) {
         Notify.create({
           type: "negative",
           message: "Không có mã xác nhận",
@@ -397,12 +399,14 @@ export default {
       }
       await this.updateMaXacNhan({
         maSoBhxh,
-        maXacNhan: maTraCuu,
+        maXacNhan,
       });
       navigator.clipboard
         .writeText(
           this.userDetails.xacNhanSMSText
-            .replace("maTraCuu", maTraCuu)
+            .replace("maXacNhan", maXacNhan)
+            .replace("soBienLai", soBienLai)
+            .replace("ngayBienLai", ngayBienLai)
             .replace("hoTen", hoTen)
         )
         .then(
