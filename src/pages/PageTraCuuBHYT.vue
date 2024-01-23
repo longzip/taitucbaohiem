@@ -103,6 +103,19 @@
             >
               <q-item-section>Xóa danh sách</q-item-section>
             </q-item>
+            <q-item
+              clickable
+              @click="
+                resetBhyt(
+                  searchText
+                    ? bhyts.filter((bhyt) => bhyt.userName === searchText)
+                    : []
+                )
+              "
+              v-close-popup
+            >
+              <q-item-section>Giữ lại danh sách</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </div>

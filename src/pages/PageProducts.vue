@@ -46,7 +46,6 @@
       v-model="email"
       label="Địa chỉ email"
       type="email"
-      suffix="@gmail.com"
       :dense="dense"
     >
       <template v-slot:before>
@@ -57,7 +56,7 @@
 
       <template v-slot:append>
         <q-btn
-          @click="confirmThanhToan({ email: `${email}@gmail.com` })"
+          @click="confirmThanhToan({ email: email | 'shop@hotham.vn' })"
           round
           dense
           flat
@@ -123,7 +122,7 @@ export default {
   components: { ListHeader },
   data() {
     return {
-      email: "lovanlong",
+      email: "",
       searchText: "",
       maGiamGia: false,
     };
