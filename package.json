@@ -1,9 +1,9 @@
 {
-  "name": "todo-buudienxatulap",
+  "name": "todolist",
   "version": "0.0.1",
-  "description": "Buu dien xa tu lap goi bhyt",
-  "productName": "Buu dien xa Tu Lap",
-  "author": "Lo Van Long <longlv@v-auto.com.vn>",
+  "description": "Nhắc hạn đúng hẹn",
+  "productName": "Todolist App",
+  "author": "Lo Van Long <lovanlong@amycos.vn>",
   "private": true,
   "scripts": {
     "dev": "npx quasar dev",
