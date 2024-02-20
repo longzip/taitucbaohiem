@@ -1,7 +1,7 @@
 {
   "name": "todolist",
   "version": "0.0.1",
-  "description": "Nhắc hạn đúng hẹn",
+  "description": "Nhắc hẹn đúng hạn",
   "productName": "Todolist App",
   "author": "Lo Van Long <lovanlong@amycos.vn>",
   "private": true,

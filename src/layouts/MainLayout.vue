@@ -32,6 +32,36 @@
           :key="link.title"
           v-bind="link"
         />
+        <q-item
+          clickable
+          tag="a"
+          target="_blank"
+          href="https://www.facebook.com/longwebstudio"
+        >
+          <q-item-section avatar>
+            <q-icon name="code" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Phát triển ứng dụng</q-item-label>
+            <q-item-label caption>LONG WEB STUDIO</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item
+          clickable
+          tag="a"
+          target="_blank"
+          href="https://www.facebook.com/lovanlongvn"
+        >
+          <q-item-section avatar>
+            <q-icon name="help" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Hỗ Trợ</q-item-label>
+            <q-item-label caption>Lỗ Văn Long</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -48,22 +78,10 @@ import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
   {
-    title: "Tìm kiếm",
+    title: "Tra cứu",
     caption: "Theo Tên, Mã thẻ, số đt",
     icon: "search",
     link: "/",
-  },
-  {
-    title: "Khách hàng lớn",
-    caption: "Theo Tên, số đt, địa chỉ",
-    icon: "payment",
-    link: "/khl2",
-  },
-  {
-    title: "Danh sách đơn hàng",
-    caption: "Theo dõi bưu gửi",
-    icon: "payment",
-    link: "/items",
   },
   {
     title: "Hồ sơ chưa xử lý",
@@ -82,18 +100,6 @@ const linksList = [
     caption: "Các hồ sơ đã xử lý",
     icon: "verified",
     link: "/ho-so-da-xu-ly",
-  },
-  {
-    title: "Long Web Studio",
-    caption: "Phát triển ứng dụng",
-    icon: "code",
-    link: "https://www.facebook.com/longwebstudio",
-  },
-  {
-    title: "Hỗ Trợ",
-    caption: "Lỗ Văn Long",
-    icon: "help",
-    link: "https://www.facebook.com/lovanlongvn",
   },
 ];
 
