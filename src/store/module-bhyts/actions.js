@@ -294,7 +294,7 @@ export const xem = async (maSoBhxh, completed) => {
   return { ...thongTinTheHGD, ...trangThaiThe, ...theBHYT };
 };
 
-export const traCuuTheoTen = async ({ commit, dispatch }, { name, maXa }) => {
+export const traCuuTheoTen = async ({ commit, dispatch }, { name, maXa, maHuyen, maTinh }) => {
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
@@ -304,7 +304,7 @@ export const traCuuTheoTen = async ({ commit, dispatch }, { name, maXa }) => {
 
   for (let index = 0; index < hoTens.length; index++) {
     let { data } = await client.get(
-      `/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=${maXa}&hoTen=${hoTens[index]}&isCoDau=true&`
+      `/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=${maTinh}&maHuyen=${maHuyen}&maXa=${maXa}&hoTen=${hoTens[index]}&isCoDau=true&`
     );
     if (data.result.value.length) {
       data.result.value.forEach((bhyt) => {

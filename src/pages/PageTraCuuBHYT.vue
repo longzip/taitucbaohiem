@@ -409,7 +409,12 @@ export default {
           await this.sleep(500);
         } else {
           try {
-            await this.traCuuTheoTen({ name, maXa: this.userDetails.maXa });
+            await this.traCuuTheoTen({
+              name,
+              maXa: this.userDetails.maXa,
+              maHuyen: this.userDetails.maHuyen,
+              maTinh: this.userDetails.maTinh,
+            });
             if (this.bhyts.length > 50) this.resetBhyt([]);
           } catch (error) {
             Notify.create({

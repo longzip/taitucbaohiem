@@ -27,6 +27,30 @@
           type="textarea"
           label="Mẫu gửi tin SMS"
         /> -->
+        <q-input
+          v-model="formData.maTinh"
+          class="q-mb-md"
+          outlined
+          type="text"
+          label="Mã tỉnh"
+          disable
+        />
+        <q-input
+          v-model="formData.maHuyen"
+          class="q-mb-md"
+          outlined
+          type="text"
+          label="Mã huyện"
+          disable
+        />
+        <q-input
+          v-model="formData.maXa"
+          class="q-mb-md"
+          outlined
+          type="text"
+          label="Mã xã"
+          disable
+        />
         <q-icon name="update" @click="taoKhoaMoi({})" />
         <q-input
           v-model="formData.isLogin"
@@ -96,6 +120,9 @@ export default {
         bhxhSMSText: "",
         xacNhanSMSText: "",
         guiHangSMSText: "",
+        maXa: "",
+        maTinh: "",
+        maHuyen: "",
       },
     };
   },
