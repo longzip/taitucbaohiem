@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import client from "../../utils";
 import { date } from "quasar";
+import axios from "axios";
 
 export const registerUser = async ({ commit }, payload) => {
   createUserWithEmailAndPassword(
