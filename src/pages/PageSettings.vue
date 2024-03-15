@@ -33,7 +33,6 @@
           outlined
           type="text"
           label="Mã tỉnh"
-          disable
         />
         <q-input
           v-model="formData.maHuyen"
@@ -41,7 +40,6 @@
           outlined
           type="text"
           label="Mã huyện"
-          disable
         />
         <q-input
           v-model="formData.maXa"
@@ -49,7 +47,6 @@
           outlined
           type="text"
           label="Mã xã"
-          disable
         />
         <q-icon name="update" @click="taoKhoaMoi({})" />
         <q-input
