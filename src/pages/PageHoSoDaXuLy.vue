@@ -351,7 +351,7 @@ export default {
         await this.sleep(1000);
         await this.hoSoDaXuLy({
           thangTruoc: this.thangTruoc,
-          mangLuoiId: this.userDetails.mangLuoiId,
+          mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
         });
       } catch (error) {
         Notify.create({

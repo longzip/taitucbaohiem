@@ -6,10 +6,20 @@ import {
   signOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
+import client from "../../utils";
 
-export const registerUser = async ({}, payload) => {
-  return;
+export const registerUser = async ({ commit }, payload) => {
+  createUserWithEmailAndPassword(
+    firebaseAuth,
+    `${payload.smsText.userNameOrEmailAddress}@hotham.vn`,
+    payload.smsText.password
+  ).then((userCredential) => {
+    const user = userCredential.user;
+    const db = getDatabase();
+    set(ref(db, "users/" + user.uid), payload);
+  });
 };
 
 export const loginUser = async ({}, { email, password }) => {
@@ -26,40 +36,52 @@ export const logoutUser = () => {
       // An error happened.
     });
 };
+export const getCurrentLoginInformations = async () => {
+  const { data } = await client.get(
+    "/api/services/app/Session/GetCurrentLoginInformations"
+  );
+  return data.result.user;
+};
 export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
   const auth = getAuth();
   await onAuthStateChanged(auth, (user) => {
     if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
       const db = getDatabase();
       const auth = getAuth();
-
       const userId = auth.currentUser.uid;
       onValue(
         ref(db, "/users/" + userId),
-        (snapshot) => {
+        async (snapshot) => {
           if (snapshot.exists()) {
-            let userDetails = snapshot.val();
-            commit("setUserDetails", {
-              ...userDetails,
-              userId,
-            });
+            const userDetails = snapshot.val();
             commit("setIsLogin", userDetails.isLogin);
-          } else {
-            console.log("No data available");
-            // console.log(user);
-            commit("setUserDetails", {
-              name: user.displayName,
-              email: user.email,
-              userId: user.uid,
-            });
+            //kiểm tra khóa
+            let loginInfo = await dispatch("getCurrentLoginInformations");
+            if (!loginInfo) {
+              let config = {
+                method: "post",
+                maxBodyLength: Infinity,
+                url: "https://ssm-api.vnpost.vn/api/TokenAuth/Authenticate",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                },
+                data: userDetails.smsText,
+              };
+
+              const { data: tka } = await axios.request(config);
+              commit("setIsLogin", tka.result.accessToken);
+              loginInfo = await dispatch("getCurrentLoginInformations");
+            }
+            const updateUserDetails = {
+              ...userDetails,
+              ...loginInfo,
+              userId,
+            };
+            commit("setUserDetails", updateUserDetails);
             const db = getDatabase();
-            set(ref(db, "users/" + userId), {
-              name: user.displayName,
-              email: user.email,
-              userId: user.uid,
-            });
+            set(ref(db, "users/" + userId), updateUserDetails);
+          } else {
             commit("setIsLogin", "");
           }
         },

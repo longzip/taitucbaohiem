@@ -247,7 +247,7 @@ export default {
           this.thuTien({
             tongTien: data,
             maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
-            userName: this.userDetails.userName,
+            userName: this.userDetails.maNhanVienThu,
           });
         });
     },
@@ -376,7 +376,7 @@ export default {
               tongTien: data,
               maSoBhxh,
               isBHXHTN: 1,
-              userName: this.userDetails.userBHXH,
+              userName: "_" + this.userDetails.maNhanVienThu,
             });
           });
       } catch (error) {

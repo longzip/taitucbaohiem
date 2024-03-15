@@ -14,8 +14,14 @@
 
         <q-menu touch-position>
           <q-list style="min-width: 100px">
-            <q-item clickable @click="loadBhytByUserName" v-close-popup>
+            <q-item clickable @click="loadBhytByUserName()" v-close-popup>
               <q-item-section>Đã thu tiền</q-item-section>
+            </q-item>
+            <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
+              <q-item-section>Đã thu tiền BHYT</q-item-section>
+            </q-item>
+            <q-item clickable @click="loadBhytByUserName(0)" v-close-popup>
+              <q-item-section>Đã thu tiền BHXH</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
               <q-item-section>Tìm theo năm sinh</q-item-section>
@@ -184,7 +190,7 @@ export default {
         filterItems: [],
         maxResultCount: 500,
         skipCount: 0,
-        mangLuoiId: this.userDetails.mangLuoiId,
+        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
         tuThang: "2023-03-01 00:00:00",
         denThang: "2023-04-01 00:00:00",
         type: -1,
@@ -214,7 +220,7 @@ export default {
         await this.hoSoDaXuLy({
           tuNgay: ngays[0],
           denNgay: ngays[1],
-          mangLuoiId: this.userDetails.mangLuoiId,
+          mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
         });
       } catch (error) {
         Notify.create({
@@ -327,11 +333,13 @@ export default {
         nam: this.searchText,
       });
     },
-    loadBhytByUserName() {
+    loadBhytByUserName(user) {
+      if (user === 1) this.searchText = this.userDetails.maNhanVienThu;
+      if (user === 0) this.searchText = "_" + this.userDetails.maNhanVienThu;
       if (!this.searchText) {
         Notify.create({
           type: "negative",
-          message: "Nhập 1 hoặc 0!" + err,
+          message: "Nhập mã nhân viên thu",
         });
       }
       this.getBhyts({
@@ -505,36 +513,6 @@ export default {
           }
         );
     },
-    async taoKhoaMoi() {
-      await this.sleep(1000);
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://ssm-api.vnpost.vn/api/TokenAuth/Authenticate",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        data: this.userDetails.smsText,
-      };
-
-      const { data } = await axios.request(config);
-
-      await this.firebaseUpdateUser({
-        userId: this.userDetails.userId,
-        updates: { ...this.userDetails, isLogin: data.result.accessToken },
-      });
-      await this.handleAuthStateChanged();
-      const expirationDate = new Date(new Date().getTime() + 12 * 60 * 1000);
-      localStorage.setItem("expiration", expirationDate.toISOString());
-    },
-  },
-  async created() {
-    const expirationDate = localStorage.getItem("expiration");
-    if (!expirationDate || new Date(expirationDate) < new Date()) {
-      console.log("tao khoa mới!");
-      this.taoKhoaMoi();
-    }
   },
 };
 </script>

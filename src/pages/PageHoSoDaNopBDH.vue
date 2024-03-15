@@ -76,7 +76,7 @@ export default {
     await this.sleep(1000);
     await this.hoSoDaXuLy({
       thangTruoc: 0,
-      mangLuoiId: this.userDetails.mangLuoiId,
+      mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
     });
     this.tongTien = this.bhyts
       .filter((t) => t.userId == 3152 && t.trangThaiHoSo == 4)

@@ -95,6 +95,12 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "/dang-nhap-ssm",
+        name: "auth",
+        component: () => import("pages/PageAuth2.vue"),
+        meta: { requireAuth: false },
+      },
+      {
         path: "/dang-ky-142010",
         name: "dka",
         component: () => import("pages/PageAuth.vue"),

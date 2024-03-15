@@ -68,7 +68,9 @@ export default {
     if (this.$route.query.q) {
       this.searchText = this.$route.query.q;
     }
-    await this.hoSoChuaXuLy({ mangLuoiId: this.userDetails.mangLuoiId });
+    await this.hoSoChuaXuLy({
+      mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+    });
     this.tongTienBHYT = this.bhyts
       .filter(
         (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 1

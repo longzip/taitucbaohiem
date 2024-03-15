@@ -1,5 +1,4 @@
 <template>
-  {{ isLogin }}
   <q-form @submit="submitForm">
     <q-input
       v-if="tab == 'register'"
@@ -48,15 +47,14 @@ export default {
     async submitForm() {
       if (this.tab == "login") {
         await this.loginUser(this.formData);
-      } else {
-        await this.registerUser(this.formData);
       }
-      this.$router.push("/tim-kiem");
+      this.$router.push("/ho-so-da-xu-ly");
     },
   },
   mounted() {
     // console.log(localStorage.getItem("setIsLogin"));
-    if (localStorage.getItem("setIsLogin")) this.$router.push("/tra-cuu");
+    if (localStorage.getItem("setIsLogin"))
+      this.$router.push("/ho-so-da-xu-ly");
   },
 };
 </script>

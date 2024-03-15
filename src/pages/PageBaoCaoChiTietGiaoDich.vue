@@ -70,7 +70,7 @@ export default {
       this.getBaoCaoChiTietGiaoDich({
         tuThang: this.tuThang,
         denThang: this.denThang,
-        mangLuoiId: this.userDetails.mangLuoiId,
+        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
       });
     },
   },
