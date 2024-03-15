@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>BHXH và BHYT</q-toolbar-title>
+        <q-toolbar-title>BHXH tự nguyện và BHYT</q-toolbar-title>
 
         <q-btn
           round

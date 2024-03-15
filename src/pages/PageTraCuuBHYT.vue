@@ -9,7 +9,7 @@
         <div class="fit flex flex-center text-center non-selectable q-pa-md">
           Tra cứu {{ bhyts.length }}/{{
             parseInt(tongTien).toLocaleString()
-          }}đ!<br />(Bấm vào đây và lựa chọn)
+          }}đ!<br />(Hạn sử dụng: {{ userDetails?.hetHan }})
         </div>
 
         <q-menu touch-position>

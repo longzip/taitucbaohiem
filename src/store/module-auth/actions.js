@@ -9,6 +9,7 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import client from "../../utils";
+import { date } from "quasar";
 
 export const registerUser = async ({ commit }, payload) => {
   createUserWithEmailAndPassword(
@@ -73,10 +74,18 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
               commit("setIsLogin", tka.result.accessToken);
               loginInfo = await dispatch("getCurrentLoginInformations");
             }
+            let { hetHan } = userDetails;
+            if (!hetHan) {
+              const { addToDate } = date;
+              const newDate = addToDate(new Date(), { months: 3 });
+              hetHan = newDate.toISOString().slice(0, 10);
+            }
+
             const updateUserDetails = {
               ...userDetails,
               ...loginInfo,
               userId,
+              hetHan,
             };
             commit("setUserDetails", updateUserDetails);
             const db = getDatabase();
