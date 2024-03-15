@@ -275,7 +275,7 @@ export const maTraCuu = async ({}, bienLaiId) => {
   return result[0];
 };
 
-export const xem = async (maSoBhxh, completed) => {
+export const xem = async (maSoBhxh) => {
   let {
     data: { result },
   } = await client.get(
@@ -294,7 +294,10 @@ export const xem = async (maSoBhxh, completed) => {
   return { ...thongTinTheHGD, ...trangThaiThe, ...theBHYT };
 };
 
-export const traCuuTheoTen = async ({ commit, dispatch }, { name, maXa, maHuyen, maTinh }) => {
+export const traCuuTheoTen = async (
+  { commit, dispatch },
+  { name, maXa, maHuyen, maTinh }
+) => {
   Loading.show({
     spinner: QSpinnerIos,
     spinnerSize: "100px",
@@ -334,7 +337,7 @@ export const dongBoDuLieu = async ({ commit }, payload) => {
     await sleep();
     const maSoBhxh = maSoBhxhs[index];
     try {
-      const bhyt = await xem(maSoBhxh, false);
+      const bhyt = await xem(maSoBhxh);
       await commit("updateBhyt", bhyt);
     } catch (error) {
       console.log(error);
@@ -480,24 +483,20 @@ export const daXyLy = async ({ commit }, payload) => {
       soBienLai,
       bienLaiId,
     } = payload[index];
-    let {
-      data: { result, success },
-    } = await client.get(
-      `/api/services/app/KeKhai/GetDSBienLai?bienlaiId=${bienLaiId}`
-    );
-    let maXacNhan = null;
-    if (success) maXacNhan = result[0].maXacNhan;
+
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         tongTien,
-        maXacNhan,
         userName,
         maThuTuc,
         soBienLai,
         bienLaiId,
         disabled: trangThaiHoSo !== 9,
       });
-      await commit("updateBhyt", data);
+      if (!data.hoTen) {
+        const bhyt = await xem(maSoBhxh);
+        await commit("updateBhyt", bhyt);
+      } else await commit("updateBhyt", data);
     } catch (error) {
       console.log(error);
     }
