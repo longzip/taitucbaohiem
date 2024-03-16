@@ -59,7 +59,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
             commit("setIsLogin", userDetails.isLogin);
             // commit("setUserDetails", userDetails);
             //kiểm tra khóa
-            await sleep(500);
+            await sleep(2000);
             let loginInfo = await dispatch("getCurrentLoginInformations");
             if (!loginInfo) {
               let config = {
