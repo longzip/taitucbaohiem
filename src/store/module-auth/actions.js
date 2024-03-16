@@ -41,9 +41,7 @@ export const getCurrentLoginInformations = async () => {
   );
   return data.result.user;
 };
-const sleep = (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
+
 export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
   const auth = getAuth();
   await onAuthStateChanged(auth, (user) => {
@@ -56,10 +54,13 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
         async (snapshot) => {
           if (snapshot.exists()) {
             const userDetails = snapshot.val();
-            commit("setIsLogin", userDetails.isLogin);
-            // commit("setUserDetails", userDetails);
-            //kiểm tra khóa
-            await sleep(2000);
+            let { hetHan, isLogin } = userDetails;
+            if (!hetHan) {
+              const { addToDate } = date;
+              const newDate = addToDate(new Date(), { months: 3 });
+              hetHan = newDate.toISOString().slice(0, 10);
+            }
+            commit("setIsLogin", isLogin);
             let loginInfo = await dispatch("getCurrentLoginInformations");
             if (!loginInfo) {
               let config = {
@@ -76,23 +77,26 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
               const { data: tka } = await axios.request(config);
               commit("setIsLogin", tka.result.accessToken);
               loginInfo = await dispatch("getCurrentLoginInformations");
-            }
-            let { hetHan } = userDetails;
-            if (!hetHan) {
-              const { addToDate } = date;
-              const newDate = addToDate(new Date(), { months: 3 });
-              hetHan = newDate.toISOString().slice(0, 10);
-            }
 
-            const updateUserDetails = {
-              ...userDetails,
-              ...loginInfo,
-              userId,
-              hetHan,
-            };
-            commit("setUserDetails", updateUserDetails);
-            const db = getDatabase();
-            set(ref(db, "users/" + userId), updateUserDetails);
+              // cập nhật csdl
+
+              const updateUserDetails = {
+                ...userDetails,
+                ...loginInfo,
+                userId,
+                hetHan,
+                isLogin: tka.result.accessToken,
+              };
+              commit("setUserDetails", updateUserDetails);
+              const db = getDatabase();
+              set(ref(db, "users/" + userId), updateUserDetails);
+            } else {
+              commit("setUserDetails", {
+                ...userDetails,
+                ...loginInfo,
+                hetHan,
+              });
+            }
           } else {
             commit("setIsLogin", "");
           }
