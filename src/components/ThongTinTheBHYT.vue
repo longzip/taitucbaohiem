@@ -299,7 +299,7 @@ export default {
     async copyBHXHToClipboard(maSoBhxh) {
       try {
         const t = await this.getTraCuuThongTinBHXHTN(maSoBhxh);
-        if (!t) {
+        if (Object.keys(t).length === 0) {
           Notify.create({
             type: "negative",
             message: "Không tham gia BHXH Tự Nguyện",
@@ -403,6 +403,7 @@ export default {
       await this.updateMaXacNhan({
         maSoBhxh,
         maXacNhan,
+        ngayLap: ngayBienLai.split("/").reverse().join("-"),
       });
       navigator.clipboard
         .writeText(
