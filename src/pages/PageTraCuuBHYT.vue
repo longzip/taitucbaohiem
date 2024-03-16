@@ -43,7 +43,7 @@
                   taiTucBHXH: 1,
                   completed: '0',
                   disabled: '0',
-                  maXa: userDetails.maXa,
+                  userName: userDetails.id,
                 })
               "
               v-close-popup
@@ -52,7 +52,12 @@
             </q-item>
             <q-item
               clickable
-              @click="loadBHXHTNs({ isBHXHTN: 1, maXa: userDetails.maXa })"
+              @click="
+                loadBHXHTNs({
+                  isBHXHTN: 1,
+                  maXa: userDetails.maXa,
+                })
+              "
               v-close-popup
             >
               <q-item-section>Tái tục BHXH TN (All)</q-item-section>

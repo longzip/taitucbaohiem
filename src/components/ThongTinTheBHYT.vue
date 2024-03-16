@@ -170,7 +170,6 @@ export default {
       "theoDoi",
       "dongBoDuLieu",
       "getTraCuuThongTinBHXHTN",
-      "capNhatBHXHTN",
       "thuTien",
       "xoaThanhVienHGD",
       "getBhytsBySoBienLai",
@@ -295,7 +294,7 @@ export default {
     },
     async copyBHXHToClipboard(maSoBhxh) {
       try {
-        const t = await this.getTraCuuThongTinBHXHTN({ maSoBhxh });
+        const t = await this.getTraCuuThongTinBHXHTN(maSoBhxh);
         if (!t) {
           Notify.create({
             type: "negative",
@@ -303,7 +302,7 @@ export default {
           });
           return null;
         }
-        this.capNhatBHXHTN([t]);
+        // this.taoNhacHenBHXHTN(t);
         const tienHaNoiHoTro =
           t.tienNsnnHoTro == parseInt(t.phuongThucDong) * 33000
             ? t.tienNsnnHoTro
