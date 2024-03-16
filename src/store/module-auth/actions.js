@@ -12,7 +12,8 @@ import client from "../../utils";
 import { date } from "quasar";
 import axios from "axios";
 
-export const registerUser = async ({ commit }, payload) => {
+export const registerUser = async ({}, payload) => {
+  commit("setIsLogin", payload.isLogin);
   createUserWithEmailAndPassword(
     firebaseAuth,
     `${payload.smsText.userNameOrEmailAddress}@hotham.vn`,
@@ -29,20 +30,19 @@ export const loginUser = async ({}, { email, password }) => {
 };
 export const logoutUser = () => {
   const auth = getAuth();
-  signOut(auth)
-    .then(() => {
-      commit("setUserDetails", {});
-      commit("setIsLogin", "");
-    })
-    .catch((error) => {
-      // An error happened.
-    });
+  signOut(auth).then(() => {
+    commit("setUserDetails", {});
+    commit("setIsLogin", "");
+  });
 };
 export const getCurrentLoginInformations = async () => {
   const { data } = await client.get(
     "/api/services/app/Session/GetCurrentLoginInformations"
   );
   return data.result.user;
+};
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
 export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
   const auth = getAuth();
@@ -57,7 +57,9 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
           if (snapshot.exists()) {
             const userDetails = snapshot.val();
             commit("setIsLogin", userDetails.isLogin);
+            // commit("setUserDetails", userDetails);
             //kiểm tra khóa
+            await sleep(500);
             let loginInfo = await dispatch("getCurrentLoginInformations");
             if (!loginInfo) {
               let config = {
