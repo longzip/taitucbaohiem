@@ -14,7 +14,7 @@ export const xoaThanhVienHGD = ({ commit }, payload) => {
   commit("removeBhyt", payload);
 };
 
-export const getTraCuuThongTinBHXHTN = async ({}, payload) => {
+export const getTraCuuThongTinBHXHTN = async ({ dispatch }, payload) => {
   try {
     Loading.show({
       spinner: QSpinnerIos,
@@ -23,7 +23,7 @@ export const getTraCuuThongTinBHXHTN = async ({}, payload) => {
     const { data } = await apiServices.get(
       `/api/services/app/TraCuu/TraCuuThongTinBHXHTN?maSoBhxh=${payload}`
     );
-    saveBHXHTN(data.result.value.thongTinTns[0]);
+    dispatch("saveBHXHTN", data.result.value.thongTinTns[0]);
     Loading.hide();
     return data.result.value.thongTinTns[0];
   } catch (error) {

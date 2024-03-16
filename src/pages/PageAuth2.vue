@@ -32,8 +32,8 @@ export default {
   data() {
     return {
       formData: {
-        email: "142010_giaodichvien",
-        password: "123456a@@A",
+        email: "",
+        password: "",
       },
     };
   },
