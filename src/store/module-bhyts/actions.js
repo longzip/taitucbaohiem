@@ -492,6 +492,7 @@ export const capNhatBienLai = async ({ commit }, payload) => {
 // };
 
 export const daXyLy = async ({ commit, dispatch }, payload) => {
+  const mucDongBHYT = [972000, 680400, 583200, 486000, 388800];
   for (let index = 0; index < payload.length; index++) {
     await sleep();
 
@@ -514,7 +515,7 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
         bienLaiId,
         disabled: trangThaiHoSo !== 9,
       });
-      if (data.isBHXHTN == "1") {
+      if (data.isBHXHTN == "1" || !mucDongBHYT.includes(tongTien)) {
         dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
       }
       if (!data.hoTen) {
