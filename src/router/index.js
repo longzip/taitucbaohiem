@@ -39,9 +39,9 @@ export default route(function ({ store /*, ssrContext */ }) {
   Router.beforeEach(async (to, from, next) => {
     if (
       to.matched.some((record) => record.meta.requireAuth) &&
-      !await getCurrentUser()
+      !(await getCurrentUser())
     ) {
-      next({ path: "/auth", query: { next: to.fullPath } });
+      next({ path: "/dang-nhap-ssm", query: { next: to.fullPath } });
     } else {
       next();
     }

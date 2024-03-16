@@ -62,9 +62,11 @@ export default {
       };
       const { data } = await axios.request(config);
       const isLogin = data.result.accessToken;
-      const regUser = { smsText, isLogin };
+      const regUser = {
+        smsText,
+        isLogin,
+      };
       await this.registerUser(regUser);
-      await this.sleep(2000);
       this.$router.push("/ho-so-da-xu-ly");
     },
   },

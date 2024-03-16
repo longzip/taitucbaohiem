@@ -493,7 +493,6 @@ export default {
     if (this.$route.query.thang) {
       this.thangTruoc = parseInt(this.$route.query.thang);
     }
-    await this.sleep(2000);
     this.loadData();
   },
 };

@@ -18,7 +18,7 @@
           color="primary"
           icon="logout"
           @click="logoutUser"
-          :to="'/auth'"
+          :to="'/dang-nhap-ssm'"
         />
       </q-toolbar>
     </q-header>

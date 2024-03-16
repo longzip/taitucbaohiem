@@ -12,17 +12,32 @@ import client from "../../utils";
 import { date } from "quasar";
 import axios from "axios";
 
-export const registerUser = async ({}, payload) => {
-  commit("setIsLogin", payload.isLogin);
-  createUserWithEmailAndPassword(
-    firebaseAuth,
-    `${payload.smsText.userNameOrEmailAddress}@hotham.vn`,
-    payload.smsText.password
-  ).then((userCredential) => {
-    const user = userCredential.user;
-    const db = getDatabase();
-    set(ref(db, "users/" + user.uid), payload);
-  });
+export const registerUser = async ({ commit }, { isLogin, smsText }) => {
+  commit("setIsLogin", isLogin);
+  try {
+    await signInWithEmailAndPassword(
+      firebaseAuth,
+      smsText.userNameOrEmailAddress + "@hotham.vn",
+      smsText.password
+    );
+  } catch (error) {
+    await createUserWithEmailAndPassword(
+      firebaseAuth,
+      `${smsText.userNameOrEmailAddress}@hotham.vn`,
+      smsText.password
+    ).then((userCredential) => {
+      const user = userCredential.user;
+      const db = getDatabase();
+      set(ref(db, "users/" + user.uid), {
+        smsText,
+        isLogin,
+        userId: user.uid,
+        maTinh: "01",
+        maHuyen: "250",
+        maXa: "000",
+      });
+    });
+  }
 };
 
 export const loginUser = async ({}, { email, password }) => {
@@ -42,7 +57,7 @@ export const getCurrentLoginInformations = async () => {
   return data.result.user;
 };
 
-export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
+export const handleAuthStateChanged = async ({ commit, dispatch }) => {
   const auth = getAuth();
   await onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -54,6 +69,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
         async (snapshot) => {
           if (snapshot.exists()) {
             const userDetails = snapshot.val();
+            commit("setUserDetails", userDetails);
             let { hetHan, isLogin } = userDetails;
             if (!hetHan) {
               const { addToDate } = date;
@@ -90,7 +106,8 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
               commit("setUserDetails", updateUserDetails);
               const db = getDatabase();
               set(ref(db, "users/" + userId), updateUserDetails);
-            } else {
+            } else if (!userDetails.maNhanVienThu) {
+              console.log("Cập nhật mã nhân viên thu!");
               commit("setUserDetails", {
                 ...userDetails,
                 ...loginInfo,
@@ -112,22 +129,16 @@ export const handleAuthStateChanged = async ({ commit, dispatch, state }) => {
   });
 };
 
-export const firebaseUpdateUser = (
-  {},
-  { userId = "Tb2NycH5FvRMZmkID4meXAHHsQR2", updates }
-) => {
+export const firebaseUpdateUser = ({}, { userId, updates }) => {
   const db = getDatabase();
   set(ref(db, "users/" + userId + "/isLogin"), updates.isLogin).then(() => {
     console.log("cap nhat");
   });
 };
-export const firebaseUpdateUserAll = (
-  {},
-  { userId = "Tb2NycH5FvRMZmkID4meXAHHsQR2", updates }
-) => {
+export const firebaseUpdateUserAll = ({ commit }, { userId, updates }) => {
   const db = getDatabase();
   set(ref(db, "users/" + userId), updates).then(() => {
-    console.log("cap nhat all");
+    commit("setUserDetails", updates);
   });
 };
 
