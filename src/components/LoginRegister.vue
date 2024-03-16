@@ -51,7 +51,7 @@ export default {
       if (this.tab == "login") {
         await this.loginUser(this.formData);
       }
-      this.sleep(2000);
+      await this.sleep(1000);
       this.$router.push("/ho-so-da-xu-ly");
     },
   },

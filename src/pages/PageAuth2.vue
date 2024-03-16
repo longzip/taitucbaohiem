@@ -64,13 +64,13 @@ export default {
       const isLogin = data.result.accessToken;
       const regUser = { smsText, isLogin, isLogin };
       await this.registerUser(regUser);
-      this.sleep(2000);
+      await this.sleep(1000);
       this.$router.push("/ho-so-da-xu-ly");
     },
   },
-  mounted() {
+  async mounted() {
     if (localStorage.getItem("setIsLogin")) {
-      this.sleep(2000);
+      await this.sleep(2000);
       this.$router.push("/ho-so-da-xu-ly");
     }
   },
