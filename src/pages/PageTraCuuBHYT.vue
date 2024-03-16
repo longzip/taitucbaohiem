@@ -55,6 +55,18 @@
               @click="
                 loadBHXHTNs({
                   isBHXHTN: 1,
+                  userName: userDetails.id,
+                })
+              "
+              v-close-popup
+            >
+              <q-item-section>Tái tục BHXH All</q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              @click="
+                loadBHXHTNs({
+                  isBHXHTN: 1,
                   maXa: userDetails.maXa,
                 })
               "
