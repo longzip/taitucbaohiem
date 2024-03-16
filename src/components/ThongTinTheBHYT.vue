@@ -236,7 +236,7 @@ export default {
               { label: "T3: 583.200đ", value: "583200" },
               { label: "T4: 486.000đ", value: "486000" },
               { label: "T5: 388.800đ", value: "388800" },
-              { label: "Không", value: "" },
+              { label: "Không", value: "0" },
             ],
           },
           cancel: true,
@@ -246,7 +246,11 @@ export default {
           this.thuTien({
             tongTien: data,
             maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
-            userName: this.userDetails.maNhanVienThu,
+            userName:
+              data !== "0"
+                ? this.userDetails.maNhanVienThu
+                : this.userDetails.id,
+            disabled: data !== "0" ? 1 : 0,
           });
         });
     },

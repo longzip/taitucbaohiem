@@ -35,7 +35,10 @@ export const getTraCuuThongTinBHXHTN = async ({}, payload) => {
   return null;
 };
 
-const saveBHXHTN = async ({ maSoBhxh, mucDong, maPhuongThucDong, thangBd }) => {
+export const saveBHXHTN = async (
+  { commit },
+  { maSoBhxh, mucDong, maPhuongThucDong, thangBd }
+) => {
   const t = { 1: 1, 3: 3, 6: 4, 12: 7 };
 
   const { data: bhytUpdate } = await api.put(
@@ -435,7 +438,7 @@ export const updateNgayLap = async ({ commit }, { maSoBhxh, ngayLap }) => {
 };
 export const thuTien = async (
   { commit },
-  { maSoBhxh, tongTien, userName = 1 }
+  { maSoBhxh, tongTien, userName, disabled }
 ) => {
   tongTien = tongTien.replace(/\D/g, "");
   try {
@@ -443,7 +446,7 @@ export const thuTien = async (
       tongTien,
       ngayLap: new Date().toISOString().slice(0, 10),
       userName: tongTien ? userName : null,
-      disabled: 1,
+      disabled,
     });
     await commit("updateBhyt", data);
   } catch (error) {

@@ -41,8 +41,6 @@
                 loadBHXHTNs({
                   isBHXHTN: 1,
                   taiTucBHXH: 1,
-                  completed: '0',
-                  disabled: '0',
                   userName: userDetails.id,
                 })
               "
@@ -60,7 +58,7 @@
               "
               v-close-popup
             >
-              <q-item-section>Tái tục BHXH All</q-item-section>
+              <q-item-section>Khách hàng BHXH TN</q-item-section>
             </q-item>
             <q-item
               clickable
@@ -72,7 +70,7 @@
               "
               v-close-popup
             >
-              <q-item-section>Tái tục BHXH TN (All)</q-item-section>
+              <q-item-section>BHXH TN (Địa phương)</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytsHetHan" v-close-popup>
               <q-item-section>Đã hết hạn</q-item-section>
