@@ -44,10 +44,14 @@ export default {
   },
   methods: {
     ...mapActions("auth", ["registerUser", "loginUser"]),
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
     async submitForm() {
       if (this.tab == "login") {
         await this.loginUser(this.formData);
       }
+      this.sleep(2000);
       this.$router.push("/ho-so-da-xu-ly");
     },
   },

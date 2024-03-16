@@ -40,6 +40,9 @@ export default {
   methods: {
     ...mapActions("auth", ["registerUser", "loginUser"]),
     ...mapActions("bhyts", ["GetCurrentLoginInformations"]),
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
     async submitForm() {
       const smsText = {
         isWeb: true,
@@ -61,12 +64,15 @@ export default {
       const isLogin = data.result.accessToken;
       const regUser = { smsText, isLogin, isLogin };
       await this.registerUser(regUser);
+      this.sleep(2000);
       this.$router.push("/ho-so-da-xu-ly");
     },
   },
   mounted() {
-    if (localStorage.getItem("setIsLogin"))
+    if (localStorage.getItem("setIsLogin")) {
+      this.sleep(2000);
       this.$router.push("/ho-so-da-xu-ly");
+    }
   },
 };
 </script>
