@@ -14,7 +14,7 @@ export const xoaThanhVienHGD = ({ commit }, payload) => {
   commit("removeBhyt", payload);
 };
 
-export const getTraCuuThongTinBHXHTN = async ({}, payload) => {
+export const getTraCuuThongTinBHXHTN = async ({ commit }, payload) => {
   try {
     const { data } = await apiServices.get(
       `/api/services/app/TraCuu/TraCuuThongTinBHXHTN?maSoBhxh=${payload}`
@@ -46,6 +46,7 @@ export const saveBHXHTN = async (
         .format()
         .slice(0, 10),
       mucDong,
+      maPhuongThucDong,
     }
   );
   await commit("updateBhyt", bhytUpdate);

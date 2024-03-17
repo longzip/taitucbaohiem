@@ -90,7 +90,7 @@
         >Mã xác nhận:{{ bhyt.maXacNhan }}</q-item-label
       >
       <q-item-label v-if="bhyt.isBHXHTN == '1'" caption lines="2"
-        ><strong>BHXH TN:</strong> {{ bhyt.mucDong }} -
+        ><strong>BHXH {{ bhyt.maPhuongThucDong }}:</strong> {{ bhyt.mucDong }} -
         {{ bhyt.denThangDt.slice(0, 7) }}</q-item-label
       >
       <q-item-label caption lines="2">
