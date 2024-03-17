@@ -475,6 +475,7 @@ export const capNhatBienLai = async ({ commit }, payload) => {
 
 export const daXyLy = async ({ commit, dispatch }, payload) => {
   const mucDongBHYT = [972000, 680400, 583200, 486000, 388800];
+  const namNay = new Date().getFullYear();
   for (let index = 0; index < payload.length; index++) {
     await sleep();
 
@@ -501,7 +502,10 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
       if (!mucDongBHYT.includes(tongTien) && trangThaiHoSo === 9) {
         await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
       }
-      if (!data.hoTen || trangThaiHoSo === 9) {
+      if (
+        !data.hoTen ||
+        (trangThaiHoSo === 9 && data.denNgayDt.slice(0, 4) == namNay)
+      ) {
         await dispatch("xem", maSoBhxh);
       } else await commit("updateBhyt", data);
     } catch (error) {
