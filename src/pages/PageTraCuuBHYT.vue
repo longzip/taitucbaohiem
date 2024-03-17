@@ -168,14 +168,15 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
-import axios from "axios";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
-import { Loading, QSpinnerIos, Notify } from "quasar";
+import { Notify } from "quasar";
 export default {
   components: { ThongTinTheBHYT },
   data() {
     return {
       searchText: "",
+      tuNgayDenNgay: "",
+      soBienLai: "",
     };
   },
   computed: {
@@ -218,116 +219,156 @@ export default {
       const year = date.getFullYear();
       const month = date.getMonth();
 
-      if (this.searchText.split(" - ").length !== 2) {
-        this.searchText = `${new Date(year, month - 2, 1)
+      if (this.searchText.split(" : ").length !== 2) {
+        this.tuNgayDenNgay = this.searchText = `${new Date(year, month - 2, 1)
           .toISOString()
-          .slice(0, 10)} - ${new Date(2024, 12, 31)
+          .slice(0, 10)} : ${new Date(2024, 12, 31)
           .toISOString()
           .slice(0, 10)}`;
       }
 
-      const ngays = this.searchText.split(" - ");
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-      try {
-        await this.hoSoDaXuLy({
-          tuNgay: ngays[0],
-          denNgay: ngays[1],
-          mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+      this.$q
+        .dialog({
+          title: "Báo cáo chi tiết giao dịch",
+          message: "Từ ngày : đến ngày?",
+          prompt: {
+            model: this.searchText,
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async (data) => {
+          const ngays = data.split(" : ");
+          try {
+            await this.hoSoDaXuLy({
+              tuNgay: ngays[0],
+              denNgay: ngays[1],
+              mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+            });
+          } catch (error) {
+            Notify.create({
+              message: "Không thể kế nối đến máy chủ !",
+              color: "red",
+            });
+          }
         });
-      } catch (error) {
-        Notify.create({
-          message: "Không thể kế nối đến máy chủ !",
-          color: "red",
-        });
-      }
-
-      Loading.hide();
     },
     async inC17() {
-      const ds = new Map();
-      for (let index = 1; index < 10; index++) {
-        await ds.set(`${this.searchText}0${index}`, {
-          tongTien: 0,
-          tienBHYT: 0,
-          tienBHXH: 0,
-          soBienLai: `${this.searchText}0${index}`,
-          ngayLap: null,
+      if (!this.bhyts.length && !this.tuNgayDenNgay) {
+        Notify.create({
+          type: "negative",
+          message: "Vào báo cáo giao dịch trước khi xuất C17.",
         });
+        this.loadBaoCaoChiTietGiaoDich();
+        return;
       }
-      for (let index = 10; index < 100; index++) {
-        await ds.set(`${this.searchText}${index}`, {
-          tongTien: 0,
-          tienBHYT: 0,
-          tienBHXH: 0,
-          soBienLai: `${this.searchText}${index}`,
-          ngayLap: null,
-        });
-      }
-      await ds.set(`${parseInt(this.searchText + 99) + 1}`, {
-        tongTien: 0,
-        tienBHYT: 0,
-        tienBHXH: 0,
-        soBienLai: `${parseInt(this.searchText + 99) + 1}`,
-        ngayLap: null,
-      });
-      const xuatc17 = await this.bhyts.filter((t) =>
-        t.soBienLai.startsWith(this.searchText ?? "21871")
-      );
-      for (let index = 0; index < this.bhyts.length; index++) {
-        const t = this.bhyts[index];
-        if (t.userId === this.userDetails.id && ds.has(t.soBienLai)) {
-          const g = ds.get(t.soBienLai);
-          ds.set(t.soBienLai, {
-            ...g,
-            ngayLap: t.ngayLap,
-            tienBHYT:
-              t.maThuTuc === 1 ? parseInt(t.tongTien) + g.tienBHYT : g.tienBHYT,
-            tienBHXH:
-              t.maThuTuc === 0 ? parseInt(t.tongTien) + g.tienBHXH : g.tienBHXH,
-            tongTien: parseInt(t.tongTien) + g.tongTien,
-          });
-        }
-      }
-      await this.sleep(1000);
-      const res = await fetch(
-        `https://app.hotham.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
-          .filter((t) => t.maThuTuc == 1)
-          .map((t) => t.tongTien)
-          .reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
-            0
-          )}&tienBHXH=${xuatc17
-          .filter((t) => t.maThuTuc == 0)
-          .map((t) => t.tongTien)
-          .reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
-            0
-          )}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
+      this.$q
+        .dialog({
+          title: "In C17 (quyển)",
+          message: "Số biên lai?",
+          prompt: {
+            model: this.soBienLai,
+            type: "text", // optional
           },
-          body: JSON.stringify([...ds.values()]),
-        }
-      );
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async (data) => {
+          if (!data) return;
+          const ds = new Map();
+          for (let index = 1; index < 10; index++) {
+            await ds.set(`${data}0${index}`, {
+              tongTien: 0,
+              tienBHYT: 0,
+              tienBHXH: 0,
+              soBienLai: `${data}0${index}`,
+              ngayLap: null,
+            });
+          }
+          for (let index = 10; index < 100; index++) {
+            await ds.set(`${data}${index}`, {
+              tongTien: 0,
+              tienBHYT: 0,
+              tienBHXH: 0,
+              soBienLai: `${data}${index}`,
+              ngayLap: null,
+            });
+          }
+          await ds.set(`${parseInt(data + 99) + 1}`, {
+            tongTien: 0,
+            tienBHYT: 0,
+            tienBHXH: 0,
+            soBienLai: `${parseInt(data + 99) + 1}`,
+            ngayLap: null,
+          });
+          const xuatc17 = await this.bhyts.filter((t) =>
+            t.soBienLai.startsWith(data)
+          );
+          if (!xuatc17.length) {
+            Notify.create({
+              type: "negative",
+              message: "Không tìm thấy quyển biên lai!",
+            });
+            return null;
+          }
+          for (let index = 0; index < this.bhyts.length; index++) {
+            const t = this.bhyts[index];
+            if (ds.has(t.soBienLai)) {
+              const g = ds.get(t.soBienLai);
+              ds.set(t.soBienLai, {
+                ...g,
+                ngayLap: t.ngayLap,
+                tienBHYT:
+                  t.maThuTuc === 1
+                    ? parseInt(t.tongTien) + g.tienBHYT
+                    : g.tienBHYT,
+                tienBHXH:
+                  t.maThuTuc === 0
+                    ? parseInt(t.tongTien) + g.tienBHXH
+                    : g.tienBHXH,
+                tongTien: parseInt(t.tongTien) + g.tongTien,
+              });
+            }
+          }
+          await this.sleep(1000);
+          const res = await fetch(
+            `https://app.hotham.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
+              .filter((t) => t.maThuTuc == 1)
+              .map((t) => t.tongTien)
+              .reduce(
+                (previousValue, currentValue) => previousValue + currentValue,
+                0
+              )}&tienBHXH=${xuatc17
+              .filter((t) => t.maThuTuc == 0)
+              .map((t) => t.tongTien)
+              .reduce(
+                (previousValue, currentValue) => previousValue + currentValue,
+                0
+              )}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: JSON.stringify([...ds.values()]),
+            }
+          );
 
-      const blob = await res.blob();
-      if (blob.errors) {
-        console.error(blob.errors);
-        throw new Error("Failed to fetch API");
-      }
+          const blob = await res.blob();
+          if (blob.errors) {
+            console.error(blob.errors);
+            throw new Error("Failed to fetch API");
+          }
 
-      var link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `${new Date()
-        .toISOString()
-        .slice(0, 10)}-tham-tu-lap-c17.pdf`;
-      link.click();
+          var link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.download = `${new Date()
+            .toISOString()
+            .slice(0, 10)}-tham-tu-lap-c17.pdf`;
+          link.click();
+        });
     },
 
     async print(maSoBhxhs) {
@@ -341,12 +382,27 @@ export default {
     },
 
     loadBhytByNamSinh() {
-      this.getBhyts({
-        completed: "0",
-        disabled: "0",
-        maXa: this.userDetails.maXa,
-        nam: this.searchText,
-      });
+      this.$q
+        .dialog({
+          title: "Tìm thẻ BHYT theo năm sinh",
+          message: "Nhập năm sinh?",
+          prompt: {
+            model: this.searchText,
+            isValid: (val) => val.length == 10, // << here is the magic
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          if (data)
+            this.getBhyts({
+              completed: "0",
+              disabled: "0",
+              maXa: this.userDetails.maXa,
+              nam: data,
+            });
+        });
     },
     loadBhytByUserName(user) {
       if (user === 1) this.searchText = this.userDetails.maNhanVienThu;
@@ -356,10 +412,10 @@ export default {
           type: "negative",
           message: "Nhập mã nhân viên thu",
         });
-      }
-      this.getBhyts({
-        userName: this.searchText,
-      });
+      } else
+        this.getBhyts({
+          userName: this.searchText,
+        });
     },
     loadBhytByName() {
       this.getBhyts({
