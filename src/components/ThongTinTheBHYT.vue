@@ -134,9 +134,7 @@
       />
       <q-item-label caption
         ><span @click="capNhapNgayBienLai(bhyt)">{{
-          bhyt.ngayLap ||
-          bhyt.ngayBienLai ||
-          new Date(bhyt.updated_at).toLocaleString()
+          bhyt.ngayLap || bhyt.ngayBienLai || bhyt.updated_at
         }}</span>
         <br />
         <a

@@ -149,8 +149,8 @@ module.exports = configure(function (ctx) {
         description: `Todo`,
         display: "standalone",
         orientation: "portrait",
-        background_color: "#ffffff",
-        theme_color: "#027be3",
+        background_color: "#f3f3f3",
+        theme_color: "#2782bc",
         icons: [
           {
             src: "icons/icon-128x128.png",

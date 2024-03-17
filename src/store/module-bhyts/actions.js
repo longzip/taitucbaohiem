@@ -19,6 +19,7 @@ export const getTraCuuThongTinBHXHTN = async ({}, payload) => {
     const { data } = await apiServices.get(
       `/api/services/app/TraCuu/TraCuuThongTinBHXHTN?maSoBhxh=${payload}`
     );
+    await commit("saveBHXHTN", data.result.value.thongTinTns[0]);
     return data.result.value.thongTinTns[0];
   } catch (error) {
     Notify.create({
@@ -291,7 +292,7 @@ export const maTraCuu = async ({}, bienLaiId) => {
   return result[0];
 };
 
-export const xem = async (maSoBhxh) => {
+export const xem = async ({ commit }, maSoBhxh) => {
   let {
     data: { result },
   } = await client.get(
@@ -307,7 +308,11 @@ export const xem = async (maSoBhxh) => {
     ...thongTinTK1,
     ...trangThaiThe,
   });
-  return { ...thongTinTheHGD, ...trangThaiThe, ...theBHYT };
+  await commit("updateBhyt", {
+    ...thongTinTheHGD,
+    ...trangThaiThe,
+    ...theBHYT,
+  });
 };
 
 export const traCuuTheoTen = async (
@@ -347,14 +352,13 @@ export const traCuuTheoTen = async (
   Loading.hide();
 };
 
-export const dongBoDuLieu = async ({ commit }, payload) => {
+export const dongBoDuLieu = async ({ dispatch }, payload) => {
   const maSoBhxhs = payload.split(",");
   for (let index = 0; index < maSoBhxhs.length; index++) {
     await sleep();
     const maSoBhxh = maSoBhxhs[index];
     try {
-      const bhyt = await xem(maSoBhxh);
-      await commit("updateBhyt", bhyt);
+      await dispatch("xem", maSoBhxh);
     } catch (error) {
       console.log(error);
     }
@@ -366,8 +370,7 @@ export const taiTuc = async ({ commit }, payload) => {
   for (let index = 0; index < maSoBhxhs.length; index++) {
     const maSoBhxh = maSoBhxhs[index];
     try {
-      const bhyt = await xem(maSoBhxh, true);
-      await commit("updateBhyt", bhyt);
+      await dispatch("xem", maSoBhxh);
     } catch (error) {
       console.log(error);
     }
@@ -471,7 +474,6 @@ export const capNhatBienLai = async ({ commit }, payload) => {
 
 export const daXyLy = async ({ commit, dispatch }, payload) => {
   const mucDongBHYT = [972000, 680400, 583200, 486000, 388800];
-  const t = { 1: 1, 3: 3, 6: 4, 12: 7 };
   for (let index = 0; index < payload.length; index++) {
     await sleep();
 
@@ -494,29 +496,13 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
         bienLaiId,
         disabled: trangThaiHoSo !== 9,
       });
-      let bhxhtn = {};
-      if (!mucDongBHYT.includes(tongTien)) {
-        const thongTinBHXHTN = await dispatch(
-          "getTraCuuThongTinBHXHTN",
-          maSoBhxh
-        );
-        if (Object.keys(t).length !== 0) {
-          const { mucDong, maPhuongThucDong, thangBd } = thongTinBHXHTN;
-          bhxhtn = {
-            isBHXHTN: 1,
-            denThangDt: moment(thangBd)
-              .add(t[maPhuongThucDong] - 1, "months")
-              .endOf("month")
-              .format()
-              .slice(0, 10),
-            mucDong,
-          };
-        }
+
+      if (!mucDongBHYT.includes(tongTien) && trangThaiHoSo === 9) {
+        await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
       }
-      if (!data.hoTen) {
-        const bhyt = await xem(maSoBhxh);
-        await commit("updateBhyt", { ...bhyt, ...bhxhtn });
-      } else await commit("updateBhyt", { ...data, ...bhxhtn });
+      if (!data.hoTen || trangThaiHoSo === 9) {
+        await dispatch("xem", maSoBhxh);
+      } else await commit("updateBhyt", data);
     } catch (error) {
       console.log(error);
     }
