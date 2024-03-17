@@ -504,7 +504,8 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
       }
       if (
         !data.hoTen ||
-        (trangThaiHoSo === 9 && data.denNgayDt.slice(0, 4) == namNay)
+        !data.denNgayDt ||
+        (trangThaiHoSo === 9 && parseInt(data.denNgayDt.slice(0, 4)) <= namNay)
       ) {
         await dispatch("xem", maSoBhxh);
       } else await commit("updateBhyt", data);
