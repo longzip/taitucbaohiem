@@ -14,12 +14,12 @@ export const xoaThanhVienHGD = ({ commit }, payload) => {
   commit("removeBhyt", payload);
 };
 
-export const getTraCuuThongTinBHXHTN = async ({ commit }, payload) => {
+export const getTraCuuThongTinBHXHTN = async ({ dispatch }, payload) => {
   try {
     const { data } = await apiServices.get(
       `/api/services/app/TraCuu/TraCuuThongTinBHXHTN?maSoBhxh=${payload}`
     );
-    await commit("saveBHXHTN", data.result.value.thongTinTns[0]);
+    await dispatch("saveBHXHTN", data.result.value.thongTinTns[0]);
     return data.result.value.thongTinTns[0];
   } catch (error) {
     Notify.create({
