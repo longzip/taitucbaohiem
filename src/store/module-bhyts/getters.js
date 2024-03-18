@@ -41,7 +41,7 @@ export const tongTien = (state) => {
 export const tongTienBHYT = (state) => {
   if (state.bhyts.length === 0) return 0;
   return state.bhyts
-    .map((t) => (t.maThuTuc === 1 ? t.tongTien : 0))
+    .map((t) => t.tongTien || 0)
     .reduce(
       (previousValue, currentValue) => previousValue + parseInt(currentValue),
       0
@@ -50,7 +50,7 @@ export const tongTienBHYT = (state) => {
 export const tongTienBHXH = (state) => {
   if (state.bhyts.length === 0) return 0;
   return state.bhyts
-    .map((t) => (t.maThuTuc === 0 ? t.tongTien : 0))
+    .map((t) => t.tienNop || 0)
     .reduce(
       (previousValue, currentValue) => previousValue + parseInt(currentValue),
       0
