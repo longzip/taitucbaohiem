@@ -59,6 +59,13 @@
           type="textarea"
           label="Mẫu tin nhắn gửi hàng bưu điện."
         />
+        <q-input
+          v-model="formData.tenKhac"
+          class="q-mb-md"
+          outlined
+          type="text"
+          label="Tên khác"
+        />
 
         <div>
           <q-btn label="Cập nhật" type="submit" color="primary" />
@@ -87,6 +94,7 @@ export default {
         maXa: "",
         maTinh: "000",
         maHuyen: "000",
+        tenKhac: "",
       },
     };
   },

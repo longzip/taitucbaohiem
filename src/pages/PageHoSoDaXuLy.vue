@@ -8,9 +8,13 @@
         @click="xemThangTruoc()"
         icon="arrow_back"
       />
-      {{ bhyts.length }} Hồ Sơ Đã Xử Lý ({{ tham.toLocaleString() }}-{{
-        tongTien.toLocaleString()
-      }}đ) / Đã nộp BHYT: {{ daNopBHYT.toLocaleString() }} - Đã nộp BHXH:
+      BHYT-{{ bhyts.filter((t) => t.maThuTuc === 1).length }} ({{
+        tham.toLocaleString()
+      }}-{{ tongTien.toLocaleString() }}đ) + BHXHTN-{{
+        bhyts.filter((t) => t.maThuTuc === 0).length
+      }}
+      ({{ thamTN.toLocaleString() }}-{{ tongTienTN.toLocaleString() }}đ) / Đã
+      nộp BHYT: {{ daNopBHYT.toLocaleString() }} - Đã nộp BHXH:
       {{ daNopBHXH.toLocaleString() }}
       <q-btn rounded color="primary" @click="dongBo()" icon="sync" />
       <q-btn
@@ -255,9 +259,11 @@ export default {
     return {
       searchText: "",
       tham: 0,
+      thamTN: 0,
       dsTheBHYT: [],
       dsSoBHXH: [],
       tongTien: 0,
+      tongTienTN: 0,
       thangTruoc: 0,
       daNopBHYT: 0,
       daNopBHXH: 0,
@@ -338,17 +344,13 @@ export default {
       this.thangTruoc = this.thangTruoc + 1;
       this.loadData();
     },
-    sleep(t) {
+    sleep(t = 3000) {
       return new Promise((resolve) => setTimeout(resolve, t));
     },
     async loadData() {
       const ngayHomNay = new Date().getDate();
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
+
       try {
-        await this.sleep(1000);
         await this.hoSoDaXuLy({
           thangTruoc: this.thangTruoc,
           mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
@@ -360,14 +362,24 @@ export default {
         });
       }
 
-      Loading.hide();
-
       this.tham = await this.bhyts
         .filter(
           (t) =>
             t.userId === this.userDetails.id &&
             [4, 8, 9].includes(t.trangThaiHoSo) &&
             t.maThuTuc === 1
+        )
+        .map((t) => t.tongTien)
+        .reduce(
+          (previousValue, currentValue) => previousValue + currentValue,
+          0
+        );
+      this.thamTN = await this.bhyts
+        .filter(
+          (t) =>
+            t.userId === this.userDetails.id &&
+            [4, 8, 9].includes(t.trangThaiHoSo) &&
+            t.maThuTuc === 0
         )
         .map((t) => t.tongTien)
         .reduce(
@@ -406,6 +418,18 @@ export default {
             t.userId !== this.userDetails.id &&
             [4, 8, 9].includes(t.trangThaiHoSo) &&
             t.maThuTuc === 1
+        )
+        .map((t) => t.tongTien)
+        .reduce(
+          (previousValue, currentValue) => previousValue + currentValue,
+          0
+        );
+      this.tongTienTN = await this.bhyts
+        .filter(
+          (t) =>
+            t.userId !== this.userDetails.id &&
+            [4, 8, 9].includes(t.trangThaiHoSo) &&
+            t.maThuTuc === 0
         )
         .map((t) => t.tongTien)
         .reduce(
@@ -493,6 +517,7 @@ export default {
     if (this.$route.query.thang) {
       this.thangTruoc = parseInt(this.$route.query.thang);
     }
+    await this.sleep(2000);
     this.loadData();
   },
 };

@@ -7,9 +7,13 @@
     >
       <div class="inline bg-orange-4 rounded-borders cursor-pointer">
         <div class="fit flex flex-center text-center non-selectable q-pa-md">
-          Tra cứu {{ bhyts.length }}/{{
-            parseInt(tongTien).toLocaleString()
-          }}đ!<br />(Hạn sử dụng: {{ userDetails?.hetHan }})
+          BHYT {{ bhyts.filter((t) => !(t.maThuTuc === 0)).length }}/{{
+            parseInt(tongTienBHYT).toLocaleString()
+          }}đ & TN
+          {{
+            bhyts.filter((t) => t.maThuTuc === 0 || t.isBHXHTN == "1").length
+          }}/{{ parseInt(tongTienBHXH).toLocaleString() }}đ!<br />
+          (Hạn sử dụng: {{ userDetails?.hetHan }})
         </div>
 
         <q-menu touch-position>
@@ -28,6 +32,21 @@
             </q-item>
             <q-item clickable @click="loadBhytByName" v-close-popup>
               <q-item-section>Tìm tất cả</q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              @click="
+                getBhyts({
+                  thang: 1,
+                  taiTuc: 1,
+                  disabled: '0',
+                  completed: '0',
+                  userName: userDetails.id,
+                })
+              "
+              v-close-popup
+            >
+              <q-item-section>Khách hàng tái tục</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhyts({ thang: 1 })" v-close-popup>
               <q-item-section>Tái tục 1 tháng</q-item-section>
@@ -111,6 +130,9 @@
             <q-item clickable @click="timMoi(searchText)" v-close-popup>
               <q-item-section>Tìm mới</q-item-section>
             </q-item>
+            <q-item clickable @click="capNhatBHXHTN(searchText)" v-close-popup>
+              <q-item-section>Đồng bộ BHXH TN</q-item-section>
+            </q-item>
             <q-item
               clickable
               @click="
@@ -180,7 +202,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("bhyts", ["bhyts", "tongTien"]),
+    ...mapGetters("bhyts", ["bhyts", "tongTienBHYT", "tongTienBHXH"]),
     ...mapState("auth", ["userDetails"]),
   },
   methods: {
@@ -195,6 +217,7 @@ export default {
       "getDanhSachKhachHangTaiTuc",
       "copyHoTenToClipboard",
       "batTatRemove",
+      "capNhatBHXHTN",
     ]),
     ...mapActions("auth", ["firebaseUpdateUser", "handleAuthStateChanged"]),
     sleep(ms) {
@@ -388,20 +411,20 @@ export default {
           message: "Nhập năm sinh?",
           prompt: {
             model: this.searchText,
-            isValid: (val) => val.length == 10, // << here is the magic
-            type: "text", // optional
+            isValid: (val) => val.length == 4, // << here is the magic
+            type: "number", // optional
           },
           cancel: true,
           persistent: true,
         })
         .onOk((data) => {
-          if (data)
-            this.getBhyts({
-              completed: "0",
-              disabled: "0",
-              maXa: this.userDetails.maXa,
-              nam: data,
-            });
+          if (data) this.searchText = data;
+          this.getBhyts({
+            completed: "0",
+            disabled: "0",
+            maXa: this.userDetails.maXa,
+            nam: data,
+          });
         });
     },
     loadBhytByUserName(user) {
@@ -418,9 +441,25 @@ export default {
         });
     },
     loadBhytByName() {
-      this.getBhyts({
-        name: this.searchText,
-      });
+      this.$q
+        .dialog({
+          title: "Tìm thẻ BHYT",
+          message: "Nhập nội dung tìm kiếm?",
+          prompt: {
+            model: this.searchText,
+            isValid: (val) => val.length >= 2, // << here is the magic
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          this.searchText = data;
+          this.getBhyts({
+            name: data,
+            maXa: data.length < 9 ? this.userDetails.maXa : null,
+          });
+        });
     },
     loadBhyts({ thang = 1 }) {
       this.getBhyts({

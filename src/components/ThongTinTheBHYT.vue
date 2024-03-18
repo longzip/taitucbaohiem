@@ -127,6 +127,12 @@
         }}</strong
         >đ</q-item-label
       >
+      <q-item-label v-if="bhyt.tienNop" caption>
+        <strong class="text-subtitle2 text-weight-bold">{{
+          bhyt.tienNop ? parseInt(bhyt.tienNop).toLocaleString() : "BHXH"
+        }}</strong
+        >đ</q-item-label
+      >
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
         name="star"
@@ -172,6 +178,7 @@ export default {
       "xoaThanhVienHGD",
       "getBhytsBySoBienLai",
       "maTraCuu",
+      "huyThuTien",
     ]),
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
@@ -234,22 +241,26 @@ export default {
               { label: "T3: 583.200đ", value: "583200" },
               { label: "T4: 486.000đ", value: "486000" },
               { label: "T5: 388.800đ", value: "388800" },
-              { label: "Không", value: "0" },
+              { label: "Hủy thu", value: "0" },
             ],
           },
           cancel: true,
           persistent: true,
         })
         .onOk((data) => {
-          this.thuTien({
-            tongTien: data,
-            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
-            userName:
-              data !== "0"
-                ? this.userDetails.maNhanVienThu
-                : this.userDetails.id,
-            disabled: data !== "0" ? 1 : 0,
-          });
+          if (data !== "0") {
+            this.thuTien({
+              tongTien: data,
+              maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+              userName: this.userDetails.maNhanVienThu,
+              disabled: 1,
+            });
+          } else {
+            this.huyThuTien({
+              maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+              userName: this.userDetails.id,
+            });
+          }
         });
     },
     capNhapNgayBienLai(bhyt) {
@@ -374,7 +385,7 @@ export default {
           })
           .onOk((data) => {
             this.thuTien({
-              tongTien: data,
+              tienNop: data,
               maSoBhxh,
               isBHXHTN: 1,
               userName: "_" + this.userDetails.maNhanVienThu,

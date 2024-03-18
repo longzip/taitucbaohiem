@@ -30,9 +30,22 @@ export const getTraCuuThongTinBHXHTN = async ({ dispatch }, payload) => {
   return {};
 };
 
+export const capNhatBHXHTN = async ({ dispatch, state }, payload) => {
+  let maSoBhxhs = payload.split(",");
+  if (!payload) {
+    maSoBhxhs = state.bhyts.map((t) => t.maSoBhxh);
+  }
+  if (maSoBhxhs.length > 0) {
+    for (let index = 0; index < maSoBhxhs.length; index++) {
+      await sleep();
+      await dispatch("getTraCuuThongTinBHXHTN", maSoBhxhs[index]);
+    }
+  }
+};
+
 export const saveBHXHTN = async (
   { commit },
-  { maSoBhxh, mucDong, maPhuongThucDong, thangBd }
+  { maSoBhxh, mucDong, maPhuongThucDong, thangBd, tienNop }
 ) => {
   const t = { 1: 1, 3: 3, 6: 4, 12: 7 };
 
@@ -41,12 +54,13 @@ export const saveBHXHTN = async (
     {
       isBHXHTN: 1,
       denThangDt: moment(thangBd)
-        .add(t[maPhuongThucDong] - 1, "months")
+        .add(t[maPhuongThucDong] ? t[maPhuongThucDong] - 1 : 0, "months")
         .endOf("month")
         .format()
         .slice(0, 10),
       mucDong,
       maPhuongThucDong,
+      tienNop,
     }
   );
   await commit("updateBhyt", bhytUpdate);
@@ -438,6 +452,17 @@ export const updateNgayLap = async ({ commit }, { maSoBhxh, ngayLap }) => {
     console.log(error);
   }
 };
+export const huyThuTien = async ({ commit }, { maSoBhxh, userName }) => {
+  try {
+    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+      userName,
+      disabled: 0,
+    });
+    await commit("updateBhyt", data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const thuTien = async (
   { commit },
   { maSoBhxh, tongTien, userName, disabled }
@@ -474,11 +499,9 @@ export const capNhatBienLai = async ({ commit }, payload) => {
 };
 
 export const daXyLy = async ({ commit, dispatch }, payload) => {
-  const mucDongBHYT = [972000, 680400, 583200, 486000, 388800];
   const namNay = new Date().getFullYear();
   for (let index = 0; index < payload.length; index++) {
     await sleep();
-
     const {
       maSoBhxh,
       tongTien,
@@ -488,29 +511,47 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
       soBienLai,
       bienLaiId,
     } = payload[index];
-
-    try {
-      const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
-        tongTien,
-        userName,
-        maThuTuc,
-        soBienLai,
-        bienLaiId,
-        disabled: trangThaiHoSo !== 9,
-      });
-
-      if (!mucDongBHYT.includes(tongTien) && trangThaiHoSo === 9) {
-        await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
+    if (maThuTuc === 0) {
+      try {
+        const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+          tienNop: tongTien,
+          userName,
+          isBHXHTN: 1,
+          soBienLai,
+          bienLaiIdTN: bienLaiId,
+          disabled: trangThaiHoSo !== 9,
+        });
+        await commit("updateBhyt", data);
+        if (trangThaiHoSo === 9) {
+          await sleep(1000);
+          await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
+        }
+      } catch (error) {
+        console.log(error);
       }
-      if (
-        !data.hoTen ||
-        !data.denNgayDt ||
-        (trangThaiHoSo === 9 && parseInt(data.denNgayDt.slice(0, 4)) <= namNay)
-      ) {
-        await dispatch("xem", maSoBhxh);
-      } else await commit("updateBhyt", data);
-    } catch (error) {
-      console.log(error);
+    } else {
+      try {
+        const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+          tongTien,
+          userName,
+          soBienLai,
+          bienLaiId,
+          disabled: trangThaiHoSo !== 9,
+        });
+        await commit("updateBhyt", data);
+
+        if (
+          !data.hoTen ||
+          !data.denNgayDt ||
+          (trangThaiHoSo === 9 &&
+            parseInt(data.denNgayDt.slice(0, 4)) <= namNay)
+        ) {
+          sleep(1000);
+          await dispatch("xem", maSoBhxh);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };

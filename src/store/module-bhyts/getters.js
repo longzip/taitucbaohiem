@@ -15,7 +15,7 @@ export const timBhyts = (state) => (searchText) => {
         item.maHoGd +
         item.soDienThoai +
         item.maKCB +
-        item.soBienLai+
+        item.soBienLai +
         "-" +
         item.denNgayDt
       )
@@ -28,18 +28,35 @@ export const timBhyts = (state) => (searchText) => {
 export const soDienThoais = (state) => {
   return state.bhyts.map((bhyt) => bhyt.soDienThoai);
 };
-
 export const tongTien = (state) => {
-  if(state.bhyts.length === 0) return 0;
+  if (state.bhyts.length === 0) return 0;
   return state.bhyts
-        .map((t) => t.tongTien || t.soTienThu || 0)
-        .reduce(
-          (previousValue, currentValue) =>
-            previousValue + parseInt(currentValue),
-          0
-  );
-}
+    .map((t) => t.tongTien || t.soTienThu || 0)
+    .reduce(
+      (previousValue, currentValue) => previousValue + parseInt(currentValue),
+      0
+    );
+};
+
+export const tongTienBHYT = (state) => {
+  if (state.bhyts.length === 0) return 0;
+  return state.bhyts
+    .map((t) => (t.maThuTuc === 1 ? t.tongTien : 0))
+    .reduce(
+      (previousValue, currentValue) => previousValue + parseInt(currentValue),
+      0
+    );
+};
+export const tongTienBHXH = (state) => {
+  if (state.bhyts.length === 0) return 0;
+  return state.bhyts
+    .map((t) => (t.maThuTuc === 0 ? t.tongTien : 0))
+    .reduce(
+      (previousValue, currentValue) => previousValue + parseInt(currentValue),
+      0
+    );
+};
 
 export const tongSoThe = (state) => {
   return state.bhyts.length;
-}
+};
