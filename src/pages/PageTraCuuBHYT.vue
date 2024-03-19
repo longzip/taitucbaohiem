@@ -11,7 +11,7 @@
             parseInt(tongTienBHYT).toLocaleString()
           }}đ & TN
           {{
-            bhyts.filter((t) => t.maThuTuc === 0 || t.isBHXHTN == "1").length
+            bhyts.filter((t) => t.maThuTuc === 0 || t.tienNop == "1").length
           }}/{{ parseInt(tongTienBHXH).toLocaleString() }}đ!<br />
           (Hạn sử dụng: {{ userDetails?.hetHan }})
         </div>

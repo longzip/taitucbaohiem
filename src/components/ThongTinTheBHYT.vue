@@ -253,7 +253,6 @@ export default {
               tongTien: data,
               maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.maNhanVienThu,
-              disabled: 1,
             });
           } else {
             this.huyThuTien({
@@ -387,7 +386,6 @@ export default {
             this.thuTien({
               tienNop: data,
               maSoBhxh,
-              isBHXHTN: 1,
               userName: "_" + this.userDetails.maNhanVienThu,
             });
           });

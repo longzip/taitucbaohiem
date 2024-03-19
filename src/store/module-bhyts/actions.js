@@ -52,7 +52,7 @@ export const saveBHXHTN = async (
   const { data: bhytUpdate } = await api.put(
     `/api/bhyts/${maSoBhxh}/tong-tien`,
     {
-      isBHXHTN: 1,
+      isBHXHTN: 0,
       denThangDt: moment(thangBd)
         .add(t[maPhuongThucDong] ? t[maPhuongThucDong] - 1 : 0, "months")
         .endOf("month")
@@ -465,17 +465,30 @@ export const huyThuTien = async ({ commit }, { maSoBhxh, userName }) => {
 };
 export const thuTien = async (
   { commit },
-  { maSoBhxh, tongTien, userName, disabled }
+  { maSoBhxh, tongTien, userName, disabled, tienNop }
 ) => {
-  tongTien = tongTien.replace(/\D/g, "");
   try {
-    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
-      tongTien,
-      ngayLap: new Date().toISOString().slice(0, 10),
-      userName: tongTien ? userName : null,
-      disabled,
-    });
-    await commit("updateBhyt", data);
+    if (tienNop) {
+      //Thu BHXH tự nguyện
+      const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+        tienNop: tienNop.replace(/\D/g, ""),
+        ngayLap: new Date().toISOString().slice(0, 10),
+        userName: tongTien ? userName : null,
+        disabled,
+        isBHXHTN: 1,
+      });
+      await commit("updateBhyt", data);
+    } else {
+      //Thu BHYT
+      const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+        tongTien: tongTien.replace(/\D/g, ""),
+        ngayLap: new Date().toISOString().slice(0, 10),
+        userName: tongTien ? userName : null,
+        disabled,
+        isBHYT: 1,
+      });
+      await commit("updateBhyt", data);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -516,7 +529,7 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
         const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
           tienNop: tongTien,
           userName,
-          isBHXHTN: 1,
+          isBHXHTN: 0, // đã nộp bhxhtn
           soBienLai,
           bienLaiIdTN: bienLaiId,
           disabled: trangThaiHoSo !== 9,
@@ -533,6 +546,7 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
       try {
         const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
           tongTien,
+          isBHYT: 0, //Đã nộp bhyt
           userName,
           soBienLai,
           bienLaiId,
