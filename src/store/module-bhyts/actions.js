@@ -514,7 +514,6 @@ export const capNhatBienLai = async ({ commit }, payload) => {
 export const daXyLy = async ({ commit, dispatch }, payload) => {
   const namNay = new Date().getFullYear();
   for (let index = 0; index < payload.length; index++) {
-    await sleep();
     const {
       maSoBhxh,
       tongTien,
@@ -524,49 +523,56 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
       soBienLai,
       bienLaiId,
     } = payload[index];
-    if (maThuTuc === 0) {
-      try {
-        const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
-          tienNop: tongTien,
-          userName,
-          isBHXHTN: 0, // đã nộp bhxhtn
-          soBienLai,
-          bienLaiIdTN: bienLaiId,
-          disabled: trangThaiHoSo !== 9,
-        });
-        await commit("updateBhyt", data);
-        if (trangThaiHoSo === 9) {
-          await sleep(1000);
-          await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
+    if (trangThaiHoSo != 5) {
+      if (maThuTuc === 0) {
+        try {
+          const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+            tienNop: tongTien,
+            userName,
+            isBHXHTN: 0, // đã nộp bhxhtn
+            soBienLai,
+            bienLaiIdTN: bienLaiId,
+            disabled: trangThaiHoSo !== 9,
+          });
+          await commit("updateBhyt", data);
+          if (trangThaiHoSo === 9) {
+            await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
+            await sleep(1000);
+          }
+          if (!data.hoTen) {
+            await dispatch("xem", maSoBhxh);
+            await sleep(1000);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
-          tongTien,
-          isBHYT: 0, //Đã nộp bhyt
-          userName,
-          soBienLai,
-          bienLaiId,
-          disabled: trangThaiHoSo !== 9,
-        });
-        await commit("updateBhyt", data);
+      } else {
+        try {
+          const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+            tongTien,
+            isBHYT: 0, //Đã nộp bhyt
+            userName,
+            soBienLai,
+            bienLaiId,
+            disabled: trangThaiHoSo !== 9,
+          });
+          await commit("updateBhyt", data);
 
-        if (
-          !data.hoTen ||
-          !data.denNgayDt ||
-          (trangThaiHoSo === 9 &&
-            parseInt(data.denNgayDt.slice(0, 4)) <= namNay)
-        ) {
-          sleep(1000);
-          await dispatch("xem", maSoBhxh);
+          if (
+            !data.hoTen ||
+            !data.denNgayDt ||
+            (trangThaiHoSo === 9 &&
+              parseInt(data.denNgayDt.slice(0, 4)) <= namNay)
+          ) {
+            await dispatch("xem", maSoBhxh);
+            await sleep(1000);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
     }
+    await sleep();
   }
 };
 
