@@ -465,7 +465,7 @@ export const huyThuTien = async ({ commit }, { maSoBhxh, userName }) => {
 };
 export const thuTien = async (
   { commit },
-  { maSoBhxh, tongTien, userName, disabled, tienNop }
+  { maSoBhxh, tongTien, userName, tienNop }
 ) => {
   try {
     if (tienNop) {
@@ -473,8 +473,8 @@ export const thuTien = async (
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         tienNop: tienNop.replace(/\D/g, ""),
         ngayLap: new Date().toISOString().slice(0, 10),
-        userName: tongTien ? userName : null,
-        disabled,
+        userName,
+        disabled: 1,
         isBHXHTN: 1,
       });
       await commit("updateBhyt", data);
@@ -483,8 +483,8 @@ export const thuTien = async (
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         tongTien: tongTien.replace(/\D/g, ""),
         ngayLap: new Date().toISOString().slice(0, 10),
-        userName: tongTien ? userName : null,
-        disabled,
+        userName,
+        disabled: 1,
         isBHYT: 1,
       });
       await commit("updateBhyt", data);
