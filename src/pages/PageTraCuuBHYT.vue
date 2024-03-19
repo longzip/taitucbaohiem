@@ -10,9 +10,9 @@
           BHYT {{ bhyts.filter((t) => !(t.maThuTuc === 0)).length }}/{{
             parseInt(tongTienBHYT).toLocaleString()
           }}đ & TN
-          {{
-            bhyts.filter((t) => t.maThuTuc === 0 || t.tienNop == "1").length
-          }}/{{ parseInt(tongTienBHXH).toLocaleString() }}đ!<br />
+          {{ bhyts.filter((t) => t.maThuTuc === 0 || t.tienNop).length }}/{{
+            parseInt(tongTienBHXH).toLocaleString()
+          }}đ!<br />
           (Hạn sử dụng: {{ userDetails?.hetHan }})
         </div>
 
@@ -58,7 +58,7 @@
               clickable
               @click="
                 loadBHXHTNs({
-                  isBHXHTN: 1,
+                  tienNop: 1,
                   taiTucBHXH: 1,
                   userName: userDetails.id,
                 })
@@ -71,7 +71,7 @@
               clickable
               @click="
                 loadBHXHTNs({
-                  isBHXHTN: 1,
+                  tienNop: 1,
                   userName: userDetails.id,
                 })
               "
@@ -83,7 +83,7 @@
               clickable
               @click="
                 loadBHXHTNs({
-                  isBHXHTN: 1,
+                  tienNop: 1,
                   maXa: userDetails.maXa,
                 })
               "
@@ -428,14 +428,20 @@ export default {
         });
     },
     loadBhytByUserName(user) {
-      if (user === 1) this.searchText = this.userDetails.maNhanVienThu;
-      if (user === 0) this.searchText = "_" + this.userDetails.maNhanVienThu;
       if (!this.searchText) {
-        Notify.create({
-          type: "negative",
-          message: "Nhập mã nhân viên thu",
+        this.searchText = this.userDetails.maNhanVienThu;
+      }
+      if (user === 1)
+        this.getBhyts({
+          userName: this.searchText,
+          isBHYT: 1,
         });
-      } else
+      else if (user === 0)
+        this.getBhyts({
+          userName: this.searchText,
+          isBHXHTN: 1,
+        });
+      else
         this.getBhyts({
           userName: this.searchText,
         });

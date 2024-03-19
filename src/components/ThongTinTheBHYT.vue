@@ -117,17 +117,33 @@
       <q-item-label caption
         >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
       >
-      <q-item-label @click="xacNhanGiaHan(bhyt)" caption>
-        <strong class="text-subtitle2 text-weight-bold">{{
-          bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong
-            ? parseInt(
-                bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong
-              ).toLocaleString()
-            : "0"
-        }}</strong
+      <q-item-label caption>
+        <q-icon
+          v-if="bhyt.isBHYT == 1"
+          class="q-pr-sm"
+          @click="xacNhanHuyThu(bhyt, 1)"
+          name="cancel"
+        />
+        <strong
+          @click="xacNhanGiaHan(bhyt)"
+          class="text-subtitle2 text-weight-bold"
+          >{{
+            bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong
+              ? parseInt(
+                  bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong
+                ).toLocaleString()
+              : "0"
+          }}</strong
         >đ</q-item-label
       >
       <q-item-label v-if="bhyt.tienNop" caption>
+        <q-icon
+          v-if="bhyt.isBHXHTN == 1"
+          class="q-pr-sm"
+          @click="xacNhanHuyThu(bhyt, 0)"
+          name="cancel"
+        />
+
         <strong class="text-subtitle2 text-weight-bold">{{
           bhyt.tienNop ? parseInt(bhyt.tienNop).toLocaleString() : "BHXH"
         }}</strong
@@ -179,6 +195,8 @@ export default {
       "getBhytsBySoBienLai",
       "maTraCuu",
       "huyThuTien",
+      "huyThuBHYT",
+      "huyThuBHXHTN",
     ]),
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
@@ -250,12 +268,12 @@ export default {
         .onOk((data) => {
           if (data !== "0") {
             this.thuTien({
-              tongTien: data,
               maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.maNhanVienThu,
             });
           } else {
             this.huyThuTien({
+              tongTien: data,
               maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.id,
             });
@@ -298,6 +316,27 @@ export default {
         })
         .onOk(() => {
           this.theoDoi(bhyt);
+        });
+    },
+    xacNhanHuyThu(bhyt, maThuTuc) {
+      if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: `Bạn có muốn hủy thu tiền ${
+            maThuTuc ? "BHYT" : "BHXH tự nguyện"
+          }?`,
+          ok: {
+            push: true,
+          },
+          cancel: {
+            color: "negative",
+          },
+          persistent: true,
+        })
+        .onOk(() => {
+          if (maThuTuc) this.huyThuBHYT({ maSoBhxh: bhyt.maSoBhxh });
+          else this.huyThuBHXHTN({ maSoBhxh: bhyt.maSoBhxh });
         });
     },
     getDateDiff(ngayHetHan) {
@@ -386,7 +425,7 @@ export default {
             this.thuTien({
               tienNop: data,
               maSoBhxh,
-              userName: "_" + this.userDetails.maNhanVienThu,
+              userName: this.userDetails.maNhanVienThu,
             });
           });
       } catch (error) {

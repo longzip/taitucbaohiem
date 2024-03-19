@@ -167,6 +167,8 @@ export const getBhyts = async ({ commit }, payload) => {
     nam,
     userName,
     isBHXHTN,
+    isBHYT,
+    tienNop,
     taiTucBHXH,
     soBienLai,
   } = payload;
@@ -184,6 +186,8 @@ export const getBhyts = async ({ commit }, payload) => {
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
   if (chuaDongBo) url += `&chuaDongBo=${chuaDongBo}`;
   if (isBHXHTN) url += `&isBHXHTN=${isBHXHTN}`;
+  if (isBHYT) url += `&isBHYT=${isBHYT}`;
+  if (tienNop) url += `&tienNop=${tienNop}`;
   if (taiTucBHXH) url += `&taiTucBHXH=${taiTucBHXH}`;
   if (soBienLai) url += `&soBienLai=${soBienLai}`;
   const { data } = await api.get(url);
@@ -457,6 +461,7 @@ export const huyThuTien = async ({ commit }, { maSoBhxh, userName }) => {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       userName,
       disabled: 0,
+      tongTien: 0,
     });
     await commit("updateBhyt", data);
   } catch (error) {
@@ -671,6 +676,21 @@ export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
 export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/completed`, {
     completed: !(completed == "1"),
+  });
+  commit("updateBhyt", data);
+};
+
+export const huyThuBHYT = async ({ commit }, { maSoBhxh }) => {
+  const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhyt`, {
+    isBHYT: 0,
+    disabled: 0,
+  });
+  commit("updateBhyt", data);
+};
+export const huyThuBHXHTN = async ({ commit }, { maSoBhxh }) => {
+  const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhxhtn`, {
+    isBHXHTN: 0,
+    disabled: 0,
   });
   commit("updateBhyt", data);
 };
