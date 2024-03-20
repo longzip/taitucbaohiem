@@ -1,8 +1,10 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Danh sách thẻ BHYT theo hộ gia đình - {{ bhyts.length }} thẻ :
-      đ {{ parseInt(tongTien).toLocaleString() }}
+      >Hộ gia đình {{ bhyts.length }} người. Số tiền thu : đ
+      {{ parseInt(tongTienBHYTDaThu).toLocaleString() }}/{{
+        bhyts.filter((b) => b.isBHYT == 1).length
+      }}
       <q-btn rounded color="primary" @click="print()" icon="print" />
     </ListHeader>
     <div class="q-gutter-y-md column">
@@ -46,18 +48,15 @@ export default defineComponent({
   data() {
     return {
       maHoGd: "",
-      searchText: ""
+      searchText: "",
     };
   },
   methods: {
-    ...mapActions("bhyts", [
-      "getAllBhyts",
-      "dongBoDuLieu",
-    ]),
-    async timKiem(searchText){
+    ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
+    async timKiem(searchText) {
       const thongSoTheBHYTs = searchText.split("|");
-      if(thongSoTheBHYTs.length > 1) this.searchText = thongSoTheBHYTs[0]
-      await this.dongBoDuLieu(this.searchText)
+      if (thongSoTheBHYTs.length > 1) this.searchText = thongSoTheBHYTs[0];
+      await this.dongBoDuLieu(this.searchText);
       this.$refs.inputSearch.select();
     },
     async loadData() {
@@ -76,7 +75,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapGetters("bhyts", ["bhyts","tongTien"]),
+    ...mapGetters("bhyts", ["bhyts", "tongTienBHYTDaThu"]),
   },
 
   mounted() {

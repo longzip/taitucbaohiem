@@ -1,5 +1,3 @@
-import state from "./state";
-
 export function bhyts(state) {
   return state.bhyts;
 }
@@ -28,9 +26,20 @@ export const timBhyts = (state) => (searchText) => {
 export const soDienThoais = (state) => {
   return state.bhyts.map((bhyt) => bhyt.soDienThoai);
 };
+
 export const tongTien = (state) => {
   if (state.bhyts.length === 0) return 0;
   return state.bhyts
+    .map((t) => t.tongTien || t.soTienThu || 0)
+    .reduce(
+      (previousValue, currentValue) => previousValue + parseInt(currentValue),
+      0
+    );
+};
+export const tongTienBHYTDaThu = (state) => {
+  if (state.bhyts.length === 0) return 0;
+  return state.bhyts
+    .filter((b) => b.isBHYT == 1)
     .map((t) => t.tongTien || t.soTienThu || 0)
     .reduce(
       (previousValue, currentValue) => previousValue + parseInt(currentValue),
