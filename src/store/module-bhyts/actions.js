@@ -518,6 +518,7 @@ export const capNhatBienLai = async ({ commit }, payload) => {
 
 export const daXyLy = async ({ commit, dispatch }, payload) => {
   const namNay = new Date().getFullYear();
+  const thangNay = `${namNay}-${new Date().getMonth()}`;
   for (let index = 0; index < payload.length; index++) {
     const {
       maSoBhxh,
@@ -531,6 +532,7 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
     if (trangThaiHoSo != 5) {
       if (maThuTuc === 0) {
         try {
+          const { ngayBienLai } = await dispatch("maTraCuu", bienLaiId);
           const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
             tienNop: tongTien,
             userName,
@@ -538,21 +540,26 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
             soBienLai,
             bienLaiIdTN: bienLaiId,
             disabled: trangThaiHoSo !== 9,
+            maThuTuc,
+            ngayLap: ngayBienLai?.split("/").reverse().join("-"),
           });
           await commit("updateBhyt", data);
-          if (trangThaiHoSo === 9) {
+          if (
+            trangThaiHoSo === 9 &&
+            data.denThangDt &&
+            data.denThangDt.slice !== thangNay
+          ) {
             await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
-            await sleep(500);
           }
           if (!data.hoTen) {
             await dispatch("xem", maSoBhxh);
-            await sleep(500);
           }
         } catch (error) {
           console.log(error);
         }
       } else {
         try {
+          const { ngayBienLai } = await dispatch("maTraCuu", bienLaiId);
           const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
             tongTien,
             isBHYT: 0, //Đã nộp bhyt
@@ -560,6 +567,8 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
             soBienLai,
             bienLaiId,
             disabled: trangThaiHoSo !== 9,
+            maThuTuc,
+            ngayLap: ngayBienLai?.split("/").reverse().join("-"),
           });
           await commit("updateBhyt", data);
 
@@ -570,7 +579,6 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
               parseInt(data.denNgayDt.slice(0, 4)) <= namNay)
           ) {
             await dispatch("xem", maSoBhxh);
-            await sleep(1000);
           }
         } catch (error) {
           console.log(error);

@@ -7,12 +7,7 @@
     >
       <div class="inline bg-orange-4 rounded-borders cursor-pointer">
         <div class="fit flex flex-center text-center non-selectable q-pa-md">
-          BHYT {{ bhyts.filter((t) => !(t.maThuTuc === 0)).length }}/{{
-            parseInt(tongTienBHYT).toLocaleString()
-          }}đ & TN
-          {{ bhyts.filter((t) => t.maThuTuc === 0 || t.tienNop).length }}/{{
-            parseInt(tongTienBHXH).toLocaleString()
-          }}đ!<br />
+          Tra cứu thông tin <br />
           (Hạn sử dụng: {{ userDetails?.hetHan }})
         </div>
 
@@ -182,9 +177,20 @@
         </template>
       </q-input>
     </div>
-    <q-list v-for="bhyt in bhyts" :key="bhyt.id">
-      <ThongTinTheBHYT :bhyt="bhyt" />
-      <q-separator spaced inset />
+    <q-list>
+      <q-item-label header>
+        Số lượng: <q-badge>{{ bhyts.length }}</q-badge
+        ><br />
+        Tổng tiền:
+        <q-badge>{{ parseInt(tongTienBHYT).toLocaleString() }}</q-badge> <br />
+        BHXHTN :
+        <q-badge>{{ parseInt(tongTienBHXH).toLocaleString() }}</q-badge>
+      </q-item-label>
+
+      <div v-for="bhyt in bhyts" :key="bhyt.id">
+        <ThongTinTheBHYT :bhyt="bhyt" />
+        <q-separator spaced inset />
+      </div>
     </q-list>
   </q-page>
 </template>

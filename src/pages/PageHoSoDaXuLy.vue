@@ -138,14 +138,15 @@
             icon="print"
             @click="print(1)"
           />
-          <q-btn
+          <!-- <q-btn
+            :disable="coTheIn"
             v-close-popup
             flat
             color="primary"
             round
             icon="download"
             @click="printC17(1)"
-          />
+          /> -->
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -234,14 +235,15 @@
             icon="print"
             @click="print(0)"
           />
-          <q-btn
+          <!-- <q-btn
+            :disable="coTheIn"
             v-close-popup
             flat
             color="primary"
             round
             icon="download"
             @click="printC17(0)"
-          />
+          /> -->
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -252,12 +254,13 @@
 import { mapGetters, mapActions } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
-import { Loading, QSpinnerIos, Notify } from "quasar";
+import { Notify } from "quasar";
 export default {
   components: { ThongTinTheBHYT, ListHeader },
   data() {
     return {
       searchText: "",
+      coTheIn: 1,
       tham: 0,
       thamTN: 0,
       dsTheBHYT: [],
@@ -288,8 +291,16 @@ export default {
   methods: {
     ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy", "XuatD03OrD05Excel"]),
     async truocKhiInBHYT() {
+      await this.hoSoDaXuLy({
+        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+      });
+      this.coTheIn = 0;
       this.showDialogBHYT = true;
-      this.daXyLy(
+      Notify.create({
+        type: "positive",
+        message: `Đang xuất C17 BHYT, vui lòng đợi ...!`,
+      });
+      await this.daXyLy(
         this.bhyts.filter(
           (t) =>
             t.userId === this.userDetails.id &&
@@ -299,11 +310,20 @@ export default {
               new Date(t.ngayNopHoSo).getDate()
         )
       );
-      // await this.printC17();
+      this.coTheIn = 1;
+      this.printC17(1);
     },
     async truocKhiInBHXH() {
+      await this.hoSoDaXuLy({
+        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+      });
+      this.coTheIn = 0;
       this.showDialogBHXH = true;
-      this.daXyLy(
+      Notify.create({
+        type: "positive",
+        message: `Đang xuất C17 BHXH tự nguyện, vui lòng đợi ...!`,
+      });
+      await this.daXyLy(
         this.bhyts.filter(
           (t) =>
             t.userId === this.userDetails.id &&
@@ -313,7 +333,8 @@ export default {
               new Date(t.ngayNopHoSo).getDate()
         )
       );
-      // await this.printC17();
+      this.coTheIn = 1;
+      this.printC17(0);
     },
     dongBo() {
       this.daXyLy(this.bhyts);
