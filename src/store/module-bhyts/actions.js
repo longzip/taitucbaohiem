@@ -542,11 +542,11 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
           await commit("updateBhyt", data);
           if (trangThaiHoSo === 9) {
             await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
-            await sleep(1000);
+            await sleep(500);
           }
           if (!data.hoTen) {
             await dispatch("xem", maSoBhxh);
-            await sleep(1000);
+            await sleep(500);
           }
         } catch (error) {
           console.log(error);

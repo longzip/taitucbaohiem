@@ -3,34 +3,9 @@
     <ListHeader bgcolor="bg-orange-4"
       >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (BHYT:
       {{ tongTienBHYT.toLocaleString() }}đ / {{ soTheBHYT }} Thẻ + BHXH: :
-      {{ tongTienBHXH.toLocaleString() }}đ / {{ soSoBHXH }})<q-btn
-        rounded
-        color="primary"
-        label="Tải"
-        @click="dongBo()"
-        icon="sync"
-    /></ListHeader>
+      {{ tongTienBHXH.toLocaleString() }}đ / {{ soSoBHXH }})</ListHeader
+    >
 
-    <div class="q-gutter-y-md column">
-      <q-input
-        outlined
-        v-model="searchText"
-        @keyup.enter="traCuuTheoTen(searchText)"
-        placeholder="Họ và tên"
-        hint="Nhập họ và tên rồi nhấn Enter để tìm kiếm"
-        dense
-      >
-        <template v-slot:append>
-          <q-icon
-            v-if="searchText !== ''"
-            name="close"
-            @click="searchText = ''"
-            class="cursor-pointer"
-          />
-          <q-icon name="search" />
-        </template>
-      </q-input>
-    </div>
     <q-list v-for="bhyt in bhyts" :key="bhyt.id">
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
@@ -55,49 +30,47 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("auth", ["isLogin", "userDetails"]),
+    ...mapGetters("auth", ["userDetails"]),
     ...mapGetters("bhyts", ["bhyts"]),
   },
   methods: {
-    ...mapActions("bhyts", ["hoSoChuaXuLy", "giaHan"]),
-    dongBo() {
-      this.giaHan(this.bhyts);
-    },
+    ...mapActions("bhyts", ["hoSoChuaXuLy"]),
   },
   async mounted() {
-    if (this.$route.query.q) {
-      this.searchText = this.$route.query.q;
-    }
     await this.hoSoChuaXuLy({
       mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
     });
     this.tongTienBHYT = this.bhyts
       .filter(
-        (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 1
+        (t) =>
+          t.userId == this.userDetails.id &&
+          t.trangThaiHoSo == 2 &&
+          t.maThuTuc === 1
       )
       .map((t) => t.tongTien)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     this.soTheBHYT = this.bhyts.filter(
-      (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 1
+      (t) =>
+        t.userId == this.userDetails.id &&
+        t.trangThaiHoSo == 2 &&
+        t.maThuTuc === 1
     ).length;
 
     this.tongTienBHXH = this.bhyts
       .filter(
-        (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 0
+        (t) =>
+          t.userId == this.userDetails.id &&
+          t.trangThaiHoSo == 2 &&
+          t.maThuTuc === 0
       )
       .map((t) => t.tongTien)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     this.soSoBHXH = this.bhyts.filter(
-      (t) => t.userId == 3152 && t.trangThaiHoSo == 2 && t.maThuTuc === 0
+      (t) =>
+        t.userId == this.userDetails.id &&
+        t.trangThaiHoSo == 2 &&
+        t.maThuTuc === 0
     ).length;
-
-    this.giaHan(
-      this.bhyts.filter(
-        (t) =>
-          t.trangThaiHoSo == 2 &&
-          new Date().getDate() === new Date(t.ngayLap).getDate()
-      )
-    );
   },
 };
 </script>
