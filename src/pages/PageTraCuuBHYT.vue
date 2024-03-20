@@ -7,20 +7,47 @@
     >
       <div class="inline bg-orange-4 rounded-borders cursor-pointer">
         <div class="fit flex flex-center text-center non-selectable q-pa-md">
-          Tra cứu thông tin <br />
+          Bấm vào đây để tra cứu thông tin <br />
           (Hạn sử dụng: {{ userDetails?.hetHan }})
         </div>
 
         <q-menu touch-position>
           <q-list style="min-width: 100px">
-            <q-item clickable @click="loadBhytByUserName()" v-close-popup>
-              <q-item-section>Đã thu tiền</q-item-section>
-            </q-item>
             <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
               <q-item-section>Đã thu tiền BHYT</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytByUserName(0)" v-close-popup>
               <q-item-section>Đã thu tiền BHXH</q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              @click="
+                getBhyts({
+                  thang: 1,
+                  completed: '0',
+                  disabled: '0',
+                  taiTuc: '1',
+                  userName: this.userDetails.id,
+                })
+              "
+              v-close-popup
+            >
+              <q-item-section>Tái tục BHYT</q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              @click="
+                loadBHXHTNs({
+                  tienNop: 1,
+                  taiTucBHXH: 1,
+                  disabled: '0',
+                  completed: '0',
+                  userName: userDetails.id,
+                })
+              "
+              v-close-popup
+            >
+              <q-item-section>Tái tục BHXH TN 1 tháng</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
               <q-item-section>Tìm theo năm sinh</q-item-section>
@@ -49,19 +76,7 @@
             <q-item clickable @click="loadBhyts({ thang: 2 })" v-close-popup>
               <q-item-section>Tái tục 2 tháng</q-item-section>
             </q-item>
-            <q-item
-              clickable
-              @click="
-                loadBHXHTNs({
-                  tienNop: 1,
-                  taiTucBHXH: 1,
-                  userName: userDetails.id,
-                })
-              "
-              v-close-popup
-            >
-              <q-item-section>Tái tục BHXH TN 1 tháng</q-item-section>
-            </q-item>
+
             <q-item
               clickable
               @click="
@@ -154,6 +169,9 @@
             >
               <q-item-section>Giữ lại danh sách</q-item-section>
             </q-item>
+            <q-item clickable @click="loadBhytByUserName()" v-close-popup>
+              <q-item-section>Đã thu tiền</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </div>
@@ -180,9 +198,19 @@
     <q-list>
       <q-item-label header>
         Số lượng: <q-badge>{{ bhyts.length }}</q-badge
-        ><br />
+        >/Trung bình đóng:
+        {{ parseInt(tongTienBHYT / (bhyts.length || 1)).toLocaleString() }}/Hoa
+        hồng:
+        {{
+          parseInt(
+            ((tongTienBHYT / (bhyts.length || 1)) * 0.0264).toFixed(0)
+          ).toLocaleString()
+        }}đ/thẻ<br />
         Tổng tiền:
-        <q-badge>{{ parseInt(tongTienBHYT).toLocaleString() }}</q-badge> <br />
+        <q-badge>{{ parseInt(tongTienBHYT).toLocaleString() }}</q-badge> : Hoa
+        hồng:
+        {{ parseInt((tongTienBHYT * 0.0264).toFixed(0)).toLocaleString() }}đ
+        <br />
         BHXHTN :
         <q-badge>{{ parseInt(tongTienBHXH).toLocaleString() }}</q-badge>
       </q-item-label>
