@@ -268,6 +268,7 @@ export default {
         .onOk((data) => {
           if (data !== "0") {
             this.thuTien({
+              tongTien: data,
               maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.maNhanVienThu,
             });
