@@ -13,26 +13,24 @@
 
         <q-menu touch-position>
           <q-list style="min-width: 100px">
+            <q-item clickable @click="loadBhytByName" v-close-popup>
+              <q-item-section>Tìm tất cả</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
               <q-item-section>Đã thu tiền BHYT</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytByUserName(0)" v-close-popup>
               <q-item-section>Đã thu tiền BHXH</q-item-section>
             </q-item>
-            <q-item
-              clickable
-              @click="
-                getBhyts({
-                  thang: 1,
-                  completed: '0',
-                  disabled: '0',
-                  taiTuc: '1',
-                  userName: this.userDetails.id,
-                })
-              "
-              v-close-popup
-            >
-              <q-item-section>Tái tục BHYT</q-item-section>
+            <q-item clickable @click="taiTucBHYT1thang" v-close-popup>
+              <q-item-section>Tái tục 1 tháng (Me)</q-item-section>
+            </q-item>
+
+            <q-item clickable @click="loadBhyts({ thang: 1 })" v-close-popup>
+              <q-item-section>Tái tục 1 tháng (All)</q-item-section>
+            </q-item>
+            <q-item clickable @click="loadBhyts({ thang: 2 })" v-close-popup>
+              <q-item-section>Tái tục 2 tháng (All)</q-item-section>
             </q-item>
             <q-item
               clickable
@@ -47,60 +45,21 @@
               "
               v-close-popup
             >
-              <q-item-section>Tái tục BHXH TN 1 tháng</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
-              <q-item-section>Tìm theo năm sinh</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadBhytByName" v-close-popup>
-              <q-item-section>Tìm tất cả</q-item-section>
+              <q-item-section>Tái tục BHXH (1 tháng)</q-item-section>
             </q-item>
             <q-item
               clickable
               @click="
-                getBhyts({
-                  thang: 1,
-                  taiTuc: 1,
-                  disabled: '0',
-                  completed: '0',
+                loadBHXHTNs({
+                  tienNop: 1,
                   userName: userDetails.id,
                 })
               "
               v-close-popup
             >
-              <q-item-section>Khách hàng tái tục</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadBhyts({ thang: 1 })" v-close-popup>
-              <q-item-section>Tái tục 1 tháng</q-item-section>
-            </q-item>
-            <q-item clickable @click="loadBhyts({ thang: 2 })" v-close-popup>
-              <q-item-section>Tái tục 2 tháng</q-item-section>
+              <q-item-section>Tái tục BHXH (All)</q-item-section>
             </q-item>
 
-            <q-item
-              clickable
-              @click="
-                loadBHXHTNs({
-                  tienNop: 1,
-                  userName: userDetails.id,
-                })
-              "
-              v-close-popup
-            >
-              <q-item-section>Khách hàng BHXH TN</q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              @click="
-                loadBHXHTNs({
-                  tienNop: 1,
-                  maXa: userDetails.maXa,
-                })
-              "
-              v-close-popup
-            >
-              <q-item-section>BHXH TN (Địa phương)</q-item-section>
-            </q-item>
             <q-item clickable @click="loadBhytsHetHan" v-close-popup>
               <q-item-section>Đã hết hạn</q-item-section>
             </q-item>
@@ -119,9 +78,7 @@
             <q-item clickable @click="printDanhSachTraThe" v-close-popup>
               <q-item-section>In Danh sách trả thẻ</q-item-section>
             </q-item>
-            <q-item clickable @click="loadTaiTucBHXH" v-close-popup>
-              <q-item-section>Tái tục BHXH</q-item-section>
-            </q-item>
+
             <q-item clickable @click="copyMaSoBhxhToClipboard" v-close-popup>
               <q-item-section>Copy tất cả mã số BHXH</q-item-section>
             </q-item>
@@ -140,9 +97,28 @@
             <q-item clickable @click="timMoi(searchText)" v-close-popup>
               <q-item-section>Tìm mới</q-item-section>
             </q-item>
+            <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
+              <q-item-section>Tìm theo năm sinh</q-item-section>
+            </q-item>
+            <q-item clickable @click="loadTaiTucBHXH" v-close-popup>
+              <q-item-section>Tái tục BHXH (ssm)</q-item-section>
+            </q-item>
             <q-item clickable @click="capNhatBHXHTN(searchText)" v-close-popup>
               <q-item-section>Đồng bộ BHXH TN</q-item-section>
             </q-item>
+            <q-item
+              clickable
+              @click="
+                loadBHXHTNs({
+                  tienNop: 1,
+                  maXa: userDetails.maXa,
+                })
+              "
+              v-close-popup
+            >
+              <q-item-section>Tìm BHXH</q-item-section>
+            </q-item>
+
             <q-item
               clickable
               @click="
@@ -256,6 +232,17 @@ export default {
     ...mapActions("auth", ["firebaseUpdateUser", "handleAuthStateChanged"]),
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+
+    taiTucBHYT1thang() {
+      this.searchText = this.userDetails.id;
+      this.getBhyts({
+        thang: 1,
+        completed: "0",
+        disabled: "0",
+        taiTuc: "1",
+        userName: this.userDetails.id,
+      });
     },
 
     async loadTaiTucBHXH() {
@@ -502,6 +489,7 @@ export default {
         });
     },
     loadBhyts({ thang = 1 }) {
+      this.searchText = "";
       this.getBhyts({
         thang,
         completed: "0",

@@ -52,13 +52,12 @@ export default {
         await this.loginUser(this.formData);
       }
       await this.sleep(1000);
-      this.$router.push("/ho-so-da-xu-ly");
+      this.$router.push("/");
     },
   },
   mounted() {
     // console.log(localStorage.getItem("setIsLogin"));
-    if (localStorage.getItem("setIsLogin"))
-      this.$router.push("/ho-so-da-xu-ly");
+    if (localStorage.getItem("setIsLogin")) this.$router.push("/");
   },
 };
 </script>

@@ -69,14 +69,15 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
         async (snapshot) => {
           if (snapshot.exists()) {
             const userDetails = snapshot.val();
-            commit("setUserDetails", userDetails);
+            await commit("setUserDetails", userDetails);
             let { hetHan, isLogin } = userDetails;
             if (!hetHan) {
               const { addToDate } = date;
               const newDate = addToDate(new Date(), { months: 3 });
               hetHan = newDate.toISOString().slice(0, 10);
             }
-            commit("setIsLogin", isLogin);
+            await commit("setIsLogin", isLogin);
+
             let loginInfo = await dispatch("getCurrentLoginInformations");
             if (!loginInfo) {
               let config = {
@@ -105,7 +106,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
               };
               commit("setUserDetails", updateUserDetails);
               const db = getDatabase();
-              set(ref(db, "users/" + userId), updateUserDetails);
+              await set(ref(db, "users/" + userId), updateUserDetails);
             } else if (!userDetails.maNhanVienThu) {
               console.log("Cập nhật mã nhân viên thu!");
               commit("setUserDetails", {

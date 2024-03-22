@@ -67,13 +67,14 @@ export default {
         isLogin,
       };
       await this.registerUser(regUser);
-      this.$router.push("/ho-so-da-xu-ly");
+      await this.sleep(2000);
+      this.$router.push("/");
     },
   },
   async mounted() {
+    await this.sleep(2000);
     if (localStorage.getItem("setIsLogin")) {
-      await this.sleep(2000);
-      this.$router.push("/ho-so-da-xu-ly");
+      this.$router.push("/");
     }
   },
 };
