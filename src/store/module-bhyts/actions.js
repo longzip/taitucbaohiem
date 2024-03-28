@@ -327,11 +327,8 @@ export const xem = async ({ commit }, maSoBhxh) => {
     ...thongTinTK1,
     ...trangThaiThe,
   });
-  await commit("updateBhyt", {
-    ...thongTinTheHGD,
-    ...trangThaiThe,
-    ...theBHYT,
-  });
+  await commit("updateBhyt", theBHYT);
+  return theBHYT;
 };
 
 export const traCuuTheoTen = async (
