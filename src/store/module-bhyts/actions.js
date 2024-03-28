@@ -453,8 +453,10 @@ export const updateMaXacNhan = async (
       ngayLap,
     });
     await commit("updateBhyt", data);
+    return data;
   } catch (error) {
     console.log(error);
+    return {};
   }
 };
 export const updateNgayLap = async ({ commit }, { maSoBhxh, ngayLap }) => {

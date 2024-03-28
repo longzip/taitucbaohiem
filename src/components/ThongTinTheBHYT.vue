@@ -64,7 +64,11 @@
         />
 
         <a
-          :href="bhyt.soDienThoai ? `https://zalo.me/${bhyt.soDienThoai}` : '#'"
+          :href="
+            bhyt.soDienThoai2 || bhyt.soDienThoai2
+              ? `tel:${bhyt.bhyt.soDienThoai2 || bhyt.soDienThoai}`
+              : '#'
+          "
           ><q-icon
             class="q-ml-md"
             @click="copyUrlToClipboard(bhyt)"
@@ -97,8 +101,8 @@
         <q-icon @click="xacNhanGhiChu(bhyt)" name="edit" />
       </q-item-label>
       <q-item-label caption lines="2">
-        <a :href="`tel:${bhyt.soDienThoai2}`">{{
-          bhyt.soDienThoai2 || "Thêm số điện thoại:"
+        <a v-if="bhyt.ngaySinhDt" :href="`tel:${bhyt.soDienThoai2}`">{{
+          bhyt.soDienThoai2 || "Thêm sđt:"
         }}</a>
         <q-icon @click="xacNhanSoDienThoai2(bhyt)" name="edit" />
       </q-item-label>
@@ -468,7 +472,7 @@ export default {
         });
         return null;
       }
-      await this.updateMaXacNhan({
+      const bhyt = await this.updateMaXacNhan({
         maSoBhxh,
         maXacNhan,
         ngayLap: ngayBienLai.split("/").reverse().join("-"),
@@ -487,6 +491,10 @@ export default {
               type: "positive",
               message: `Bạn đã sao chép thành công!`,
             });
+            let a = document.createElement("a");
+            a.target = "_blank";
+            a.href = `tel:${bhyt.soDienThoai2 || bhyt.soDienThoai}`;
+            a.click();
           },
           function (err) {
             Notify.create({
@@ -496,11 +504,12 @@ export default {
           }
         );
     },
-    copyUrlToClipboard(t) {
-      const [nam, thang, ngay] = new Date()
-        .toISOString()
-        .slice(0, 10)
-        .split("-");
+    async copyUrlToClipboard(t) {
+      if (!t.ngaySinhDt)
+        await this.dongBoDuLieu(
+          t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+        );
+      const [nam, thang] = new Date().toISOString().slice(0, 7).split("-");
       navigator.clipboard
         .writeText(
           new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0)
@@ -525,7 +534,7 @@ export default {
                   t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
                 )
             : `
-          Thẻ hợp lệ! Mã thẻ: ${
+          Xin chào! Mã thẻ: ${
             t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
           }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
                 t.ngaySinhDt
