@@ -24,7 +24,7 @@
         <q-icon
           class="q-ml-sm"
           @click="
-            dongBoDuLieu(
+            xem(
               bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
             )
           "
@@ -63,17 +63,11 @@
           name="content_copy"
         />
 
-        <a
-          :href="
-            bhyt.soDienThoai2 || bhyt.soDienThoai2
-              ? `tel:${bhyt.bhyt.soDienThoai2 || bhyt.soDienThoai}`
-              : '#'
-          "
-          ><q-icon
-            class="q-ml-md"
-            @click="copyUrlToClipboard(bhyt)"
-            name="share"
-        /></a>
+        <q-icon
+          class="q-ml-md"
+          @click="copyUrlToClipboard(bhyt)"
+          name="share"
+        />
         <q-icon
           class="q-ml-md"
           @click="copyMaTraCuuToClipboard(bhyt)"
@@ -197,7 +191,7 @@ export default {
       "updateNgayLap",
       "loaiBo",
       "theoDoi",
-      "dongBoDuLieu",
+      "xem",
       "getTraCuuThongTinBHXHTN",
       "thuTien",
       "xoaThanhVienHGD",
@@ -491,10 +485,7 @@ export default {
               type: "positive",
               message: `Bạn đã sao chép thành công!`,
             });
-            let a = document.createElement("a");
-            a.target = "_blank";
-            a.href = `tel:${bhyt.soDienThoai2 || bhyt.soDienThoai}`;
-            a.click();
+            this.quaySoDienThoai(bhyt.soDienThoai2 || bhyt.soDienThoai);
           },
           function (err) {
             Notify.create({
@@ -504,9 +495,16 @@ export default {
           }
         );
     },
+    quaySoDienThoai(soDienThoai) {
+      if (bhyt.soDienThoai2 || bhyt.soDienThoai) {
+        let a = document.createElement("a");
+        a.href = `tel:${soDienThoai}`;
+        a.click();
+      }
+    },
     async copyUrlToClipboard(t) {
       if (!t.ngaySinhDt)
-        await this.dongBoDuLieu(
+        t = await this.xem(
           t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
         );
       const [nam, thang] = new Date().toISOString().slice(0, 7).split("-");
@@ -560,6 +558,7 @@ export default {
               type: "positive",
               message: `Bạn đã sao chép thành công!`,
             });
+            this.quaySoDienThoai(t.soDienThoai2 || t.soDienThoai);
           },
           function (err) {
             Notify.create({
