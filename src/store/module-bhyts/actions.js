@@ -422,6 +422,17 @@ export const giaHan = async ({ commit }, payload) => {
   }
 };
 
+export const updateTongTien = async ({ commit }, { maSoBhxh, capNhatBHYT }) => {
+  try {
+    const { data } = await api.put(
+      `/api/bhyts/${maSoBhxh}/tong-tien`,
+      capNhatBHYT
+    );
+    await commit("updateBhyt", data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const updateGhiChu = async ({ commit }, { maSoBhxh, ghiChu }) => {
   try {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {

@@ -63,7 +63,8 @@
           name="content_copy"
         />
 
-        <a :href="`tel:${bhyt.soDienThoai}`"
+        <a
+          :href="bhyt.soDienThoai ? `https://zalo.me/${bhyt.soDienThoai}` : '#'"
           ><q-icon
             class="q-ml-md"
             @click="copyUrlToClipboard(bhyt)"
@@ -86,9 +87,7 @@
           bhyt.ngay5Nam || bhyt.trangThaiHoSoName || bhyt.moTa
         }}</q-item-label
       >
-      <q-item-label caption lines="2"
-        >Mã xác nhận:{{ bhyt.maXacNhan }}</q-item-label
-      >
+
       <q-item-label v-if="!(bhyt.tienNop == 0)" caption lines="2"
         ><strong>BHXH {{ bhyt.maPhuongThucDong }}:</strong> {{ bhyt.mucDong }} -
         {{ bhyt.denThangDt?.slice(0, 7) }}</q-item-label
@@ -96,6 +95,12 @@
       <q-item-label caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
         <q-icon @click="xacNhanGhiChu(bhyt)" name="edit" />
+      </q-item-label>
+      <q-item-label caption lines="2">
+        <a :href="`tel:${bhyt.soDienThoai2}`">{{
+          bhyt.soDienThoai2 || "Thêm số điện thoại:"
+        }}</a>
+        <q-icon @click="xacNhanSoDienThoai2(bhyt)" name="edit" />
       </q-item-label>
       <q-item-label v-if="bhyt.soDienThoai" caption>
         <a :href="`tel:${bhyt.soDienThoai}`">{{ bhyt.soDienThoai }}</a>
@@ -197,6 +202,7 @@ export default {
       "huyThuTien",
       "huyThuBHYT",
       "huyThuBHXHTN",
+      "updateTongTien",
     ]),
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
@@ -236,12 +242,25 @@ export default {
             ghiChu: data,
             maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
           });
+        });
+    },
+    xacNhanSoDienThoai2(bhyt) {
+      this.$q
+        .dialog({
+          title: "Ghi chú",
+          message: "Số điện thoại 2?",
+          prompt: {
+            model: bhyt.soDienThoai2,
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
         })
-        .onCancel(() => {
-          // console.log('>>>> Cancel')
-        })
-        .onDismiss(() => {
-          // console.log('I am triggered on both OK and Cancel')
+        .onOk((data) => {
+          this.updateTongTien({
+            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            capNhatBHYT: { soDienThoai2: data },
+          });
         });
     },
     xacNhanGiaHan(bhyt) {
@@ -274,7 +293,9 @@ export default {
             });
           } else {
             this.huyThuTien({
-              tongTien: data,
+              disabled: 0,
+              tongTien: 0,
+              isBHYT: 0,
               maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.id,
             });

@@ -607,7 +607,11 @@ export default {
     copySoDienThoaiToClipboard() {
       navigator.clipboard
         .writeText(
-          [...new Set(this.bhyts.map((bhyt) => bhyt.soDienThoai))].join("\r\n")
+          [
+            ...new Set(
+              this.bhyts.map((bhyt) => bhyt.soDienThoai2 || bhyt.soDienThoai)
+            ),
+          ].join("\r\n")
         )
         .then(
           function () {
@@ -630,14 +634,16 @@ export default {
           "Name\tPhone\r\n" +
             [
               ...new Map(
-                this.bhyts.map(({ soDienThoai, hoTen, ngaySinhDt }) => [
-                  soDienThoai,
-                  hoTen +
-                    " " +
-                    new Date(ngaySinhDt).getFullYear() +
-                    "\t" +
+                this.bhyts.map(
+                  ({ soDienThoai2, soDienThoai, hoTen, ngaySinhDt }) => [
                     soDienThoai,
-                ])
+                    hoTen +
+                      " " +
+                      new Date(ngaySinhDt).getFullYear() +
+                      "\t" +
+                      soDienThoai2 || soDienThoai,
+                  ]
+                )
               ).values(),
             ].join("\r\n")
         )
