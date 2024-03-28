@@ -38,7 +38,6 @@
 <script>
 import { defineComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
-import { Loading, QSpinnerIos } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 

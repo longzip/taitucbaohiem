@@ -1,8 +1,7 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >KHL {{ doanhThu.toLocaleString() }}đ /
-      {{ tongSoBuuGui }} bưu gửi
+      >KHL {{ doanhThu.toLocaleString() }}đ / {{ tongSoBuuGui }} bưu gửi
       <q-btn
         rounded
         color="primary"
@@ -21,7 +20,9 @@
         outlined
         v-model="searchText"
         placeholder="Từ khóa"
-        :hint="`Cước còn: ${ (doanhThu - tongCuocDaThanhToan).toLocaleString() }đ / đã trừ: ${ tongCuocDaThanhToan.toLocaleString() }đ / `"
+        :hint="`Cước còn: ${(
+          doanhThu - tongCuocDaThanhToan
+        ).toLocaleString()}đ / đã trừ: ${tongCuocDaThanhToan.toLocaleString()}đ / `"
         @keyup.enter="traCuu()"
         dense
       >
@@ -48,131 +49,169 @@
             </q-icon>
           </template>
         </q-input> -->
-        <!-- {{ (doanhThu - tongCuocDaThanhToan).toLocaleString() }}đ : {{ tongCuocDaThanhToan.toLocaleString() }}đ /  -->
+      <!-- {{ (doanhThu - tongCuocDaThanhToan).toLocaleString() }}đ : {{ tongCuocDaThanhToan.toLocaleString() }}đ /  -->
     </div>
     <q-list>
       <div
         v-for="khl in khls
-            // .filter((t) => t.tongCOD)
-            .sort(function (a, b) {
-              return b.soLuong - a.soLuong;
-            })"
-          :key="khl.senderPhone"
+          // .filter((t) => t.tongCOD)
+          .sort(function (a, b) {
+            return b.soLuong - a.soLuong;
+          })"
+        :key="khl.senderPhone"
       >
-      <q-item>
-        <q-item-section>
-          <q-item-label
-            >{{ khl.senderName }}
-            <!-- <q-icon
+        <q-item>
+          <q-item-section>
+            <q-item-label
+              >{{ khl.senderName }}
+              <!-- <q-icon
               @click="xacNhanLoaiBo(evn)"
               :name="evn.soTien == 0 ? 'do_not_disturb_on' : 'delete_forever'"
               :color="evn.soTien == 0 ? 'red' : 'gray'"
             /> -->
+            </q-item-label>
+            <!-- <q-item-label caption lines="2">{{ evn.diaChi }}</q-item-label> -->
+            <q-item-label caption lines="2">
+              <a :href="`tel:${khl.senderPhone}`">{{ khl.senderPhone }}</a>
+            </q-item-label>
+            <q-item-label caption lines="2">{{ khl.senderAdd }}</q-item-label>
+          </q-item-section>
 
-          </q-item-label>
-          <!-- <q-item-label caption lines="2">{{ evn.diaChi }}</q-item-label> -->
-          <q-item-label caption lines="2">
-            <a :href="`tel:${khl.senderPhone}`">{{ khl.senderPhone }}</a>
-          </q-item-label>
-          <q-item-label caption lines="2">{{ khl.senderAdd }}</q-item-label>
-        </q-item-section>
+          <q-item-section side top>
+            <q-item-label caption
+              ><q-icon
+                name="info"
+                @click="showItems(khl.senderPhone)"
+                class="cursor-pointer" />
+              <q-badge color="teal" :label="khl.soLuong"
+            /></q-item-label>
+            <q-icon name="access_time" @click="showKHL(khl.senderPhone)" />
+            <q-item-label caption
+              ><strong
+                >COD:
+                {{
+                  parseInt(khl.tongCOD - khl.soTienDaChiCOD).toLocaleString()
+                }}</strong
+              >
+              <span class="text-strike">{{
+                parseInt(khl.tongCOD).toLocaleString()
+              }}</span></q-item-label
+            >
+            <q-item-label caption
+              ><strong class="text-bold"
+                >Còn nợ:
+                {{
+                  parseInt(
+                    khl.tongCuoc - khl.soTienDaTruCongNo
+                  ).toLocaleString()
+                }}</strong
+              >
+              <span class="text-strike">{{
+                parseInt(khl.soTienDaTruCongNo).toLocaleString()
+              }}</span></q-item-label
+            >
 
-        <q-item-section side top>
-          <q-item-label caption><q-icon
-            name="info"
-            @click="showItems(khl.senderPhone)"
-            class="cursor-pointer"
-          /> <q-badge color="teal" :label="khl.soLuong" /></q-item-label>
-          <q-icon
-            name="access_time"
-            @click="showKHL(khl.senderPhone)"
-          />
-          <q-item-label caption
-            ><strong>COD: {{ parseInt(khl.tongCOD-khl.soTienDaChiCOD).toLocaleString() }}</strong> <span class="text-strike	">{{ parseInt(khl.tongCOD).toLocaleString() }}</span></q-item-label
-          >
-          <q-item-label caption
-            ><strong class="text-bold	">Còn nợ: {{ parseInt(khl.tongCuoc-khl.soTienDaTruCongNo).toLocaleString() }}</strong> <span class="text-strike	">{{ parseInt(khl.soTienDaTruCongNo).toLocaleString() }}</span></q-item-label
-          >
-
-          <q-item-label caption
-            >Tổng cước: {{ parseInt(khl.tongCuoc).toLocaleString() }}</q-item-label
-          >
-          <!-- <q-item-label caption>{{
+            <q-item-label caption
+              >Tổng cước:
+              {{ parseInt(khl.tongCuoc).toLocaleString() }}</q-item-label
+            >
+            <!-- <q-item-label caption>{{
             new Date(donHang.updatedDate).toLocaleString()
           }}</q-item-label> -->
-        </q-item-section></q-item
-      >
-      <q-separator spaced inset />
+          </q-item-section></q-item
+        >
+        <q-separator spaced inset />
       </div>
-      
     </q-list>
 
-    <q-dialog
-      v-model="showSelectedItems"
-      full-height
-    >
-      <q-card class="column full-height" >
+    <q-dialog v-model="showSelectedItems" full-height>
+      <q-card class="column full-height">
         <q-card-section>
-          <div class="text-h6">{{ khl.hoTen }} <q-badge :label="selectItems.length" /></div>
+          <div class="text-h6">
+            {{ khl.hoTen }} <q-badge :label="selectItems.length" />
+          </div>
         </q-card-section>
 
         <q-card-section class="col q-pt-none">
-          <q-list bordered >
-            <div v-for="cod in this.allCods.filter(c => c.soDienThoai == khl.soDienThoai)" :key="cod.id">
+          <q-list bordered>
+            <div
+              v-for="cod in this.allCods.filter(
+                (c) => c.soDienThoai == khl.soDienThoai
+              )"
+              :key="cod.id"
+            >
               <q-item>
                 <q-item-section avatar>
-                <q-icon color="primary" name="paid" />
-              </q-item-section>
+                  <q-icon color="primary" name="paid" />
+                </q-item-section>
                 <q-item-section>
                   <q-item-label overline>{{ cod.tenNguoiHuong }}</q-item-label>
-                  <q-item-label>{{ cod.soTaiKhoanNganHang }}-{{ cod.tenNganHang }}</q-item-label>
-                  <q-item-label caption>Đã chi: {{ parseInt(cod.soTienCODvePaypost - cod.soTienBuTruCongNo).toLocaleString() }}</q-item-label>
+                  <q-item-label
+                    >{{ cod.soTaiKhoanNganHang }}-{{
+                      cod.tenNganHang
+                    }}</q-item-label
+                  >
+                  <q-item-label caption
+                    >Đã chi:
+                    {{
+                      parseInt(
+                        cod.soTienCODvePaypost - cod.soTienBuTruCongNo
+                      ).toLocaleString()
+                    }}</q-item-label
+                  >
                 </q-item-section>
 
                 <q-item-section side top>
                   <q-item-label caption>{{ cod.ngayLamViec }}</q-item-label>
-                  <q-item-label caption>COD: {{ parseInt(cod.soTienCODvePaypost).toLocaleString() }}</q-item-label>
-                  <q-item-label caption>Cước:{{ parseInt(cod.soTienBuTruCongNo).toLocaleString() }}</q-item-label>
+                  <q-item-label caption
+                    >COD:
+                    {{
+                      parseInt(cod.soTienCODvePaypost).toLocaleString()
+                    }}</q-item-label
+                  >
+                  <q-item-label caption
+                    >Cước:{{
+                      parseInt(cod.soTienBuTruCongNo).toLocaleString()
+                    }}</q-item-label
+                  >
                 </q-item-section>
               </q-item>
             </div>
             <q-separator spaced inset="item" />
-            <div  v-for="donHang in selectItems" :key="donHang.id">
-            <q-item>
-              <q-item-section>
-                <q-item-label
-                  >{{ donHang.senderName }}
-                </q-item-label>
-                
-                <q-item-label caption lines="2">
-                  <a :href="`tel:${donHang.senderPhone}`">{{
-                    donHang.senderPhone
-                  }}</a>
-                </q-item-label>
-                <q-item-label caption lines="2">{{
-                  donHang.contentNote
-                }}</q-item-label>
-              </q-item-section>
+            <div v-for="donHang in selectItems" :key="donHang.id">
+              <q-item>
+                <q-item-section>
+                  <q-item-label>{{ donHang.senderName }} </q-item-label>
 
-              <q-item-section side top>
-                <q-item-label caption>{{ donHang.ttNumber }}</q-item-label>
-                <q-icon
-                  name="content_copy"
-                  @click="copyTextToClipboard(donHang.ttNumber)"
-                />
-                <q-item-label caption
-                  >Số tiền:
-                  {{
-                    parseInt(donHang.totalFeeSpecial).toLocaleString()
-                  }}</q-item-label
-                >
-                <q-item-label caption>{{
-                  new Date(donHang.updatedDate).toLocaleString()
-                }}</q-item-label>
-              </q-item-section></q-item
-            >
-            <q-separator spaced inset />
-          </div>
+                  <q-item-label caption lines="2">
+                    <a :href="`tel:${donHang.senderPhone}`">{{
+                      donHang.senderPhone
+                    }}</a>
+                  </q-item-label>
+                  <q-item-label caption lines="2">{{
+                    donHang.contentNote
+                  }}</q-item-label>
+                </q-item-section>
+
+                <q-item-section side top>
+                  <q-item-label caption>{{ donHang.ttNumber }}</q-item-label>
+                  <q-icon
+                    name="content_copy"
+                    @click="copyTextToClipboard(donHang.ttNumber)"
+                  />
+                  <q-item-label caption
+                    >Số tiền:
+                    {{
+                      parseInt(donHang.totalFeeSpecial).toLocaleString()
+                    }}</q-item-label
+                  >
+                  <q-item-label caption>{{
+                    new Date(donHang.updatedDate).toLocaleString()
+                  }}</q-item-label>
+                </q-item-section></q-item
+              >
+              <q-separator spaced inset />
+            </div>
           </q-list>
         </q-card-section>
 
@@ -182,48 +221,81 @@
       </q-card>
     </q-dialog>
 
-    
-
-    <q-dialog
-    v-model="showDialog"
-      full-height
-    >
-      <q-card class="column full-height" >
+    <q-dialog v-model="showDialog" full-height>
+      <q-card class="column full-height">
         <q-card-section>
           <div class="text-h6">{{ khl.hoTen }} - {{ khl.soDienThoai }}</div>
         </q-card-section>
 
         <q-card-section class="col q-pt-none">
-          <q-input v-model="khl.hoTen" label="Họ và tên"/>
+          <q-input v-model="khl.hoTen" label="Họ và tên" />
           <q-input v-model="khl.maCRM" label="Mã CRM">
             <template v-slot:append>
-              <q-icon name="content_copy" @click="copyTextDienThoaiToClipboard(khl.maCRM)" />
+              <q-icon
+                name="content_copy"
+                @click="copyTextDienThoaiToClipboard(khl.maCRM)"
+              />
             </template>
           </q-input>
-          <q-input v-model="khl.hopDong" label="Hợp đồng DVBC"/>         
-           <q-input v-model="khl.ngayHopDong" label="Ngày hợp đồng" mask="date" :rules="['date']" :dense="dense">
+          <q-input v-model="khl.hopDong" label="Hợp đồng DVBC" />
+          <q-input
+            v-model="khl.ngayHopDong"
+            label="Ngày hợp đồng"
+            mask="date"
+            :rules="['date']"
+            :dense="dense"
+          >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-date v-model="khl.ngayHopDong">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Đóng" color="primary" flat  :dense="dense"/>
+                      <q-btn
+                        v-close-popup
+                        label="Đóng"
+                        color="primary"
+                        flat
+                        :dense="dense"
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
               </q-icon>
             </template>
           </q-input>
-          <q-input v-model="khl.tenNguoiHuong" label="Tên người hưởng" :dense="dense"/>
-          <q-input v-model="khl.soTaiKhoanNganHang" label="Số tài khoản ngân hàng" :dense="dense"/>
-          <q-input v-model="khl.tenNganHang" label="Tên ngân hàng" :dense="dense"/>
-          <q-input v-model="khl.soTienBuTruCongNo" label="Số tiền trừ công nợ" :dense="dense" />
-          <q-input v-model="khl.soTienCODvePaypost" label="Số tiền COD về Paypost" :dense="dense">
+          <q-input
+            v-model="khl.tenNguoiHuong"
+            label="Tên người hưởng"
+            :dense="dense"
+          />
+          <q-input
+            v-model="khl.soTaiKhoanNganHang"
+            label="Số tài khoản ngân hàng"
+            :dense="dense"
+          />
+          <q-input
+            v-model="khl.tenNganHang"
+            label="Tên ngân hàng"
+            :dense="dense"
+          />
+          <q-input
+            v-model="khl.soTienBuTruCongNo"
+            label="Số tiền trừ công nợ"
+            :dense="dense"
+          />
+          <q-input
+            v-model="khl.soTienCODvePaypost"
+            label="Số tiền COD về Paypost"
+            :dense="dense"
+          >
             <template v-slot:after>
               <q-btn round dense flat icon="send" @click="updateKHL(khl)" />
             </template>
           </q-input>
-          
         </q-card-section>
 
         <!-- <q-card-actions align="right" class="bg-white text-teal">
@@ -231,14 +303,13 @@
         </q-card-actions> -->
       </q-card>
     </q-dialog>
-
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import axios from "axios";
-import { Notify, Loading, QSpinnerIos } from "quasar";
+import { Notify } from "quasar";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
 export default defineComponent({
@@ -271,11 +342,11 @@ export default defineComponent({
         tenNguoiHuong: "Nguyễn Văn Thìn",
         soTaiKhoanNganHang: "1618081988",
         tenNganHang: "MB",
-        maCRM: "14200A04000622000"
+        maCRM: "14200A04000622000",
       },
       selectItems: [],
       cods: [],
-      allCods: []
+      allCods: [],
     };
   },
   methods: {
@@ -317,7 +388,9 @@ export default defineComponent({
       if (!this.tokenFe) await this.login();
       var data = JSON.stringify({
         orgCode: "142010",
-        tuNgay: [1, parseInt(this.thang - thangTruoc || 12), this.nam].join("/"),
+        tuNgay: [1, parseInt(this.thang - thangTruoc || 12), this.nam].join(
+          "/"
+        ),
         denNgay: new Date(this.nam, parseInt(this.thang - thangTruoc), 1)
           .toISOString()
           .slice(0, 10)
@@ -348,11 +421,6 @@ export default defineComponent({
         data: data,
       };
 
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-
       const {
         data: [tongSoBuuGui, dsDonHang],
       } = await axios(config);
@@ -363,7 +431,6 @@ export default defineComponent({
           previousValue + parseInt(totalFeeSpecial),
         0
       );
-      Loading.hide();
 
       this.dsDonHang = dsDonHang;
 
@@ -397,8 +464,10 @@ export default defineComponent({
                 (previousValue, { codAmount }) =>
                   previousValue + parseInt(codAmount),
                 0
+              ),
+            soTienDaTruCongNo: this.tongSoTienBuTruCongNoDaTru(
+              item.senderPhone
             ),
-            soTienDaTruCongNo: this.tongSoTienBuTruCongNoDaTru(item.senderPhone),
             soTienDaChiCOD: this.tongSoTienDaChiCOD(item.senderPhone),
           });
         }
@@ -434,49 +503,73 @@ export default defineComponent({
     },
 
     async tongSoTienBuTruCongNo(senderPhone) {
-      const tinh = await this.tongCuoc(await this.findItems(senderPhone))
-       - this.cods.reduce(
-        (previousValue, { soTienBuTruCongNo }) =>
-          previousValue + parseInt(soTienBuTruCongNo),
-        0
-      );
+      const tinh =
+        (await this.tongCuoc(await this.findItems(senderPhone))) -
+        this.cods.reduce(
+          (previousValue, { soTienBuTruCongNo }) =>
+            previousValue + parseInt(soTienBuTruCongNo),
+          0
+        );
       return parseInt(tinh).toLocaleString();
     },
     tongSoTienBuTruCongNoDaTru(senderPhone) {
-      const tinh = this.allCods.filter(c => c.soDienThoai == senderPhone).reduce(
-        (previousValue, { soTienBuTruCongNo }) =>
-          previousValue + parseInt(soTienBuTruCongNo),
-        0
-      );
+      const tinh = this.allCods
+        .filter((c) => c.soDienThoai == senderPhone)
+        .reduce(
+          (previousValue, { soTienBuTruCongNo }) =>
+            previousValue + parseInt(soTienBuTruCongNo),
+          0
+        );
       return tinh;
     },
     tongSoTienDaChiCOD(senderPhone) {
-      const tinh = this.allCods.filter(c => c.soDienThoai == senderPhone).reduce(
-        (previousValue, { soTienCODvePaypost }) =>
-          previousValue + parseInt(soTienCODvePaypost),
-        0
-      );
+      const tinh = this.allCods
+        .filter((c) => c.soDienThoai == senderPhone)
+        .reduce(
+          (previousValue, { soTienCODvePaypost }) =>
+            previousValue + parseInt(soTienCODvePaypost),
+          0
+        );
       return tinh;
     },
 
-    async updateKHL({soDienThoai, hoTen, hopDong, ngayHopDong,tenNguoiHuong, soTaiKhoanNganHang, tenNganHang, maCRM, soTienCODvePaypost, soTienBuTruCongNo}) {
+    async updateKHL({
+      soDienThoai,
+      hoTen,
+      hopDong,
+      ngayHopDong,
+      tenNguoiHuong,
+      soTaiKhoanNganHang,
+      tenNganHang,
+      maCRM,
+      soTienCODvePaypost,
+      soTienBuTruCongNo,
+    }) {
       try {
-        const {data} = await this.$api.post("https://app.hotham.vn/api/cods", {
-        soDienThoai,
-        hoTen,
-        hopDong,
-        ngayHopDong,
-        tenNguoiHuong,
-        soTaiKhoanNganHang,
-        tenNganHang,
-        maCRM,
-        soTienCODvePaypost: soTienCODvePaypost.replaceAll(".",""),
-        soTienBuTruCongNo: soTienBuTruCongNo.replaceAll(".",""),
-        ngayLamViec: this.ngayLamViec,
-      });
-      const findCod = this.cods.find(c => c.soDienThoai === soDienThoai && new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10));
-      if(findCod) Object.assign(findCod, data);
-      else this.allCods.push(data);
+        const { data } = await this.$api.post(
+          "https://app.hotham.vn/api/cods",
+          {
+            soDienThoai,
+            hoTen,
+            hopDong,
+            ngayHopDong,
+            tenNguoiHuong,
+            soTaiKhoanNganHang,
+            tenNganHang,
+            maCRM,
+            soTienCODvePaypost: soTienCODvePaypost.replaceAll(".", ""),
+            soTienBuTruCongNo: soTienBuTruCongNo.replaceAll(".", ""),
+            ngayLamViec: this.ngayLamViec,
+          }
+        );
+        const findCod = this.cods.find(
+          (c) =>
+            c.soDienThoai === soDienThoai &&
+            new Date(c.ngayLamViec).toISOString().slice(0, 10) ===
+              new Date().toISOString().slice(0, 10)
+        );
+        if (findCod) Object.assign(findCod, data);
+        else this.allCods.push(data);
         await this.$api.put(`https://app.hotham.vn/api/khls/${soDienThoai}`, {
           hoTen,
           hopDong,
@@ -488,47 +581,46 @@ export default defineComponent({
         });
         this.showDialog = false;
         Notify.create({
-              type: "positive",
-              message: `Đã ghi nhận thành công!`,
-            });
+          type: "positive",
+          message: `Đã ghi nhận thành công!`,
+        });
       } catch (error) {
         Notify.create({
-              type: "negative",
-              message: "Không lưu được thông tin khách hàng!" + err,
+          type: "negative",
+          message: "Không lưu được thông tin khách hàng!" + err,
         });
       }
     },
 
-    async loadKHL(soDienThoai){
+    async loadKHL(soDienThoai) {
       try {
-        const {data} = await this.$api.get(`https://app.hotham.vn/api/khls/${soDienThoai}`);
-        this.khl = data
+        const { data } = await this.$api.get(
+          `https://app.hotham.vn/api/khls/${soDienThoai}`
+        );
+        this.khl = data;
       } catch (error) {
         Notify.create({
-              type: "negative",
-              message: "Lỗi hệ thống!" + err,
+          type: "negative",
+          message: "Lỗi hệ thống!" + err,
         });
       }
     },
-    async loadCods(soDienThoai){
+    async loadCods(soDienThoai) {
       try {
-        Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
-        const {data} = await this.$api.get(`https://app.hotham.vn/api/cods?name=${soDienThoai}`);
-        this.cods = data
-        Loading.hide();
+        const { data } = await this.$api.get(
+          `https://app.hotham.vn/api/cods?name=${soDienThoai}`
+        );
+        this.cods = data;
       } catch (error) {
         Notify.create({
-              type: "negative",
-              message: "Lỗi hệ thống!" + err,
+          type: "negative",
+          message: "Lỗi hệ thống!" + err,
         });
       }
     },
-    async loadAllCods(){
-      const {data} = await this.$api.get("https://app.hotham.vn/api/cods");
-      this.allCods = data
+    async loadAllCods() {
+      const { data } = await this.$api.get("https://app.hotham.vn/api/cods");
+      this.allCods = data;
       this.tongCuocDaThanhToan = this.allCods.reduce(
         (previousValue, { soTienBuTruCongNo }) =>
           previousValue + parseInt(soTienBuTruCongNo),
@@ -540,19 +632,32 @@ export default defineComponent({
       // console.log(new Date(nam, thang, ngay).toISOString().slice(0,10))
       await this.loadCods(soDienThoai);
       await this.loadKHL(soDienThoai);
-      
-      this.khl.soTienBuTruCongNo = await this.tongSoTienBuTruCongNo(soDienThoai);
-      const findCod = this.cods.find(c => c.soDienThoai === soDienThoai && new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10))
-      if(findCod) {
-        this.khl.soTienCODvePaypost = parseInt(findCod.soTienCODvePaypost).toLocaleString();
-        this.khl.soTienBuTruCongNo = parseInt(findCod.soTienBuTruCongNo).toLocaleString();
+
+      this.khl.soTienBuTruCongNo = await this.tongSoTienBuTruCongNo(
+        soDienThoai
+      );
+      const findCod = this.cods.find(
+        (c) =>
+          c.soDienThoai === soDienThoai &&
+          new Date(c.ngayLamViec).toISOString().slice(0, 10) ===
+            new Date().toISOString().slice(0, 10)
+      );
+      if (findCod) {
+        this.khl.soTienCODvePaypost = parseInt(
+          findCod.soTienCODvePaypost
+        ).toLocaleString();
+        this.khl.soTienBuTruCongNo = parseInt(
+          findCod.soTienBuTruCongNo
+        ).toLocaleString();
       }
       // if(findCod) console.log(findCod)
       this.showDialog = true;
     },
-    async showItems(senderPhone){
+    async showItems(senderPhone) {
       await this.loadKHL(senderPhone);
-      this.selectItems = this.dsDonHang.filter(i => i.senderPhone === senderPhone);
+      this.selectItems = this.dsDonHang.filter(
+        (i) => i.senderPhone === senderPhone
+      );
       this.showSelectedItems = true;
     },
     copyTextToClipboard(ttNumber) {
@@ -594,28 +699,58 @@ export default defineComponent({
         );
     },
     copyTextDienThoaiToClipboard(text) {
-      navigator.clipboard
-        .writeText(text)
-        .then(
-          function () {
-            Notify.create({
-              type: "positive",
-              message: `Bạn đã sao chép thành công!`,
-            });
-          },
-          function (err) {
-            Notify.create({
-              type: "negative",
-              message: "Không thực hiện được!" + err,
-            });
-          }
-        );
+      navigator.clipboard.writeText(text).then(
+        function () {
+          Notify.create({
+            type: "positive",
+            message: `Bạn đã sao chép thành công!`,
+          });
+        },
+        function (err) {
+          Notify.create({
+            type: "negative",
+            message: "Không thực hiện được!" + err,
+          });
+        }
+      );
     },
     async copyChiCODToClipboard() {
       await this.loadAllCods();
       navigator.clipboard
         .writeText(
-`${this.allCods.filter(c=>new Date(c.ngayLamViec).toISOString().slice(0,10) === new Date().toISOString().slice(0,10)).map(({hoTen,hopDong,ngayHopDong,soTienCODvePaypost,soTienBuTruCongNo,tenNguoiHuong,soTaiKhoanNganHang,tenNganHang,maCRM}) => [hoTen,hopDong,ngayHopDong,soTienCODvePaypost,soTienBuTruCongNo,soTienCODvePaypost-soTienBuTruCongNo,tenNguoiHuong,soTaiKhoanNganHang,tenNganHang,,maCRM].join("\t")).join("\r\n")}
+          `${this.allCods
+            .filter(
+              (c) =>
+                new Date(c.ngayLamViec).toISOString().slice(0, 10) ===
+                new Date().toISOString().slice(0, 10)
+            )
+            .map(
+              ({
+                hoTen,
+                hopDong,
+                ngayHopDong,
+                soTienCODvePaypost,
+                soTienBuTruCongNo,
+                tenNguoiHuong,
+                soTaiKhoanNganHang,
+                tenNganHang,
+                maCRM,
+              }) =>
+                [
+                  hoTen,
+                  hopDong,
+                  ngayHopDong,
+                  soTienCODvePaypost,
+                  soTienBuTruCongNo,
+                  soTienCODvePaypost - soTienBuTruCongNo,
+                  tenNguoiHuong,
+                  soTaiKhoanNganHang,
+                  tenNganHang,
+                  ,
+                  maCRM,
+                ].join("\t")
+            )
+            .join("\r\n")}
 `
         )
         .then(
@@ -633,15 +768,13 @@ export default defineComponent({
           }
         );
     },
-    async khoiTao(){
+    async khoiTao() {
       await this.loadAllCods();
-      if(this.ngay < 3){
+      if (this.ngay < 3) {
         await this.loadData(1);
-        this.searchText = [this.thang -1 || 12, this.nam].join("/")
-      }
-      else
-      await this.loadData();
-    }
+        this.searchText = [this.thang - 1 || 12, this.nam].join("/");
+      } else await this.loadData();
+    },
   },
   mounted() {
     this.khoiTao();

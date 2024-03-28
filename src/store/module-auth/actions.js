@@ -108,7 +108,6 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
               const db = getDatabase();
               await set(ref(db, "users/" + userId), updateUserDetails);
             } else if (!userDetails.maNhanVienThu) {
-              console.log("Cập nhật mã nhân viên thu!");
               commit("setUserDetails", {
                 ...userDetails,
                 ...loginInfo,
@@ -132,9 +131,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
 
 export const firebaseUpdateUser = ({}, { userId, updates }) => {
   const db = getDatabase();
-  set(ref(db, "users/" + userId + "/isLogin"), updates.isLogin).then(() => {
-    console.log("cap nhat");
-  });
+  set(ref(db, "users/" + userId + "/isLogin"), updates.isLogin);
 };
 export const firebaseUpdateUserAll = ({ commit }, { userId, updates }) => {
   const db = getDatabase();

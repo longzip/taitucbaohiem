@@ -1,5 +1,5 @@
 import { apiServices } from "../boot/axios";
-import { Notify, Loading, QSpinnerIos } from "quasar";
+import { Notify } from "quasar";
 export default {
   import: async (url, payload) => {
     let result = {};
@@ -150,10 +150,6 @@ export default {
   get: async (url) => {
     let result = {};
     if (navigator.onLine) {
-      Loading.show({
-        spinner: QSpinnerIos,
-        spinnerSize: "100px",
-      });
       try {
         result = await apiServices.get(url);
         // if (result)
@@ -180,7 +176,7 @@ export default {
         color: "red",
       });
     }
-    Loading.hide();
+
     return result;
   },
 };

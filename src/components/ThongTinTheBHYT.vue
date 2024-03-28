@@ -485,7 +485,6 @@ export default {
               type: "positive",
               message: `Bạn đã sao chép thành công!`,
             });
-            this.quaySoDienThoai(bhyt.soDienThoai2 || bhyt.soDienThoai);
           },
           function (err) {
             Notify.create({
@@ -494,9 +493,10 @@ export default {
             });
           }
         );
+      this.quaySoDienThoai(bhyt.soDienThoai2 || bhyt.soDienThoai);
     },
     quaySoDienThoai(soDienThoai) {
-      if (bhyt.soDienThoai2 || bhyt.soDienThoai) {
+      if (soDienThoai) {
         let a = document.createElement("a");
         a.href = `tel:${soDienThoai}`;
         a.click();
@@ -508,49 +508,37 @@ export default {
           t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
         );
       const [nam, thang] = new Date().toISOString().slice(0, 7).split("-");
+      const isGiaHan =
+        new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0);
+      const smsText = `
+          Xin chào!\r\nMã thẻ: ${
+            t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+          }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
+        t.ngaySinhDt
+      ).getFullYear()}; Hạn thẻ: ${new Date(
+        t.tuNgayDt
+      ).toLocaleDateString()} - ${new Date(
+        t.denNgayDt
+      ).toLocaleDateString()} (${this.getDateDiff(
+        t.denNgayDt
+      )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam.slice(
+        6,
+        8
+      )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
+          `;
       navigator.clipboard
         .writeText(
-          new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0)
-            ? `
-          Xin chào! Mã thẻ: ${
-            t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
-          }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
-                t.ngaySinhDt
-              ).getFullYear()}; Hạn thẻ: ${new Date(
-                t.tuNgayDt
-              ).toLocaleDateString()} - ${new Date(
-                t.denNgayDt
-              ).toLocaleDateString()} (còn ${this.getDateDiff(
-                t.denNgayDt
-              )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam.slice(
-                6,
-                8
-              )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.\r\n
-          ` +
-                this.userDetails.bhytHetHanSMSText.replace(
+          `${smsText}\r\n${
+            isGiaHan
+              ? this.userDetails.bhytHetHanSMSText.replace(
                   "_soTheBhyt",
                   t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
                 )
-            : `
-          Xin chào! Mã thẻ: ${
-            t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
-          }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
-                t.ngaySinhDt
-              ).getFullYear()}; Hạn thẻ: ${new Date(
-                t.tuNgayDt
-              ).toLocaleDateString()} - ${new Date(
-                t.denNgayDt
-              ).toLocaleDateString()} (còn ${this.getDateDiff(
-                t.denNgayDt
-              )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam.slice(
-                6,
-                8
-              )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}. \r\n
-          ` +
-                this.userDetails.bhytSMSText.replace(
+              : this.userDetails.bhytSMSText.replace(
                   "_soTheBhyt",
                   t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
                 )
+          }`
         )
         .then(
           function () {
@@ -558,7 +546,6 @@ export default {
               type: "positive",
               message: `Bạn đã sao chép thành công!`,
             });
-            this.quaySoDienThoai(t.soDienThoai2 || t.soDienThoai);
           },
           function (err) {
             Notify.create({
@@ -567,6 +554,7 @@ export default {
             });
           }
         );
+      this.quaySoDienThoai(t.soDienThoai2 || t.soDienThoai);
     },
     copyTextToClipboard(maSoBhxh) {
       navigator.clipboard

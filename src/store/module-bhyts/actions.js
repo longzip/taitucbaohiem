@@ -1,6 +1,6 @@
 import client from "../../utils";
 import moment from "moment";
-import { Loading, QSpinnerIos, Notify } from "quasar";
+import { Notify } from "quasar";
 import { api, apiServices } from "src/boot/axios";
 
 const sleep = () => {
@@ -67,10 +67,7 @@ export const saveBHXHTN = async (
 };
 export const getDanhSachKhachHangTaiTuc = async ({ commit }, payload) => {
   commit("setBhyts", []);
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
+
   try {
     const { data } = await apiServices.post(
       "/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
@@ -83,7 +80,6 @@ export const getDanhSachKhachHangTaiTuc = async ({ commit }, payload) => {
       message: `Đã xảy ra lỗi!`,
     });
   }
-  Loading.hide();
 };
 export const getBaoCaoChiTietGiaoDich = async (
   { commit },
@@ -94,10 +90,7 @@ export const getBaoCaoChiTietGiaoDich = async (
   }
 ) => {
   commit("setBhyts", []);
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
+
   try {
     const { data } = await apiServices.post(
       "/api/services/app/BaoCaoTongHopGDThu/BaoCaoChiTietGiaoDich",
@@ -118,7 +111,6 @@ export const getBaoCaoChiTietGiaoDich = async (
       message: `Đã xảy ra lỗi!`,
     });
   }
-  Loading.hide();
 };
 
 export const traCuuBhyts = async ({ commit }, payload) => {
@@ -195,10 +187,6 @@ export const getBhyts = async ({ commit }, payload) => {
 };
 
 export const XuatD03OrD05Excel = async ({ commit }, payload) => {
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
   const { data } = await client.post(
     "/api/services/app/KeKhai/XuatD03OrD05Excel",
     {
@@ -206,16 +194,11 @@ export const XuatD03OrD05Excel = async ({ commit }, payload) => {
       transactionIds: payload,
     }
   );
-  Loading.hide();
 
   return data.result;
 };
 
 export const khachChuaNop = async ({ commit }, payload) => {
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
   const { data } = await client.post(
     "/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
     {
@@ -230,14 +213,9 @@ export const khachChuaNop = async ({ commit }, payload) => {
     }
   );
   commit("getAllBhyts", [...data.result.items.reverse()]);
-  Loading.hide();
 };
 
 export const hoSoChuaXuLy = async ({ commit }, { mangLuoiId = 4580 }) => {
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
   const denNgay = new Date();
   denNgay.setDate(denNgay.getDate() + 2);
   const tuNgay = new Date();
@@ -255,15 +233,11 @@ export const hoSoChuaXuLy = async ({ commit }, { mangLuoiId = 4580 }) => {
     tuNgay,
   });
   commit("getAllBhyts", [...data.result.items]);
-  Loading.hide();
 };
 
 export const hoSoDaXuLy = async ({ commit }, payload) => {
   let { thangTruoc = 0, tuNgay, denNgay, mangLuoiId = 4580 } = payload;
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
+
   if (!denNgay)
     denNgay = moment()
       .startOf("months")
@@ -285,7 +259,6 @@ export const hoSoDaXuLy = async ({ commit }, payload) => {
     tuNgay,
   });
   commit("getAllBhyts", [...data.result.items]);
-  Loading.hide();
 };
 
 export const xoaHoGd = async ({ commit }, payload) => {
@@ -335,10 +308,6 @@ export const traCuuTheoTen = async (
   { commit, dispatch },
   { name, maXa, maHuyen, maTinh }
 ) => {
-  Loading.show({
-    spinner: QSpinnerIos,
-    spinnerSize: "100px",
-  });
   const hoTens = name.split(",");
   const hoTenDaTims = JSON.parse(localStorage.getItem("hoTens")) || [];
 
@@ -365,7 +334,6 @@ export const traCuuTheoTen = async (
   }
 
   // commit("getAllBhyts", [...bhyts.values()]);
-  Loading.hide();
 };
 
 export const dongBoDuLieu = async ({ dispatch }, payload) => {

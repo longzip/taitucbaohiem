@@ -480,7 +480,6 @@ export default {
         )
         .map((t) => t.maSoBhxh)
         .join();
-      console.log(this.dsSoBHXH);
     },
     async download() {
       const taiLieus = await this.XuatD03OrD05Excel(
