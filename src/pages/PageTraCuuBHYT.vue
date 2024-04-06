@@ -655,11 +655,7 @@ export default {
                       userName,
                       soTheBhyt,
                     }) =>
-                      `${hoTen} ${
-                        soTheBhyt.slice(0, 2) === "GD"
-                          ? ""
-                          : soTheBhyt.slice(0, 2)
-                      }${
+                      `${hoTen} ${soTheBhyt.slice(0, 2)}${
                         userName == this.userDetails.id ||
                         userName == this.userDetails.maNhanVienThu
                           ? ""
