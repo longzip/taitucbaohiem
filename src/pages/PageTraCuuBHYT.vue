@@ -655,16 +655,18 @@ export default {
                       userName,
                       soTheBhyt,
                     }) =>
-                      `${hoTen} ${new Date(ngaySinhDt).getFullYear()}${
+                      `${hoTen} ${
+                        soTheBhyt.slice(0, 2) === "GD"
+                          ? ""
+                          : soTheBhyt.slice(0, 2)
+                      }${
                         userName == this.userDetails.id ||
                         userName == this.userDetails.maNhanVienThu
                           ? ""
                           : "_"
-                      }${
-                        soTheBhyt.slice(0, 2) === "GD"
-                          ? ""
-                          : soTheBhyt.slice(0, 2)
-                      }\t${soDienThoai2 || soDienThoai}`
+                      }${new Date(ngaySinhDt).getFullYear()}\t${
+                        soDienThoai2 || soDienThoai
+                      }`
                   )
               ).values(),
             ].join("\r\n")
