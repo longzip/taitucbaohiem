@@ -60,6 +60,9 @@
               <q-item-section>Tái tục BHXH (All)</q-item-section>
             </q-item>
 
+            <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
+              <q-item-section>BHYT bổ trợ</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytsHetHan" v-close-popup>
               <q-item-section>Đã hết hạn</q-item-section>
             </q-item>
@@ -499,6 +502,13 @@ export default {
         name: this.searchText,
       });
     },
+    loadTaiTucBHYTBT() {
+      this.searchText = "";
+      this.getBhyts({
+        maXa: this.userDetails.maXa,
+        taiTucBHYTBT: "1",
+      });
+    },
     loadBHXHTNs(data) {
       this.getBhyts({
         ...data,
@@ -633,17 +643,29 @@ export default {
         .writeText(
           "Name\tPhone\r\n" +
             [
-              ...new Map(
-                this.bhyts.map(
-                  ({ soDienThoai2, soDienThoai, hoTen, ngaySinhDt }) => [
-                    soDienThoai,
-                    hoTen +
-                      " " +
-                      new Date(ngaySinhDt).getFullYear() +
-                      "\t" +
-                      soDienThoai2 || soDienThoai,
-                  ]
-                )
+              ...new Set(
+                this.bhyts
+                  .filter((t) => t.soDienThoai2 || t.soDienThoai)
+                  .map(
+                    ({
+                      soDienThoai2,
+                      soDienThoai,
+                      hoTen,
+                      ngaySinhDt,
+                      userName,
+                      soTheBhyt,
+                    }) =>
+                      `${hoTen} ${new Date(ngaySinhDt).getFullYear()}${
+                        userName == this.userDetails.id ||
+                        userName == this.userDetails.maNhanVienThu
+                          ? ""
+                          : "_"
+                      }${
+                        soTheBhyt.slice(0, 2) === "GD"
+                          ? ""
+                          : soTheBhyt.slice(0, 2)
+                      }\t${soDienThoai2 || soDienThoai}`
+                  )
               ).values(),
             ].join("\r\n")
         )

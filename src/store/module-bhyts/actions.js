@@ -163,6 +163,7 @@ export const getBhyts = async ({ commit }, payload) => {
     tienNop,
     taiTucBHXH,
     soBienLai,
+    taiTucBHYTBT,
   } = payload;
 
   let url = "/api/bhyts?";
@@ -182,6 +183,7 @@ export const getBhyts = async ({ commit }, payload) => {
   if (tienNop) url += `&tienNop=${tienNop}`;
   if (taiTucBHXH) url += `&taiTucBHXH=${taiTucBHXH}`;
   if (soBienLai) url += `&soBienLai=${soBienLai}`;
+  if (taiTucBHYTBT) url += `&taiTucBHYTBT=${taiTucBHYTBT}`;
   const { data } = await api.get(url);
   commit("setBhyts", data);
 };
@@ -424,10 +426,13 @@ export const updateMaXacNhan = async (
     return {};
   }
 };
-export const updateNgayLap = async ({ commit }, { maSoBhxh, ngayLap }) => {
+export const updateDenNgayBHYTBT = async (
+  { commit },
+  { maSoBhxh, denNgayBHYTBT }
+) => {
   try {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
-      ngayLap,
+      denNgayBHYTBT,
     });
     await commit("updateBhyt", data);
   } catch (error) {
@@ -448,7 +453,7 @@ export const huyThuTien = async ({ commit }, { maSoBhxh, userName }) => {
 };
 export const thuTien = async (
   { commit },
-  { maSoBhxh, tongTien, userName, tienNop }
+  { maSoBhxh, tongTien, userName, tienNop, maXa }
 ) => {
   try {
     if (tienNop) {
@@ -459,6 +464,7 @@ export const thuTien = async (
         userName,
         disabled: 1,
         isBHXHTN: 1,
+        maXa,
       });
       await commit("updateBhyt", data);
     } else {

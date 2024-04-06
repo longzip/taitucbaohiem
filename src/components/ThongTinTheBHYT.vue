@@ -87,8 +87,14 @@
       >
 
       <q-item-label v-if="!(bhyt.tienNop == 0)" caption lines="2"
-        ><strong>BHXH {{ bhyt.maPhuongThucDong }}:</strong> {{ bhyt.mucDong }} -
-        {{ bhyt.denThangDt?.slice(0, 7) }}</q-item-label
+        ><span
+          :class="{
+            'bg-red text-white text-bold q-pa-xs':
+              getDateDiff(bhyt.denThangDt) < 32,
+          }"
+          ><strong>BHXH {{ bhyt.maPhuongThucDong }}:</strong>
+          {{ bhyt.mucDong }} - {{ bhyt.denThangDt?.slice(0, 7) }}</span
+        ></q-item-label
       >
       <q-item-label caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
@@ -147,30 +153,50 @@
           name="cancel"
         />
 
-        <strong class="text-subtitle2 text-weight-bold">{{
-          bhyt.tienNop ? parseInt(bhyt.tienNop).toLocaleString() : "BHXH"
-        }}</strong
+        <strong
+          class="text-subtitle2 text-weight-bold"
+          @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+          >{{ parseInt(bhyt.tienNop).toLocaleString() }}</strong
         >đ</q-item-label
       >
+      <q-item-label v-if="bhyt.mucDongBHYTBT" caption>
+        <strong
+          class="text-subtitle2 text-weight-bold"
+          @click="xacNhanMucDongBHYTBT(bhyt)"
+          >{{ parseInt(bhyt.mucDongBHYTBT).toLocaleString() }}đ</strong
+        ><br />
+        <span
+          :class="{
+            'bg-red text-white text-bold q-pa-xs':
+              getDateDiff(bhyt.denNgayBHYTBT) < 30,
+          }"
+          v-if="bhyt.denNgayBHYTBT"
+          @click="xacNhanDenNgayBHYTBT(bhyt)"
+        >
+          {{ new Date(bhyt.denNgayBHYTBT).toLocaleDateString() }}</span
+        >
+      </q-item-label>
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
         name="star"
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
       />
-      <q-item-label caption
-        ><span @click="capNhapNgayBienLai(bhyt)">{{
-          bhyt.ngayLap || bhyt.ngayBienLai || bhyt.updated_at
-        }}</span>
-        <br />
+      <q-item-label caption>
+        <q-badge class="q-mr-sm" v-if="bhyt.userName" color="gray">{{
+          bhyt.userName
+        }}</q-badge>
         <a
           v-if="bhyt.soBienLai"
           href="javascript:void(0);"
           @click="timTheoSoBienLai(bhyt.soBienLai)"
           >{{ bhyt.soBienLai }}</a
-        >
-        <br />
-        <q-badge v-if="bhyt.userName" color="gray">{{ bhyt.userName }}</q-badge>
+        ><br />
+        {{ bhyt.ngayBienLai || bhyt.ngayLap }}
       </q-item-label>
+      <q-item-label caption v-if="bhyt.updated_at"
+        ><br /><br />
+        {{ new Date(bhyt.updated_at).toLocaleString() }}</q-item-label
+      >
     </q-item-section>
   </q-item>
 </template>
@@ -188,7 +214,7 @@ export default {
     ...mapActions("bhyts", [
       "updateGhiChu",
       "updateMaXacNhan",
-      "updateNgayLap",
+      "updateDenNgayBHYTBT",
       "loaiBo",
       "theoDoi",
       "xem",
@@ -288,6 +314,7 @@ export default {
               tongTien: data,
               maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.maNhanVienThu,
+              maXa: this.userDetails.maXa,
             });
           } else {
             this.huyThuTien({
@@ -300,13 +327,53 @@ export default {
           }
         });
     },
-    capNhapNgayBienLai(bhyt) {
+    xacNhanMucDongBHYTBT(bhyt) {
+      this.$q
+        .dialog({
+          title: "Thu bảo hiểm y tế bổ trợ",
+          message: "Chọn gói BHYT bổ trợ:",
+          options: {
+            type: "radio",
+            model: bhyt.mucDongBHYTBT,
+            // inline: true
+            items: [
+              {
+                label: "Gói mạnh khỏe: 106.000đ",
+                value: "106000",
+                color: "secondary",
+              },
+              { label: "Gói hạnh phúc: 169.000đ", value: "169000" },
+              { label: "Hủy thu", value: "0" },
+            ],
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          const { addToDate } = date;
+          this.updateTongTien({
+            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            capNhatBHYT: {
+              mucDongBHYTBT: data,
+              maXa: this.userDetails.maXa,
+              denNgayBHYTBT:
+                data !== "0"
+                  ? addToDate(new Date(), { months: 12 })
+                      .toISOString()
+                      .slice(0, 10)
+                  : null,
+              userName: this.userDetails.id,
+            },
+          });
+        });
+    },
+    xacNhanDenNgayBHYTBT(bhyt) {
       this.$q
         .dialog({
           title: "Cập nhật ngày biên lai",
           message: "Ngày biên lai?",
           prompt: {
-            model: bhyt.ngayLap,
+            model: bhyt.denNgayBHYTBT.slice(0, 10),
             isValid: (val) => val.length == 10, // << here is the magic
             type: "text", // optional
           },
@@ -314,9 +381,10 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          this.updateNgayLap({
-            ngayLap: data,
+          this.updateDenNgayBHYTBT({
+            denNgayBHYTBT: data,
             maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            maXa: this.userDetails.maXa,
           });
         });
     },
