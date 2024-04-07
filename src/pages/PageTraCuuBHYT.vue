@@ -103,6 +103,9 @@
             <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
               <q-item-section>Tìm theo năm sinh</q-item-section>
             </q-item>
+            <q-item clickable @click="loadTaiTucBHYT" v-close-popup>
+              <q-item-section>Tái tục BHYT (ssm)</q-item-section>
+            </q-item>
             <q-item clickable @click="loadTaiTucBHXH" v-close-popup>
               <q-item-section>Tái tục BHXH (ssm)</q-item-section>
             </q-item>
@@ -249,16 +252,32 @@ export default {
     },
 
     async loadTaiTucBHXH() {
-      this.getDanhSachKhachHangTaiTuc({
+      await this.getDanhSachKhachHangTaiTuc({
         filterItems: [],
         maxResultCount: 500,
         skipCount: 0,
         mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-        tuThang: "2023-03-01 00:00:00",
-        denThang: "2023-04-01 00:00:00",
+        tuThang: "2020-01-01 00:00:00",
+        denThang: "2025-01-01 00:00:00",
         type: -1,
         loaiDichVu: 0,
       });
+      this.capNhatBHXHTN(
+        [...new Set(this.bhyts.map((t) => t.maSoBHXH))].join()
+      );
+    },
+    async loadTaiTucBHYT() {
+      await this.getDanhSachKhachHangTaiTuc({
+        filterItems: [],
+        maxResultCount: 5000,
+        skipCount: 0,
+        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+        tuThang: "2020-01-01 00:00:00",
+        denThang: "2025-01-01 00:00:00",
+        type: -1,
+        loaiDichVu: 1,
+      });
+      this.dongBoDuLieu([...new Set(this.bhyts.map((t) => t.maSoBHXH))].join());
     },
 
     async loadBaoCaoChiTietGiaoDich() {
