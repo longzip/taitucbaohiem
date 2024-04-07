@@ -73,9 +73,14 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
             let { hetHan, isLogin } = userDetails;
             if (!hetHan) {
               const { addToDate } = date;
-              const newDate = addToDate(new Date(), { months: 3 });
+              const newDate = addToDate(new Date(), { days: 15 });
               hetHan = newDate.toISOString().slice(0, 10);
             }
+            console.log(date.getDateDiff(new Date(), new Date(hetHan), "days"));
+            if (date.getDateDiff(new Date(hetHan), new Date(), "days") < 0)
+              window.location.replace(
+                "https://longwebstudio.amycos.vn/phan-mem-tai-tuc"
+              );
             await commit("setIsLogin", isLogin);
 
             let loginInfo = await dispatch("getCurrentLoginInformations");
