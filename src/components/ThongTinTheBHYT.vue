@@ -42,11 +42,14 @@
         {{ bhyt.mqhChuHo }}
       </q-item-label>
       <q-item-label caption lines="2">
-        Tờ khai:<a
+        Tờ khai:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.uniqid}`">{{
+          bhyt.uniqid
+        }}</a
+        ><a
           target="_blank"
           :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
-          >{{ bhyt.uniqid }}</a
-        >
+          ><q-icon class="q-ml-sm" name="print" color="blue"
+        /></a>
       </q-item-label>
       <q-item-label caption lines="2">
         Số CMND: {{ bhyt.soCmnd }}

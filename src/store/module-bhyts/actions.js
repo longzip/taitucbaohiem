@@ -584,6 +584,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
     taiTuc,
     hetHan,
     maXa,
+    uniqid,
   } = payload;
 
   let url = "/api/bhyts?";
@@ -596,6 +597,7 @@ export const getAllBhyts = async ({ commit }, payload) => {
   if (disabled) url += `&disabled=${disabled}`;
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
   if (chuaDongBo) url += `&chuaDongBo=${chuaDongBo}`;
+  if (uniqid) url += `&uniqid=${uniqid}`;
 
   const { data } = await api.get(url);
 

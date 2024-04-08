@@ -47,6 +47,7 @@ export default defineComponent({
   data() {
     return {
       maHoGd: "",
+      uniqid: "",
       searchText: "",
     };
   },
@@ -59,16 +60,25 @@ export default defineComponent({
       this.$refs.inputSearch.select();
     },
     async loadData() {
-      await this.getAllBhyts({
-        maHoGd: this.maHoGd,
-      });
+      if (this.uniqid)
+        await this.getAllBhyts({
+          uniqid: this.uniqid,
+        });
+      else
+        await this.getAllBhyts({
+          maHoGd: this.maHoGd,
+        });
     },
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
-        .map((i) => i.maSoBhxh)
-        .join(",")}`;
+      if (this.uniqid) {
+        a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`;
+      } else {
+        a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
+          .map((i) => i.maSoBhxh)
+          .join(",")}`;
+      }
       a.click();
     },
   },
@@ -79,6 +89,7 @@ export default defineComponent({
 
   mounted() {
     this.maHoGd = this.$route.params.id;
+    if (this.maHoGd.length === 13) this.uniqid = this.maHoGd;
     this.loadData();
   },
 });
