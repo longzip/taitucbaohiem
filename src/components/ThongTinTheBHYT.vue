@@ -572,7 +572,11 @@ export default {
       }
     },
     async copyUrlToClipboard(t) {
-      if (!t.ngaySinhDt)
+      if (
+        !t.ngaySinhDt ||
+        !t.denNgayDt ||
+        date.getDateDiff(new Date(), new Date(t.denNgayDt), "days") < 30
+      )
         t = await this.xem(
           t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
         );
