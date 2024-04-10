@@ -445,10 +445,10 @@ export default {
           return null;
         }
         // this.taoNhacHenBHXHTN(t);
-        const tienHaNoiHoTro =
-          t.tienNsnnHoTro == parseInt(t.phuongThucDong) * 33000
-            ? t.tienNsnnHoTro
-            : 0;
+        // const tienHaNoiHoTro =
+        //   t.tienNsnnHoTro == parseInt(t.phuongThucDong) * 33000
+        //     ? t.tienNsnnHoTro
+        //     : 0;
         navigator.clipboard
           .writeText(
             `Xin chào! Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${
@@ -460,15 +460,15 @@ export default {
             }, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(
               t.mucDong
             ).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(
-              t.tienNsnnHoTro + tienHaNoiHoTro
+              t.tienNsnnHoTro
             ).toLocaleString()}đ). Đóng tiếp ${
               t.phuongThucDong
             } BHXH TN, tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(
               0,
               4
             )} số tiền phải đóng ${parseInt(
-              t.tienNldPhaiNop - tienHaNoiHoTro
-            ).toLocaleString()}đ.\r\n` + this.userDetails.bhxhSMSText
+              t.tienNop
+            ).toLocaleString()}đ.\r\n` + this.userDetails?.bhxhSMSText
           )
           .then(
             function () {
@@ -496,17 +496,15 @@ export default {
             }, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(
               t.mucDong
             ).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(
-              t.tienNsnnHoTro + tienHaNoiHoTro
+              t.tienNsnnHoTro
             ).toLocaleString()}đ). Đóng tiếp ${
               t.phuongThucDong
             } BHXH TN, tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(
               0,
               4
-            )} số tiền phải đóng ${parseInt(
-              t.tienNldPhaiNop - tienHaNoiHoTro
-            ).toLocaleString()}đ.`,
+            )} số tiền phải đóng ${parseInt(t.tienNop).toLocaleString()}đ.`,
             prompt: {
-              model: (t.tienNldPhaiNop - tienHaNoiHoTro).toLocaleString(),
+              model: t.tienNop.toLocaleString(),
               type: "text", // optional
             },
             cancel: true,
