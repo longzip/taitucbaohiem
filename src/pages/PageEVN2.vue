@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
       >Danh sách {{ evns.length }} Khách hàng EVN / Tổng:
-      {{ tongCong.toLocaleString() }} /
+      {{ tienDien.toLocaleString() }} /
       {{ evns.filter((t) => t.soTien > 0).length }}
       <q-btn
         rounded
@@ -123,7 +123,9 @@
           Còn thiếu:
           {{
             (
-              tongCong -
+              tienDien +
+              tienBHYT +
+              tienBHXH -
               (500000 * t500 +
                 200000 * t200 +
                 100000 * t100 +
@@ -165,7 +167,9 @@ export default defineComponent({
     return {
       searchText: "",
       evns: [],
-      tongCong: 0,
+      tienDien: 0,
+      tienBHXH: 0,
+      tienBHYT: 0,
       showDialog: false,
       t500: "",
       t200: "",
@@ -212,7 +216,7 @@ export default defineComponent({
       if (homNay) url += `homNay=${homNay}`;
       const { data } = await this.$api.get(url);
       this.evns = data;
-      this.tongCong = await data
+      this.tienDien = await data
         .map((t) => t.soTien)
         .reduce(
           (previousValue, currentValue) =>
@@ -261,8 +265,10 @@ export default defineComponent({
       a.target = "_blank";
       let lienKet = `https://app.hotham.vn/nop-bhyt/${new Date()
         .toISOString()
-        .slice(0, 10)}/pdf?`;
-      if (this.tongCong) lienKet += `tienDien=${this.tongCong}`;
+        .slice(0, 10)}/pdf?n=1`;
+      if (this.tienDien) lienKet += `&tienDien=${this.tienDien}`;
+      if (this.tienBHYT) lienKet += `&tienBHYT=${this.tienBHYT}`;
+      if (this.tienBHXH) lienKet += `&tienBHXH=${this.tienBHXH}`;
       if (this.t500) lienKet += `&t500=${this.t500}`;
       if (this.t200) lienKet += `&t200=${this.t200}`;
       if (this.t100) lienKet += `&t100=${this.t100}`;
@@ -278,8 +284,12 @@ export default defineComponent({
   },
   mounted() {
     if (this.$route.query.q) {
-      this.tongCong = parseInt(this.$route.query.q);
+      this.tienDien = parseInt(this.$route.query.tienDien);
     } else this.timKiem("", true);
+    if (this.$route.query.tienBHYT)
+      this.tienBHYT += parseInt(this.$route.query.tienBHYT);
+    if (this.$route.query.tienBHXH)
+      this.tienBHXH += parseInt(this.$route.query.tienBHXH);
   },
 });
 </script>

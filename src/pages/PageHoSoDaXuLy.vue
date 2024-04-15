@@ -26,6 +26,7 @@
       <q-btn rounded color="primary" @click="download()" icon="download" />
       <q-btn rounded color="primary" @click="truocKhiInBHYT" icon="print" />
       <q-btn rounded color="primary" @click="truocKhiInBHXH" icon="print" />
+      <q-btn rounded color="primary" @click="xuatC17" icon="export" />
     </ListHeader>
 
     <div class="q-gutter-y-md column">
@@ -52,6 +53,96 @@
       <ThongTinTheBHYT :bhyt="bhyt" />
       <q-separator spaced inset />
     </q-list>
+
+    <q-dialog v-model="showDialogAll">
+      <q-card class="my-card">
+        <q-card-section class="q-pt-none">
+          <div class="text-subtitle1">Nộp BHYT & BHXH</div>
+          <div class="text-caption text-grey">
+            <div class="row">
+              <div class="col">
+                <q-input dense v-model="t500" label="T500" />
+              </div>
+              <div class="col">
+                <q-input dense v-model="t200" label="T200" />
+              </div>
+              <div class="col">
+                <q-input dense v-model="t100" label="T100" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <q-input dense v-model="t50" label="T50" />
+              </div>
+              <div class="col">
+                <q-input dense v-model="t20" label="T20" />
+              </div>
+              <div class="col">
+                <q-input dense v-model="t10" label="T10" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <q-input dense v-model="t5" label="T5" />
+              </div>
+              <div class="col">
+                <q-input dense v-model="t2" label="T2" />
+              </div>
+              <div class="col">
+                <q-input dense v-model="t1" label="T1" />
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          Tổng:
+          {{
+            (
+              500000 * t500 +
+              200000 * t200 +
+              100000 * t100 +
+              50000 * t50 +
+              20000 * t20 +
+              10000 * t10 +
+              5000 * t5 +
+              2000 * t2 +
+              1000 * t1
+            ).toLocaleString()
+          }}
+          <br />
+          Còn thiếu:
+          {{
+            (
+              daNopBHYT +
+              daNopBHXH -
+              (500000 * t500 +
+                200000 * t200 +
+                100000 * t100 +
+                50000 * t50 +
+                20000 * t20 +
+                10000 * t10 +
+                5000 * t5 +
+                2000 * t2 +
+                1000 * t1)
+            ).toLocaleString()
+          }}
+        </q-card-section>
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn
+            v-close-popup
+            flat
+            color="primary"
+            round
+            icon="print"
+            @click="print(3)"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
     <q-dialog v-model="showDialogBHYT">
       <q-card class="my-card">
@@ -273,6 +364,7 @@ export default {
       ngay: 0,
       showDialogBHYT: false,
       showDialogBHXH: false,
+      showDialogAll: false,
       t500: "",
       t200: "",
       t100: "",
@@ -290,6 +382,33 @@ export default {
   },
   methods: {
     ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy", "XuatD03OrD05Excel"]),
+    async xuatC17() {
+      await this.hoSoDaXuLy({
+        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+      });
+      this.showDialogAll = true;
+      Notify.create({
+        type: "positive",
+        message: `Đang xuất C17 Excell, vui lòng đợi ...!`,
+      });
+      await this.daXyLy(
+        this.bhyts.filter(
+          (t) =>
+            t.userId === this.userDetails.id &&
+            t.trangThaiHoSo === 4 &&
+            new Date().getDate() - this.ngay ===
+              new Date(t.ngayNopHoSo).getDate()
+        )
+      );
+      let a = document.createElement("a");
+      a.target = "_blank";
+      a.href = `https://app.hotham.vn/c17-excell/${new Date()
+        .toISOString()
+        .slice(0, 10)}/pdf?tienBHYT=${this.daNopBHYT}&bhyts=${
+        this.dsTheBHYT
+      }&tienBHXH=${this.daNopBHXH}&bhxhs=${this.dsTheBHXH}`;
+      a.click();
+    },
     async truocKhiInBHYT() {
       await this.hoSoDaXuLy({
         mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
@@ -500,9 +619,9 @@ export default {
       let lienKet = `https://app.hotham.vn/nop-bhyt/${new Date()
         .toISOString()
         .slice(0, 10)}/pdf?`;
-      if (this.daNopBHYT && maThuTuc === 1)
+      if (this.daNopBHYT && (maThuTuc === 1 || maThuTuc === 3))
         lienKet += `tienBHYT=${this.daNopBHYT}`;
-      if (this.daNopBHXH && maThuTuc === 0)
+      if (this.daNopBHXH && (maThuTuc === 0 || maThuTuc === 3))
         lienKet += `&tienBHXH=${this.daNopBHXH}`;
       if (this.t500) lienKet += `&t500=${this.t500}`;
       if (this.t200) lienKet += `&t200=${this.t200}`;
