@@ -187,11 +187,18 @@
       <q-item-label caption>
         <q-badge class="q-mr-sm" v-if="bhyt.userName" color="gray">{{
           bhyt.userName
-        }}</q-badge>
+        }}</q-badge
+        ><br />
         <a
           v-if="bhyt.soBienLai"
           href="javascript:void(0);"
           @click="timTheoSoBienLai(bhyt.soBienLai)"
+          >{{ bhyt.soBienLai }}</a
+        >
+        <a
+          v-if="bhyt.soBienLaiTN"
+          href="javascript:void(0);"
+          @click="timTheoSoBienLai(bhyt.soBienLaiTN)"
           >{{ bhyt.soBienLai }}</a
         ><br />
         {{ bhyt.ngayBienLai || bhyt.ngayLap }}

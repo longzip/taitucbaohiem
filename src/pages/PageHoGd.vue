@@ -1,9 +1,9 @@
 <template>
   <div class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
-      >Hộ gia đình {{ bhyts.length }} người. Số tiền thu : đ
-      {{ parseInt(tongTienBHYTDaThu).toLocaleString() }}/{{
-        bhyts.filter((b) => b.isBHYT == 1).length
+      >Hộ gia đình {{ bhyts.length }} người. Số tiền thu: đ
+      {{ parseInt(tongTienBHYTDaThu + tongTienBHXHDaThu).toLocaleString() }}/{{
+        bhyts.filter((b) => b.isBHYT == 1 || b.isBHXHTN == 1).length
       }}
       <q-btn rounded color="primary" @click="print()" icon="print" />
     </ListHeader>
@@ -72,19 +72,15 @@ export default defineComponent({
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
-      if (this.uniqid) {
-        a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`;
-      } else {
-        a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
-          .map((i) => i.maSoBhxh)
-          .join(",")}`;
-      }
+      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
+        .map((i) => i.maSoBhxh)
+        .join(",")}`;
       a.click();
     },
   },
 
   computed: {
-    ...mapGetters("bhyts", ["bhyts", "tongTienBHYTDaThu"]),
+    ...mapGetters("bhyts", ["bhyts", "tongTienBHYTDaThu", "tongTienBHXHDaThu"]),
   },
 
   mounted() {

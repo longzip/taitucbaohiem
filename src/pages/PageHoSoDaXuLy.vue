@@ -26,7 +26,7 @@
       <q-btn rounded color="primary" @click="download()" icon="download" />
       <q-btn rounded color="primary" @click="truocKhiInBHYT" icon="print" />
       <q-btn rounded color="primary" @click="truocKhiInBHXH" icon="print" />
-      <q-btn rounded color="primary" @click="xuatC17" icon="export" />
+      <q-btn rounded color="primary" @click="xuatC17" icon="print" />
     </ListHeader>
 
     <div class="q-gutter-y-md column">
@@ -383,14 +383,15 @@ export default {
   methods: {
     ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy", "XuatD03OrD05Excel"]),
     async xuatC17() {
-      await this.hoSoDaXuLy({
-        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-      });
-      this.showDialogAll = true;
       Notify.create({
         type: "positive",
         message: `Đang xuất C17 Excell, vui lòng đợi ...!`,
       });
+      await this.hoSoDaXuLy({
+        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+      });
+      this.showDialogAll = true;
+
       await this.daXyLy(
         this.bhyts.filter(
           (t) =>
@@ -406,19 +407,20 @@ export default {
         .toISOString()
         .slice(0, 10)}/pdf?tienBHYT=${this.daNopBHYT}&bhyts=${
         this.dsTheBHYT
-      }&tienBHXH=${this.daNopBHXH}&bhxhs=${this.dsTheBHXH}`;
+      }&tienBHXH=${this.daNopBHXH}&bhxhs=${this.dsSoBHXH}`;
       a.click();
     },
     async truocKhiInBHYT() {
+      Notify.create({
+        type: "positive",
+        message: `Đang xuất C17 BHYT, vui lòng đợi ...!`,
+      });
       await this.hoSoDaXuLy({
         mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
       });
       this.coTheIn = 0;
       this.showDialogBHYT = true;
-      Notify.create({
-        type: "positive",
-        message: `Đang xuất C17 BHYT, vui lòng đợi ...!`,
-      });
+
       await this.daXyLy(
         this.bhyts.filter(
           (t) =>
@@ -433,15 +435,16 @@ export default {
       this.printC17(1);
     },
     async truocKhiInBHXH() {
+      Notify.create({
+        type: "positive",
+        message: `Đang xuất C17 BHXH tự nguyện, vui lòng đợi ...!`,
+      });
       await this.hoSoDaXuLy({
         mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
       });
       this.coTheIn = 0;
       this.showDialogBHXH = true;
-      Notify.create({
-        type: "positive",
-        message: `Đang xuất C17 BHXH tự nguyện, vui lòng đợi ...!`,
-      });
+
       await this.daXyLy(
         this.bhyts.filter(
           (t) =>

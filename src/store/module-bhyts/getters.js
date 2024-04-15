@@ -40,7 +40,17 @@ export const tongTienBHYTDaThu = (state) => {
   if (state.bhyts.length === 0) return 0;
   return state.bhyts
     .filter((b) => b.isBHYT == 1)
-    .map((t) => t.tongTien || t.soTienThu || 0)
+    .map((t) => t.tongTien)
+    .reduce(
+      (previousValue, currentValue) => previousValue + parseInt(currentValue),
+      0
+    );
+};
+export const tongTienBHXHDaThu = (state) => {
+  if (state.bhyts.length === 0) return 0;
+  return state.bhyts
+    .filter((b) => b.isBHXHTN == 1)
+    .map((t) => t.tienNop)
     .reduce(
       (previousValue, currentValue) => previousValue + parseInt(currentValue),
       0

@@ -521,11 +521,11 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
             tienNop: tongTien,
             userName,
             isBHXHTN: 0, // đã nộp bhxhtn
-            soBienLai,
+            soBienLaiTN: soBienLai,
             bienLaiIdTN: bienLaiId,
             disabled: trangThaiHoSo !== 9,
             maThuTuc,
-            ngayLap: ngayBienLai?.split("/").reverse().join("-"),
+            ngayLapTN: ngayBienLai?.split("/").reverse().join("-"),
           });
           await commit("updateBhyt", data);
           if (
