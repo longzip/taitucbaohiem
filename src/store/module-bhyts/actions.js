@@ -457,6 +457,7 @@ export const huyThuTien = async ({ commit }, { maSoBhxh, userName }) => {
       userName,
       disabled: 0,
       tongTien: 0,
+      ngayLap: null,
     });
     await commit("updateBhyt", data);
   } catch (error) {
@@ -690,6 +691,7 @@ export const huyThuBHYT = async ({ commit }, { maSoBhxh }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhyt`, {
     isBHYT: 0,
     disabled: 0,
+    ngayLap: null,
   });
   commit("updateBhyt", data);
 };
@@ -697,6 +699,7 @@ export const huyThuBHXHTN = async ({ commit }, { maSoBhxh }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhxhtn`, {
     isBHXHTN: 0,
     disabled: 0,
+    ngayLapTN: null,
   });
   commit("updateBhyt", data);
 };

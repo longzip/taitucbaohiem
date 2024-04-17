@@ -330,6 +330,7 @@ export default {
             this.huyThuTien({
               disabled: 0,
               tongTien: 0,
+              ngayLap: null,
               isBHYT: 0,
               maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.id,
