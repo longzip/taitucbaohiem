@@ -442,15 +442,14 @@ export default {
       });
       await this.loadData();
 
-      if (this.thangTruoc)
-        await this.daXyLy(
-          this.bhyts.filter(
-            (t) =>
-              t.userId === this.userDetails.id &&
-              t.maThuTuc === 0 &&
-              [4, 8, 9].includes(t.trangThaiHoSo)
-          )
-        );
+      await this.daXyLy(
+        this.bhyts.filter(
+          (t) =>
+            t.userId === this.userDetails.id &&
+            t.maThuTuc === 0 &&
+            [4, 8, 9].includes(t.trangThaiHoSo)
+        )
+      );
       let a = document.createElement("a");
       a.target = "_blank";
       a.href = `https://app.hotham.vn/c17/${this.ky.slice(0, 2)}`;
