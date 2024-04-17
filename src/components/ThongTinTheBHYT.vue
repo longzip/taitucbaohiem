@@ -531,7 +531,8 @@ export default {
         });
       }
     },
-    async copyMaTraCuuToClipboard({ bienLaiId, hoTen, maSoBhxh }) {
+    async copyMaTraCuuToClipboard({ bienLaiId, hoTen, maSoBhxh, maThuTuc }) {
+      console.log("skdfjkdfkjkjk");
       const { maXacNhan, ngayBienLai, soBienLai } = await this.maTraCuu(
         bienLaiId
       );
@@ -542,11 +543,23 @@ export default {
         });
         return null;
       }
-      const bhyt = await this.updateMaXacNhan({
-        maSoBhxh,
-        maXacNhan,
-        ngayLap: ngayBienLai.split("/").reverse().join("-"),
-      });
+      let updateBHYT = { maSoBhxh };
+
+      if (maThuTuc === 0)
+        updateBHYT = {
+          maSoBhxh,
+          maXacNhanTN: maXacNhan,
+          ngayLapTN: ngayBienLai.split("/").reverse().join("-"),
+          soBienLaiTN: soBienLai,
+        };
+      else
+        updateBHYT = {
+          maSoBhxh,
+          maXacNhan,
+          ngayLap: ngayBienLai.split("/").reverse().join("-"),
+          soBienLai,
+        };
+      const bhyt = await this.updateMaXacNhan(updateBHYT);
       navigator.clipboard
         .writeText(
           this.userDetails.xacNhanSMSText

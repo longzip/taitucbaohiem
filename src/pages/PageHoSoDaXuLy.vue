@@ -1,33 +1,52 @@
 <template>
   <q-page>
-    <ListHeader bgcolor="bg-orange-4"
-      ><q-btn
-        rounded
-        color="primary"
-        label="Tháng trước"
-        @click="xemThangTruoc()"
-        icon="arrow_back"
-      />
-      BHYT-{{ bhyts.filter((t) => t.maThuTuc === 1).length }} ({{
-        tham.toLocaleString()
-      }}-{{ tongTien.toLocaleString() }}đ) + BHXHTN-{{
-        bhyts.filter((t) => t.maThuTuc === 0).length
-      }}
-      ({{ thamTN.toLocaleString() }}-{{ tongTienTN.toLocaleString() }}đ) / Đã
-      nộp BHYT: {{ daNopBHYT.toLocaleString() }} - Đã nộp BHXH:
-      {{ daNopBHXH.toLocaleString() }}
-      <q-btn rounded color="primary" @click="dongBo()" icon="sync" />
-      <q-btn
-        rounded
-        color="primary"
-        @click="copyTextToClipboard()"
-        icon="content_copy"
-      />
-      <q-btn rounded color="primary" @click="download()" icon="download" />
-      <q-btn rounded color="primary" @click="truocKhiInBHYT" icon="print" />
-      <q-btn rounded color="primary" @click="truocKhiInBHXH" icon="print" />
-      <q-btn rounded color="primary" @click="xuatC17" icon="print" />
-    </ListHeader>
+    <q-banner
+      inline-actions
+      :class="'bg-orange-4'"
+      class="list-header text-white text-center"
+    >
+      <div class="inline bg-orange-4 rounded-borders cursor-pointer">
+        <div class="fit flex flex-center text-center non-selectable q-pa-md">
+          Kỳ: {{ ky }} | BHYT-{{
+            bhyts.filter((t) => t.maThuTuc === 1).length
+          }}
+          ({{ tham.toLocaleString() }}-{{ tongTien.toLocaleString() }}đ) +
+          BHXHTN-{{ bhyts.filter((t) => t.maThuTuc === 0).length }} ({{
+            thamTN.toLocaleString()
+          }}-{{ tongTienTN.toLocaleString() }}đ) / Đã nộp BHYT:
+          {{ daNopBHYT.toLocaleString() }} - Đã nộp BHXH:
+          {{ daNopBHXH.toLocaleString() }}
+        </div>
+        <q-menu touch-position>
+          <q-list style="min-width: 100px">
+            <q-item clickable @click="loadData()" v-close-popup>
+              <q-item-section>Tải lại</q-item-section>
+            </q-item>
+            <q-item clickable @click="xemThangTruoc()" v-close-popup>
+              <q-item-section>Xem tháng trước</q-item-section>
+            </q-item>
+            <q-item clickable @click="dongBo()" v-close-popup>
+              <q-item-section>Đồng bộ</q-item-section>
+            </q-item>
+            <q-item clickable @click="download()" v-close-popup>
+              <q-item-section>Tải D03 & D05</q-item-section>
+            </q-item>
+            <q-item clickable @click="truocKhiInBHYT()" v-close-popup>
+              <q-item-section>In nộp tiền BHYT</q-item-section>
+            </q-item>
+            <q-item clickable @click="truocKhiInBHXH()" v-close-popup>
+              <q-item-section>In nộp tiền BHXH TN</q-item-section>
+            </q-item>
+            <q-item clickable @click="xuatC17()" v-close-popup>
+              <q-item-section>Xuất C17 ngày</q-item-section>
+            </q-item>
+            <q-item clickable @click="xuatC17M()" v-close-popup>
+              <q-item-section>Xuất C17 tháng</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </div>
+    </q-banner>
 
     <div class="q-gutter-y-md column">
       <q-input
@@ -344,12 +363,13 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
-import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
+
 import { Notify } from "quasar";
 export default {
-  components: { ThongTinTheBHYT, ListHeader },
+  components: { ThongTinTheBHYT },
   data() {
     return {
+      ky: "",
       searchText: "",
       coTheIn: 1,
       tham: 0,
@@ -383,31 +403,57 @@ export default {
   methods: {
     ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy", "XuatD03OrD05Excel"]),
     async xuatC17() {
+      if (this.dsSoBHXH || this.dsTheBHYT) {
+        Notify.create({
+          type: "positive",
+          message: `Đang xuất C17 Excell, vui lòng đợi ...!`,
+        });
+        await this.loadData();
+        this.showDialogAll = true;
+
+        await this.daXyLy(
+          this.bhyts.filter(
+            (t) =>
+              t.userId === this.userDetails.id &&
+              t.trangThaiHoSo === 4 &&
+              new Date().getDate() - this.ngay ===
+                new Date(t.ngayNopHoSo).getDate()
+          )
+        );
+        let a = document.createElement("a");
+        a.target = "_blank";
+        let link = `https://app.hotham.vn/c17-excell/${new Date()
+          .toISOString()
+          .slice(0, 10)}/pdf?excell=true`;
+        if (this.dsTheBHYT) link += `&bhyts=${this.dsTheBHYT}`;
+        if (this.dsSoBHXH) link += `&bhxhs=${this.dsSoBHXH}`;
+        a.href = link;
+        a.click();
+      } else
+        Notify.create({
+          type: "negative",
+          message: "Không có dữ liệu!",
+        });
+    },
+    async xuatC17M() {
       Notify.create({
         type: "positive",
         message: `Đang xuất C17 Excell, vui lòng đợi ...!`,
       });
-      await this.hoSoDaXuLy({
-        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-      });
-      this.showDialogAll = true;
+      await this.loadData();
 
-      await this.daXyLy(
-        this.bhyts.filter(
-          (t) =>
-            t.userId === this.userDetails.id &&
-            t.trangThaiHoSo === 4 &&
-            new Date().getDate() - this.ngay ===
-              new Date(t.ngayNopHoSo).getDate()
-        )
-      );
+      if (this.thangTruoc)
+        await this.daXyLy(
+          this.bhyts.filter(
+            (t) =>
+              t.userId === this.userDetails.id &&
+              t.maThuTuc === 0 &&
+              [4, 8, 9].includes(t.trangThaiHoSo)
+          )
+        );
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `https://app.hotham.vn/c17-excell/${new Date()
-        .toISOString()
-        .slice(0, 10)}/pdf?tienBHYT=${this.daNopBHYT}&bhyts=${
-        this.dsTheBHYT
-      }&tienBHXH=${this.daNopBHXH}&bhxhs=${this.dsSoBHXH}`;
+      a.href = `https://app.hotham.vn/c17/${this.ky.slice(0, 2)}`;
       a.click();
     },
     async truocKhiInBHYT() {
@@ -415,9 +461,7 @@ export default {
         type: "positive",
         message: `Đang xuất C17 BHYT, vui lòng đợi ...!`,
       });
-      await this.hoSoDaXuLy({
-        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-      });
+      await this.loadData();
       this.coTheIn = 0;
       this.showDialogBHYT = true;
 
@@ -439,9 +483,7 @@ export default {
         type: "positive",
         message: `Đang xuất C17 BHXH tự nguyện, vui lòng đợi ...!`,
       });
-      await this.hoSoDaXuLy({
-        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-      });
+      await this.loadData();
       this.coTheIn = 0;
       this.showDialogBHXH = true;
 
@@ -498,6 +540,7 @@ export default {
           thangTruoc: this.thangTruoc,
           mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
         });
+        if (this.bhyts.length) this.ky = this.bhyts[0].ky;
       } catch (error) {
         Notify.create({
           message: "Không thể kế nối đến máy chủ !",

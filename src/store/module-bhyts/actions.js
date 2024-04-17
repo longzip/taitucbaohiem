@@ -412,12 +412,24 @@ export const updateGhiChu = async ({ commit }, { maSoBhxh, ghiChu }) => {
 };
 export const updateMaXacNhan = async (
   { commit },
-  { maSoBhxh, maXacNhan, ngayLap }
+  {
+    maSoBhxh,
+    maXacNhan,
+    maXacNhanTN,
+    ngayLap,
+    ngayLapTN,
+    soBienLai,
+    soBienLaiTN,
+  }
 ) => {
   try {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       maXacNhan,
+      maXacNhanTN,
       ngayLap,
+      ngayLapTN,
+      soBienLai,
+      soBienLaiTN,
     });
     await commit("updateBhyt", data);
     return data;
