@@ -148,7 +148,7 @@
           }}</strong
         >đ</q-item-label
       >
-      <q-item-label v-if="bhyt.tienNop" caption>
+      <q-item-label caption>
         <q-icon
           v-if="bhyt.isBHXHTN == 1"
           class="q-pr-sm"
@@ -162,7 +162,7 @@
           >{{ parseInt(bhyt.tienNop).toLocaleString() }}</strong
         >đ</q-item-label
       >
-      <q-item-label v-if="bhyt.mucDongBHYTBT" caption>
+      <q-item-label caption>
         <strong
           class="text-subtitle2 text-weight-bold"
           @click="xacNhanMucDongBHYTBT(bhyt)"
