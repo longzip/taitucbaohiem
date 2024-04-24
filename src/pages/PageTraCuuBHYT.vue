@@ -25,6 +25,9 @@
             <q-item clickable @click="taiTucBHYT1thang" v-close-popup>
               <q-item-section>Tái tục 1 tháng (Me)</q-item-section>
             </q-item>
+            <q-item clickable @click="taiTucBHYT2thang" v-close-popup>
+              <q-item-section>Tái tục 2 tháng (Me)</q-item-section>
+            </q-item>
 
             <q-item clickable @click="loadBhyts({ thang: 1 })" v-close-popup>
               <q-item-section>Tái tục 1 tháng (All)</q-item-section>
@@ -244,6 +247,16 @@ export default {
       this.searchText = this.userDetails.id;
       this.getBhyts({
         thang: 1,
+        completed: "0",
+        disabled: "0",
+        taiTuc: "1",
+        userName: this.userDetails.id,
+      });
+    },
+    taiTucBHYT2thang() {
+      this.searchText = this.userDetails.id;
+      this.getBhyts({
+        thang: 2,
         completed: "0",
         disabled: "0",
         taiTuc: "1",

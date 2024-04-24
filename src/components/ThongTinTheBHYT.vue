@@ -159,14 +159,20 @@
         <strong
           class="text-subtitle2 text-weight-bold"
           @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
-          >{{ parseInt(bhyt.tienNop).toLocaleString() }}</strong
+          >{{
+            bhyt.tienNop ? parseInt(bhyt.tienNop).toLocaleString() : "0"
+          }}</strong
         >đ</q-item-label
       >
       <q-item-label caption>
         <strong
           class="text-subtitle2 text-weight-bold"
           @click="xacNhanMucDongBHYTBT(bhyt)"
-          >{{ parseInt(bhyt.mucDongBHYTBT).toLocaleString() }}đ</strong
+          >{{
+            bhyt.mucDongBHYTBT
+              ? parseInt(bhyt.mucDongBHYTBT).toLocaleString()
+              : "0"
+          }}đ</strong
         ><br />
         <span
           :class="{
