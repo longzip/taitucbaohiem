@@ -286,7 +286,8 @@ export const maTraCuu = async ({}, bienLaiId) => {
   return result[0];
 };
 
-export const xem = async ({ commit }, maSoBhxh) => {
+export const xem = async ({ commit }, payload) => {
+  const { maSoBhxh } = payload;
   let {
     data: { result },
   } = await client.get(
@@ -298,6 +299,7 @@ export const xem = async ({ commit }, maSoBhxh) => {
   const { thongTinTK1, thongTinTheHGD, trangThaiThe } = result;
 
   const theBHYT = await luuBhyt({
+    ...payload,
     ...thongTinTheHGD,
     ...thongTinTK1,
     ...trangThaiThe,
@@ -344,7 +346,7 @@ export const dongBoDuLieu = async ({ dispatch }, payload) => {
     await sleep();
     const maSoBhxh = maSoBhxhs[index];
     try {
-      await dispatch("xem", maSoBhxh);
+      await dispatch("xem", { maSoBhxh });
     } catch (error) {
       console.log(error);
     }
@@ -356,7 +358,7 @@ export const taiTuc = async ({ commit }, payload) => {
   for (let index = 0; index < maSoBhxhs.length; index++) {
     const maSoBhxh = maSoBhxhs[index];
     try {
-      await dispatch("xem", maSoBhxh);
+      await dispatch("xem", { maSoBhxh });
     } catch (error) {
       console.log(error);
     }
@@ -549,7 +551,7 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
             await dispatch("getTraCuuThongTinBHXHTN", maSoBhxh);
           }
           if (!data.hoTen) {
-            await dispatch("xem", maSoBhxh);
+            await dispatch("xem", { maSoBhxh });
           }
         } catch (error) {
           console.log(error);
@@ -575,7 +577,7 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
             (trangThaiHoSo === 9 &&
               parseInt(data.denNgayDt.slice(0, 4)) <= namNay)
           ) {
-            await dispatch("xem", maSoBhxh);
+            await dispatch("xem", { maSoBhxh });
           }
         } catch (error) {
           console.log(error);

@@ -21,16 +21,7 @@
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
         />
 
-        <q-icon
-          class="q-ml-sm"
-          @click="
-            xem(
-              bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
-            )
-          "
-          name="update"
-          color="blue"
-        />
+        <q-icon class="q-ml-sm" @click="xem(bhyt)" name="update" color="blue" />
       </q-item-label>
       <q-item-label caption lines="2">
         {{ bhyt.diaChiLh }}
