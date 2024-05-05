@@ -112,6 +112,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
               commit("setUserDetails", updateUserDetails);
               const db = getDatabase();
               await set(ref(db, "users/" + userId), updateUserDetails);
+              window.location.reload();
             } else if (!userDetails.maNhanVienThu) {
               commit("setUserDetails", {
                 ...userDetails,

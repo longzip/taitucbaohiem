@@ -37,7 +37,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
@@ -72,15 +72,16 @@ export default defineComponent({
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maSoBhxhs=${this.bhyts
-        .map((i) => i.maSoBhxh)
-        .join(",")}`;
+      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maXa=${
+        this.userDetails.maXa
+      }&maSoBhxhs=${this.bhyts.map((i) => i.maSoBhxh).join(",")}`;
       a.click();
     },
   },
 
   computed: {
     ...mapGetters("bhyts", ["bhyts", "tongTienBHYTDaThu", "tongTienBHXHDaThu"]),
+    ...mapState("auth", ["userDetails"]),
   },
 
   mounted() {

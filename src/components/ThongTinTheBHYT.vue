@@ -337,8 +337,7 @@ export default {
             this.huyThuTien({
               disabled: 0,
               tongTien: 0,
-              ngayLap: null,
-              isBHYT: 0,
+              bienLaiId: bhyt.bienLaiId,
               maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.id,
             });
@@ -600,14 +599,16 @@ export default {
       }
     },
     async copyUrlToClipboard(t) {
-      if (
-        !t.ngaySinhDt ||
-        !t.denNgayDt ||
-        date.getDateDiff(new Date(), new Date(t.denNgayDt), "days") < 30
-      )
-        t = await this.xem(
-          t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
-        );
+      try {
+        if (
+          !t.ngaySinhDt ||
+          !t.denNgayDt ||
+          date.getDateDiff(new Date(), new Date(t.denNgayDt), "days") < 30
+        )
+          t = await this.xem({ maSoBhxh: t.maSoBhxh });
+      } catch (error) {
+        console.log(error);
+      }
       const [nam, thang] = new Date().toISOString().slice(0, 7).split("-");
       const isGiaHan =
         new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0);

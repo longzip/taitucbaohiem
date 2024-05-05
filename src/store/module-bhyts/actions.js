@@ -453,13 +453,18 @@ export const updateDenNgayBHYTBT = async (
     console.log(error);
   }
 };
-export const huyThuTien = async ({ commit }, { maSoBhxh, userName }) => {
+export const huyThuTien = async (
+  { commit, dispatch },
+  { maSoBhxh, userName, bienLaiId }
+) => {
   try {
+    const { ngayBienLai } = await dispatch("maTraCuu", bienLaiId);
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       userName,
       disabled: 0,
       tongTien: 0,
-      ngayLap: null,
+      ngayLap: ngayBienLai?.split("/").reverse().join("-"),
+      isBHYT: 0,
     });
     await commit("updateBhyt", data);
   } catch (error) {
