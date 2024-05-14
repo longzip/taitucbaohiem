@@ -52,15 +52,15 @@ const unLock = () => {
 const tienThua = () => {
   const { tongCong } = JSON.parse(localStorage.getItem("tongcong"));
   return parseInt(document.getElementById("txt_tien_value").value) - tongCong;
-  //   if (
-  //     tongCong ===
-  //     parseInt(localStorage.getItem("ourarraykey")) -
-  //       parseInt($("#wallet-current-balance").text().replaceAll(".", ""))
-  //   )
-  //     return (
-  //       parseInt(document.getElementById("txt_tien_value").value) - daThanhToan()
-  //     );
-  //   else return 'Lỗi';
+//   if (
+//     tongCong ===
+//     parseInt(localStorage.getItem("ourarraykey")) -
+//       parseInt($("#wallet-current-balance").text().replaceAll(".", ""))
+//   )
+//     return (
+//       parseInt(document.getElementById("txt_tien_value").value) - daThanhToan()
+//     );
+//   else return 'Lỗi';
 };
 
 const tienTra = () =>
@@ -99,7 +99,7 @@ const doCopy = async () => {
   document.getElementById("depositor_address").value = evn.diaChi;
   let { soHoaDon, tongCong } = JSON.parse(localStorage.getItem("tongcong"));
   if (evn.ma && !soHoaDon.includes(evn.ma)) {
-    tongCong += Math.ceil(parseInt(evn.soTien) / 1000);
+    tongCong += Math.ceil(parseInt(evn.soTien)/1000);
     soHoaDon.push(evn.ma);
     localStorage.setItem("tongcong", JSON.stringify({ tongCong, soHoaDon }));
     document.getElementById("lbl_tien").textContent = tongCong.toLocaleString();
@@ -108,14 +108,14 @@ const doCopy = async () => {
     ).textContent = `Cộng ${soHoaDon.length}:`;
     document.getElementById("txt_customer_value").value = "";
   }
-  // if (evn.ma)
-  //   $.ajax({
-  //     url: "https://app.hotham.vn/api/evns",
-  //     type: "POST",
-  //     headers: headerParams,
-  //     async: true,
-  //     data: evn,
-  //   });
+  if (evn.ma)
+    $.ajax({
+      url: "https://app.hotham.vn/api/evns",
+      type: "POST",
+      headers: headerParams,
+      async: true,
+      data: evn,
+    });
   //if(evn.ten) await searchBHYT(evn.ten)
 };
 

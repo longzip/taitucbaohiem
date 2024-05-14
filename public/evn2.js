@@ -32,11 +32,10 @@ const saveWallet = () => {
 let tongTien = 0;
 
 const daThanhToan = () =>
-  Math.round(
+  Math.ceil(
     (parseInt(localStorage.getItem("ourarraykey")) -
       parseInt($("#wallet-current-balance").text().replaceAll(".", ""))) /
-      1000 +
-      0.4
+      1000
   );
 
 const showWallet = () => {
@@ -52,15 +51,16 @@ const unLock = () => {
 };
 const tienThua = () => {
   const { tongCong } = JSON.parse(localStorage.getItem("tongcong"));
-  if (
-    tongCong ===
-    parseInt(localStorage.getItem("ourarraykey")) -
-      parseInt($("#wallet-current-balance").text().replaceAll(".", ""))
-  )
-    return (
-      parseInt(document.getElementById("txt_tien_value").value) - daThanhToan()
-    );
-  else return 0;
+  return parseInt(document.getElementById("txt_tien_value").value) - tongCong;
+  //   if (
+  //     tongCong ===
+  //     parseInt(localStorage.getItem("ourarraykey")) -
+  //       parseInt($("#wallet-current-balance").text().replaceAll(".", ""))
+  //   )
+  //     return (
+  //       parseInt(document.getElementById("txt_tien_value").value) - daThanhToan()
+  //     );
+  //   else return 'Lỗi';
 };
 
 const tienTra = () =>
@@ -99,7 +99,7 @@ const doCopy = async () => {
   document.getElementById("depositor_address").value = evn.diaChi;
   let { soHoaDon, tongCong } = JSON.parse(localStorage.getItem("tongcong"));
   if (evn.ma && !soHoaDon.includes(evn.ma)) {
-    tongCong += parseInt(evn.soTien);
+    tongCong += Math.ceil(parseInt(evn.soTien) / 1000);
     soHoaDon.push(evn.ma);
     localStorage.setItem("tongcong", JSON.stringify({ tongCong, soHoaDon }));
     document.getElementById("lbl_tien").textContent = tongCong.toLocaleString();
@@ -108,15 +108,14 @@ const doCopy = async () => {
     ).textContent = `Cộng ${soHoaDon.length}:`;
     document.getElementById("txt_customer_value").value = "";
   }
-  if (evn.ma)
-    $.ajax({
-      url: "https://app.hotham.vn/api/evns",
-      type: "POST",
-      headers: headerParams,
-      async: true,
-      data: evn,
-    });
-  //if(evn.ten) await searchBHYT(evn.ten)
+  //   if (evn.ma)
+  //     $.ajax({
+  //       url: "https://app.hotham.vn/api/evns",
+  //       type: "POST",
+  //       headers: headerParams,
+  //       async: true,
+  //       data: evn,
+  //     });
 };
 
 function drawPrintEVN(trans) {
@@ -193,7 +192,7 @@ function drawPrintEVN(trans) {
 
   _container.print({
     globalStyles: false,
-    stylesheet: "https://app.buudienxatulap.ga/printv2.css",
+    stylesheet: "/printv2.css",
   });
 }
 
@@ -685,13 +684,13 @@ width="70px" height="70px" viewBox="0 0 1160 1160" enable-background="new 0 0 11
       </div>
       <div class="col-8" style="padding-top: 5px;font-size: 14px;">
           <div style="text-align: center">
-              <b>THANH TOÁN TIỀN ĐIỆN QUA BƯU ĐIỆN XÃ TỰ LẬP</b>
+              <b>THANH TOÁN TIỀN ĐIỆN QUA BƯU ĐIỆN VHX TỰ LẬP</b>
           </div>
           <div style="text-align: center;padding-top: 2px;font-size: 10px;">
           (từ <span id="start_date">20/04/2019</span> đến <span id="end_date">20/04/2019</span>)<br>
           </div>
           <div style="text-align: center;padding-top: 5px;font-size: 18px;">
-              💥Danh sách đầy đủ các dịch vụ và lịch làm việc của bưu điện xã truy cập website www.hotham.vn.
+              💥 Lịch thu: Buổi sáng từ 8h00- 11h00 (Các ngày 13, 14 & 15 hàng tháng, nghỉ CN).
           </div>
       </div>
       <div class="col-2">
@@ -754,9 +753,9 @@ width="70px" height="70px" viewBox="0 0 1160 1160" enable-background="new 0 0 11
               </div>
               <div class="item" style="display: flex;align-items: center">
                   <div>
-                      Hình thức thanh toán:
+                      NV: <span style="font-weight: bold;">Hồ Thị Thắm - 0978.333.963 </span>
                   </div>
-                  <div style="font-weight: bold;" id="payment_method">379 PHUNG SON A TAN LONG PH PG</div>
+                  (<div id="payment_method">379 PHUNG SON A TAN LONG PH PG</div>)
               </div>
               <div class="item" style="display: flex;align-items: start">
                   <div style="min-width: -moz-max-content;min-width: max-content;">
@@ -822,13 +821,9 @@ width="70px" height="70px" viewBox="0 0 1160 1160" enable-background="new 0 0 11
 
               </tr>
               <tr>
-                  <td colspan="3" style="text-align: left; padding-left: 5px; font-size: 11px;">
-                  📌Lưu ý:
-                      <ul>
-                      <li>Để thanh toán tiền điện bạn cần thông báo mã khách hàng Điện lực (cung cấp mã thẻ khách hàng), nộp tiền cho nhân viên bưu điện.</li>
-                      <li>Quý khách hàng nhận biên lai thu tiền và giữ lại làm căn cứ đã thanh toán tiền điện qua bưu điện.</li>
-                      </ul>
-                      Khi cần hỗ trợ bạn liên hệ/zalo 0978333963 (chị Hồ Thị Thắm) - thay anh Lập nghỉ. Hoặc đến trực tiếp điểm Bưu điện xã để được hỗ trợ.
+                  <td colspan="3" style="text-align: left; padding-left: 5px; font-size: 14px;">
+                  📌ĐÓNG TIỀN BHXH TỰ NGUYỆN + GIA HẠN THẺ BHYT QUA BƯU ĐIỆN:<br>
+                      Người dân khi muốn <ins>tham gia BHXH tự nguyện</ins> (hỗ trợ 66K/tháng tiền đóng) để hưởng chế độ hưu trí và tử tuất, <ins>gia hạn thẻ bảo hiểm y tế (BHYT)</ins> có <strong>giảm trừ mức đóng</strong> chỉ cần đến trực tiếp Điểm thu BHXH, BHYT Bưu điện VHX Tự Lập <em>(thôn Phú Mỹ, xã Tự Lập, huyện Mê Linh, tp Hà Nội)</em> <strong>gặp chị Hồ Thị Thắm (<del>thay anh Lập nghỉ</del>)</strong> thông báo số BHXH (cung cấp mã thẻ BHYT cũ), nộp tiền đóng & nhận biên lai thu tiền.
                   </td>
 
               </tr>

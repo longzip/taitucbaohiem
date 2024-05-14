@@ -304,14 +304,22 @@ export const xem = async ({ commit }, payload) => {
     ...trangThaiThe,
   });
 
-  const theBHYT = await luuBhyt({
+  try {
+    const theBHYT = await luuBhyt({
+      ...payload,
+      ...thongTinTheHGD,
+      ...thongTinTK1,
+      ...trangThaiThe,
+    });
+    await commit("updateBhyt", theBHYT);
+    return theBHYT;
+  } catch (error) {}
+  return {
     ...payload,
     ...thongTinTheHGD,
     ...thongTinTK1,
     ...trangThaiThe,
-  });
-  await commit("updateBhyt", theBHYT);
-  return theBHYT;
+  };
 };
 
 export const traCuuTheoTen = async (
