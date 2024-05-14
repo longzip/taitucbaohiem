@@ -682,7 +682,13 @@ export default defineComponent({
     },
     copySoDienThoaiToClipboard() {
       navigator.clipboard
-        .writeText(this.khls.map((t) => t.senderPhone).join())
+        .writeText(
+          this.khls
+            .map(
+              ({ senderName, senderPhone }) => `${senderName}\t${senderPhone}`
+            )
+            .join("\t\n")
+        )
         .then(
           function () {
             Notify.create({

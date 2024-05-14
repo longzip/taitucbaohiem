@@ -297,6 +297,12 @@ export const xem = async ({ commit }, payload) => {
   );
 
   const { thongTinTK1, thongTinTheHGD, trangThaiThe } = result;
+  await commit("updateBhyt", {
+    ...payload,
+    ...thongTinTheHGD,
+    ...thongTinTK1,
+    ...trangThaiThe,
+  });
 
   const theBHYT = await luuBhyt({
     ...payload,

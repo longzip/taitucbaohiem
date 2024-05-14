@@ -243,7 +243,14 @@ export default defineComponent({
     copySoDienThoaiToClipboard() {
       navigator.clipboard
         .writeText(
-          [...new Set(this.evns.map((e) => e.soDienThoai))].join("\r\n")
+          [
+            ...new Set(
+              this.evns.map(
+                ({ ma, ten, soDienThoai }) =>
+                  `${ten} PD${ma.slice(-5)}\t${soDienThoai}`
+              )
+            ),
+          ].join("\r\n")
         )
         .then(
           function () {
