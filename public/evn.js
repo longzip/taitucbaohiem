@@ -52,15 +52,15 @@ const unLock = () => {
 const tienThua = () => {
   const { tongCong } = JSON.parse(localStorage.getItem("tongcong"));
   return parseInt(document.getElementById("txt_tien_value").value) - tongCong;
-//   if (
-//     tongCong ===
-//     parseInt(localStorage.getItem("ourarraykey")) -
-//       parseInt($("#wallet-current-balance").text().replaceAll(".", ""))
-//   )
-//     return (
-//       parseInt(document.getElementById("txt_tien_value").value) - daThanhToan()
-//     );
-//   else return 'Lỗi';
+  //   if (
+  //     tongCong ===
+  //     parseInt(localStorage.getItem("ourarraykey")) -
+  //       parseInt($("#wallet-current-balance").text().replaceAll(".", ""))
+  //   )
+  //     return (
+  //       parseInt(document.getElementById("txt_tien_value").value) - daThanhToan()
+  //     );
+  //   else return 'Lỗi';
 };
 
 const tienTra = () =>
@@ -99,7 +99,7 @@ const doCopy = async () => {
   document.getElementById("depositor_address").value = evn.diaChi;
   let { soHoaDon, tongCong } = JSON.parse(localStorage.getItem("tongcong"));
   if (evn.ma && !soHoaDon.includes(evn.ma)) {
-    tongCong += Math.ceil(parseInt(evn.soTien)/1000);
+    tongCong += Math.ceil(parseInt(evn.soTien) / 1000);
     soHoaDon.push(evn.ma);
     localStorage.setItem("tongcong", JSON.stringify({ tongCong, soHoaDon }));
     document.getElementById("lbl_tien").textContent = tongCong.toLocaleString();
@@ -193,7 +193,7 @@ function drawPrintEVN(trans) {
 
   _container.print({
     globalStyles: false,
-    stylesheet: "https://store.hotham.vn/printv2.css",
+    stylesheet: "https://todo.hotham.vn/printv2.css",
   });
 }
 
