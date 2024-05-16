@@ -72,7 +72,7 @@ export default defineComponent({
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maXa=${
+      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maXaUpdate=${
         this.userDetails.maXa
       }&maSoBhxhs=${this.bhyts.map((i) => i.maSoBhxh).join(",")}`;
       a.click();

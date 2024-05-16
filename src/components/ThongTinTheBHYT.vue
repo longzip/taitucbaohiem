@@ -613,9 +613,9 @@ export default {
       const isGiaHan =
         new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0);
       const smsText = `
-          Xin chào!\r\nMã thẻ: ${
-            t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
-          }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
+      ${t.moTa}!\r\nMã thẻ: ${
+        t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+      }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
         t.ngaySinhDt
       ).getFullYear()}; Hạn thẻ: ${new Date(
         t.tuNgayDt
@@ -623,10 +623,10 @@ export default {
         t.denNgayDt
       ).toLocaleDateString()} (${this.getDateDiff(
         t.denNgayDt
-      )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam.slice(
+      )} ngày); Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam?.slice(
         6,
         8
-      )}/${t.ngay5Nam.slice(4, 6)}/${t.ngay5Nam.slice(0, 4)}.
+      )}/${t.ngay5Nam?.slice(4, 6)}/${t.ngay5Nam?.slice(0, 4)}.
           `;
       navigator.clipboard
         .writeText(
