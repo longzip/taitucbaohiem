@@ -600,12 +600,7 @@ export default {
     },
     async copyUrlToClipboard(t) {
       try {
-        if (
-          !t.ngaySinhDt ||
-          !t.denNgayDt ||
-          date.getDateDiff(new Date(), new Date(t.denNgayDt), "days") < 30
-        )
-          t = await this.xem({ maSoBhxh: t.maSoBhxh });
+        t = await this.xem({ maSoBhxh: t.maSoBhxh });
       } catch (error) {
         console.log(error);
       }
