@@ -608,7 +608,7 @@ export default {
       const isGiaHan =
         new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0);
       const smsText = `
-      ${t.moTa}!\r\nMã thẻ: ${
+      ${t.moTa || "Lỗi"}!\r\nMã thẻ: ${
         t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
       }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
         t.ngaySinhDt

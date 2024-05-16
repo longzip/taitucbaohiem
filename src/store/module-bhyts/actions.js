@@ -311,8 +311,8 @@ export const xem = async ({ commit }, payload) => {
       ...thongTinTK1,
       ...trangThaiThe,
     });
-    await commit("updateBhyt", theBHYT);
-    return theBHYT;
+    await commit("updateBhyt", { ...trangThaiThe, ...theBHYT });
+    return { ...trangThaiThe, ...theBHYT };
   } catch (error) {}
   return {
     ...payload,
