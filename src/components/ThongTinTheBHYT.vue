@@ -48,7 +48,7 @@
         }}</a
         ><a
           target="_blank"
-          :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
+          :href="`https://longwebstudio.amycos.vn/wordpress/wp-content/app/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
           ><q-icon class="q-ml-sm" name="print" color="blue"
         /></a>
       </q-item-label>
