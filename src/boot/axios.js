@@ -16,7 +16,7 @@ export const apiStore = axios.create({
 });
 
 export const api = axios.create({
-  baseURL: "https://app.hotham.vn",
+  baseURL: "https://longwebstudio.amycos.vn/wordpress/wp-content/app",
   headers: {
     Authorization: `Bearer 2|N04KZuJ0sVeHX3puFzxXW9yEOWWvffrQh7El9e95`,
   },
