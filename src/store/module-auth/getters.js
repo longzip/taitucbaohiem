@@ -12,3 +12,5 @@ export const findUser = (state) => (userId) => state.users[userId];
 export const isLogin = (state) => state.isLogin;
 
 export const userDetails = (state) => state.userDetails;
+
+export const maXa = (state) => state.userDetails.maXa;

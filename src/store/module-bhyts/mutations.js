@@ -4,6 +4,9 @@ export const setBhyts = (state, payload) => {
 export const setIsRemove = (state, payload) => {
   state.isRemove = !state.isRemove;
 };
+export const setMaXa = (state, payload) => {
+  state.maXa = payload;
+};
 
 export const getAllBhyts = (state, payload) => {
   state.bhyts = payload;

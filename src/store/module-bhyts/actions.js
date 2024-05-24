@@ -10,6 +10,10 @@ const sleep = () => {
 export const batTatRemove = ({ commit }, payload) => {
   commit("setIsRemove", payload);
 };
+
+export const capNhatMaXa = ({ commit }, payload) => {
+  commit("setMaXa", payload);
+};
 export const xoaThanhVienHGD = ({ commit }, payload) => {
   commit("removeBhyt", payload);
 };
@@ -44,11 +48,10 @@ export const capNhatBHXHTN = async ({ dispatch, state }, payload) => {
 };
 
 export const saveBHXHTN = async (
-  { commit },
+  { commit, rootGetters },
   { maSoBhxh, mucDong, maPhuongThucDong, thangBd, tienNop }
 ) => {
   const t = { 1: 1, 3: 3, 6: 4, 12: 7 };
-
   const { data: bhytUpdate } = await api.put(
     `/api/bhyts/${maSoBhxh}/tong-tien`,
     {
@@ -61,6 +64,7 @@ export const saveBHXHTN = async (
       mucDong,
       maPhuongThucDong,
       tienNop,
+      maXa: rootGetters["auth/maXa"],
     }
   );
   await commit("updateBhyt", bhytUpdate);
@@ -286,7 +290,7 @@ export const maTraCuu = async ({}, bienLaiId) => {
   return result[0];
 };
 
-export const xem = async ({ commit }, payload) => {
+export const xem = async ({ commit, rootGetters }, payload) => {
   const { maSoBhxh } = payload;
   let {
     data: { result },
@@ -310,6 +314,7 @@ export const xem = async ({ commit }, payload) => {
       ...thongTinTheHGD,
       ...thongTinTK1,
       ...trangThaiThe,
+      maXa: rootGetters["auth/maXa"],
     });
     await commit("updateBhyt", { ...trangThaiThe, ...theBHYT });
     return { ...trangThaiThe, ...theBHYT };
@@ -534,7 +539,7 @@ export const capNhatBienLai = async ({ commit }, payload) => {
   }
 };
 
-export const daXyLy = async ({ commit, dispatch }, payload) => {
+export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
   const namNay = new Date().getFullYear();
   const thangNay = `${namNay}-${new Date().getMonth()}`;
   for (let index = 0; index < payload.length; index++) {
@@ -557,9 +562,11 @@ export const daXyLy = async ({ commit, dispatch }, payload) => {
             isBHXHTN: 0, // đã nộp bhxhtn
             soBienLaiTN: soBienLai,
             bienLaiIdTN: bienLaiId,
-            disabled: trangThaiHoSo !== 9,
+            disabled: 0,
+            completed: trangThaiHoSo !== 9,
             maThuTuc,
             ngayLapTN: ngayBienLai?.split("/").reverse().join("-"),
+            maXa: rootGetters["auth/maXa"],
           });
           await commit("updateBhyt", data);
           if (
@@ -701,9 +708,13 @@ export const loaiBo = async ({ commit }, { maSoBhxh, disabled }) => {
   commit("updateBhyt", data);
 };
 
-export const theoDoi = async ({ commit }, { maSoBhxh, completed }) => {
+export const theoDoi = async (
+  { commit, rootGetters },
+  { maSoBhxh, completed }
+) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/completed`, {
     completed: !(completed == "1"),
+    maXa: rootGetters["auth/maXa"],
   });
   commit("updateBhyt", data);
 };

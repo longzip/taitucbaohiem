@@ -95,7 +95,7 @@
               <q-item-section>Copy tất cả số điện thoại</q-item-section>
             </q-item>
             <q-item clickable @click="copyNamePhoneClipboard" v-close-popup>
-              <q-item-section>Copy danh bạ</q-item-section>
+              <q-item-section>Lưu danh bạ</q-item-section>
             </q-item>
             <q-item clickable @click="batTatRemove" v-close-popup>
               <q-item-section>Tắt/Bật danh sách</q-item-section>
@@ -671,48 +671,50 @@ export default {
         );
     },
     copyNamePhoneClipboard() {
-      navigator.clipboard
-        .writeText(
-          "Name\tPhone\r\n" +
-            [
-              ...new Set(
-                this.bhyts
-                  .filter((t) => t.soDienThoai2 || t.soDienThoai)
-                  .map(
-                    ({
-                      soDienThoai2,
-                      soDienThoai,
-                      hoTen,
-                      ngaySinhDt,
-                      userName,
-                      soTheBhyt,
-                    }) =>
-                      `${hoTen} ${soTheBhyt.slice(0, 2)}${
-                        userName == this.userDetails.id ||
-                        userName == this.userDetails.maNhanVienThu
-                          ? ""
-                          : "_"
-                      }${new Date(ngaySinhDt).getFullYear()}\t${
-                        soDienThoai2 || soDienThoai
-                      }`
-                  )
-              ).values(),
-            ].join("\r\n")
-        )
-        .then(
-          function () {
-            Notify.create({
-              type: "positive",
-              message: `Bạn đã sao chép thành công!`,
-            });
-          },
-          function (err) {
-            Notify.create({
-              type: "negative",
-              message: "Không thực hiện được!" + err,
-            });
-          }
-        );
+      this.download(
+        "NamePhone.csv",
+        "Name\tPhone\r\n" +
+          [
+            ...new Set(
+              this.bhyts
+                .filter((t) => t.soDienThoai2 || t.soDienThoai)
+                .map(
+                  ({
+                    soDienThoai2,
+                    soDienThoai,
+                    hoTen,
+                    ngaySinhDt,
+                    userName,
+                    soTheBhyt,
+                  }) =>
+                    `${hoTen} ${soTheBhyt?.slice(0, 2) || ""}${
+                      userName == this.userDetails.id ||
+                      userName == this.userDetails.maNhanVienThu
+                        ? ""
+                        : "_"
+                    }${new Date(ngaySinhDt).getFullYear()}\t${
+                      soDienThoai2 || soDienThoai
+                    }`
+                )
+            ).values(),
+          ].join("\r\n")
+      );
+    },
+    download(filename, text) {
+      var pom = document.createElement("a");
+      pom.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+      );
+      pom.setAttribute("download", filename);
+
+      if (document.createEvent) {
+        var event = document.createEvent("MouseEvents");
+        event.initEvent("click", true, true);
+        pom.dispatchEvent(event);
+      } else {
+        pom.click();
+      }
     },
   },
 };
