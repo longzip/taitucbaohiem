@@ -265,7 +265,7 @@ export default {
     },
 
     async loadTaiTucBHXH() {
-      await this.getDanhSachKhachHangTaiTuc({
+      const khtts = await this.getDanhSachKhachHangTaiTuc({
         filterItems: [],
         maxResultCount: 500,
         skipCount: 0,
@@ -275,12 +275,10 @@ export default {
         type: -1,
         loaiDichVu: 0,
       });
-      this.capNhatBHXHTN(
-        [...new Set(this.bhyts.map((t) => t.maSoBHXH))].join()
-      );
+      this.capNhatBHXHTN([...new Set(khtts.map((t) => t.maSoBHXH))].join());
     },
     async loadTaiTucBHYT() {
-      await this.getDanhSachKhachHangTaiTuc({
+      const khtts = await this.getDanhSachKhachHangTaiTuc({
         filterItems: [],
         maxResultCount: 5000,
         skipCount: 0,
@@ -290,7 +288,7 @@ export default {
         type: -1,
         loaiDichVu: 1,
       });
-      this.dongBoDuLieu([...new Set(this.bhyts.map((t) => t.maSoBHXH))].join());
+      this.dongBoDuLieu([...new Set(khtts.map((t) => t.maSoBHXH))].join());
     },
 
     async loadBaoCaoChiTietGiaoDich() {

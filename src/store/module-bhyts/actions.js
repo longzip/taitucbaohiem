@@ -70,19 +70,18 @@ export const saveBHXHTN = async (
   await commit("updateBhyt", bhytUpdate);
 };
 export const getDanhSachKhachHangTaiTuc = async ({ commit }, payload) => {
-  commit("setBhyts", []);
-
   try {
     const { data } = await apiServices.post(
       "/api/services/app/BaoCaoTongHopGDThu/DanhSachKhachHangTaiTuc",
       payload
     );
-    commit("setBhyts", data.result.items);
+    return data.result.items;
   } catch (error) {
     Notify.create({
       type: "negative",
       message: `Đã xảy ra lỗi!`,
     });
+    return [];
   }
 };
 export const getBaoCaoChiTietGiaoDich = async (
@@ -360,7 +359,7 @@ export const traCuuTheoTen = async (
 };
 
 export const dongBoDuLieu = async ({ dispatch }, payload) => {
-  const maSoBhxhs = payload.split(",");
+  const maSoBhxhs = payload.split(",").reverse();
   for (let index = 0; index < maSoBhxhs.length; index++) {
     await sleep();
     const maSoBhxh = maSoBhxhs[index];
