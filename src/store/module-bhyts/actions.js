@@ -117,7 +117,7 @@ export const getBaoCaoChiTietGiaoDich = async (
 };
 
 export const traCuuBhyts = async ({ commit }, payload) => {
-  commit("setBhyts", []);
+  // commit("setBhyts", []);
   const { searchText, maXa } = payload;
   if (!searchText) return;
   const danhSachTimKiem = searchText.split(",");

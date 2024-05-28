@@ -573,7 +573,7 @@ export default {
         this.searchText = searchText = thongSoTheBHYTs[0];
       }
       const danhSachTimKiem = searchText.split(",");
-      if (danhSachTimKiem.length > 1)
+      if (danhSachTimKiem.length === 1)
         await this.traCuuBhyts({ searchText, maXa: this.userDetails.maXa });
       const regex = /[0-9]/g;
       for (let index = 0; index < danhSachTimKiem.length; index++) {
@@ -587,7 +587,7 @@ export default {
           if (danhSachTimKiem.length === 1)
             try {
               await this.getBhyts({
-                name: data,
+                name: maSo.join(""),
                 maXa: data.length < 11 ? this.userDetails.maXa : null,
               });
             } catch (error) {}
