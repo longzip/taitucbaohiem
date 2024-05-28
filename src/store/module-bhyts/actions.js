@@ -307,17 +307,19 @@ export const xem = async ({ commit, rootGetters }, payload) => {
     ...trangThaiThe,
   });
 
-  try {
-    const theBHYT = await luuBhyt({
-      ...payload,
-      ...thongTinTheHGD,
-      ...thongTinTK1,
-      ...trangThaiThe,
-      maXa: rootGetters["auth/maXa"],
-    });
-    await commit("updateBhyt", { ...trangThaiThe, ...theBHYT });
-    return { ...trangThaiThe, ...theBHYT };
-  } catch (error) {}
+  if (thongTinTK1)
+    try {
+      const theBHYT = await luuBhyt({
+        ...payload,
+        ...thongTinTheHGD,
+        ...thongTinTK1,
+        ...trangThaiThe,
+        maXa: rootGetters["auth/maXa"],
+      });
+      await commit("updateBhyt", { ...trangThaiThe, ...theBHYT });
+      return { ...trangThaiThe, ...theBHYT };
+    } catch (error) {}
+
   return {
     ...payload,
     ...thongTinTheHGD,

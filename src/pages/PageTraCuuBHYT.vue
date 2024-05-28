@@ -517,7 +517,7 @@ export default {
           this.searchText = data;
           this.getBhyts({
             name: data,
-            maXa: data.length < 9 ? this.userDetails.maXa : null,
+            maXa: data.length < 11 ? this.userDetails.maXa : null,
           });
         });
     },
@@ -583,6 +583,14 @@ export default {
           .join(" ");
         const maSo = name.match(regex);
         if (maSo) {
+          //
+          if (danhSachTimKiem.length === 1)
+            try {
+              await this.getBhyts({
+                name: data,
+                maXa: data.length < 11 ? this.userDetails.maXa : null,
+              });
+            } catch (error) {}
           await this.dongBoDuLieu(maSo.join(""));
           await this.sleep(500);
         } else {
