@@ -592,7 +592,8 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
             userName,
             soBienLai,
             bienLaiId,
-            disabled: trangThaiHoSo !== 9,
+            disabled: 0,
+            completed: trangThaiHoSo !== 9,
             maThuTuc,
             ngayLap: ngayBienLai?.split("/").reverse().join("-"),
           });
