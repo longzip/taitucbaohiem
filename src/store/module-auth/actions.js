@@ -73,7 +73,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
             let { hetHan, isLogin } = userDetails;
             if (!hetHan) {
               const { addToDate } = date;
-              const newDate = addToDate(new Date(), { days: 15 });
+              const newDate = addToDate(new Date(), { days: 7 });
               hetHan = newDate.toISOString().slice(0, 10);
             }
             console.log(date.getDateDiff(new Date(), new Date(hetHan), "days"));

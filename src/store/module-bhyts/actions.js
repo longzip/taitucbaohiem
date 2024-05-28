@@ -482,7 +482,7 @@ export const huyThuTien = async (
     const { ngayBienLai } = await dispatch("maTraCuu", bienLaiId);
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       userName,
-      disabled: 0,
+      completed: 0,
       tongTien: 0,
       ngayLap: ngayBienLai?.split("/").reverse().join("-"),
       isBHYT: 0,
@@ -503,7 +503,7 @@ export const thuTien = async (
         tienNop: tienNop.replace(/\D/g, ""),
         ngayLap: new Date().toISOString().slice(0, 10),
         userName,
-        disabled: 1,
+        completed: 1,
         isBHXHTN: 1,
         maXa,
       });
@@ -526,8 +526,7 @@ export const thuTien = async (
 export const capNhatBienLai = async ({ commit }, payload) => {
   for (let index = 0; index < payload.length; index++) {
     await sleep();
-    const { maSoBHXH, ngayBienLai, bienLaiId, soBienLai, soTienThu } =
-      payload[index];
+    const { maSoBHXH, ngayBienLai, soBienLai, soTienThu } = payload[index];
     try {
       const { data } = await api.put(`/api/bhyts/${maSoBHXH}/tong-tien`, {
         ngayLap: ngayBienLai,

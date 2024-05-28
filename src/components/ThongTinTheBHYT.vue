@@ -186,11 +186,8 @@
           {{ new Date(bhyt.denNgayBHYTBT).toLocaleDateString() }}</span
         >
       </q-item-label>
-      <q-icon
-        @click="xacNhanTheoDoi(bhyt)"
-        name="star"
-        :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
-      />
+      <!-- @click="xacNhanTheoDoi(bhyt)" -->
+      <q-icon name="star" :color="bhyt.completed == 1 ? 'yellow' : 'gray'" />
       <q-item-label caption>
         <q-badge class="q-mr-sm" v-if="bhyt.userName" color="gray">{{
           bhyt.userName
@@ -405,24 +402,24 @@ export default {
           });
         });
     },
-    xacNhanTheoDoi(bhyt) {
-      if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
-      this.$q
-        .dialog({
-          title: "Confirm",
-          message: "Bạn có muốn theo dõi?",
-          ok: {
-            push: true,
-          },
-          cancel: {
-            color: "negative",
-          },
-          persistent: true,
-        })
-        .onOk(() => {
-          this.theoDoi(bhyt);
-        });
-    },
+    // xacNhanTheoDoi(bhyt) {
+    //   if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
+    //   this.$q
+    //     .dialog({
+    //       title: "Confirm",
+    //       message: "Bạn có muốn theo dõi?",
+    //       ok: {
+    //         push: true,
+    //       },
+    //       cancel: {
+    //         color: "negative",
+    //       },
+    //       persistent: true,
+    //     })
+    //     .onOk(() => {
+    //       this.theoDoi(bhyt);
+    //     });
+    // },
     xacNhanHuyThu(bhyt, maThuTuc) {
       if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
       this.$q

@@ -601,7 +601,6 @@ export default {
               maHuyen: this.userDetails.maHuyen,
               maTinh: this.userDetails.maTinh,
             });
-            if (this.bhyts.length > 50) this.resetBhyt([]);
           } catch (error) {
             Notify.create({
               type: "negative",
