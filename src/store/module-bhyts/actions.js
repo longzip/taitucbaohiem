@@ -564,7 +564,10 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
             soBienLaiTN: soBienLai,
             bienLaiIdTN: bienLaiId,
             disabled: 0,
-            completed: trangThaiHoSo !== 9,
+            completed:
+              rootGetters["auth/userName"] == userName
+                ? trangThaiHoSo !== 9
+                : false,
             maThuTuc,
             ngayLapTN: ngayBienLai?.split("/").reverse().join("-"),
             maXa: rootGetters["auth/maXa"],
@@ -586,6 +589,10 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
       } else {
         try {
           const { ngayBienLai } = await dispatch("maTraCuu", bienLaiId);
+          // console.log(
+          //   rootGetters["auth/userName"],
+          //   rootGetters["auth/userName"] == userName
+          // );
           const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
             tongTien,
             isBHYT: 0, //Đã nộp bhyt
@@ -593,7 +600,10 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
             soBienLai,
             bienLaiId,
             disabled: 0,
-            completed: trangThaiHoSo !== 9,
+            completed:
+              rootGetters["auth/userName"] == userName
+                ? trangThaiHoSo !== 9
+                : false,
             maThuTuc,
             ngayLap: ngayBienLai?.split("/").reverse().join("-"),
           });
