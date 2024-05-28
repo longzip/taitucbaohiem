@@ -514,7 +514,7 @@ export const thuTien = async (
         tongTien: tongTien.replace(/\D/g, ""),
         ngayLap: new Date().toISOString().slice(0, 10),
         userName,
-        disabled: 1,
+        completed: 1,
         isBHYT: 1,
       });
       await commit("updateBhyt", data);
@@ -731,7 +731,7 @@ export const huyThuBHYT = async ({ commit }, { maSoBhxh }) => {
 export const huyThuBHXHTN = async ({ commit }, { maSoBhxh }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhxhtn`, {
     isBHXHTN: 0,
-    disabled: 0,
+    completed: 0,
     ngayLapTN: null,
   });
   commit("updateBhyt", data);
