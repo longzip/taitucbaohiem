@@ -517,7 +517,7 @@ export default {
           this.searchText = data;
           this.getBhyts({
             name: data,
-            maXa: data.length < 11 ? this.userDetails.maXa : null,
+            maXa: data.length < 9 ? this.userDetails.maXa : null,
           });
         });
     },
@@ -588,7 +588,7 @@ export default {
             try {
               await this.getBhyts({
                 name: maSo.join(""),
-                maXa: data.length < 11 ? this.userDetails.maXa : null,
+                maXa: maSo.length < 9 ? this.userDetails.maXa : null,
               });
             } catch (error) {}
           await this.dongBoDuLieu(maSo.join(""));

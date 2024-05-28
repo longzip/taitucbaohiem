@@ -300,12 +300,6 @@ export const xem = async ({ commit, rootGetters }, payload) => {
   );
 
   const { thongTinTK1, thongTinTheHGD, trangThaiThe } = result;
-  await commit("updateBhyt", {
-    ...payload,
-    ...thongTinTheHGD,
-    ...thongTinTK1,
-    ...trangThaiThe,
-  });
 
   if (thongTinTK1)
     try {
@@ -318,7 +312,14 @@ export const xem = async ({ commit, rootGetters }, payload) => {
       });
       await commit("updateBhyt", { ...trangThaiThe, ...theBHYT });
       return { ...trangThaiThe, ...theBHYT };
-    } catch (error) {}
+    } catch (error) {
+      await commit("updateBhyt", {
+        ...payload,
+        ...thongTinTheHGD,
+        ...thongTinTK1,
+        ...trangThaiThe,
+      });
+    }
 
   return {
     ...payload,
