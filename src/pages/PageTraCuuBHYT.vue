@@ -60,7 +60,19 @@
               "
               v-close-popup
             >
-              <q-item-section>Tái tục BHXH (All)</q-item-section>
+              <q-item-section>BHXH (me)</q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              @click="
+                loadBHXHTNs({
+                  tienNop: 1,
+                  maXa: userDetails.maXa,
+                })
+              "
+              v-close-popup
+            >
+              <q-item-section>BHXH (All)</q-item-section>
             </q-item>
 
             <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
@@ -114,18 +126,6 @@
             </q-item>
             <q-item clickable @click="capNhatBHXHTN(searchText)" v-close-popup>
               <q-item-section>Đồng bộ BHXH TN</q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              @click="
-                loadBHXHTNs({
-                  tienNop: 1,
-                  maXa: userDetails.maXa,
-                })
-              "
-              v-close-popup
-            >
-              <q-item-section>Tìm BHXH</q-item-section>
             </q-item>
 
             <q-item

@@ -90,7 +90,7 @@
         }}</q-item-label
       >
 
-      <q-item-label v-if="!(bhyt.tienNop == 0)" caption lines="2"
+      <q-item-label v-if="bhyt.maPhuongThucDong" caption lines="2"
         ><span
           :class="{
             'bg-red text-white text-bold q-pa-xs':
