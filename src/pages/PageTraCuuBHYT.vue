@@ -573,8 +573,7 @@ export default {
         this.searchText = searchText = thongSoTheBHYTs[0];
       }
       const danhSachTimKiem = searchText.split(",");
-      //if (danhSachTimKiem.length === 1)
-      //  await this.traCuuBhyts({ searchText, maXa: this.userDetails.maXa });
+
       const regex = /[0-9]/g;
       for (let index = 0; index < danhSachTimKiem.length; index++) {
         const name = danhSachTimKiem[index]
@@ -606,6 +605,8 @@ export default {
               type: "negative",
               message: "Không thực hiện được!" + error,
             });
+            danhSachTimKiem.length === 1;
+            await this.traCuuBhyts({ searchText, maXa: this.userDetails.maXa });
           }
         }
       }
