@@ -355,7 +355,7 @@ export const traCuuTheoTen = async (
         hoTenDaTims.push(hoTens[index]);
         localStorage.setItem("hoTens", JSON.stringify(hoTenDaTims));
       }
-    }
+    } else dispatch("traCuuBhyts", { searchText: hoTens[index], maXa });
   }
 
   // commit("getAllBhyts", [...bhyts.values()]);
