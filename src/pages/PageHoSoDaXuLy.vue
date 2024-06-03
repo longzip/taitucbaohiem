@@ -43,6 +43,32 @@
             <q-item clickable @click="xuatC17M()" v-close-popup>
               <q-item-section>Xuất C17 tháng</q-item-section>
             </q-item>
+            <q-item
+              clickable
+              @click="
+                resetBhyt(
+                  searchText
+                    ? bhyts.filter((bhyt) => bhyt.userName !== searchText)
+                    : []
+                )
+              "
+              v-close-popup
+            >
+              <q-item-section>Xóa danh sách</q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              @click="
+                resetBhyt(
+                  searchText
+                    ? bhyts.filter((bhyt) => bhyt.userName === searchText)
+                    : []
+                )
+              "
+              v-close-popup
+            >
+              <q-item-section>Giữ lại danh sách</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </div>
@@ -401,7 +427,7 @@ export default {
     ...mapGetters("bhyts", ["bhyts", "soDienThoais"]),
   },
   methods: {
-    ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy", "XuatD03OrD05Excel"]),
+    ...mapActions("bhyts", ["hoSoDaXuLy", "daXyLy", "XuatD03OrD05Excel", "resetBhyt"]),
     async xuatC17() {
       if (this.dsSoBHXH || this.dsTheBHYT) {
         Notify.create({
