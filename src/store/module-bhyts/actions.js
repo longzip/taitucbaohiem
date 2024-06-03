@@ -501,7 +501,7 @@ export const thuTien = async (
       //Thu BHXH tự nguyện
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
         tienNop: tienNop.replace(/\D/g, ""),
-        ngayLap: new Date().toISOString().slice(0, 10),
+        ngayLapTN: new Date().toISOString().slice(0, 10),
         userName,
         completed: 1,
         isBHXHTN: 1,
@@ -563,7 +563,7 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
             isBHXHTN: 0, // đã nộp bhxhtn
             soBienLaiTN: soBienLai,
             bienLaiIdTN: bienLaiId,
-            disabled: 0,
+            // disabled: 0,
             completed:
               rootGetters["auth/userName"] == userName
                 ? trangThaiHoSo !== 9
@@ -599,7 +599,7 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
             userName,
             soBienLai,
             bienLaiId,
-            disabled: 0,
+            // disabled: 0,
             completed:
               rootGetters["auth/userName"] == userName
                 ? trangThaiHoSo !== 9

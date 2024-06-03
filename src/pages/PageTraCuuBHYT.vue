@@ -487,12 +487,12 @@ export default {
       }
       if (user === 1)
         this.getBhyts({
-          userName: this.searchText,
+          userName: this.userDetails.maNhanVienThu,
           isBHYT: 1,
         });
       else if (user === 0)
         this.getBhyts({
-          userName: this.searchText,
+          userName: this.userDetails.maNhanVienThu,
           isBHXHTN: 1,
         });
       else
