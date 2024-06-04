@@ -547,7 +547,7 @@ export default defineComponent({
     }) {
       try {
         const { data } = await this.$api.post(
-          "https://longwebstudio.amycos.vn/wordpress/wp-content/app/api/cods",
+          "https://lws.hotham.vn/wordpress/wp-content/app/api/cods",
           {
             soDienThoai,
             hoTen,
@@ -571,7 +571,7 @@ export default defineComponent({
         if (findCod) Object.assign(findCod, data);
         else this.allCods.push(data);
         await this.$api.put(
-          `https://longwebstudio.amycos.vn/wordpress/wp-content/app/api/khls/${soDienThoai}`,
+          `https://lws.hotham.vn/wordpress/wp-content/app/api/khls/${soDienThoai}`,
           {
             hoTen,
             hopDong,
@@ -598,7 +598,7 @@ export default defineComponent({
     async loadKHL(soDienThoai) {
       try {
         const { data } = await this.$api.get(
-          `https://longwebstudio.amycos.vn/wordpress/wp-content/app/api/khls/${soDienThoai}`
+          `https://lws.hotham.vn/wordpress/wp-content/app/api/khls/${soDienThoai}`
         );
         this.khl = data;
       } catch (error) {
@@ -611,7 +611,7 @@ export default defineComponent({
     async loadCods(soDienThoai) {
       try {
         const { data } = await this.$api.get(
-          `https://longwebstudio.amycos.vn/wordpress/wp-content/app/api/cods?name=${soDienThoai}`
+          `https://lws.hotham.vn/wordpress/wp-content/app/api/cods?name=${soDienThoai}`
         );
         this.cods = data;
       } catch (error) {
@@ -623,7 +623,7 @@ export default defineComponent({
     },
     async loadAllCods() {
       const { data } = await this.$api.get(
-        "https://longwebstudio.amycos.vn/wordpress/wp-content/app/api/cods"
+        "https://lws.hotham.vn/wordpress/wp-content/app/api/cods"
       );
       this.allCods = data;
       this.tongCuocDaThanhToan = this.allCods.reduce(

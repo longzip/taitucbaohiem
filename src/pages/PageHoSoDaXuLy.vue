@@ -453,7 +453,7 @@ export default {
         );
         let a = document.createElement("a");
         a.target = "_blank";
-        let link = `https://longwebstudio.amycos.vn/wordpress/wp-content/app/c17-excell/${new Date()
+        let link = `https://lws.hotham.vn/wordpress/wp-content/app/c17-excell/${new Date()
           .toISOString()
           .slice(0, 10)}/pdf?excell=true`;
         if (this.dsTheBHYT) link += `&bhyts=${this.dsTheBHYT}`;
@@ -483,7 +483,7 @@ export default {
       );
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `https://longwebstudio.amycos.vn/wordpress/wp-content/app/c17/${this.ky.slice(
+      a.href = `https://lws.hotham.vn/wordpress/wp-content/app/c17/${this.ky.slice(
         0,
         2
       )}`;
@@ -695,7 +695,7 @@ export default {
     async print(maThuTuc) {
       let a = document.createElement("a");
       a.target = "_blank";
-      let lienKet = `https://longwebstudio.amycos.vn/wordpress/wp-content/app/nop-bhyt/${new Date()
+      let lienKet = `https://lws.hotham.vn/wordpress/wp-content/app/nop-bhyt/${new Date()
         .toISOString()
         .slice(0, 10)}/pdf?`;
       if (this.daNopBHYT && (maThuTuc === 1 || maThuTuc === 3))
@@ -719,7 +719,7 @@ export default {
     async printC17(maThuTuc) {
       let a = document.createElement("a");
       a.target = "_blank";
-      let lienKet = `https://longwebstudio.amycos.vn/wordpress/wp-content/app/mau-c17/${new Date()
+      let lienKet = `https://lws.hotham.vn/wordpress/wp-content/app/mau-c17/${new Date()
         .toISOString()
         .slice(0, 10)}/pdf?tongTien=${
         maThuTuc === 1 ? this.daNopBHYT : this.daNopBHXH

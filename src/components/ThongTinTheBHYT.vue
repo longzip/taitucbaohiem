@@ -48,7 +48,7 @@
         }}</a
         ><a
           target="_blank"
-          :href="`https://longwebstudio.amycos.vn/wordpress/wp-content/app/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
+          :href="`https://lws.hotham.vn/wordpress/wp-content/app/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
           ><q-icon class="q-ml-sm" name="print" color="blue"
         /></a>
       </q-item-label>
@@ -187,7 +187,11 @@
         >
       </q-item-label>
       <!-- @click="xacNhanTheoDoi(bhyt)" -->
-      <q-icon name="star" :color="bhyt.completed == 1 ? 'yellow' : 'gray'" />
+      <q-icon
+        @click="xacNhanTheoDoi(bhyt)"
+        name="star"
+        :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
+      />
       <q-item-label caption>
         <q-badge class="q-mr-sm" v-if="bhyt.userName" color="gray">{{
           bhyt.userName
@@ -402,24 +406,24 @@ export default {
           });
         });
     },
-    // xacNhanTheoDoi(bhyt) {
-    //   if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
-    //   this.$q
-    //     .dialog({
-    //       title: "Confirm",
-    //       message: "Bạn có muốn theo dõi?",
-    //       ok: {
-    //         push: true,
-    //       },
-    //       cancel: {
-    //         color: "negative",
-    //       },
-    //       persistent: true,
-    //     })
-    //     .onOk(() => {
-    //       this.theoDoi(bhyt);
-    //     });
-    // },
+    xacNhanTheoDoi(bhyt) {
+      if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: "Bạn có muốn theo dõi?",
+          ok: {
+            push: true,
+          },
+          cancel: {
+            color: "negative",
+          },
+          persistent: true,
+        })
+        .onOk(() => {
+          this.theoDoi(bhyt);
+        });
+    },
     xacNhanHuyThu(bhyt, maThuTuc) {
       if (!bhyt.maSoBhxh) bhyt.maSoBhxh = bhyt.maSoBHXH;
       this.$q
@@ -596,16 +600,15 @@ export default {
       }
     },
     async copyUrlToClipboard(t) {
-      try {
-        t = await this.xem({ maSoBhxh: t.maSoBhxh });
-      } catch (error) {
-        console.log(error);
-      }
+      // try {
+      //   t = await this.xem({ maSoBhxh: t.maSoBhxh });
+      // } catch (error) {
+      //   console.log(error);
+      // }
       const [nam, thang] = new Date().toISOString().slice(0, 7).split("-");
       const isGiaHan =
         new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0);
-      const smsText = `
-      ${t.moTa || "Lỗi"}!\r\nMã thẻ: ${
+      const smsText = `Xin chào!\r\nMã thẻ: ${
         t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
       }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
         t.ngaySinhDt
@@ -649,6 +652,7 @@ export default {
           }
         );
       this.quaySoDienThoai(t.soDienThoai2 || t.soDienThoai);
+      this.theoDoi(t);
     },
     copyTextToClipboard(maSoBhxh) {
       navigator.clipboard
