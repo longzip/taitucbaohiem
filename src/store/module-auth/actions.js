@@ -79,7 +79,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
             console.log(date.getDateDiff(new Date(), new Date(hetHan), "days"));
             if (date.getDateDiff(new Date(hetHan), new Date(), "days") < 0)
               window.location.replace(
-                "https://lws.hotham.vn/cua-hang/phan-mem-quan-ly-tai-tuc-bao-hiem-lws/"
+                "https://longwebstudio.amycos.vn/cua-hang/phan-mem-quan-ly-tai-tuc-bao-hiem-lws/"
               );
             await commit("setIsLogin", isLogin);
 

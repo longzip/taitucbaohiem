@@ -270,7 +270,7 @@ export default defineComponent({
     async print() {
       let a = document.createElement("a");
       a.target = "_blank";
-      let lienKet = `https://lws.hotham.vn/wordpress/wp-content/app/nop-bhyt/${new Date()
+      let lienKet = `https://longwebstudio.amycos.vn/wordpress/wp-content/app/nop-bhyt/${new Date()
         .toISOString()
         .slice(0, 10)}/pdf?n=1`;
       if (this.tienDien) lienKet += `&tienDien=${this.tienDien}`;
