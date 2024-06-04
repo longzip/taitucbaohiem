@@ -110,7 +110,7 @@ const doCopy = async () => {
   }
   //   if (evn.ma)
   //     $.ajax({
-  //       url: "https://longwebstudio.amycos.vn/wordpress/wp-content/app/api/evns",
+  //       url: "https://lws.hotham.vn/wordpress/wp-content/app/api/evns",
   //       type: "POST",
   //       headers: headerParams,
   //       async: true,
