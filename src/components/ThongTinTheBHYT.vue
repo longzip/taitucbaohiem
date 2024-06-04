@@ -159,7 +159,7 @@
 
         <strong
           class="text-subtitle2 text-weight-bold"
-          @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+          @click="confirmDongBHXH(bhyt)"
           >{{
             bhyt.tienNop ? parseInt(bhyt.tienNop).toLocaleString() : "0"
           }}</strong
@@ -441,8 +441,8 @@ export default {
           persistent: true,
         })
         .onOk(() => {
-          if (maThuTuc) this.huyThuBHYT({ maSoBhxh: bhyt.maSoBhxh });
-          else this.huyThuBHXHTN({ maSoBhxh: bhyt.maSoBhxh });
+          if (maThuTuc) this.huyThuBHYT({ maSoBhxh: bhyt.maSoBhxh, userName: this.userDetails.id });
+          else this.huyThuBHXHTN({ maSoBhxh: bhyt.maSoBhxh, userName: this.userDetails.id  });
         });
     },
     getDateDiff(ngayHetHan) {
@@ -499,39 +499,7 @@ export default {
               });
             }
           );
-        this.$q
-          .dialog({
-            title: "Thu BHXH",
-            message: `Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${
-              t.hoTen
-            }, Ngày sinh: **/**/${new Date(
-              t.ngaySinhDt
-            ).getFullYear()}; Tên đơn vị đang tham gia: Đại lý ${
-              t.tenDonVi
-            }, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(
-              t.mucDong
-            ).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(
-              t.tienNsnnHoTro
-            ).toLocaleString()}đ). Đóng tiếp ${
-              t.phuongThucDong
-            } BHXH TN, tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(
-              0,
-              4
-            )} số tiền phải đóng ${parseInt(t.tienNop).toLocaleString()}đ.`,
-            prompt: {
-              model: t.tienNop.toLocaleString(),
-              type: "text", // optional
-            },
-            cancel: true,
-            persistent: true,
-          })
-          .onOk((data) => {
-            this.thuTien({
-              tienNop: data,
-              maSoBhxh,
-              userName: this.userDetails.maNhanVienThu,
-            });
-          });
+        this.confirmDongBHXH(t);
       } catch (error) {
         Notify.create({
           type: "negative",
@@ -539,8 +507,55 @@ export default {
         });
       }
     },
+    confirmDongBHXH(t) {
+      this.$q
+        .dialog({
+          title: "Thu BHXH",
+          message: t.thangBd
+            ? `Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${
+                t.hoTen
+              }, Ngày sinh: ${new Date(
+                t.ngaySinhDt
+              ).toLocaleDateString()}; Tên đơn vị đang tham gia: Đại lý ${
+                t.tenDonVi
+              }, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(
+                t.mucDong
+              ).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(
+                t.tienNsnnHoTro
+              ).toLocaleString()}đ). Đóng tiếp ${
+                t.phuongThucDong
+              } BHXH TN, tháng bắt đầu ${t.thangBd?.slice(
+                4
+              )}/${t.thangBd?.slice(0, 4)} số tiền phải đóng ${parseInt(
+                t.tienNop
+              ).toLocaleString()}đ.`
+            : `Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${
+                t.hoTen
+              }, Ngày sinh: ${new Date(
+                t.ngaySinhDt
+              ).toLocaleDateString()}; Mức đóng ${parseInt(
+                t.mucDong
+              ).toLocaleString()}đ. Đóng tiếp ${
+                t.maPhuongThucDong
+              } tháng BHXH TN, số tiền phải đóng ${parseInt(
+                t.tienNop
+              ).toLocaleString()}đ.`,
+          prompt: {
+            model: t.tienNop.toLocaleString(),
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          this.thuTien({
+            tienNop: data,
+            maSoBhxh: t.maSoBhxh || t.maSoBHXH,
+            userName: this.userDetails.maNhanVienThu,
+          });
+        });
+    },
     async copyMaTraCuuToClipboard({ bienLaiId, hoTen, maSoBhxh, maThuTuc }) {
-      console.log("skdfjkdfkjkjk");
       const { maXacNhan, ngayBienLai, soBienLai } = await this.maTraCuu(
         bienLaiId
       );

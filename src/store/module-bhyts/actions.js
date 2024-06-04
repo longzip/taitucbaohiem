@@ -731,18 +731,20 @@ export const theoDoi = async (
   commit("updateBhyt", data);
 };
 
-export const huyThuBHYT = async ({ commit }, { maSoBhxh }) => {
+export const huyThuBHYT = async ({ commit }, { maSoBhxh, userName }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhyt`, {
     isBHYT: 0,
-    disabled: 0,
+    completed: 0,
+    userName,
     ngayLap: null,
   });
   commit("updateBhyt", data);
 };
-export const huyThuBHXHTN = async ({ commit }, { maSoBhxh }) => {
+export const huyThuBHXHTN = async ({ commit }, { maSoBhxh, userName }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhxhtn`, {
     isBHXHTN: 0,
     completed: 0,
+    userName,
     ngayLapTN: null,
   });
   commit("updateBhyt", data);
