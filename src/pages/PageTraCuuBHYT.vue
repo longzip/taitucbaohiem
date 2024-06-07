@@ -160,7 +160,7 @@
                 resetBhyt(
                   searchText
                     ? bhyts.filter(
-                        (bhyt) => !bhyt.soDienThoai || !bhyt.soDienThoai2
+                        (bhyt) => !(bhyt.soDienThoai || bhyt.soDienThoai2)
                       )
                     : []
                 )
