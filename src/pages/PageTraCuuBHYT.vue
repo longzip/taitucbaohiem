@@ -154,6 +154,24 @@
             >
               <q-item-section>Giữ lại danh sách</q-item-section>
             </q-item>
+            <q-item
+              clickable
+              @click="
+                resetBhyt(
+                  searchText
+                    ? bhyts.filter(
+                        (bhyt) => !bhyt.soDienThoai || !bhyt.soDienThoai2
+                      )
+                    : []
+                )
+              "
+              v-close-popup
+            >
+              <q-item-section>Thiếu số điện thoại</q-item-section>
+            </q-item>
+            <q-item clickable @click="loadBhytByUserNameTaiTuc()" v-close-popup>
+              <q-item-section>Tái tục</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytByUserName()" v-close-popup>
               <q-item-section>Đã thu tiền</q-item-section>
             </q-item>
@@ -480,6 +498,13 @@ export default {
             nam: data,
           });
         });
+    },
+    loadBhytByUserNameTaiTuc() {
+      this.getBhyts({
+        userName: this.searchText,
+        completed: "0",
+        disabled: "0",
+      });
     },
     loadBhytByUserName(user) {
       if (!this.searchText) {
