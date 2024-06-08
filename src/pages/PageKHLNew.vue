@@ -547,7 +547,7 @@ export default defineComponent({
     }) {
       try {
         const { data } = await this.$api.post(
-          "https://lws.hotham.vn/wordpress/wp-content/app/api/cods",
+          "https://app.hotham.vn/api/cods",
           {
             soDienThoai,
             hoTen,
@@ -570,18 +570,15 @@ export default defineComponent({
         );
         if (findCod) Object.assign(findCod, data);
         else this.allCods.push(data);
-        await this.$api.put(
-          `https://lws.hotham.vn/wordpress/wp-content/app/api/khls/${soDienThoai}`,
-          {
-            hoTen,
-            hopDong,
-            ngayHopDong,
-            tenNguoiHuong,
-            soTaiKhoanNganHang,
-            tenNganHang,
-            maCRM,
-          }
-        );
+        await this.$api.put(`https://app.hotham.vn/api/khls/${soDienThoai}`, {
+          hoTen,
+          hopDong,
+          ngayHopDong,
+          tenNguoiHuong,
+          soTaiKhoanNganHang,
+          tenNganHang,
+          maCRM,
+        });
         this.showDialog = false;
         Notify.create({
           type: "positive",
@@ -598,7 +595,7 @@ export default defineComponent({
     async loadKHL(soDienThoai) {
       try {
         const { data } = await this.$api.get(
-          `https://lws.hotham.vn/wordpress/wp-content/app/api/khls/${soDienThoai}`
+          `https://app.hotham.vn/api/khls/${soDienThoai}`
         );
         this.khl = data;
       } catch (error) {
@@ -611,7 +608,7 @@ export default defineComponent({
     async loadCods(soDienThoai) {
       try {
         const { data } = await this.$api.get(
-          `https://lws.hotham.vn/wordpress/wp-content/app/api/cods?name=${soDienThoai}`
+          `https://app.hotham.vn/api/cods?name=${soDienThoai}`
         );
         this.cods = data;
       } catch (error) {
@@ -622,9 +619,7 @@ export default defineComponent({
       }
     },
     async loadAllCods() {
-      const { data } = await this.$api.get(
-        "https://lws.hotham.vn/wordpress/wp-content/app/api/cods"
-      );
+      const { data } = await this.$api.get("https://app.hotham.vn/api/cods");
       this.allCods = data;
       this.tongCuocDaThanhToan = this.allCods.reduce(
         (previousValue, { soTienBuTruCongNo }) =>

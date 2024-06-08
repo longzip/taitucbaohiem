@@ -48,7 +48,7 @@
         }}</a
         ><a
           target="_blank"
-          :href="`https://lws.hotham.vn/wordpress/wp-content/app/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
+          :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
           ><q-icon class="q-ml-sm" name="print" color="blue"
         /></a>
       </q-item-label>
@@ -441,8 +441,16 @@ export default {
           persistent: true,
         })
         .onOk(() => {
-          if (maThuTuc) this.huyThuBHYT({ maSoBhxh: bhyt.maSoBhxh, userName: this.userDetails.id });
-          else this.huyThuBHXHTN({ maSoBhxh: bhyt.maSoBhxh, userName: this.userDetails.id  });
+          if (maThuTuc)
+            this.huyThuBHYT({
+              maSoBhxh: bhyt.maSoBhxh,
+              userName: this.userDetails.id,
+            });
+          else
+            this.huyThuBHXHTN({
+              maSoBhxh: bhyt.maSoBhxh,
+              userName: this.userDetails.id,
+            });
         });
     },
     getDateDiff(ngayHetHan) {

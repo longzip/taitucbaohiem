@@ -431,7 +431,7 @@ export default {
           }
           await this.sleep(1000);
           const res = await fetch(
-            `https://lws.hotham.vn/wordpress/wp-content/app/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
+            `https://app.hotham.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
               .filter((t) => t.maThuTuc == 1)
               .map((t) => t.tongTien)
               .reduce(
@@ -472,7 +472,7 @@ export default {
     async print(maSoBhxhs) {
       let a = document.createElement("a");
       a.target = "_blank";
-      let lienKet = `https://lws.hotham.vn/wordpress/wp-content/app/mau-c17/${new Date()
+      let lienKet = `https://app.hotham.vn/mau-c17/${new Date()
         .toISOString()
         .slice(0, 10)}/pdf?maSoBhxhs=${maSoBhxhs}`;
       a.href = lienKet;
@@ -657,7 +657,7 @@ export default {
     async printDanhSachTraThe() {
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `https://lws.hotham.vn/wordpress/wp-content/app/danh-sach-tra-the/1/pdf?maSoBhxhs=${this.bhyts
+      a.href = `https://app.hotham.vn/danh-sach-tra-the/1/pdf?maSoBhxhs=${this.bhyts
         .map((i) => i.maSoBhxh)
         .join(",")}`;
       a.click();
@@ -760,7 +760,7 @@ export default {
       }
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `https://lws.hotham.vn/wordpress/wp-content/app/thanh-vien-ho-gia-dinh/1/pdf?maXaUpdate=${
+      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maXaUpdate=${
         this.userDetails.maXa
       }&maSoBhxhs=${this.bhyts.map((i) => i.maSoBhxh).join(",")}`;
       a.click();
