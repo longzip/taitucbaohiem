@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "npx quasar dev",
     "build": "npx quasar build -m pwa",
-    "zip": "rm -f wp-pwa.zip && npx quasar build -m pwa && mv dist/pwa public_html && zip -r wp-pwa.zip ./public_html && rm -rf public_html",
+    "zip": "rm -f pwa.zip && npx quasar build -m pwa && mv dist/pwa store && zip -r pwa.zip ./store && rm -rf store",
     "push": "rm -rf push/docs && npx quasar build -m pwa && mv dist/pwa push/docs && git add . && git commit -m build && git push && cd push && git add . && git commit -m build && git push",
     "start": "node server.js",
     "lint": "eslint --ext .js,.vue ./",

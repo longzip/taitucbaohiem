@@ -9,6 +9,7 @@ node_modules
 /app
 /public_html
 /push
+pwa.zip
 
 # Cordova related directories and files
 /src-cordova/node_modules
