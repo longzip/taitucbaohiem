@@ -70,7 +70,7 @@ export default defineComponent({
         });
     },
     async print() {
-      if (this.bhyts.length > 15) return;
+      if (this.bhyts.length > 15 || this.bhyts.length === 0) return;
       let a = document.createElement("a");
       a.target = "_blank";
       a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maXaUpdate=${

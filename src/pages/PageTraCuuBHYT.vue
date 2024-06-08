@@ -751,7 +751,7 @@ export default {
       }
     },
     async printPhuLucThanhVienHGD() {
-      if (this.bhyts.length > 15) {
+      if (this.bhyts.length > 15 || this.bhyts.length === 0) {
         Notify.create({
           type: "negative",
           message: "Không thực hiện được!",
