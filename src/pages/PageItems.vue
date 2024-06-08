@@ -113,10 +113,7 @@ export default defineComponent({
         .writeText(
           guiHangSMSText
             .replace("[Tên khách hàng]", senderName)
-            .replace(
-              "[Mã theo dõi]",
-              `https://www.hotham.vn/tra-cuu-hang-buu-dien?q=${ttNumber}`
-            )
+            .replace("[Mã vận đơn]", `${ttNumber}`)
         )
         .then(
           function () {

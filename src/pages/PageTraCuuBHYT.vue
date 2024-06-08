@@ -16,6 +16,9 @@
             <q-item clickable @click="loadBhytByName" v-close-popup>
               <q-item-section>Tìm tất cả</q-item-section>
             </q-item>
+            <q-item clickable @click="printPhuLucThanhVienHGD" v-close-popup>
+              <q-item-section>In phụ lục thành viên HGD</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
               <q-item-section>Đã thu tiền BHYT</q-item-section>
             </q-item>
@@ -746,6 +749,21 @@ export default {
       } else {
         pom.click();
       }
+    },
+    async printPhuLucThanhVienHGD() {
+      if (this.bhyts.length > 15) {
+        Notify.create({
+          type: "negative",
+          message: "Không thực hiện được!",
+        });
+        return;
+      }
+      let a = document.createElement("a");
+      a.target = "_blank";
+      a.href = `https://lws.hotham.vn/wordpress/wp-content/app/thanh-vien-ho-gia-dinh/1/pdf?maXaUpdate=${
+        this.userDetails.maXa
+      }&maSoBhxhs=${this.bhyts.map((i) => i.maSoBhxh).join(",")}`;
+      a.click();
     },
   },
 };

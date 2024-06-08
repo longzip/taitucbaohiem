@@ -10,7 +10,7 @@ const resetCong = async () => {
 const searchBHYT = async (searchText) => {
   let a = document.createElement("a");
   a.target = "_blank";
-  a.href = `https://thambuudien.ga/tra-thoi-han-bao-hiem-y-te?q=${searchText}`;
+  a.href = `https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${searchText}`;
   a.click();
 };
 
@@ -193,7 +193,7 @@ function drawPrintEVN(trans) {
 
   _container.print({
     globalStyles: false,
-    stylesheet: "https://todo.hotham.vn/printv2.css",
+    stylesheet: "https://lws.hotham.vn/printv2.css",
   });
 }
 
