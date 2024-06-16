@@ -78,9 +78,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
             }
             console.log(date.getDateDiff(new Date(), new Date(hetHan), "days"));
             if (date.getDateDiff(new Date(hetHan), new Date(), "days") < 0)
-              window.location.replace(
-                "https://lws.hotham.vn/cua-hang/phan-mem-quan-ly-tai-tuc-bao-hiem-lws/"
-              );
+              window.location.replace("https://zalo.me/g/dhtrpr868");
             await commit("setIsLogin", isLogin);
 
             let loginInfo = await dispatch("getCurrentLoginInformations");

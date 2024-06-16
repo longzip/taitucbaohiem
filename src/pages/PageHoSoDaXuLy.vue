@@ -22,6 +22,16 @@
             <q-item clickable @click="loadData()" v-close-popup>
               <q-item-section>Tải lại</q-item-section>
             </q-item>
+            <q-item
+              clickable
+              @click="traCuuNoGroup({ keyMenu: 3 })"
+              v-close-popup
+            >
+              <q-item-section>Hồ sơ phát sinh lỗi</q-item-section>
+            </q-item>
+            <q-item clickable @click="traCuuNoGroup({})" v-close-popup>
+              <q-item-section>Lịch sử kê khai</q-item-section>
+            </q-item>
             <q-item clickable @click="xemThangTruoc()" v-close-popup>
               <q-item-section>Xem tháng trước</q-item-section>
             </q-item>
@@ -432,6 +442,7 @@ export default {
       "daXyLy",
       "XuatD03OrD05Excel",
       "resetBhyt",
+      "traCuuNoGroup",
     ]),
     async xuatC17() {
       if (this.dsSoBHXH || this.dsTheBHYT) {
@@ -564,7 +575,6 @@ export default {
     },
     async loadData() {
       const ngayHomNay = new Date().getDate();
-
       try {
         await this.hoSoDaXuLy({
           thangTruoc: this.thangTruoc,

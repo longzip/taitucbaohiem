@@ -220,6 +220,24 @@ export const khachChuaNop = async ({ commit }, payload) => {
   commit("getAllBhyts", [...data.result.items.reverse()]);
 };
 
+export const traCuuNoGroup = async (
+  { commit },
+  { mangLuoiId = 52401, keyMenu = "5" }
+) => {
+  const { data } = await client.post("/api/services/app/KeKhai/TraCuuNoGroup", {
+    dateForm: "ngayLap",
+    denNgay: moment().format(),
+    filterItems: [],
+    hoSoChuaThuTien: false,
+    hoSoQuaHan: 0,
+    keyMenu,
+    mangLuoiId,
+    maxResultCount: 500,
+    skipCount: 0,
+    tuNgay: moment().startOf("month").format(),
+  });
+  commit("getAllBhyts", [...data.result.items]);
+};
 export const hoSoChuaXuLy = async ({ commit }, { mangLuoiId = 4580 }) => {
   const denNgay = new Date();
   denNgay.setDate(denNgay.getDate() + 2);

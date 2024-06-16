@@ -23,6 +23,13 @@
           type="text"
           label="Mã xã"
         />
+        <q-input
+          v-model="formData.mangLuoiId2"
+          class="q-mb-md"
+          outlined
+          type="text"
+          label="Mạng lưới ID"
+        />
 
         <q-input
           v-model="formData.bhytSMSText"
@@ -95,6 +102,7 @@ export default {
         maTinh: "000",
         maHuyen: "000",
         tenKhac: "",
+        mangLuoiId2: "",
       },
     };
   },
