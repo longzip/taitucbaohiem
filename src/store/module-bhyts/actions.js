@@ -221,8 +221,8 @@ export const khachChuaNop = async ({ commit }, payload) => {
 };
 
 export const traCuuNoGroup = async (
-  { commit },
-  { mangLuoiId = 52401, keyMenu = "5" }
+  { commit, rootGetters },
+  { mangLuoiId, keyMenu = "5" }
 ) => {
   const { data } = await client.post("/api/services/app/KeKhai/TraCuuNoGroup", {
     dateForm: "ngayLap",
@@ -231,7 +231,7 @@ export const traCuuNoGroup = async (
     hoSoChuaThuTien: false,
     hoSoQuaHan: 0,
     keyMenu,
-    mangLuoiId,
+    mangLuoiId: mangLuoiId || rootGetters["auth/mangLuoiId"],
     maxResultCount: 500,
     skipCount: 0,
     tuNgay: moment().startOf("month").format(),
