@@ -718,10 +718,13 @@ export default {
                     soDienThoai,
                     hoTen,
                     ngaySinhDt,
+                    denNgayDt,
                     userName,
                     soTheBhyt,
                   }) =>
-                    `${hoTen} ${soTheBhyt?.slice(0, 2) || ""}${
+                    `${hoTen} T${new Date(denNgayDt).getMonth() + 1}${
+                      soTheBhyt?.slice(0, 2) || ""
+                    }${
                       userName == this.userDetails.id ||
                       userName == this.userDetails.maNhanVienThu
                         ? ""
