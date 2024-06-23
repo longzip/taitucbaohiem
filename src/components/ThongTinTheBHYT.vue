@@ -72,6 +72,7 @@
           @click="copyUrlToClipboard(bhyt)"
           name="share"
         />
+        <q-icon class="q-ml-md" @click="copyThoiHan(bhyt)" name="text_format" />
         <q-icon
           class="q-ml-md"
           @click="copyMaTraCuuToClipboard(bhyt)"
@@ -223,6 +224,7 @@
 import { mapActions, mapState } from "vuex";
 import { date } from "quasar";
 import { Notify } from "quasar";
+import { copyBhyt } from "src/store/module-bhyts/actions";
 export default {
   props: ["bhyt"],
   computed: {
@@ -245,6 +247,7 @@ export default {
       "huyThuBHYT",
       "huyThuBHXHTN",
       "updateTongTien",
+      "copyBhyt",
     ]),
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
@@ -712,6 +715,40 @@ export default {
             });
           }
         );
+    },
+    async copyThoiHan(t) {
+      this.$q.notify({
+        message: `<p id="bhyt-text" style="font-size: 18px;">Mã thẻ: ${
+          t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+        }, Họ tên: <strong>${
+          t.hoTen || t.hoVaTen
+        }</strong>, Ngày sinh: **/**/${new Date(
+          t.ngaySinhDt
+        ).getFullYear()}; Hạn thẻ: <strong style="color: rgb(219, 52, 46);">${new Date(
+          t.tuNgayDt
+        ).toLocaleDateString()} - ${new Date(
+          t.denNgayDt
+        ).toLocaleDateString()} (${this.getDateDiff(
+          t.denNgayDt
+        )} ngày);</strong> Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam?.slice(
+          6,
+          8
+        )}/${t.ngay5Nam?.slice(4, 6)}/${t.ngay5Nam?.slice(0, 4)}.
+          </p>`,
+        html: true,
+      });
+      await this.sleep();
+      const p = document.getElementById("bhyt-text");
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      const range = document.createRange();
+      range.selectNodeContents(p);
+      selection.addRange(range);
+      document.execCommand("copy");
+      selection.removeAllRanges();
+    },
+    sleep(ms = 500) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
   filters: {
