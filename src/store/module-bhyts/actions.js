@@ -211,7 +211,7 @@ export const khachChuaNop = async ({ commit }, payload) => {
       filterItems: [],
       loaiDichVu: 1,
       mangLuoiId: 4580,
-      maxResultCount: 1500,
+      maxResultCount: 5000,
       skipCount: 0,
       tuThang: moment().startOf("months").format(),
       type: -1,
@@ -232,7 +232,7 @@ export const traCuuNoGroup = async (
     hoSoQuaHan: 0,
     keyMenu,
     mangLuoiId: mangLuoiId || rootGetters["auth/mangLuoiId"],
-    maxResultCount: 500,
+    maxResultCount: 5000,
     skipCount: 0,
     tuNgay: moment().startOf("month").format(),
   });
@@ -251,7 +251,7 @@ export const hoSoChuaXuLy = async ({ commit }, { mangLuoiId = 4580 }) => {
     hoSoQuaHan: 0,
     keyMenu: "2",
     mangLuoiId,
-    maxResultCount: 500,
+    maxResultCount: 5000,
     skipCount: 0,
     tuNgay,
   });
@@ -277,7 +277,7 @@ export const hoSoDaXuLy = async ({ commit }, payload) => {
     hoSoQuaHan: 0,
     keyMenu: "1",
     mangLuoiId,
-    maxResultCount: 500,
+    maxResultCount: 5000,
     skipCount: 0,
     tuNgay,
   });
