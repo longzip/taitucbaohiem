@@ -172,6 +172,18 @@
             >
               <q-item-section>Thiếu số điện thoại</q-item-section>
             </q-item>
+            <q-item
+              clickable
+              @click="
+                loadBHXHTNs({
+                  isCMND: 1,
+                  maXa: userDetails.maXa,
+                })
+              "
+              v-close-popup
+            >
+              <q-item-section>Thiếu CCCD</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytByUserNameTaiTuc()" v-close-popup>
               <q-item-section>Tái tục</q-item-section>
             </q-item>
