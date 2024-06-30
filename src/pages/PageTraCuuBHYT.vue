@@ -90,6 +90,12 @@
             <q-item clickable @click="loadBhytsCompleted" v-close-popup>
               <q-item-section>Đánh dấu sao</q-item-section>
             </q-item>
+            <q-item clickable @click="loadBhytThang" v-close-popup>
+              <q-item-section>Biên thu BHYT</q-item-section>
+            </q-item>
+            <q-item clickable @click="loadBHXHThang" v-close-popup>
+              <q-item-section>Biên thu BHXH TN</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBaoCaoChiTietGiaoDich" v-close-popup>
               <q-item-section>Báo cáo Chi Tiết Giao Dịch</q-item-section>
             </q-item>
@@ -558,6 +564,46 @@ export default {
           this.getBhyts({
             name: data,
             maXa: data.length < 9 ? this.userDetails.maXa : null,
+          });
+        });
+    },
+    loadBhytThang() {
+      this.$q
+        .dialog({
+          title: "Tháng biên lai",
+          message: "Nhập tháng?",
+          prompt: {
+            model: this.searchText,
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          this.searchText = data || new Date().getMonth() + 1;
+          this.getBhyts({
+            thangBienLai: this.searchText,
+            userName: this.userDetails.id,
+          });
+        });
+    },
+    loadBHXHThang() {
+      this.$q
+        .dialog({
+          title: "Tháng biên lai",
+          message: "Nhập tháng?",
+          prompt: {
+            model: this.searchText,
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          this.searchText = data || new Date().getMonth() + 1;
+          this.getBhyts({
+            thangBienLaiTN: this.searchText,
+            userName: this.userDetails.id,
           });
         });
     },

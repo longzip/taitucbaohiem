@@ -168,6 +168,8 @@ export const getBhyts = async ({ commit }, payload) => {
     soBienLai,
     taiTucBHYTBT,
     isCMND,
+    thangBienLai,
+    thangBienLaiTN,
   } = payload;
 
   let url = "/api/bhyts?";
@@ -189,6 +191,8 @@ export const getBhyts = async ({ commit }, payload) => {
   if (taiTucBHXH) url += `&taiTucBHXH=${taiTucBHXH}`;
   if (soBienLai) url += `&soBienLai=${soBienLai}`;
   if (taiTucBHYTBT) url += `&taiTucBHYTBT=${taiTucBHYTBT}`;
+  if (thangBienLai) url += `&thangBienLai=${thangBienLai}`;
+  if (thangBienLaiTN) url += `&thangBienLaiTN=${thangBienLaiTN}`;
   const { data } = await api.get(url);
   commit("setBhyts", data);
 };
