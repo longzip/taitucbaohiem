@@ -477,7 +477,7 @@ export default {
         //     : 0;
         navigator.clipboard
           .writeText(
-            `Xin chào! Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${
+            `Xin chào! Mã sổ BHXH: ${this.baoMatSoBHXH(t.maSoBhxh)}, Họ tên: ${
               t.hoTen
             }, Ngày sinh: **/**/${new Date(
               t.ngaySinhDt
@@ -523,7 +523,7 @@ export default {
         .dialog({
           title: "Thu BHXH",
           message: t.thangBd
-            ? `Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${
+            ? `Mã sổ BHXH: ${this.baoMatSoBHXH(t.maSoBhxh)}, Họ tên: ${
                 t.hoTen
               }, Ngày sinh: ${new Date(
                 t.ngaySinhDt
@@ -634,9 +634,9 @@ export default {
       const [nam, thang] = new Date().toISOString().slice(0, 7).split("-");
       const isGiaHan =
         new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0);
-      const smsText = `Xin chào!\r\nMã thẻ: ${
+      const smsText = `Xin chào!\r\nMã thẻ: ${this.baoMatSoBHXH(
         t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
-      }, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
+      )}, Họ tên: ${t.hoTen || t.hoVaTen}, Ngày sinh: **/**/${new Date(
         t.ngaySinhDt
       ).getFullYear()}; Hạn thẻ: ${new Date(
         t.tuNgayDt
@@ -655,11 +655,11 @@ export default {
             isGiaHan
               ? this.userDetails.bhytHetHanSMSText.replace(
                   "_soTheBhyt",
-                  t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+                  t.uniqid
                 )
               : this.userDetails.bhytSMSText.replace(
                   "_soTheBhyt",
-                  t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
+                  t.uniqid
                 )
           }`
         )
@@ -718,9 +718,9 @@ export default {
     },
     async copyThoiHan(t) {
       this.$q.notify({
-        message: `<p id="bhyt-text" style="font-size: 18px;">Mã thẻ: ${
+        message: `<p id="bhyt-text" style="font-size: 18px;">Mã thẻ: ${this.baoMatSoBHXH(
           t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
-        }, Họ tên: <strong>${
+        )}, Họ tên: <strong>${
           t.hoTen || t.hoVaTen
         }</strong>, Ngày sinh: **/**/${new Date(
           t.ngaySinhDt
@@ -750,6 +750,12 @@ export default {
     sleep(ms = 500) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
+    baoMatSoBHXH(maSoCanAn){
+      if(!maSoCanAn.length) return "";
+      const s = maSoCanAn.split("");
+      s.splice(-7,3,"***");
+      return s.join("");
+    }
   },
   filters: {
     tien: function (value) {
