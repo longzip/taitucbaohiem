@@ -193,6 +193,13 @@
             <q-item clickable @click="loadBhytByUserNameTaiTuc()" v-close-popup>
               <q-item-section>Tái tục</q-item-section>
             </q-item>
+            <q-item clickable @click="getBhyts({
+              isPhone: true,
+              maXa: userDetails.maXa,
+              name: searchText
+            })" v-close-popup>
+              <q-item-section>Có số điện thoại</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytByUserName()" v-close-popup>
               <q-item-section>Đã thu tiền</q-item-section>
             </q-item>
@@ -763,13 +770,16 @@ export default {
         );
     },
     copyNamePhoneClipboard() {
+      const mapSoDienThoai = new Map();
+      for (let bhyt of this.bhyts) {
+          mapSoDienThoai.set(bhyt.soDienThoai2 || bhyt.soDienThoai,bhyt)
+      }
       this.download(
         "NamePhone.csv",
         "Name\tPhone\r\n" +
           [
             ...new Set(
-              this.bhyts
-                .filter((t) => t.soDienThoai2 || t.soDienThoai)
+              [...mapSoDienThoai.values()]
                 .map(
                   ({
                     soDienThoai2,
