@@ -3,7 +3,7 @@
     <ListHeader bgcolor="bg-orange-4"
       >Danh sách {{ evns.length }} Khách hàng EVN / Tổng:
       {{ tienDien.toLocaleString() }} /
-      {{ evns.filter((t) => t.soTien > 0).length }}
+      {{ evns.filter((t) => t.soTien > 0).length }} ({{ tienLech.toLocaleString() }})
       <q-btn
         rounded
         color="primary"
@@ -167,6 +167,7 @@ export default defineComponent({
     return {
       searchText: "",
       evns: [],
+      tienLech: 0,
       tienDien: 0,
       tienBHXH: 0,
       tienBHYT: 0,
@@ -223,6 +224,15 @@ export default defineComponent({
             previousValue + parseInt(currentValue),
           0
         );
+
+        const soThuThucTe = await data
+        .map((t) => Math.ceil(t.soTien/1000)*1000)
+        .reduce(
+          (previousValue, currentValue) =>
+            previousValue + parseInt(currentValue),
+          0
+        );
+        this.tienLech = soThuThucTe - this.tienDien;
     },
     copyTextToClipboard(text) {
       navigator.clipboard.writeText(text).then(
