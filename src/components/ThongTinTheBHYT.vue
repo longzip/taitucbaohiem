@@ -127,12 +127,14 @@
           <q-menu>
             <q-list style="min-width: 300px">
               <q-item clickable v-close-popup>
-                <q-item-section @click="
-            xem({
-              ...bhyt,
-              gioiTinh: bhyt.gioiTinh == 1 || bhyt.gioiTinh === 'Nam' ? 1 : 0,
-            })
-          "
+                <q-item-section
+                  @click="
+                    xem({
+                      ...bhyt,
+                      gioiTinh:
+                        bhyt.gioiTinh == 1 || bhyt.gioiTinh === 'Nam' ? 1 : 0,
+                    })
+                  "
                   >Đồng bộ ngay</q-item-section
                 >
               </q-item>
@@ -177,6 +179,7 @@
         }}</q-item-label
       >
       <q-item-label caption>
+        BHYT:
         <q-icon
           v-if="bhyt.isBHYT == 1"
           class="q-pr-sm"
@@ -196,6 +199,7 @@
         >đ</q-item-label
       >
       <q-item-label caption>
+        BHXH:
         <q-icon
           v-if="bhyt.isBHXHTN == 1"
           class="q-pr-sm"
@@ -212,6 +216,7 @@
         >đ</q-item-label
       >
       <q-item-label caption>
+        YTBT:
         <strong
           class="text-subtitle2 text-weight-bold"
           @click="xacNhanMucDongBHYTBT(bhyt)"
@@ -253,7 +258,7 @@
       </q-item-label>
       <q-item-label caption v-if="bhyt.updated_at"
         ><br />
-        Cập nhật: {{ new Date(bhyt.updated_at).toLocaleString() }}</q-item-label
+        Đồng bộ: {{ new Date(bhyt.updated_at).toLocaleString() }}</q-item-label
       >
     </q-item-section>
   </q-item>
