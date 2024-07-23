@@ -193,11 +193,17 @@
             <q-item clickable @click="loadBhytByUserNameTaiTuc()" v-close-popup>
               <q-item-section>Tái tục</q-item-section>
             </q-item>
-            <q-item clickable @click="getBhyts({
-              isPhone: true,
-              maXa: userDetails.maXa,
-              name: searchText
-            })" v-close-popup>
+            <q-item
+              clickable
+              @click="
+                getBhyts({
+                  isPhone: true,
+                  maXa: userDetails.maXa,
+                  name: searchText,
+                })
+              "
+              v-close-popup
+            >
               <q-item-section>Có số điện thoại</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytByUserName()" v-close-popup>
@@ -257,6 +263,7 @@
 import { mapGetters, mapActions, mapState } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { Notify } from "quasar";
+import { onMounted } from "vue";
 export default {
   components: { ThongTinTheBHYT },
   data() {
@@ -705,6 +712,8 @@ export default {
       }
 
       this.$refs.inputSearch.select();
+      const query = { ...this.$route.query, q: searchText };
+      this.$router.replace({ query });
     },
     async timMoi(searchText) {
       const ds = searchText.split(",");
@@ -772,35 +781,34 @@ export default {
     copyNamePhoneClipboard() {
       const mapSoDienThoai = new Map();
       for (let bhyt of this.bhyts) {
-          mapSoDienThoai.set(bhyt.soDienThoai2 || bhyt.soDienThoai,bhyt)
+        mapSoDienThoai.set(bhyt.soDienThoai2 || bhyt.soDienThoai, bhyt);
       }
       this.download(
         "NamePhone.csv",
         "Name\tPhone\r\n" +
           [
             ...new Set(
-              [...mapSoDienThoai.values()]
-                .map(
-                  ({
-                    soDienThoai2,
-                    soDienThoai,
-                    hoTen,
-                    ngaySinhDt,
-                    denNgayDt,
-                    userName,
-                    soTheBhyt,
-                  }) =>
-                    `${hoTen} T${new Date(denNgayDt).getMonth() + 1}${
-                      soTheBhyt?.slice(0, 2) || ""
-                    }${
-                      userName == this.userDetails.id ||
-                      userName == this.userDetails.maNhanVienThu
-                        ? ""
-                        : "_"
-                    }${new Date(ngaySinhDt).getFullYear()}\t${
-                      soDienThoai2 || soDienThoai
-                    }`
-                )
+              [...mapSoDienThoai.values()].map(
+                ({
+                  soDienThoai2,
+                  soDienThoai,
+                  hoTen,
+                  ngaySinhDt,
+                  denNgayDt,
+                  userName,
+                  soTheBhyt,
+                }) =>
+                  `${hoTen} T${new Date(denNgayDt).getMonth() + 1}${
+                    soTheBhyt?.slice(0, 2) || ""
+                  }${
+                    userName == this.userDetails.id ||
+                    userName == this.userDetails.maNhanVienThu
+                      ? ""
+                      : "_"
+                  }${new Date(ngaySinhDt).getFullYear()}\t${
+                    soDienThoai2 || soDienThoai
+                  }`
+              )
             ).values(),
           ].join("\r\n")
       );
@@ -836,6 +844,14 @@ export default {
       }&maSoBhxhs=${this.bhyts.map((i) => i.maSoBhxh).join(",")}`;
       a.click();
     },
+  },
+  async created() {
+    if (this.$route.query.q) {
+      const q = this.$route.query.q;
+      this.searchText = q;
+      await this.sleep(1000);
+      this.timKiem(q);
+    }
   },
 };
 </script>

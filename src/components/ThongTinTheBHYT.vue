@@ -122,14 +122,59 @@
     </q-item-section>
 
     <q-item-section side top>
+      <div class="q-gutter-xs">
+        <q-btn size="12px" flat dense round icon="more_horiz">
+          <q-menu>
+            <q-list style="min-width: 300px">
+              <q-item clickable v-close-popup>
+                <q-item-section @click="
+            xem({
+              ...bhyt,
+              gioiTinh: bhyt.gioiTinh == 1 || bhyt.gioiTinh === 'Nam' ? 1 : 0,
+            })
+          "
+                  >Đồng bộ ngay</q-item-section
+                >
+              </q-item>
+              <q-separator />
+              <q-item clickable v-close-popup>
+                <q-item-section @click="copyUrlToClipboard(bhyt)"
+                  >Thời hạn sử dụng thẻ</q-item-section
+                >
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section @click="copyMaTraCuuToClipboard(bhyt)"
+                  >Gửi mã tra cứu</q-item-section
+                >
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section
+                  @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+                  >Tra cứu quá trình đóng BHXH</q-item-section
+                >
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+        <q-btn
+          @click="xoaThanhVienHGD(bhyt.maSoBhxh)"
+          size="12px"
+          flat
+          dense
+          round
+          icon="close"
+        />
+      </div>
       <q-item-label caption
-        >{{ getDateDiff(bhyt.denNgayDt) }} ngày
+        >Thời hạn: {{ getDateDiff(bhyt.denNgayDt) }} ngày
         <q-icon
           @click="xoaThanhVienHGD(bhyt.maSoBhxh)"
           name="person_remove_alt_1"
       /></q-item-label>
       <q-item-label caption
-        >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
+        >Đến ngày:{{
+          (bhyt.denNgayDt || bhyt.ngayDenHan || "").slice(0, 10)
+        }}</q-item-label
       >
       <q-item-label caption>
         <q-icon
@@ -192,29 +237,23 @@
         @click="xacNhanTheoDoi(bhyt)"
         name="star"
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
-      />
+      /><q-badge class="q-mr-sm" v-if="bhyt.userName" color="gray">{{
+        bhyt.userName
+      }}</q-badge>
       <q-item-label caption>
-        <q-badge class="q-mr-sm" v-if="bhyt.userName" color="gray">{{
-          bhyt.userName
-        }}</q-badge
-        ><br />
+        Biên lai:
         <a
           v-if="bhyt.soBienLai"
           href="javascript:void(0);"
           @click="timTheoSoBienLai(bhyt.soBienLai)"
           >{{ bhyt.soBienLai }}</a
         >
-        <a
-          v-if="bhyt.soBienLaiTN"
-          href="javascript:void(0);"
-          @click="timTheoSoBienLai(bhyt.soBienLaiTN)"
-          >{{ bhyt.soBienLai }}</a
-        ><br />
-        {{ bhyt.ngayBienLai || bhyt.ngayLap }}
+        <br />
+        Ngày: {{ bhyt.ngayBienLai || bhyt.ngayLap }}
       </q-item-label>
       <q-item-label caption v-if="bhyt.updated_at"
-        ><br /><br />
-        {{ new Date(bhyt.updated_at).toLocaleString() }}</q-item-label
+        ><br />
+        Cập nhật: {{ new Date(bhyt.updated_at).toLocaleString() }}</q-item-label
       >
     </q-item-section>
   </q-item>
@@ -224,7 +263,6 @@
 import { mapActions, mapState } from "vuex";
 import { date } from "quasar";
 import { Notify } from "quasar";
-import { copyBhyt } from "src/store/module-bhyts/actions";
 export default {
   props: ["bhyt"],
   computed: {
@@ -657,10 +695,7 @@ export default {
                   "_soTheBhyt",
                   t.uniqid
                 )
-              : this.userDetails.bhytSMSText.replace(
-                  "_soTheBhyt",
-                  t.uniqid
-                )
+              : this.userDetails.bhytSMSText.replace("_soTheBhyt", t.uniqid)
           }`
         )
         .then(
@@ -750,12 +785,12 @@ export default {
     sleep(ms = 500) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    baoMatSoBHXH(maSoCanAn){
-      if(!maSoCanAn.length) return "";
+    baoMatSoBHXH(maSoCanAn) {
+      if (!maSoCanAn.length) return "";
       const s = maSoCanAn.split("");
-      s.splice(-7,3,"***");
+      s.splice(-7, 3, "***");
       return s.join("");
-    }
+    },
   },
   filters: {
     tien: function (value) {
