@@ -572,7 +572,7 @@ export default {
                 t.ngaySinhDt
               ).toLocaleDateString()}; Tên đơn vị đang tham gia: Đại lý ${
                 t.tenDonVi
-              }, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(
+              }, mức đóng ${parseInt(
                 t.mucDong
               ).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(
                 t.tienNsnnHoTro
