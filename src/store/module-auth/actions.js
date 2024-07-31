@@ -77,8 +77,8 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
               hetHan = newDate.toISOString().slice(0, 10);
             }
             console.log(date.getDateDiff(new Date(), new Date(hetHan), "days"));
-            if (date.getDateDiff(new Date(hetHan), new Date(), "days") < 0)
-              window.location.replace("https://zalo.me/g/dhtrpr868");
+            // if (date.getDateDiff(new Date(hetHan), new Date(), "days") < 0)
+            //   window.location.replace("https://zalo.me/g/dhtrpr868");
             await commit("setIsLogin", isLogin);
 
             let loginInfo = await dispatch("getCurrentLoginInformations");
@@ -106,6 +106,10 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
                 userId,
                 hetHan,
                 isLogin: tka.result.accessToken,
+                isPro:
+                  date.getDateDiff(new Date(hetHan), new Date(), "days") < 0
+                    ? false
+                    : userDetails.isPro,
               };
               commit("setUserDetails", updateUserDetails);
               const db = getDatabase();
