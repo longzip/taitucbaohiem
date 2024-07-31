@@ -54,11 +54,10 @@
             ><q-icon class="q-ml-sm" name="print" color="blue"
           /></a>
         </q-item-label>
-
-        <q-item-label caption lines="2">
-          Số CMND: {{ bhyt.soCmnd }}
-        </q-item-label>
       </div>
+      <q-item-label caption lines="2">
+        Số CMND: {{ bhyt.soCmnd }}
+      </q-item-label>
       <q-item-label caption lines="2"
         >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH }}
         <q-icon
@@ -118,7 +117,7 @@
         }}</a>
         <q-icon @click="xacNhanSoDienThoai2(bhyt)" name="edit" />
       </q-item-label>
-      <q-item-label v-if="bhyt.soDienThoai" caption>
+      <q-item-label v-if="userDetails.isPro && bhyt.soDienThoai" caption>
         <a :href="`tel:${bhyt.soDienThoai}`">{{ bhyt.soDienThoai }}</a>
         <q-icon
           class="q-ml-md"
