@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page v-if="userDetails.isPro">
     <ListHeader bgcolor="bg-orange-4"
       >Hồ Sơ Đã Nộp BDH (Tổng: {{ tongTien.toLocaleString() }}đ /
       {{ tongHoSo }} HS)</ListHeader

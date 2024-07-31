@@ -16,6 +16,7 @@
         {{ bhyt.ngaySinhDt || bhyt.ngayThangNamSinh }}
 
         <q-icon
+          v-if="userDetails.isPro"
           @click="xacNhanLoaiBo(bhyt)"
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
@@ -36,25 +37,28 @@
       <q-item-label caption lines="2">
         {{ bhyt.diaChiLh }}
       </q-item-label>
-      <q-item-label caption lines="2">
-        Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
-          bhyt.maHoGd
-        }}</a>
-        {{ bhyt.mqhChuHo }}
-      </q-item-label>
-      <q-item-label caption lines="2">
-        Tờ khai:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.uniqid}`">{{
-          bhyt.uniqid
-        }}</a
-        ><a
-          target="_blank"
-          :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
-          ><q-icon class="q-ml-sm" name="print" color="blue"
-        /></a>
-      </q-item-label>
-      <q-item-label caption lines="2">
-        Số CMND: {{ bhyt.soCmnd }}
-      </q-item-label>
+      <div v-if="userDetails.isPro">
+        <q-item-label caption lines="2">
+          Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
+            bhyt.maHoGd
+          }}</a>
+          {{ bhyt.mqhChuHo }}
+        </q-item-label>
+        <q-item-label caption lines="2">
+          Tờ khai:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.uniqid}`">{{
+            bhyt.uniqid
+          }}</a
+          ><a
+            target="_blank"
+            :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
+            ><q-icon class="q-ml-sm" name="print" color="blue"
+          /></a>
+        </q-item-label>
+
+        <q-item-label caption lines="2">
+          Số CMND: {{ bhyt.soCmnd }}
+        </q-item-label>
+      </div>
       <q-item-label caption lines="2"
         >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH }}
         <q-icon
@@ -67,22 +71,22 @@
           name="content_copy"
         />
 
-        <q-icon
+        <!-- <q-icon
           class="q-ml-md"
           @click="copyUrlToClipboard(bhyt)"
           name="share"
-        />
+        /> -->
         <q-icon class="q-ml-md" @click="copyThoiHan(bhyt)" name="text_format" />
-        <q-icon
+        <!-- <q-icon
           class="q-ml-md"
           @click="copyMaTraCuuToClipboard(bhyt)"
           name="history"
-        />
-        <q-icon
+        /> -->
+        <!-- <q-icon
           class="q-ml-md"
           @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
           name="paid"
-        />
+        /> -->
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2"
@@ -91,7 +95,10 @@
         }}</q-item-label
       >
 
-      <q-item-label v-if="bhyt.maPhuongThucDong" caption lines="2"
+      <q-item-label
+        v-if="userDetails.isPro && bhyt.maPhuongThucDong"
+        caption
+        lines="2"
         ><span
           :class="{
             'bg-red text-white text-bold q-pa-xs':
@@ -101,11 +108,11 @@
           {{ bhyt.mucDong }} - {{ bhyt.denThangDt?.slice(0, 7) }}</span
         ></q-item-label
       >
-      <q-item-label caption lines="2">
+      <q-item-label v-if="userDetails.isPro" caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
         <q-icon @click="xacNhanGhiChu(bhyt)" name="edit" />
       </q-item-label>
-      <q-item-label caption lines="2">
+      <q-item-label v-if="userDetails.isPro" caption lines="2">
         <a v-if="bhyt.ngaySinhDt" :href="`tel:${bhyt.soDienThoai2}`">{{
           bhyt.soDienThoai2 || "Thêm sđt:"
         }}</a>
@@ -121,7 +128,7 @@
       </q-item-label>
     </q-item-section>
 
-    <q-item-section side top>
+    <q-item-section v-if="userDetails.isPro" side top>
       <div class="q-gutter-xs">
         <q-btn size="12px" flat dense round icon="more_horiz">
           <q-menu>

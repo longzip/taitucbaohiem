@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page v-if="userDetails.isPro">
     <q-banner
       inline-actions
       :class="'bg-orange-4'"

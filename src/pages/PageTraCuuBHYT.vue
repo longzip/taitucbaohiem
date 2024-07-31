@@ -11,7 +11,7 @@
           (Hạn sử dụng: {{ userDetails?.hetHan }})
         </div>
 
-        <q-menu touch-position>
+        <q-menu v-if="userDetails.isPro" touch-position>
           <q-list style="min-width: 100px">
             <q-item clickable @click="loadBhytByName" v-close-popup>
               <q-item-section>Tìm tất cả</q-item-section>
@@ -233,7 +233,7 @@
       </q-input>
     </div>
     <q-list>
-      <q-item-label header>
+      <q-item-label v-if="userDetails.isPro" header>
         Số lượng: <q-badge>{{ bhyts.length }}</q-badge
         >/Trung bình đóng:
         {{ parseInt(tongTienBHYT / (bhyts.length || 1)).toLocaleString() }}/Hoa

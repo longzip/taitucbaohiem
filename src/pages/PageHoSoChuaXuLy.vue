@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page v-if="userDetails.isPro">
     <ListHeader bgcolor="bg-orange-4"
       >{{ bhyts.length }} Hồ Sơ Chưa Xử Lý (BHYT:
       {{ tongTienBHYT.toLocaleString() }}đ / {{ soTheBHYT }} Thẻ + BHXH: :

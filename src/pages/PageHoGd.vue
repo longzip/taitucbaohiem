@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div v-if="userDetails.isPro" class="q-pa-md">
     <ListHeader bgcolor="bg-orange-4"
       >Hộ gia đình {{ bhyts.length }} người. Số tiền thu: đ
       {{ parseInt(tongTienBHYTDaThu + tongTienBHXHDaThu).toLocaleString() }}/{{
