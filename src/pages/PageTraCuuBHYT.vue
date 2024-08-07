@@ -7,8 +7,10 @@
     >
       <div class="inline bg-orange-4 rounded-borders cursor-pointer">
         <div class="fit flex flex-center text-center non-selectable q-pa-md">
-          Bấm vào đây để tra cứu thông tin <br />
-          (Hạn sử dụng: {{ userDetails?.hetHan }})
+          Tra cứu thông tin <br />
+          <span v-if="userDetails.isPro"
+            >(Hạn sử dụng: {{ userDetails?.hetHan }})</span
+          >
         </div>
 
         <q-menu v-if="userDetails.isPro" touch-position>
@@ -237,7 +239,7 @@
         Số lượng: <q-badge>{{ bhyts.length }}</q-badge
         >/Trung bình đóng:
         {{ parseInt(tongTienBHYT / (bhyts.length || 1)).toLocaleString() }}/Hoa
-        hồng:
+        hồng BHYT:
         {{
           parseInt(
             ((tongTienBHYT / (bhyts.length || 1)) * 0.0264).toFixed(0)
@@ -245,11 +247,30 @@
         }}đ/thẻ<br />
         Tổng tiền:
         <q-badge>{{ parseInt(tongTienBHYT).toLocaleString() }}</q-badge> : Hoa
-        hồng:
+        hồng BHYT:
         {{ parseInt((tongTienBHYT * 0.0264).toFixed(0)).toLocaleString() }}đ
         <br />
-        BHXHTN :
-        <q-badge>{{ parseInt(tongTienBHXH).toLocaleString() }}</q-badge>
+        <span
+          >BHXHTN {{ tongSoBHXH }}:
+          <q-badge>{{ parseInt(tongTienBHXH).toLocaleString() }}</q-badge> : Hoa
+          hồng BHXH:
+          {{
+            parseInt((tongTienBHXH * 0.049).toFixed(0)).toLocaleString()
+          }}đ</span
+        >
+        <span>
+          + BHXH (năm): {{ parseInt(tongMucDongBHXH).toLocaleString() }}đ : Hoa
+          hồng BHXH:
+          {{
+            parseInt(
+              (
+                (tongMucDongBHXH * 0.22 - tongSoBHXH * 66000) *
+                0.049 *
+                12
+              ).toFixed(0)
+            ).toLocaleString()
+          }}đ/năm</span
+        >
       </q-item-label>
 
       <div v-for="bhyt in bhyts" :key="bhyt.id">
@@ -274,7 +295,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("bhyts", ["bhyts", "tongTienBHYT", "tongTienBHXH"]),
+    ...mapGetters("bhyts", [
+      "bhyts",
+      "tongTienBHYT",
+      "tongTienBHXH",
+      "tongMucDongBHXH",
+      "tongSoBHXH",
+    ]),
     ...mapState("auth", ["userDetails"]),
   },
   methods: {

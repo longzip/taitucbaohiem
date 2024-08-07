@@ -76,6 +76,23 @@ export const tongTienBHXH = (state) => {
     );
 };
 
+export const tongMucDongBHXH = (state) => {
+  if (state.bhyts.length === 0) return 0;
+  return state.bhyts
+    .map((t) => t.mucDong || 0)
+    .reduce(
+      (previousValue, currentValue) => previousValue + parseInt(currentValue),
+      0
+    );
+};
+
+export const tongSoBHXH = (state) => {
+  if (state.bhyts.length === 0) return 0;
+  return state.bhyts
+    .filter((t) => t.mucDong)
+    .reduce((previousValue, currentValue) => previousValue + 1, 0);
+};
+
 export const tongSoThe = (state) => {
   return state.bhyts.length;
 };

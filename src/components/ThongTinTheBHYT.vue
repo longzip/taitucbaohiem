@@ -724,7 +724,7 @@ export default {
           }
         );
       this.quaySoDienThoai(t.soDienThoai2 || t.soDienThoai);
-      this.theoDoi(t);
+      // this.theoDoi(t);
     },
     copyTextToClipboard(maSoBhxh) {
       navigator.clipboard
