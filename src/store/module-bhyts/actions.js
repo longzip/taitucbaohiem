@@ -502,14 +502,14 @@ export const updateDenNgayBHYTBT = async (
 };
 export const huyThuTien = async (
   { commit, dispatch },
-  { maSoBhxh, userName, bienLaiId }
+  { maSoBhxh, bienLaiId }
 ) => {
   try {
     const { ngayBienLai } = bienLaiId
       ? await dispatch("maTraCuu", bienLaiId)
       : {};
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
-      userName,
+      userName: null,
       completed: 0,
       tongTien: 0,
       ngayLap: ngayBienLai?.split("/").reverse().join("-"),
