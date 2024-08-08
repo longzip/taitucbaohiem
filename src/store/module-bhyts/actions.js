@@ -170,7 +170,7 @@ export const getBhyts = async ({ commit }, payload) => {
     isCMND,
     thangBienLai,
     thangBienLaiTN,
-    isPhone
+    isPhone,
   } = payload;
 
   let url = "/api/bhyts?";
@@ -505,7 +505,9 @@ export const huyThuTien = async (
   { maSoBhxh, userName, bienLaiId }
 ) => {
   try {
-    const { ngayBienLai } = await dispatch("maTraCuu", bienLaiId);
+    const { ngayBienLai } = bienLaiId
+      ? await dispatch("maTraCuu", bienLaiId)
+      : {};
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       userName,
       completed: 0,
