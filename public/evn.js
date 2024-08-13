@@ -193,7 +193,7 @@ function drawPrintEVN(trans) {
 
   _container.print({
     globalStyles: false,
-    stylesheet: "https://lws.hotham.vn/printv2.css",
+    stylesheet: "https://todo.hotham.vn/printv2.css",
   });
 }
 
