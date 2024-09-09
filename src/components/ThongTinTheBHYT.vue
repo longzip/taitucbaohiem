@@ -358,6 +358,15 @@ export default {
         });
     },
     xacNhanGiaHan(bhyt) {
+      const options = [
+        { label: "T1: 1.263.600đ", value: "1263600", color: "secondary" },
+        { label: "T2: 884.520đ", value: "884520" },
+        { label: "T3: 758.160đ", value: "758160" },
+        { label: "T4: 631.800đ", value: "631800" },
+        { label: "T5: 505.440đ", value: "505440" },
+        { label: "Hủy thu", value: "0" },
+      ];
+
       this.$q
         .dialog({
           title: "Gia hạn thẻ BHYT",
@@ -365,33 +374,27 @@ export default {
           options: {
             type: "radio",
             model: bhyt.tongTien,
-            // inline: true
-            items: [
-              { label: "T1: 1.263.600đ", value: "1263600", color: "secondary" },
-              { label: "T2: 884.520đ", value: "884520" },
-              { label: "T3: 758.160đ", value: "758160" },
-              { label: "T4: 631.800đ", value: "631800" },
-              { label: "T5: 505.440đ", value: "505440" },
-              { label: "Hủy thu", value: "0" },
-            ],
+            items: options,
           },
           cancel: true,
           persistent: true,
         })
         .onOk((data) => {
+          const payload = {
+            tongTien: data,
+            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            userName: this.userDetails.maNhanVienThu,
+            maXa: this.userDetails.maXa,
+          };
+
           if (data !== "0") {
-            this.thuTien({
-              tongTien: data,
-              maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
-              userName: this.userDetails.maNhanVienThu,
-              maXa: this.userDetails.maXa,
-            });
+            this.thuTien(payload);
           } else {
             this.huyThuTien({
+              ...payload,
               disabled: 0,
               tongTien: 0,
               bienLaiId: bhyt.bienLaiId,
-              maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
               userName: this.userDetails.id,
             });
           }
@@ -509,56 +512,45 @@ export default {
       if (!ngayHetHan) return "";
       return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
     },
+
     async copyBHXHToClipboard(maSoBhxh) {
       try {
         const t = await this.getTraCuuThongTinBHXHTN(maSoBhxh);
-        if (Object.keys(t).length === 0) {
+
+        // Sử dụng toán tử optional chaining và nullish coalescing để kiểm tra t
+        if (!t?.maSoBhxh) {
           Notify.create({
             type: "negative",
             message: "Không tham gia BHXH Tự Nguyện",
           });
-          return null;
+          return; // Không cần thiết phải return null, vì hàm async luôn trả về một Promise
         }
-        // this.taoNhacHenBHXHTN(t);
-        // const tienHaNoiHoTro =
-        //   t.tienNsnnHoTro == parseInt(t.phuongThucDong) * 33000
-        //     ? t.tienNsnnHoTro
-        //     : 0;
-        navigator.clipboard
-          .writeText(
-            `Xin chào! Mã sổ BHXH: ${this.baoMatSoBHXH(t.maSoBhxh)}, Họ tên: ${
-              t.hoTen
-            }, Ngày sinh: **/**/${new Date(
-              t.ngaySinhDt
-            ).toLocaleDateString()}; Tên đơn vị đang tham gia: Đại lý ${
-              t.tenDonVi
-            }, ngày đăng ký ${t.ngayDk} mức đóng ${parseInt(
-              t.mucDong
-            ).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(
-              t.tienNsnnHoTro
-            ).toLocaleString()}đ). Đóng tiếp ${
-              t.phuongThucDong
-            } BHXH TN, tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(
-              0,
-              4
-            )} số tiền phải đóng ${parseInt(
-              t.tienNop
-            ).toLocaleString()}đ.\r\n` + this.userDetails?.bhxhSMSText
-          )
-          .then(
-            function () {
-              Notify.create({
-                type: "positive",
-                message: `Bạn đã sao chép thành công!`,
-              });
-            },
-            function (err) {
-              Notify.create({
-                type: "negative",
-                message: "Không thực hiện được!" + err,
-              });
-            }
-          );
+
+        const formattedDate = new Date(t.ngaySinhDt).toLocaleDateString();
+        const formattedTienNop = parseInt(t.tienNop).toLocaleString();
+
+        const message = `Xin chào! Mã sổ BHXH: ${this.baoMatSoBHXH(
+          t.maSoBhxh
+        )}, Họ tên: ${
+          t.hoTen
+        }, Ngày sinh: ${formattedDate}; Tên đơn vị đang tham gia: Đại lý ${
+          t.tenDonVi
+        }. Đóng tiếp ${
+          t.phuongThucDong
+        } BHXH TN, tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(
+          0,
+          4
+        )} số tiền phải đóng ${formattedTienNop}đ.\r\n${
+          this.userDetails?.bhxhSMSText || ""
+        }`;
+
+        await navigator.clipboard.writeText(message); // Sử dụng await để đảm bảo sao chép hoàn thành trước khi hiển thị thông báo
+
+        Notify.create({
+          type: "positive",
+          message: `Bạn đã sao chép thành công!`,
+        });
+
         this.confirmDongBHXH(t);
       } catch (error) {
         Notify.create({
@@ -567,42 +559,33 @@ export default {
         });
       }
     },
+
     confirmDongBHXH(t) {
+      const formattedDate = new Date(t.ngaySinhDt).toLocaleDateString();
+      const formattedMucDong = parseInt(t.mucDong).toLocaleString();
+      const formattedTienNop = parseInt(t.tienNop).toLocaleString();
+      const formattedTienNsnnHoTro = parseInt(t.tienNsnnHoTro).toLocaleString();
+
+      const message = t.thangBd
+        ? `Mã sổ BHXH: ${this.baoMatSoBHXH(t.maSoBhxh)}, Họ tên: ${
+            t.hoTen
+          }, Ngày sinh: ${formattedDate}; Tên đơn vị đang tham gia: Đại lý ${
+            t.tenDonVi
+          }, mức đóng ${formattedMucDong}đ (tiền ngân sách hỗ trợ ${formattedTienNsnnHoTro}đ). Đóng tiếp ${
+            t.phuongThucDong
+          } BHXH TN, tháng bắt đầu ${t.thangBd.slice(4)}/${t.thangBd.slice(
+            0,
+            4
+          )} số tiền phải đóng ${formattedTienNop}đ.`
+        : `Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${t.hoTen}, Ngày sinh: ${formattedDate}; Mức đóng ${formattedMucDong}đ. Đóng tiếp ${t.maPhuongThucDong} tháng BHXH TN, số tiền phải đóng ${formattedTienNop}đ.`;
+
       this.$q
         .dialog({
           title: "Thu BHXH",
-          message: t.thangBd
-            ? `Mã sổ BHXH: ${this.baoMatSoBHXH(t.maSoBhxh)}, Họ tên: ${
-                t.hoTen
-              }, Ngày sinh: ${new Date(
-                t.ngaySinhDt
-              ).toLocaleDateString()}; Tên đơn vị đang tham gia: Đại lý ${
-                t.tenDonVi
-              }, mức đóng ${parseInt(
-                t.mucDong
-              ).toLocaleString()}đ (tiền ngân sách hỗ trợ ${parseInt(
-                t.tienNsnnHoTro
-              ).toLocaleString()}đ). Đóng tiếp ${
-                t.phuongThucDong
-              } BHXH TN, tháng bắt đầu ${t.thangBd?.slice(
-                4
-              )}/${t.thangBd?.slice(0, 4)} số tiền phải đóng ${parseInt(
-                t.tienNop
-              ).toLocaleString()}đ.`
-            : `Mã sổ BHXH: ${t.maSoBhxh}, Họ tên: ${
-                t.hoTen
-              }, Ngày sinh: ${new Date(
-                t.ngaySinhDt
-              ).toLocaleDateString()}; Mức đóng ${parseInt(
-                t.mucDong
-              ).toLocaleString()}đ. Đóng tiếp ${
-                t.maPhuongThucDong
-              } tháng BHXH TN, số tiền phải đóng ${parseInt(
-                t.tienNop
-              ).toLocaleString()}đ.`,
+          message,
           prompt: {
-            model: t.tienNop.toLocaleString(),
-            type: "text", // optional
+            model: formattedTienNop,
+            type: "text",
           },
           cancel: true,
           persistent: true,
@@ -615,6 +598,7 @@ export default {
           });
         });
     },
+
     async copyMaTraCuuToClipboard({ bienLaiId, hoTen, maSoBhxh, maThuTuc }) {
       const { maXacNhan, ngayBienLai, soBienLai } = await this.maTraCuu(
         bienLaiId
@@ -798,7 +782,7 @@ export default {
     },
     baoMatSoBHXH(maSoCanAn) {
       if (!maSoCanAn.length) return "";
-      const s = maSoCanAn.split("");
+      const s = [...maSoCanAn];
       s.splice(-7, 3, "***");
       return s.join("");
     },

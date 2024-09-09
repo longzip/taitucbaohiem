@@ -230,7 +230,7 @@
             @click="searchText = ''"
             class="cursor-pointer"
           />
-          <q-icon name="search" />
+          <q-icon @click="timKiem(searchText)" name="search" />
         </template>
       </q-input>
     </div>
