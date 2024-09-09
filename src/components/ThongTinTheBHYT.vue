@@ -152,7 +152,13 @@
               </q-item>
               <q-item clickable v-close-popup>
                 <q-item-section @click="copyMaTraCuuToClipboard(bhyt)"
-                  >Gửi mã tra cứu</q-item-section
+                  >Gửi mã tra cứu BHYT</q-item-section
+                >
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section
+                  @click="copyMaTraCuuToClipboard({ ...bhyt, maThuTuc: 0 })"
+                  >Gửi mã tra cứu BHXH TN</q-item-section
                 >
               </q-item>
               <q-item clickable v-close-popup>
@@ -599,9 +605,15 @@ export default {
         });
     },
 
-    async copyMaTraCuuToClipboard({ bienLaiId, hoTen, maSoBhxh, maThuTuc }) {
+    async copyMaTraCuuToClipboard({
+      bienLaiId,
+      bienLaiIdTN,
+      hoTen,
+      maSoBhxh,
+      maThuTuc = 1,
+    }) {
       const { maXacNhan, ngayBienLai, soBienLai } = await this.maTraCuu(
-        bienLaiId
+        maThuTuc === 1 ? bienLaiId : bienLaiIdTN
       );
       if (!maXacNhan) {
         Notify.create({
@@ -639,7 +651,7 @@ export default {
           function () {
             Notify.create({
               type: "positive",
-              message: `Bạn đã sao chép thành công!`,
+              message: `${hoTen}. Mã xác nhận: ${maXacNhan} - ${soBienLai}, ${ngayBienLai}, `,
             });
           },
           function (err) {
