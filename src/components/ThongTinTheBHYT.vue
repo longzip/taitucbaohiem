@@ -263,8 +263,18 @@
           @click="timTheoSoBienLai(bhyt.soBienLai)"
           >{{ bhyt.soBienLai }}</a
         >
+        /
+        <a
+          v-if="bhyt.soBienLai"
+          href="javascript:void(0);"
+          @click="timTheoSoBienLai(bhyt.soBienLai)"
+          >{{ bhyt.soBienLaiTN }}</a
+        >
         <br />
         Ngày: {{ bhyt.ngayBienLai || bhyt.ngayLap }}
+        <span v-if="bhyt.ngayLapTN"
+          >/{{ bhyt.ngayBienLai || bhyt.ngayLapTN }}</span
+        >
       </q-item-label>
       <q-item-label caption v-if="bhyt.updated_at"
         ><br />

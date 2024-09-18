@@ -686,16 +686,16 @@ export default {
           title: "Tháng biên lai",
           message: "Nhập tháng?",
           prompt: {
-            model: this.searchText,
+            model: new Date().getMonth() + 1,
             type: "text", // optional
           },
           cancel: true,
           persistent: true,
         })
         .onOk((data) => {
-          // this.searchText = data || new Date().getMonth() + 1;
+          // this.searchText = data || ;
           this.getBhyts({
-            thangBienLai: this.searchText,
+            thangBienLai: data,
             userName: this.userDetails.id,
           });
         });
@@ -706,7 +706,7 @@ export default {
           title: "Tháng biên lai",
           message: "Nhập tháng?",
           prompt: {
-            model: this.searchText,
+            model: new Date().getMonth() + 1,
             type: "text", // optional
           },
           cancel: true,
@@ -715,7 +715,7 @@ export default {
         .onOk((data) => {
           // this.searchText = data || new Date().getMonth() + 1;
           this.getBhyts({
-            thangBienLaiTN: this.searchText,
+            thangBienLaiTN: data,
             userName: this.userDetails.id,
           });
         });
@@ -949,8 +949,7 @@ export default {
       if (newBhyt) this.dialogShow = true;
       else this.dialogShow = false;
     },
-    userDetails: async function ({ maXa, id }) {
-      // this.selectedUser = id;
+    userDetails: async function ({ maXa }) {
       await this.getBhyts({
         thang: 1,
         completed: "0",
@@ -958,11 +957,6 @@ export default {
         taiTuc: "1",
         maXa,
       });
-      // if (this.$route.query.q) {
-      //   const q = this.$route.query.q;
-      //   this.searchText = q;
-      //   this.timKiem(q);
-      // }
     },
   },
 };

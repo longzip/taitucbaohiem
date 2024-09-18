@@ -515,14 +515,13 @@ export const updateDenNgayBHYTBT = async (
 
 export const updateDenNgayBHXH = async (
   { commit },
-  { maSoBhxh, denThangDt, maPhuongThucDong, mucDong, isBHXHTN = 1 }
+  { maSoBhxh, denThangDt, maPhuongThucDong, mucDong }
 ) => {
   try {
     const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
       denThangDt,
       maPhuongThucDong,
       mucDong,
-      isBHXHTN,
     });
     await commit("updateBhyt", data);
   } catch (error) {
