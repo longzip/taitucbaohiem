@@ -5,7 +5,7 @@ export function bhyts(state) {
 export const filteredBhyts =
   (state) =>
   ({ searchText, selectedUser }) => {
-    if (!searchText && !selectedUser) return state.bhyts.slice(0, 50);
+    // if (!searchText && !selectedUser) return state.bhyts.slice(0, 50);
 
     const term = searchText.toLowerCase();
 

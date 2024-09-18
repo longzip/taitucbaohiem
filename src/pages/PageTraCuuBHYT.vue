@@ -934,7 +934,7 @@ export default {
         thang: 1,
         completed: "0",
         disabled: "0",
-        // taiTuc: "1",
+        taiTuc: "1",
         maXa,
         // userName: this.userDetails.id,
       });
