@@ -9,9 +9,8 @@ export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
     filtered = filtered.filter((bhyt) => {
       return (
         `${bhyt.hoTen} ${bhyt.ngaySinhDt}`.toLowerCase()?.includes(term) ||
-        bhyt.soDienThoai2?.includes(term) ||
-        bhyt.soDienThoai?.includes(term) ||
-        bhyt.cmnd?.includes(term)
+        bhyt.ghiChu?.includes(term) ||
+        bhyt.userName?.includes(term)
       );
     });
   }

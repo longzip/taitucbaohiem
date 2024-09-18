@@ -10,7 +10,7 @@
               v-model="searchText"
               debounce="900"
               ref="inputSearch"
-              @input="searchBhyts"
+              @update:model-value="searchBhyts"
               @keyup.enter="timKiem(searchText)"
               dense
             />
@@ -275,7 +275,7 @@
               parseInt(
                 tongTienBHYT / (filteredBhyts.length || 1)
               ).toLocaleString()
-            }}/Hoa hồng BHYT:
+            }}/BHYT:
             {{
               parseInt(
                 ((tongTienBHYT / (filteredBhyts.length || 1)) * 0.0264).toFixed(
@@ -285,20 +285,20 @@
             }}đ/thẻ<br />
             Tổng tiền:
             <q-badge>{{ parseInt(tongTienBHYT).toLocaleString() }}</q-badge> :
-            Hoa hồng BHYT:
+            BHYT:
             {{ parseInt((tongTienBHYT * 0.0264).toFixed(0)).toLocaleString() }}đ
             <br />
             <span
               >BHXHTN {{ tongSoBHXH }}:
               <q-badge>{{ parseInt(tongTienBHXH).toLocaleString() }}</q-badge> :
-              Hoa hồng BHXH:
+              BHXH:
               {{
                 parseInt((tongTienBHXH * 0.049).toFixed(0)).toLocaleString()
               }}đ</span
             >
             <span>
               + BHXH (năm): {{ parseInt(tongMucDongBHXH).toLocaleString() }}đ :
-              Hoa hồng BHXH:
+              BHXH:
               {{
                 parseInt(
                   (
@@ -350,8 +350,12 @@ export default {
           value: null,
         },
         {
-          label: this.userDetails?.userName,
+          label: this.userDetails?.id,
           value: this.userDetails?.id,
+        },
+        {
+          label: this.userDetails?.maNhanVienThu.slice(0, 4),
+          value: this.userDetails?.maNhanVienThu,
         },
       ];
     },

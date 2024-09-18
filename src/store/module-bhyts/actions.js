@@ -7,8 +7,9 @@ const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
 };
 
-export function searchBhyts({ commit, state }) {
-  commit("SET_SEARCH_TEXT", state.searchText);
+export function searchBhyts({ commit, state }, searchText) {
+  console.log("tìm", searchText);
+  commit("SET_SEARCH_TEXT", searchText);
 }
 export function selectUser({ commit }, user) {
   commit("SET_SELECTED_USER", user);
