@@ -219,6 +219,7 @@
       <q-input
         outlined
         v-model="searchText"
+        debounce="900"
         ref="inputSearch"
         @keyup.enter="timKiem(searchText)"
         dense
@@ -273,7 +274,7 @@
         >
       </q-item-label>
 
-      <div v-for="bhyt in bhyts" :key="bhyt.id">
+      <div v-for="bhyt in filteredBhyts(searchText)" :key="bhyt.id">
         <ThongTinTheBHYT :bhyt="bhyt" />
         <q-separator spaced inset />
       </div>
@@ -297,6 +298,7 @@ export default {
   computed: {
     ...mapGetters("bhyts", [
       "bhyts",
+      "filteredBhyts",
       "tongTienBHYT",
       "tongTienBHXH",
       "tongMucDongBHXH",

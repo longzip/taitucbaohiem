@@ -2,6 +2,19 @@ export function bhyts(state) {
   return state.bhyts;
 }
 
+export const filteredBhyts = (state) => (searchTerm) => {
+  if (!searchTerm) return state.bhyts;
+  const term = searchTerm.toLowerCase();
+  return state.bhyts.filter((bhyt) => {
+    return (
+      `${bhyt.hoTen} ${bhyt.ngaySinhDt}`.toLowerCase()?.includes(term) ||
+      bhyt.soDienThoai2?.includes(term) ||
+      bhyt.soDienThoai?.includes(term) ||
+      bhyt.cmnd?.includes(term)
+    );
+  });
+};
+
 export const timBhyts = (state) => (searchText) => {
   if (!searchText) return state.bhyts;
   return [
