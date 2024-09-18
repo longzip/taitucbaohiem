@@ -872,6 +872,18 @@ export default {
       a.click();
     },
   },
+  watch: {
+    userDetails: function ({ maXa, completed = "0", disabled = "0", id }) {
+      this.getBhyts({
+        thang: 1,
+        completed: "0",
+        disabled: "0",
+        taiTuc: "1",
+        maXa,
+        // userName: this.userDetails.id,
+      });
+    },
+  },
   async created() {
     if (this.$route.query.q) {
       const q = this.$route.query.q;
