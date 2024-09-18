@@ -267,14 +267,18 @@
       <q-card-section>
         <q-list>
           <q-item-label v-if="userDetails.isPro" header>
-            Số lượng: <q-badge>{{ bhyts.length }}</q-badge
+            Số lượng: <q-badge>{{ filteredBhyts.length }}</q-badge
             >/Trung bình đóng:
             {{
-              parseInt(tongTienBHYT / (bhyts.length || 1)).toLocaleString()
+              parseInt(
+                tongTienBHYT / (filteredBhyts.length || 1)
+              ).toLocaleString()
             }}/Hoa hồng BHYT:
             {{
               parseInt(
-                ((tongTienBHYT / (bhyts.length || 1)) * 0.0264).toFixed(0)
+                ((tongTienBHYT / (filteredBhyts.length || 1)) * 0.0264).toFixed(
+                  0
+                )
               ).toLocaleString()
             }}đ/thẻ<br />
             Tổng tiền:
@@ -335,7 +339,6 @@ export default {
     ...mapGetters("bhyts", [
       "bhyts",
       "filteredBhyts",
-      "tongTienBHYT",
       "tongTienBHXH",
       "tongMucDongBHXH",
       "tongSoBHXH",
@@ -352,6 +355,16 @@ export default {
           value: this.userDetails?.id,
         },
       ];
+    },
+    tongTienBHYT() {
+      if (this.filteredBhyts.length === 0) return 0;
+      return this.filteredBhyts
+        .map((t) => t.tongTien || 0)
+        .reduce(
+          (previousValue, currentValue) =>
+            previousValue + parseInt(currentValue),
+          0
+        );
     },
   },
   methods: {
