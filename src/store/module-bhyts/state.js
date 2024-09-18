@@ -3,5 +3,7 @@ export default function () {
     bhyts: [],
     isRemove: false,
     maXa: "",
+    searchText: "",
+    selectedUser: null,
   };
 }

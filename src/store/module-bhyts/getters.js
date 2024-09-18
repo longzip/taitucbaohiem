@@ -2,30 +2,24 @@ export function bhyts(state) {
   return state.bhyts;
 }
 
-export const filteredBhyts =
-  (state) =>
-  ({ searchText, selectedUser }) => {
-    // if (!searchText && !selectedUser) return state.bhyts.slice(0, 50);
-
-    const term = searchText.toLowerCase();
-
-    let filtered = state.bhyts;
-    if (selectedUser) {
-      filtered = filtered.filter((bhyt) => bhyt.userName == selectedUser);
-    }
-
-    if (searchText) {
-      filtered = filtered.filter((bhyt) => {
-        return (
-          `${bhyt.hoTen} ${bhyt.ngaySinhDt}`.toLowerCase()?.includes(term) ||
-          bhyt.soDienThoai2?.includes(term) ||
-          bhyt.soDienThoai?.includes(term) ||
-          bhyt.cmnd?.includes(term)
-        );
-      });
-    }
-    return filtered;
-  };
+export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
+  let filtered = bhyts;
+  const term = searchText.toLowerCase();
+  if (term) {
+    filtered = filtered.filter((bhyt) => {
+      return (
+        `${bhyt.hoTen} ${bhyt.ngaySinhDt}`.toLowerCase()?.includes(term) ||
+        bhyt.soDienThoai2?.includes(term) ||
+        bhyt.soDienThoai?.includes(term) ||
+        bhyt.cmnd?.includes(term)
+      );
+    });
+  }
+  if (selectedUser) {
+    filtered = filtered.filter((bhyt) => bhyt.userName == selectedUser);
+  }
+  return filtered;
+};
 
 export const timBhyts = (state) => (searchText) => {
   if (!searchText) return state.bhyts;

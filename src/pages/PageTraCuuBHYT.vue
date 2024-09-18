@@ -10,6 +10,7 @@
               v-model="searchText"
               debounce="900"
               ref="inputSearch"
+              @input="searchBhyts"
               @keyup.enter="timKiem(searchText)"
               dense
             />
@@ -19,6 +20,7 @@
             <q-select
               v-model="selectedUser"
               :options="userOptions"
+              @update:modelValue="selectUser"
               label="Lọc theo người dùng"
               outlined
               emit-value
@@ -308,10 +310,7 @@
               }}đ/năm</span
             >
           </q-item-label>
-          <div
-            v-for="bhyt in filteredBhyts({ searchText, selectedUser })"
-            :key="bhyt.id"
-          >
+          <div v-for="bhyt in filteredBhyts" :key="bhyt.id">
             <ThongTinTheBHYT :bhyt="bhyt" />
             <q-separator spaced inset />
           </div>
@@ -380,6 +379,8 @@ export default {
       "copyHoTenToClipboard",
       "batTatRemove",
       "capNhatBHXHTN",
+      "searchBhyts",
+      "selectUser",
     ]),
     ...mapActions("auth", ["firebaseUpdateUser", "handleAuthStateChanged"]),
 
@@ -388,7 +389,6 @@ export default {
     },
 
     taiTucBHYT1thang() {
-      this.searchText = this.userDetails.id;
       this.getBhyts({
         thang: 1,
         completed: "0",
@@ -398,7 +398,6 @@ export default {
       });
     },
     taiTucBHYT2thang() {
-      this.searchText = this.userDetails.id;
       this.getBhyts({
         thang: 2,
         completed: "0",
@@ -616,7 +615,7 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          if (data) this.searchText = data;
+          // if (data) this.searchText = data;
           this.getBhyts({
             completed: "0",
             disabled: "0",
@@ -634,7 +633,7 @@ export default {
     },
     loadBhytByUserName(user) {
       if (!this.searchText) {
-        this.searchText = this.userDetails.maNhanVienThu;
+        // this.searchText = this.userDetails.maNhanVienThu;
       }
       if (user === 1)
         this.getBhyts({
@@ -665,7 +664,7 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          this.searchText = data;
+          // this.searchText = data;
           this.getBhyts({
             name: data,
             maXa: data.length < 9 ? this.userDetails.maXa : null,
@@ -685,7 +684,7 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          this.searchText = data || new Date().getMonth() + 1;
+          // this.searchText = data || new Date().getMonth() + 1;
           this.getBhyts({
             thangBienLai: this.searchText,
             userName: this.userDetails.id,
@@ -705,7 +704,7 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          this.searchText = data || new Date().getMonth() + 1;
+          // this.searchText = data || new Date().getMonth() + 1;
           this.getBhyts({
             thangBienLaiTN: this.searchText,
             userName: this.userDetails.id,
@@ -938,7 +937,7 @@ export default {
   },
   watch: {
     userDetails: async function ({ maXa, id }) {
-      this.selectedUser = id;
+      // this.selectedUser = id;
       await this.getBhyts({
         thang: 1,
         completed: "0",
