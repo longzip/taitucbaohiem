@@ -7,6 +7,10 @@ const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
 };
 
+export function setCurrentBhyt({ commit }, bhyt) {
+  commit("SET_CURRENT_BHYT", bhyt);
+}
+
 export function searchBhyts({ commit, state }, searchText) {
   console.log("tìm", searchText);
   commit("SET_SEARCH_TEXT", searchText);
@@ -508,6 +512,24 @@ export const updateDenNgayBHYTBT = async (
     console.log(error);
   }
 };
+
+export const updateDenNgayBHXH = async (
+  { commit },
+  { maSoBhxh, denThangDt, maPhuongThucDong, mucDong, isBHXHTN = 1 }
+) => {
+  try {
+    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
+      denThangDt,
+      maPhuongThucDong,
+      mucDong,
+      isBHXHTN,
+    });
+    await commit("updateBhyt", data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const huyThuTien = async (
   { commit, dispatch },
   { maSoBhxh, bienLaiId }
@@ -744,6 +766,7 @@ export const getBhytSsm = async ({ maSoBhxh, isLogin }) => {
 
 export const updateBhyt = async (bhyt) => {
   const { data } = await api.put(`/api/bhyts/${bhyt.maSoBhxh}`, bhyt);
+  console.log(bhyt);
   return data;
 };
 

@@ -1,3 +1,6 @@
+export function SET_CURRENT_BHYT(state, bhyt) {
+  state.currentBhyt = bhyt;
+}
 export function SET_SEARCH_TEXT(state, text) {
   state.searchText = text;
 }

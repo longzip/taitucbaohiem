@@ -1,6 +1,9 @@
 export function bhyts(state) {
   return state.bhyts;
 }
+export function getCurrentBhyt(state) {
+  return state.currentBhyt;
+}
 
 export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
   let filtered = bhyts;

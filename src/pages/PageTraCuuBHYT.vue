@@ -317,21 +317,25 @@
         </q-list>
       </q-card-section>
     </q-card>
+    <q-dialog v-model="dialogShow" persistent>
+      <BhytUpdateDialog />
+    </q-dialog>
   </q-page>
 </template>
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { Notify } from "quasar";
-import { onMounted } from "vue";
+import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
 export default {
-  components: { ThongTinTheBHYT },
+  components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
     return {
       searchText: "",
       tuNgayDenNgay: "",
       soBienLai: "",
       selectedUser: null,
+      dialogShow: false,
     };
   },
   computed: {
@@ -341,6 +345,7 @@ export default {
       "tongTienBHXH",
       "tongMucDongBHXH",
       "tongSoBHXH",
+      "getCurrentBhyt",
     ]),
     ...mapState("auth", ["userDetails"]),
     userOptions() {
@@ -354,7 +359,7 @@ export default {
           value: this.userDetails?.id,
         },
         {
-          label: this.userDetails?.maNhanVienThu.slice(0, 4),
+          label: this.userDetails?.maNhanVienThu?.slice(0, 4),
           value: this.userDetails?.maNhanVienThu,
         },
       ];
@@ -940,15 +945,19 @@ export default {
     },
   },
   watch: {
+    getCurrentBhyt: function (newBhyt) {
+      if (newBhyt) this.dialogShow = true;
+      else this.dialogShow = false;
+    },
     userDetails: async function ({ maXa, id }) {
       // this.selectedUser = id;
-      await this.getBhyts({
-        thang: 1,
-        completed: "0",
-        disabled: "0",
-        taiTuc: "1",
-        maXa,
-      });
+      // await this.getBhyts({
+      //   thang: 1,
+      //   completed: "0",
+      //   disabled: "0",
+      //   taiTuc: "1",
+      //   maXa,
+      // });
       // if (this.$route.query.q) {
       //   const q = this.$route.query.q;
       //   this.searchText = q;

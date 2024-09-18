@@ -94,11 +94,9 @@
         }}</q-item-label
       >
 
-      <q-item-label
-        v-if="userDetails.isPro && bhyt.maPhuongThucDong"
-        caption
-        lines="2"
+      <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption lines="2"
         ><span
+          @click="setCurrentBhyt(bhyt)"
           :class="{
             'bg-red text-white text-bold q-pa-xs':
               getDateDiff(bhyt.denThangDt) < 32,
@@ -303,6 +301,7 @@ export default {
       "huyThuBHXHTN",
       "updateTongTien",
       "copyBhyt",
+      "setCurrentBhyt",
     ]),
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
