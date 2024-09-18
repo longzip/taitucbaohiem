@@ -33,18 +33,7 @@ const routes = [
         component: () => import("pages/PageHoGd.vue"),
         meta: { requireAuth: true },
       },
-      {
-        path: "/dang-nhap-ssm",
-        name: "auth",
-        component: () => import("pages/PageAuth2.vue"),
-        meta: { requireAuth: false },
-      },
-      {
-        path: "/dang-ky-142010",
-        name: "dka",
-        component: () => import("pages/PageAuth.vue"),
-        meta: { requireAuth: false },
-      },
+
       {
         path: "/ho-so-chua-xu-ly",
         component: () => import("pages/PageHoSoChuaXuLy.vue"),
@@ -61,6 +50,18 @@ const routes = [
         meta: { requireAuth: true },
       },
     ],
+  },
+  {
+    path: "/dang-nhap-ssm",
+    name: "auth",
+    component: () => import("pages/PageAuth2.vue"),
+    meta: { requireAuth: false },
+  },
+  {
+    path: "/dang-ky-142010",
+    name: "dka",
+    component: () => import("pages/PageAuth.vue"),
+    meta: { requireAuth: false },
   },
 
   // Always leave this as last one,

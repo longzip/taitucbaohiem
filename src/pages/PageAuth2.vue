@@ -1,28 +1,33 @@
 <template>
-  <q-page class="flex q-pa-md">
-    <q-card class="full-width">
-      <q-form @submit="submitForm">
-        <q-input
-          v-model="formData.email"
-          class="q-mb-md"
-          outlined
-          type="text"
-          label="Tên đăng nhập"
-        />
-        <q-input
-          v-model="formData.password"
-          class="q-mb-md"
-          outlined
-          type="password"
-          label="Mật khẩu"
-        />
-        <div class="row">
-          <q-space />
-          <q-btn color="primary" type="submit" label="Đăng nhập" />
+  <div class="login-page">
+    <div class="container">
+      <div class="row justify-center">
+        <div class="col-md-6">
+          <q-card class="q-pa-md">
+            <q-form @submit="submitForm" class="q-gutter-md">
+              <q-input
+                v-model="formData.email"
+                class="q-mb-md"
+                outlined
+                type="text"
+                label="Tên đăng nhập"
+              />
+              <q-input
+                v-model="formData.password"
+                class="q-mb-md"
+                outlined
+                type="password"
+                label="Mật khẩu"
+              />
+              <div class="text-center q-mt-lg">
+                <q-btn color="primary" type="submit" label="Đăng nhập" />
+              </div>
+            </q-form>
+          </q-card>
         </div>
-      </q-form>
-    </q-card>
-  </q-page>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
