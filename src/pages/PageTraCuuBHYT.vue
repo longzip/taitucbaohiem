@@ -951,13 +951,13 @@ export default {
     },
     userDetails: async function ({ maXa, id }) {
       // this.selectedUser = id;
-      // await this.getBhyts({
-      //   thang: 1,
-      //   completed: "0",
-      //   disabled: "0",
-      //   taiTuc: "1",
-      //   maXa,
-      // });
+      await this.getBhyts({
+        thang: 1,
+        completed: "0",
+        disabled: "0",
+        taiTuc: "1",
+        maXa,
+      });
       // if (this.$route.query.q) {
       //   const q = this.$route.query.q;
       //   this.searchText = q;
