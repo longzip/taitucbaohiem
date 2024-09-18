@@ -17,3 +17,14 @@ export const mangLuoiId = (state) =>
   state.userDetails.mangLuoiId2 || state.userDetails.mangLuoiId;
 export const maXa = (state) => state.userDetails.maXa;
 export const userName = (state) => state.userDetails.id;
+
+export const userOptions = (state) => [
+  {
+    label: "Tất cả",
+    value: null,
+  },
+  {
+    label: state.userDetails?.userName,
+    value: state.userDetails?.id,
+  },
+];
