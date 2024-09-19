@@ -3,7 +3,7 @@
     <q-card>
       <q-card-section>
         <div class="row">
-          <div class="col-8">
+          <div class="col-7">
             <q-input
               label="Tìm kiếm"
               outlined
@@ -16,7 +16,7 @@
             />
           </div>
 
-          <div class="col-3">
+          <div class="col-4">
             <q-select
               v-model="selectedUser"
               :options="userOptions"
@@ -76,8 +76,6 @@
                     loadBHXHTNs({
                       tienNop: 1,
                       taiTucBHXH: 1,
-                      disabled: '0',
-                      completed: '0',
                       userName: userDetails.id,
                     })
                   "
