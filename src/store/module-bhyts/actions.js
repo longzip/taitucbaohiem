@@ -12,7 +12,6 @@ export function setCurrentBhyt({ commit }, bhyt) {
 }
 
 export function searchBhyts({ commit, state }, searchText) {
-  console.log("tìm", searchText);
   commit("SET_SEARCH_TEXT", searchText);
 }
 export function selectUser({ commit }, user) {

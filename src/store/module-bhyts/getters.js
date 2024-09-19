@@ -7,7 +7,7 @@ export function getCurrentBhyt(state) {
 
 export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
   let filtered = bhyts;
-  const term = searchText.toLowerCase();
+  const term = searchText.toLowerCase().trim();
   if (term) {
     filtered = filtered.filter((bhyt) => {
       return (
