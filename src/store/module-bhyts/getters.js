@@ -11,7 +11,9 @@ export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
   if (term) {
     filtered = filtered.filter((bhyt) => {
       return (
-        `${bhyt.hoTen} ${bhyt.ngaySinhDt}`.toLowerCase()?.includes(term) ||
+        `${bhyt.hoTen} ${bhyt.ngaySinhDt} ${bhyt.maSoBhxh} ${bhyt.soTheBhyt}`
+          .toLowerCase()
+          ?.includes(term) ||
         bhyt.ghiChu?.includes(term) ||
         bhyt.userName?.includes(term)
       );
