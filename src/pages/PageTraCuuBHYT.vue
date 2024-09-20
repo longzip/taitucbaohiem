@@ -949,6 +949,7 @@ export default {
       else this.dialogShow = false;
     },
     userDetails: async function ({ maXa }) {
+      if (!maXa) return;
       // await this.getBhyts({
       //   thang: 1,
       //   completed: "0",
@@ -956,10 +957,11 @@ export default {
       //   taiTuc: "1",
       //   maXa,
       // });
+
       api
         .post("/api/update-bhyt-data", {
           api_key: this.userDetails.isLogin, // Truyền API key từ biến
-          mang_luoi_id: this.userDetails.mangLuoiId, // Truyền mạng lưới ID từ biến
+          mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
         })
         .then((response) => {
           console.log("Cập nhật dữ liệu Bhyt thành công:", response);
