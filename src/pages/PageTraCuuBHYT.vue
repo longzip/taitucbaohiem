@@ -962,9 +962,10 @@ export default {
         .post("/api/update-bhyt-data", {
           api_key: this.userDetails.isLogin, // Truyền API key từ biến
           mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
+          force: false,
         })
         .then((response) => {
-          console.log("Cập nhật dữ liệu Bhyt thành công:", response);
+          console.log("Cập nhật dữ liệu Bhyt thành công!");
         })
         .catch((error) => {
           console.error("Lỗi cập nhật dữ liệu Bhyt:", error);

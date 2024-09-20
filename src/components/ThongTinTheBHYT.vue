@@ -107,7 +107,16 @@
           }}</span
         ></q-item-label
       >
-      <q-item-label v-if="userDetails.isPro" caption lines="2">
+      <q-item-label
+        v-if="
+          userDetails.isPro &&
+          bhyt.trangThaiHoSoName !== 'Đã nhận kết quả phát sinh từ BHXH' &&
+          bhyt.thongBaoBhxh !== 'Phát sinh thành công'
+        "
+        caption
+        class="text-red text-bold"
+        lines="2"
+      >
         {{ bhyt.trangThaiHoSoName }} {{ bhyt.thongBaoBhxh }}
       </q-item-label>
       <q-item-label v-if="userDetails.isPro" caption lines="2">
