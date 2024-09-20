@@ -3,7 +3,7 @@
     <q-card>
       <q-card-section>
         <div class="row">
-          <div class="col-7">
+          <div class="col-6">
             <q-input
               label="Tìm kiếm"
               outlined
@@ -13,7 +13,17 @@
               @update:model-value="searchBhyts"
               @keyup.enter="timKiem(searchText)"
               dense
-            />
+            >
+              <template v-slot:append>
+                <q-icon v-if="searchText === ''" name="search" />
+                <q-icon
+                  v-else
+                  name="clear"
+                  class="cursor-pointer"
+                  @click="searchText = ''"
+                />
+              </template>
+            </q-input>
           </div>
 
           <div class="col-4">
@@ -28,7 +38,8 @@
               dense
             />
           </div>
-          <div class="col-1">
+
+          <div class="col-2 text-right">
             Menu
             <q-icon name="expand_more" dense> </q-icon>
             <q-menu v-if="userDetails.isPro" touch-position>
@@ -261,55 +272,52 @@
           </div>
         </div>
       </q-card-section>
-      <q-card-section>
+      <q-card-section v-if="filteredBhyts.length">
+        <q-expansion-item
+          v-model="expanded"
+          :label="`Tổng tiền: ${parseInt(tongTienBHYT).toLocaleString()}/ ${
+            filteredBhyts.length
+          } thẻ`"
+          caption="Xem chi tiết"
+        >
+          Hoa hồng BHYT:
+          {{ parseInt((tongTienBHYT * 0.0264).toFixed(0)).toLocaleString() }}
+          ({{
+            parseInt(
+              ((tongTienBHYT / (filteredBhyts.length || 1)) * 0.0264).toFixed(0)
+            ).toLocaleString()
+          }}/thẻ)
+          <br />
+          Hoa hồng BHXH (năm):
+          {{
+            parseInt(
+              (
+                (tongMucDongBHXH * 0.22 - tongSoBHXH * 66000) *
+                0.049 *
+                12
+              ).toFixed(0)
+            ).toLocaleString()
+          }}đ ({{ parseInt(tongMucDongBHXH).toLocaleString() }})
+          <br />
+          <span
+            >Có {{ tongSoBHXH }} BHXHTN (tái tục):
+            {{ parseInt((tongTienBHXH * 0.049).toFixed(0)).toLocaleString() }}
+            ({{ parseInt(tongTienBHXH).toLocaleString() }})
+          </span>
+        </q-expansion-item>
         <q-list>
-          <q-item-label v-if="userDetails.isPro" header>
-            Số lượng: <q-badge>{{ filteredBhyts.length }}</q-badge
-            >/Trung bình đóng:
-            {{
-              parseInt(
-                tongTienBHYT / (filteredBhyts.length || 1)
-              ).toLocaleString()
-            }}/BHYT:
-            {{
-              parseInt(
-                ((tongTienBHYT / (filteredBhyts.length || 1)) * 0.0264).toFixed(
-                  0
-                )
-              ).toLocaleString()
-            }}đ/thẻ<br />
-            Tổng tiền:
-            <q-badge>{{ parseInt(tongTienBHYT).toLocaleString() }}</q-badge> :
-            BHYT:
-            {{ parseInt((tongTienBHYT * 0.0264).toFixed(0)).toLocaleString() }}đ
-            <br />
-            <span
-              >BHXHTN {{ tongSoBHXH }}:
-              <q-badge>{{ parseInt(tongTienBHXH).toLocaleString() }}</q-badge> :
-              BHXH:
-              {{
-                parseInt((tongTienBHXH * 0.049).toFixed(0)).toLocaleString()
-              }}đ</span
-            >
-            <span>
-              + BHXH (năm): {{ parseInt(tongMucDongBHXH).toLocaleString() }}đ :
-              BHXH:
-              {{
-                parseInt(
-                  (
-                    (tongMucDongBHXH * 0.22 - tongSoBHXH * 66000) *
-                    0.049 *
-                    12
-                  ).toFixed(0)
-                ).toLocaleString()
-              }}đ/năm</span
-            >
-          </q-item-label>
+          <!-- <q-item-label v-if="userDetails.isPro" header>
+
+          </q-item-label> -->
           <div v-for="bhyt in filteredBhyts" :key="bhyt.id">
             <ThongTinTheBHYT :bhyt="bhyt" />
             <q-separator spaced inset />
           </div>
         </q-list>
+      </q-card-section>
+      <q-card-section v-else>
+        Nhập họ và tên hoặc mã số BHXH, mã thẻ BHYT vào ô Tìm kiếm và nhấn ENTER
+        để tra cứu.
       </q-card-section>
     </q-card>
     <q-dialog v-model="dialogShow" persistent>
@@ -332,6 +340,7 @@ export default {
       soBienLai: "",
       selectedUser: null,
       dialogShow: false,
+      expanded: false,
     };
   },
   computed: {
@@ -947,13 +956,13 @@ export default {
     },
     userDetails: async function ({ maXa }) {
       if (!maXa) return;
-      // await this.getBhyts({
-      //   thang: 1,
-      //   completed: "0",
-      //   disabled: "0",
-      //   taiTuc: "1",
-      //   maXa,
-      // });
+      await this.getBhyts({
+        thang: 2,
+        completed: "0",
+        disabled: "0",
+        taiTuc: "1",
+        maXa,
+      });
 
       api
         .post("/api/update-bhyt-data", {
