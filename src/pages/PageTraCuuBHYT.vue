@@ -325,6 +325,7 @@ import { mapGetters, mapActions, mapState } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { Notify } from "quasar";
 import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
+import { api } from "src/boot/axios";
 export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
@@ -948,13 +949,24 @@ export default {
       else this.dialogShow = false;
     },
     userDetails: async function ({ maXa }) {
-      await this.getBhyts({
-        thang: 1,
-        completed: "0",
-        disabled: "0",
-        taiTuc: "1",
-        maXa,
-      });
+      // await this.getBhyts({
+      //   thang: 1,
+      //   completed: "0",
+      //   disabled: "0",
+      //   taiTuc: "1",
+      //   maXa,
+      // });
+      api
+        .post("/api/update-bhyt-data", {
+          api_key: this.userDetails.isLogin, // Truyền API key từ biến
+          mang_luoi_id: this.userDetails.mangLuoiId, // Truyền mạng lưới ID từ biến
+        })
+        .then((response) => {
+          console.log("Cập nhật dữ liệu Bhyt thành công:", response);
+        })
+        .catch((error) => {
+          console.error("Lỗi cập nhật dữ liệu Bhyt:", error);
+        });
     },
   },
 };
