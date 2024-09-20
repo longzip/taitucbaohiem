@@ -102,9 +102,14 @@
               getDateDiff(bhyt.denThangDt) < 32,
           }"
           ><strong>BHXH {{ bhyt.maPhuongThucDong }}:</strong>
-          {{ bhyt.mucDong }} - {{ bhyt.denThangDt?.slice(0, 7) }}</span
+          {{ bhyt.mucDong }} T{{ bhyt.tuThangTN }}-{{
+            bhyt.denThangDt?.slice(0, 7)
+          }}</span
         ></q-item-label
       >
+      <q-item-label v-if="userDetails.isPro" caption lines="2">
+        {{ bhyt.trangThaiHoSoName }} {{ bhyt.thongBaoBhxh }}
+      </q-item-label>
       <q-item-label v-if="userDetails.isPro" caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
         <q-icon @click="xacNhanGhiChu(bhyt)" name="edit" />
