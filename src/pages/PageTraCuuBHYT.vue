@@ -36,13 +36,6 @@
                 <q-item clickable @click="loadBhytByName" v-close-popup>
                   <q-item-section>Tìm tất cả</q-item-section>
                 </q-item>
-                <q-item
-                  clickable
-                  @click="printPhuLucThanhVienHGD"
-                  v-close-popup
-                >
-                  <q-item-section>In phụ lục thành viên HGD</q-item-section>
-                </q-item>
                 <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
                   <q-item-section>Đã thu tiền BHYT</q-item-section>
                 </q-item>
@@ -50,10 +43,14 @@
                   <q-item-section>Đã thu tiền BHXH</q-item-section>
                 </q-item>
                 <q-item clickable @click="taiTucBHYT1thang" v-close-popup>
-                  <q-item-section>Tái tục 1 tháng (Me)</q-item-section>
+                  <q-item-section
+                    >Tái tục 1 tháng ({{ userDetails.id }})</q-item-section
+                  >
                 </q-item>
                 <q-item clickable @click="taiTucBHYT2thang" v-close-popup>
-                  <q-item-section>Tái tục 2 tháng (Me)</q-item-section>
+                  <q-item-section
+                    >Tái tục 2 tháng ({{ userDetails.id }})</q-item-section
+                  >
                 </q-item>
 
                 <q-item
@@ -61,14 +58,14 @@
                   @click="loadBhyts({ thang: 1 })"
                   v-close-popup
                 >
-                  <q-item-section>Tái tục 1 tháng (All)</q-item-section>
+                  <q-item-section>Tái tục 1 tháng (xã)</q-item-section>
                 </q-item>
                 <q-item
                   clickable
                   @click="loadBhyts({ thang: 2 })"
                   v-close-popup
                 >
-                  <q-item-section>Tái tục 2 tháng (All)</q-item-section>
+                  <q-item-section>Tái tục 2 tháng (xã)</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -81,7 +78,7 @@
                   "
                   v-close-popup
                 >
-                  <q-item-section>Tái tục BHXH (1 tháng)</q-item-section>
+                  <q-item-section>Tái tục BHXH</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -93,7 +90,7 @@
                   "
                   v-close-popup
                 >
-                  <q-item-section>BHXH (me)</q-item-section>
+                  <q-item-section>BHXH {{ userDetails.id }}</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -105,11 +102,17 @@
                   "
                   v-close-popup
                 >
-                  <q-item-section>BHXH (All)</q-item-section>
+                  <q-item-section>BHXH (xã)</q-item-section>
                 </q-item>
 
                 <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
                   <q-item-section>BHYT bổ trợ</q-item-section>
+                </q-item>
+                <q-item clickable @click="loadBhytThang" v-close-popup>
+                  <q-item-section>Đã nộp BHYT</q-item-section>
+                </q-item>
+                <q-item clickable @click="loadBHXHThang" v-close-popup>
+                  <q-item-section>Đã nộp BHXH TN</q-item-section>
                 </q-item>
                 <q-item clickable @click="loadBhytsHetHan" v-close-popup>
                   <q-item-section>Đã hết hạn</q-item-section>
@@ -119,12 +122,6 @@
                 </q-item>
                 <q-item clickable @click="loadBhytsCompleted" v-close-popup>
                   <q-item-section>Đánh dấu sao</q-item-section>
-                </q-item>
-                <q-item clickable @click="loadBhytThang" v-close-popup>
-                  <q-item-section>Biên thu BHYT</q-item-section>
-                </q-item>
-                <q-item clickable @click="loadBHXHThang" v-close-popup>
-                  <q-item-section>Biên thu BHXH TN</q-item-section>
                 </q-item>
                 <q-item
                   clickable
