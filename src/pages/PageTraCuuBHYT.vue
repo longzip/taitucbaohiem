@@ -806,8 +806,7 @@ export default {
           try {
             const maSoBHXHTimKiem = maSo.join("").slice(-10);
             this.traCuuBHXH(maSoBHXHTimKiem);
-            this.searchText = "maSoBHXHTimKiem";
-            this.setSearchText("maSoBHXHTimKiem");
+            this.searchText = maSoBHXHTimKiem;
           } catch (error) {
             console.log(error);
           }
@@ -828,12 +827,11 @@ export default {
           }
         }
       }
-
-      this.$refs.inputSearch.select();
       if (danhSachTimKiem.length > 1) {
         this.searchText = "";
-        this.setSearchText("");
       }
+      this.$refs.inputSearch.select();
+
       const query = { ...this.$route.query, q: searchText };
       this.$router.replace({ query });
     },
