@@ -42,21 +42,37 @@
             Menu
             <q-icon name="expand_more" dense> </q-icon>
             <q-menu v-if="userDetails.isPro" touch-position>
-              <q-list style="min-width: 100px">
-                <q-item clickable @click="loadBhytByName" v-close-popup>
-                  <q-item-section>Tìm tất cả</q-item-section>
+              <q-list style="min-width: 150px">
+                <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
+                  <q-item-section>Tái tục BHYT bổ trợ</q-item-section>
                 </q-item>
+                <q-item clickable @click="loadBhytThang" v-close-popup>
+                  <q-item-section>Đã nộp BHYT</q-item-section>
+                </q-item>
+                <q-item clickable @click="loadBHXHThang" v-close-popup>
+                  <q-item-section>Đã nộp BHXH TN</q-item-section>
+                </q-item>
+                <q-separator />
                 <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
                   <q-item-section>Đã thu tiền BHYT</q-item-section>
                 </q-item>
                 <q-item clickable @click="loadBhytByUserName(0)" v-close-popup>
                   <q-item-section>Đã thu tiền BHXH</q-item-section>
                 </q-item>
+                <q-separator />
                 <q-item clickable @click="taiTucBHYT1thang" v-close-popup>
                   <q-item-section
-                    >Tái tục 1 tháng ({{ userDetails.id }})</q-item-section
+                    >Tái tục BHYT ({{ userDetails.id }})</q-item-section
                   >
                 </q-item>
+                <q-item
+                  clickable
+                  @click="loadBhyts({ thang: 1 })"
+                  v-close-popup
+                >
+                  <q-item-section>Tái tục BHYT(xã)</q-item-section>
+                </q-item>
+                <q-separator />
                 <q-item clickable @click="taiTucBHYT2thang" v-close-popup>
                   <q-item-section
                     >Tái tục 2 tháng ({{ userDetails.id }})</q-item-section
@@ -65,18 +81,12 @@
 
                 <q-item
                   clickable
-                  @click="loadBhyts({ thang: 1 })"
-                  v-close-popup
-                >
-                  <q-item-section>Tái tục 1 tháng (xã)</q-item-section>
-                </q-item>
-                <q-item
-                  clickable
                   @click="loadBhyts({ thang: 2 })"
                   v-close-popup
                 >
                   <q-item-section>Tái tục 2 tháng (xã)</q-item-section>
                 </q-item>
+                <q-separator />
                 <q-item
                   clickable
                   @click="
@@ -100,7 +110,9 @@
                   "
                   v-close-popup
                 >
-                  <q-item-section>BHXH {{ userDetails.id }}</q-item-section>
+                  <q-item-section
+                    >Đóng BHXH cho {{ userDetails.id }}</q-item-section
+                  >
                 </q-item>
                 <q-item
                   clickable
@@ -112,18 +124,9 @@
                   "
                   v-close-popup
                 >
-                  <q-item-section>BHXH (xã)</q-item-section>
+                  <q-item-section>Đóng BHXH (xã)</q-item-section>
                 </q-item>
-
-                <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
-                  <q-item-section>BHYT bổ trợ</q-item-section>
-                </q-item>
-                <q-item clickable @click="loadBhytThang" v-close-popup>
-                  <q-item-section>Đã nộp BHYT</q-item-section>
-                </q-item>
-                <q-item clickable @click="loadBHXHThang" v-close-popup>
-                  <q-item-section>Đã nộp BHXH TN</q-item-section>
-                </q-item>
+                <q-separator />
                 <q-item clickable @click="loadBhytsHetHan" v-close-popup>
                   <q-item-section>Đã hết hạn</q-item-section>
                 </q-item>
@@ -133,6 +136,7 @@
                 <q-item clickable @click="loadBhytsCompleted" v-close-popup>
                   <q-item-section>Đánh dấu sao</q-item-section>
                 </q-item>
+                <q-separator />
                 <q-item
                   clickable
                   @click="loadBaoCaoChiTietGiaoDich"
@@ -146,7 +150,7 @@
                 <q-item clickable @click="printDanhSachTraThe" v-close-popup>
                   <q-item-section>In Danh sách trả thẻ</q-item-section>
                 </q-item>
-
+                <q-separator />
                 <q-item
                   clickable
                   @click="copyMaSoBhxhToClipboard"
@@ -167,6 +171,7 @@
                 <q-item clickable @click="copyNamePhoneClipboard" v-close-popup>
                   <q-item-section>Lưu danh bạ</q-item-section>
                 </q-item>
+                <q-separator />
                 <q-item clickable @click="batTatRemove" v-close-popup>
                   <q-item-section>Tắt/Bật danh sách</q-item-section>
                 </q-item>
@@ -176,6 +181,7 @@
                 <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
                   <q-item-section>Tìm theo năm sinh</q-item-section>
                 </q-item>
+                <q-separator />
                 <q-item clickable @click="loadTaiTucBHYT" v-close-popup>
                   <q-item-section>Tái tục BHYT (ssm)</q-item-section>
                 </q-item>
@@ -189,7 +195,7 @@
                 >
                   <q-item-section>Đồng bộ BHXH TN</q-item-section>
                 </q-item>
-
+                <q-separator />
                 <q-item
                   clickable
                   @click="
@@ -216,6 +222,7 @@
                 >
                   <q-item-section>Giữ lại danh sách</q-item-section>
                 </q-item>
+                <q-separator />
                 <q-item
                   clickable
                   @click="
@@ -243,6 +250,7 @@
                 >
                   <q-item-section>Thiếu CCCD</q-item-section>
                 </q-item>
+                <q-separator />
                 <q-item
                   clickable
                   @click="loadBhytByUserNameTaiTuc()"
@@ -263,6 +271,7 @@
                 >
                   <q-item-section>Có số điện thoại</q-item-section>
                 </q-item>
+                <q-separator />
                 <q-item clickable @click="loadBhytByUserName()" v-close-popup>
                   <q-item-section>Đã thu tiền</q-item-section>
                 </q-item>
@@ -273,19 +282,47 @@
       </q-card-section>
       <q-card-section v-if="filteredBhyts.length">
         <q-expansion-item
+          v-if="tongSoBHXH === filteredBhyts.length"
+          v-model="expanded"
+          :label="`Tổng tiền BHXH TN: ${parseInt(
+            tongTienBHXH
+          ).toLocaleString()}/ ${tongSoBHXH} sổ`"
+          caption="Xem chi tiết"
+        >
+          Hoa hồng:
+          {{ parseInt((tongTienBHXH * 0.049).toFixed(0)).toLocaleString() }}
+          <br />
+          Hoa hồng BHXH (năm):
+          {{
+            parseInt(
+              (
+                (tongMucDongBHXH * 0.22 - tongSoBHXH * 66000) *
+                0.049 *
+                12
+              ).toFixed(0)
+            ).toLocaleString()
+          }}đ ({{ parseInt(tongMucDongBHXH).toLocaleString() }})
+        </q-expansion-item>
+        <q-expansion-item
+          v-else
           v-model="expanded"
           :label="`Tổng tiền: ${parseInt(tongTienBHYT).toLocaleString()}/ ${
             filteredBhyts.length
           } thẻ`"
           caption="Xem chi tiết"
         >
-          Hoa hồng BHYT:
-          {{ parseInt((tongTienBHYT * 0.0264).toFixed(0)).toLocaleString() }}
-          ({{
-            parseInt(
-              ((tongTienBHYT / (filteredBhyts.length || 1)) * 0.0264).toFixed(0)
-            ).toLocaleString()
-          }}/thẻ)
+          <strong
+            >Hoa hồng BHYT:
+            {{ parseInt((tongTienBHYT * 0.0264).toFixed(0)).toLocaleString() }}
+            ({{
+              parseInt(
+                ((tongTienBHYT / (filteredBhyts.length || 1)) * 0.0264).toFixed(
+                  0
+                )
+              ).toLocaleString()
+            }}/thẻ)</strong
+          >
+          <br />
           <br />
           Hoa hồng BHXH (năm):
           {{

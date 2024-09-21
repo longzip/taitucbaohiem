@@ -287,7 +287,7 @@
       </q-item-label>
       <q-item-label caption v-if="bhyt.updated_at"
         ><br />
-        Đồng bộ: {{ new Date(bhyt.updated_at).toLocaleString() }}</q-item-label
+        Cập nhật: {{ formatDate(bhyt.updated_at) }}</q-item-label
       >
     </q-item-section>
   </q-item>
@@ -297,6 +297,7 @@
 import { mapActions, mapState } from "vuex";
 import { date } from "quasar";
 import { Notify } from "quasar";
+import moment from "moment";
 export default {
   props: ["bhyt"],
   computed: {
@@ -324,6 +325,9 @@ export default {
       // mới
       "traCuuBHXH",
     ]),
+    formatDate(date) {
+      return moment(date).fromNow();
+    },
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
     },
@@ -691,11 +695,6 @@ export default {
       }
     },
     async copyUrlToClipboard(t) {
-      // try {
-      //   t = await this.xem({ maSoBhxh: t.maSoBhxh });
-      // } catch (error) {
-      //   console.log(error);
-      // }
       const [nam, thang] = new Date().toISOString().slice(0, 7).split("-");
       const isGiaHan =
         new Date(t.denNgayDt) <= new Date(nam, parseInt(thang) + 1, 0);
@@ -817,12 +816,6 @@ export default {
       const s = [...maSoCanAn];
       s.splice(-7, 3, "***");
       return s.join("");
-    },
-  },
-  filters: {
-    tien: function (value) {
-      if (!value) return "0đ";
-      return parseInt(value).toLocaleString();
     },
   },
 };

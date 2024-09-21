@@ -1,6 +1,11 @@
 import { boot } from "quasar/wrappers";
 import axios from "axios";
 
+import moment from "moment";
+import "moment/locale/vi";
+
+moment.locale("vi");
+
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
 // If any client changes this (global) instance, it might be a
