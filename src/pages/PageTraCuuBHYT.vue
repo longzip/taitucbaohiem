@@ -800,7 +800,7 @@ export default {
           .map((value) => value.charAt(0).toUpperCase() + value.slice(1))
           .join(" ");
         const maSo = name.match(regex);
-        const loaiTimKiem = xacDinhLoaiChuoi(maSo.join(""));
+        const loaiTimKiem = xacDinhLoaiChuoi(maSo?.join(""));
 
         if (loaiTimKiem === "Dãy 10 chữ số cuối") {
           try {
