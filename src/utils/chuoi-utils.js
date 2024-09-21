@@ -55,14 +55,14 @@ function lay10ChuSoCuoi(chuoi) {
   const danhSachSo = chuoi.match(/\d+/g);
 
   // Gộp các số thành một chuỗi duy nhất
-  const chuoiSoGop = danhSachSo.join("");
+  const chuoiSoGop = danhSachSo?.join("");
 
   // Kiểm tra xem chuỗi số có phải là dãy 10 chữ số không
-  if (chuoiSoGop.length >= 10) {
+  if (chuoiSoGop && chuoiSoGop.length >= 10) {
     // Lấy 10 chữ số cuối cùng từ cuối lên
     return chuoiSoGop.slice(-10);
   } else {
-    return null;
+    return "";
   }
 }
 
@@ -118,7 +118,7 @@ function laSoDienThoaiDiDongHopLe(soDienThoai) {
 
   // Kiểm tra đầu số
   const dauSo = soDienThoai.substring(0, 2);
-  const cacDauSoHopLe = ["09", "03", "01", "07", "08"]; // Thêm đầu số 07, 08
+  const cacDauSoHopLe = ["09", "03", "07", "08"]; // Thêm đầu số 07, 08
   if (!cacDauSoHopLe.includes(dauSo)) {
     return false;
   }

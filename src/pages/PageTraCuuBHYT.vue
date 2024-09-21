@@ -787,19 +787,22 @@ export default {
     async timKiem(searchText) {
       const thongSoTheBHYTs = searchText.split("|");
       if (thongSoTheBHYTs.length > 1) {
-        // searchText = thongSoTheBHYTs[0];
+        searchText = thongSoTheBHYTs[0];
         this.setSearchText(thongSoTheBHYTs[0]); // Gọi mutation SET_SEARCH_TEXT để cập nhật state
       }
       const danhSachTimKiem = searchText.split(",");
 
       const regex = /[0-9]/g;
+
       for (let index = 0; index < danhSachTimKiem.length; index++) {
         const name = danhSachTimKiem[index]
           .split(" ")
           .map((value) => value.charAt(0).toUpperCase() + value.slice(1))
           .join(" ");
         const maSo = name.match(regex);
-        if (maSo) {
+        const loaiTimKiem = xacDinhLoaiChuoi(maSo.join(""));
+
+        if (loaiTimKiem === "Dãy 10 chữ số cuối") {
           try {
             this.traCuuBHXH(maSo.join("").slice(-10));
           } catch (error) {
@@ -825,7 +828,7 @@ export default {
 
       this.$refs.inputSearch.select();
       if (danhSachTimKiem.length > 1) {
-        this.setSearchText(thongSoTheBHYTs[0]);
+        this.setSearchText("");
       }
       const query = { ...this.$route.query, q: searchText };
       this.$router.replace({ query });
