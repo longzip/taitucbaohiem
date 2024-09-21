@@ -48,3 +48,20 @@ export const updateBhyt = (state, payload) => {
   if (found) Object.assign(found, payload);
   else state.bhyts.unshift(payload);
 };
+
+// Mới xây dựng lại
+
+export const capNhatThongTinBhyt = (state, payload) => {
+  // Tìm BHYT trong mảng bhyts dựa trên maSoBhxh hoặc maSoBHXH
+  let found = state.bhyts.find(
+    (x) => x.maSoBhxh === payload.maSoBhxh || x.maSoBHXH === payload.maSoBhxh
+  );
+
+  // Nếu tìm thấy BHYT, cập nhật thông tin của BHYT đó bằng thông tin mới trong payload
+  if (found) {
+    Object.assign(found, payload);
+  } else {
+    // Nếu không tìm thấy, thêm BHYT mới vào đầu mảng bhyts
+    state.bhyts.unshift(payload);
+  }
+};

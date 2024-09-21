@@ -24,12 +24,7 @@
 
         <q-icon
           class="q-ml-sm"
-          @click="
-            xem({
-              ...bhyt,
-              gioiTinh: bhyt.gioiTinh == 1 || bhyt.gioiTinh === 'Nam' ? 1 : 0,
-            })
-          "
+          @click="traCuuBHXH(bhyt.maSoBhxh || bhyt.maSoBHXH)"
           name="update"
           color="blue"
         />
@@ -326,6 +321,8 @@ export default {
       "updateTongTien",
       "copyBhyt",
       "setCurrentBhyt",
+      // mới
+      "traCuuBHXH",
     ]),
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
