@@ -1,6 +1,7 @@
 // src/utils/chuoi-utils.js
 
 function laHoTenHopLe(chuoi) {
+  if (!chuoi) return false;
   // Loại bỏ khoảng trắng thừa đầu và cuối chuỗi
   chuoi = chuoi.trim();
 
@@ -22,6 +23,7 @@ function laHoTenHopLe(chuoi) {
 }
 
 function dinhDangHoTen(chuoi) {
+  if (!chuoi) return false;
   // Loại bỏ khoảng trắng thừa đầu và cuối chuỗi
   chuoi = chuoi.trim();
 
@@ -43,6 +45,7 @@ function dinhDangHoTen(chuoi) {
 }
 
 function vietHoaChuCaiDauTien(hoTen) {
+  if (!hoTen) return "";
   const cacTu = hoTen.split(" ");
   const cacTuVietHoa = cacTu.map((tu) => {
     return tu.charAt(0).toUpperCase() + tu.slice(1).toLowerCase();
@@ -51,6 +54,7 @@ function vietHoaChuCaiDauTien(hoTen) {
 }
 
 function lay10ChuSoCuoi(chuoi) {
+  if (!chuoi) return "";
   // Tách các số ra khỏi chuỗi
   const danhSachSo = chuoi.match(/\d+/g);
 
@@ -67,6 +71,7 @@ function lay10ChuSoCuoi(chuoi) {
 }
 
 function laCCCDChip(cccd) {
+  if (!cccd) return false;
   // Kiểm tra độ dài
   if (cccd.length !== 12) {
     return false;
@@ -82,15 +87,18 @@ function laCCCDChip(cccd) {
 }
 
 function layPhanTuDauTienTuChuoiTachBangDauPhay(chuoi) {
+  if (!chuoi) return "";
   return chuoi.split("|")[0];
 }
 
 function dinhDangNgayThang(ngayThang) {
+  if (!ngayThang) return "";
   const ngay = new Date(ngayThang);
   return ngay.toLocaleDateString("vi-VN");
 }
 
 function dinhDangSo(so, soChuSo = 0) {
+  if (!so) return "";
   if (so > 0) {
     return so.toLocaleString("vi-VN", {
       minimumFractionDigits: soChuSo,
@@ -106,6 +114,7 @@ function dinhDangTien(tien) {
 }
 
 function laSoDienThoaiDiDongHopLe(soDienThoai) {
+  if (!soDienThoai) return false;
   // Kiểm tra độ dài
   if (soDienThoai.length !== 10) {
     return false;

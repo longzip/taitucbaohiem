@@ -851,7 +851,7 @@ export async function traCuuMaSoBHXH(
     const { data } = await api.get(
       `/api/tim-kiem-bhyts?maTinh=${maTinh}&maHuyen=${maHuyen}&maXa=${maXa}&hoTen=${hoTen}`
     );
-    console.log(data.data);
+
     if (data.data.length) {
       data.data.forEach((bhyt) => commit("capNhatThongTinBhyt", bhyt));
     }
