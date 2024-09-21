@@ -10,7 +10,6 @@
               v-model="searchText"
               debounce="900"
               ref="inputSearch"
-              @update:model-value="searchBhyts"
               @keyup.enter="timKiem(searchText)"
               dense
             >
@@ -326,16 +325,17 @@
   </q-page>
 </template>
 <script>
-import { mapGetters, mapActions, mapState } from "vuex";
+import { mapGetters, mapActions, mapState, mapMutations } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { Notify } from "quasar";
 import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
 import { api } from "src/boot/axios";
+import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
 export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
     return {
-      searchText: "",
+      // searchText: "",
       tuNgayDenNgay: "",
       soBienLai: "",
       selectedUser: null,
@@ -379,6 +379,14 @@ export default {
           0
         );
     },
+    searchText: {
+      get() {
+        return this.$store.state.bhyts.searchText; // Lấy giá trị searchText từ Vuex
+      },
+      set(value) {
+        this.$store.commit("bhyts/SET_SEARCH_TEXT", value); // Cập nhật giá trị searchText trong Vuex
+      },
+    },
   },
   methods: {
     ...mapActions("bhyts", [
@@ -395,9 +403,14 @@ export default {
       "capNhatBHXHTN",
       "searchBhyts",
       "selectUser",
+      // mới
+      "traCuuBHXH",
+      "traCuuMaSoBHXH",
     ]),
     ...mapActions("auth", ["firebaseUpdateUser", "handleAuthStateChanged"]),
-
+    ...mapMutations({
+      setSearchText: "bhyts/SET_SEARCH_TEXT",
+    }),
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
@@ -774,7 +787,8 @@ export default {
     async timKiem(searchText) {
       const thongSoTheBHYTs = searchText.split("|");
       if (thongSoTheBHYTs.length > 1) {
-        this.searchText = searchText = thongSoTheBHYTs[0];
+        // searchText = thongSoTheBHYTs[0];
+        this.setSearchText(thongSoTheBHYTs[0]); // Gọi mutation SET_SEARCH_TEXT để cập nhật state
       }
       const danhSachTimKiem = searchText.split(",");
 
@@ -786,21 +800,17 @@ export default {
           .join(" ");
         const maSo = name.match(regex);
         if (maSo) {
-          //
-          if (danhSachTimKiem.length === 1)
-            try {
-              await this.getBhyts({
-                name: maSo.join(""),
-                maXa: maSo.length < 9 ? this.userDetails.maXa : null,
-              });
-            } catch (error) {}
-          await this.dongBoDuLieu(maSo.join(""));
-          await this.sleep(500);
+          try {
+            this.traCuuBHXH(maSo.join("").slice(-10));
+          } catch (error) {
+            console.log(error);
+          }
         } else {
           try {
-            await this.traCuuTheoTen({
-              name,
+            await this.traCuuMaSoBHXH({
+              hoTen: name,
               maXa: this.userDetails.maXa,
+              userName: this.userDetails.id,
               maHuyen: this.userDetails.maHuyen,
               maTinh: this.userDetails.maTinh,
             });
@@ -809,13 +819,14 @@ export default {
               type: "negative",
               message: "Không thực hiện được!" + error,
             });
-            danhSachTimKiem.length === 1;
-            await this.traCuuBhyts({ searchText, maXa: this.userDetails.maXa });
           }
         }
       }
 
       this.$refs.inputSearch.select();
+      if (danhSachTimKiem.length > 1) {
+        this.setSearchText(thongSoTheBHYTs[0]);
+      }
       const query = { ...this.$route.query, q: searchText };
       this.$router.replace({ query });
     },
@@ -964,18 +975,18 @@ export default {
       //   maXa,
       // });
 
-      // api
-      //   .post("/api/update-bhyt-data", {
-      //     api_key: this.userDetails.isLogin, // Truyền API key từ biến
-      //     mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
-      //     force: false,
-      //   })
-      //   .then((response) => {
-      //     console.log("Cập nhật dữ liệu Bhyt thành công!");
-      //   })
-      //   .catch((error) => {
-      //     console.error("Lỗi cập nhật dữ liệu Bhyt:", error);
-      //   });
+      api
+        .post("/api/update-bhyt-data", {
+          api_key: this.userDetails.isLogin, // Truyền API key từ biến
+          mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
+          force: false,
+        })
+        .then((response) => {
+          console.log("Cập nhật dữ liệu Bhyt thành công!");
+        })
+        .catch((error) => {
+          console.error("Lỗi cập nhật dữ liệu Bhyt:", error);
+        });
     },
   },
 };

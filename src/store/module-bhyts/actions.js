@@ -828,9 +828,36 @@ export const copyHoTenToClipboard = ({ state }) => {
 
 export async function traCuuBHXH({ commit }, maSoBHXH) {
   try {
-    const response = await api.get(`/api/tra-cuu-bhyt/${maSoBHXH}`);
+    const response = await api.get(`/api/bhyts/tra-cuu-bhyt/${maSoBHXH}`);
     // Commit mutation để cập nhật thông tin BHYT trong Vuex store
     commit("capNhatThongTinBhyt", response.data);
+  } catch (error) {
+    // Hiển thị thông báo lỗi bằng Quasar notification
+    Notify.create({
+      type: "negative",
+      message: "Lỗi tra cứu BHXH: " + error.message,
+      timeout: 2000, // Thời gian hiển thị thông báo (mili giây)
+    });
+    // Bạn có thể commit một mutation để cập nhật trạng thái lỗi trong Vuex
+    // commit('setError', error.message);
+  }
+}
+
+export async function traCuuMaSoBHXH(
+  { commit },
+  { maTinh, maHuyen, maXa, hoTen }
+) {
+  try {
+    const { data } = await api.get(
+      `/api/tim-kiem-bhyts?maTinh=${maTinh}&maHuyen=${maHuyen}&maXa=${maXa}&hoTen=${hoTen}`
+    );
+    console.log(data.data);
+    if (data.data.length) {
+      data.data.forEach((bhyt) => commit("capNhatThongTinBhyt", bhyt));
+    }
+
+    // Commit mutation để cập nhật thông tin BHYT trong Vuex store
+    // commit("capNhatThongTinBhyt", response.data);
   } catch (error) {
     // Hiển thị thông báo lỗi bằng Quasar notification
     Notify.create({
