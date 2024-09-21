@@ -804,7 +804,10 @@ export default {
 
         if (loaiTimKiem === "Dãy 10 chữ số cuối") {
           try {
-            this.traCuuBHXH(maSo.join("").slice(-10));
+            const maSoBHXHTimKiem = maSo.join("").slice(-10);
+            this.traCuuBHXH(maSoBHXHTimKiem);
+            this.searchText = "maSoBHXHTimKiem";
+            this.setSearchText("maSoBHXHTimKiem");
           } catch (error) {
             console.log(error);
           }
@@ -828,6 +831,7 @@ export default {
 
       this.$refs.inputSearch.select();
       if (danhSachTimKiem.length > 1) {
+        this.searchText = "";
         this.setSearchText("");
       }
       const query = { ...this.$route.query, q: searchText };

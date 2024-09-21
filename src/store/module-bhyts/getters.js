@@ -14,7 +14,7 @@ export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
         `${bhyt.hoTen} ${bhyt.ngaySinhDt}`.toLowerCase()?.includes(term) ||
         bhyt.maSoBhxh?.includes(term) ||
         bhyt.soCmnd?.includes(term) ||
-        bhyt.soTheBhyt?.includes(term) ||
+        // bhyt.soTheBhyt?.includes(term) ||
         bhyt.soDienThoai?.includes(term) ||
         bhyt.soDienThoai2?.includes(term) ||
         bhyt.ghiChu?.includes(term) ||
