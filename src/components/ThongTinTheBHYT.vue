@@ -187,13 +187,10 @@
         />
       </div>
       <q-item-label caption
-        >Thời hạn: {{ getDateDiff(bhyt.denNgayDt) }} ngày
-        <q-icon
-          @click="xoaThanhVienHGD(bhyt.maSoBhxh)"
-          name="person_remove_alt_1"
-      /></q-item-label>
+        >Hạn: {{ formatDate(bhyt.denNgayDt) }}
+      </q-item-label>
       <q-item-label caption
-        >Đến ngày:{{
+        >Ngày:{{
           (bhyt.denNgayDt || bhyt.ngayDenHan || "").slice(0, 10)
         }}</q-item-label
       >
@@ -265,7 +262,7 @@
         bhyt.userName
       }}</q-badge>
       <q-item-label caption>
-        Biên lai:
+        Bl:
         <a
           v-if="bhyt.soBienLai"
           href="javascript:void(0);"
@@ -280,14 +277,14 @@
           >{{ bhyt.soBienLaiTN }}</a
         >
         <br />
-        Ngày: {{ bhyt.ngayBienLai || bhyt.ngayLap }}
+        N: {{ bhyt.ngayBienLai || bhyt.ngayLap }}
         <span v-if="bhyt.ngayLapTN"
           >/{{ bhyt.ngayBienLai || bhyt.ngayLapTN }}</span
         >
       </q-item-label>
       <q-item-label caption v-if="bhyt.updated_at"
         ><br />
-        Cập nhật: {{ formatDate(bhyt.updated_at) }}</q-item-label
+        {{ formatDate(bhyt.updated_at) }}</q-item-label
       >
     </q-item-section>
   </q-item>
