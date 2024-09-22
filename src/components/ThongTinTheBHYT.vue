@@ -234,11 +234,12 @@
           href="javascript:void(0);"
           @click="timTheoSoBienLai(bhyt.soBienLai)"
           >{{ bhyt.soBienLaiTN }}</a
-        >
-        <br />
-        N: {{ bhyt.ngayBienLai || bhyt.ngayLap }}
-        <span v-if="bhyt.ngayLapTN"
-          >/{{ bhyt.ngayBienLai || bhyt.ngayLapTN }}</span
+        ><br />
+        <small
+          >{{ bhyt.ngayBienLai || bhyt.ngayLap }}
+          <span v-if="bhyt.ngayLapTN"
+            >/{{ bhyt.ngayBienLai || bhyt.ngayLapTN }}</span
+          ></small
         >
       </q-item-label>
       <q-item-label caption
