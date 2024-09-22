@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>BHXH tự nguyện và BHYT</q-toolbar-title>
+        <q-toolbar-title>Tái tục bảo hiểm LWS</q-toolbar-title>
 
         <q-btn
           round
@@ -36,7 +36,7 @@
           clickable
           tag="a"
           target="_blank"
-          href="https://www.facebook.com/longwebstudio"
+          href="https://www.longwebstudio.net/"
         >
           <q-item-section avatar>
             <q-icon name="code" />
@@ -51,15 +51,15 @@
           clickable
           tag="a"
           target="_blank"
-          href="https://www.facebook.com/lovanlongvn"
+          href="https://zalo.me/g/xvacnz843"
         >
           <q-item-section avatar>
             <q-icon name="help" />
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>Hỗ Trợ</q-item-label>
-            <q-item-label caption>Lỗ Văn Long</q-item-label>
+            <q-item-label>Hỗ Trợ 0374638603</q-item-label>
+            <q-item-label caption>Tham gia nhóm ZALO</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -89,12 +89,12 @@ const linksList = [
     icon: "timer",
     link: "/ho-so-chua-xu-ly",
   },
-  {
-    title: "Hồ sơ đã nộp BDH",
-    caption: "Các hồ sơ đã nộp",
-    icon: "verified",
-    link: "/ho-so-da-nop",
-  },
+  // {
+  //   title: "Hồ sơ đã nộp BDH",
+  //   caption: "Các hồ sơ đã nộp",
+  //   icon: "verified",
+  //   link: "/ho-so-da-nop",
+  // },
   {
     title: "Hồ sơ đã xử lý",
     caption: "Các hồ sơ đã xử lý",

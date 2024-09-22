@@ -84,7 +84,9 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-framework
     framework: {
-      config: {},
+      config: {
+        dark: "auto",
+      },
 
       // iconSet: 'material-icons', // Quasar icon set
       lang: "vi", // Quasar language pack
@@ -144,13 +146,13 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Todo`,
-        short_name: `Todo`,
-        description: `Todo`,
+        name: `LWS`,
+        short_name: `LWS`,
+        description: `Tái tục bảo hiểm`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#f3f3f3",
-        theme_color: "#2782bc",
+        theme_color: "#f9cf53",
         icons: [
           {
             src: "icons/icon-128x128.png",
