@@ -43,11 +43,11 @@
           /></a>
         </q-item-label>
       </div>
-      <q-item-label caption lines="2">
-        Số CMND: {{ bhyt.soCmnd }}
-      </q-item-label>
+      <q-item-label caption> CCCD: {{ bhyt.soCmnd }} </q-item-label>
       <q-item-label caption lines="2"
-        >{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH }}
+        ><strong>{{
+          bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
+        }}</strong>
         <q-icon
           class="q-ml-md"
           @click="
@@ -57,32 +57,12 @@
           "
           name="content_copy"
         />
-
-        <!-- <q-icon
-          class="q-ml-md"
-          @click="copyUrlToClipboard(bhyt)"
-          name="share"
-        /> -->
         <q-icon class="q-ml-md" @click="copyThoiHan(bhyt)" name="text_format" />
-        <!-- <q-icon
-          class="q-ml-md"
-          @click="copyMaTraCuuToClipboard(bhyt)"
-          name="history"
-        /> -->
-        <!-- <q-icon
-          class="q-ml-md"
-          @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
-          name="paid"
-        /> -->
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
-      <q-item-label caption lines="2"
-        >5 năm:{{
-          bhyt.ngay5Nam || bhyt.trangThaiHoSoName || bhyt.moTa
-        }}</q-item-label
-      >
+      <q-item-label caption lines="2">5 năm: {{ bhyt.ngay5Nam }}</q-item-label>
 
-      <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption lines="2"
+      <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption
         ><span
           @click="setCurrentBhyt(bhyt)"
           :class="{
@@ -90,7 +70,7 @@
               getDateDiff(bhyt.denThangDt) < 32,
           }"
           ><strong>BHXH {{ bhyt.maPhuongThucDong }}:</strong>
-          {{ bhyt.mucDong }} T{{ bhyt.tuThangTN }}-{{
+          {{ bhyt.mucDong }} T{{ bhyt.tuThangTN }}:{{
             bhyt.denThangDt?.slice(0, 7)
           }}</span
         ></q-item-label
@@ -132,33 +112,21 @@
         <q-btn size="12px" flat dense round icon="more_horiz">
           <q-menu>
             <q-list style="min-width: 300px">
-              <!-- <q-item clickable v-close-popup>
-                <q-item-section
-                  @click="
-                    xem({
-                      ...bhyt,
-                      gioiTinh:
-                        bhyt.gioiTinh == 1 || bhyt.gioiTinh === 'Nam' ? 1 : 0,
-                    })
-                  "
-                  >Đồng bộ ngay</q-item-section
-                >
-              </q-item> -->
-              <q-separator />
-              <q-item clickable v-close-popup>
-                <q-item-section @click="copyUrlToClipboard(bhyt)"
-                  >Thời hạn sử dụng thẻ</q-item-section
-                >
-              </q-item>
               <q-item clickable v-close-popup>
                 <q-item-section @click="copyMaTraCuuToClipboard(bhyt)"
-                  >Gửi mã tra cứu BHYT</q-item-section
+                  >Mã tra cứu đóng BHYT</q-item-section
                 >
               </q-item>
               <q-item clickable v-close-popup>
                 <q-item-section
                   @click="copyMaTraCuuToClipboard({ ...bhyt, maThuTuc: 0 })"
-                  >Gửi mã tra cứu BHXH TN</q-item-section
+                  >Mã tra cứu đóng BHXH TN</q-item-section
+                >
+              </q-item>
+              <q-separator />
+              <q-item clickable v-close-popup>
+                <q-item-section @click="copyUrlToClipboard(bhyt)"
+                  >Gửi tin nhắn hạn thẻ</q-item-section
                 >
               </q-item>
               <q-item clickable v-close-popup>
@@ -188,7 +156,7 @@
         }}</q-item-label
       >
       <q-item-label caption>
-        BHYT:
+        YT:
         <q-icon
           v-if="bhyt.isBHYT == 1"
           class="q-pr-sm"
@@ -208,7 +176,7 @@
         >đ</q-item-label
       >
       <q-item-label caption>
-        BHXH:
+        XH:
         <q-icon
           v-if="bhyt.isBHXHTN == 1"
           class="q-pr-sm"
@@ -225,7 +193,7 @@
         >đ</q-item-label
       >
       <q-item-label caption>
-        YTBT:
+        BT:
         <strong
           class="text-subtitle2 text-weight-bold"
           @click="xacNhanMucDongBHYTBT(bhyt)"
