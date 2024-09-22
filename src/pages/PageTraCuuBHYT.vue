@@ -1042,9 +1042,8 @@ export default {
           mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
           force: false,
         })
-        .then(({ data }) => {
+        .then((response) => {
           console.log("Cập nhật dữ liệu Bhyt thành công!");
-          this.resetBhyt(data);
         })
         .catch((error) => {
           console.error("Lỗi cập nhật dữ liệu Bhyt:", error);
