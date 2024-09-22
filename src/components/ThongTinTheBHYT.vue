@@ -21,13 +21,6 @@
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
         />
-
-        <q-icon
-          class="q-ml-sm"
-          @click="traCuuBHXH(bhyt.maSoBhxh || bhyt.maSoBHXH)"
-          name="update"
-          color="blue"
-        />
       </q-item-label>
       <q-item-label caption lines="2">
         {{ bhyt.diaChiLh }}
@@ -139,7 +132,7 @@
         <q-btn size="12px" flat dense round icon="more_horiz">
           <q-menu>
             <q-list style="min-width: 300px">
-              <q-item clickable v-close-popup>
+              <!-- <q-item clickable v-close-popup>
                 <q-item-section
                   @click="
                     xem({
@@ -150,7 +143,7 @@
                   "
                   >Đồng bộ ngay</q-item-section
                 >
-              </q-item>
+              </q-item> -->
               <q-separator />
               <q-item clickable v-close-popup>
                 <q-item-section @click="copyUrlToClipboard(bhyt)"
@@ -200,7 +193,7 @@
           v-if="bhyt.isBHYT == 1"
           class="q-pr-sm"
           @click="xacNhanHuyThu(bhyt, 1)"
-          name="cancel"
+          name="paid"
         />
         <strong
           @click="xacNhanGiaHan(bhyt)"
@@ -220,7 +213,7 @@
           v-if="bhyt.isBHXHTN == 1"
           class="q-pr-sm"
           @click="xacNhanHuyThu(bhyt, 0)"
-          name="cancel"
+          name="paid"
         />
 
         <strong
@@ -283,7 +276,12 @@
         >
       </q-item-label>
       <q-item-label caption v-if="bhyt.updated_at"
-        ><br />
+        ><br /><q-icon
+          class="q-ml-sm"
+          @click="traCuuBHXH(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+          name="update"
+          color="blue"
+        />
         {{ formatDate(bhyt.updated_at) }}</q-item-label
       >
     </q-item-section>
