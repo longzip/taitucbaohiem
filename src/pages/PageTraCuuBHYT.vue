@@ -408,8 +408,8 @@ export default {
           value: this.userDetails?.maNhanVienThu,
         },
         {
-          label: this.name?.maNhanVienThu?.slice(0, 6),
-          value: this.name?.maNhanVienThu,
+          label: this.userDetails?.name?.slice(0, 6),
+          value: this.userDetails?.name,
         },
       ];
     },
