@@ -460,6 +460,7 @@ export default {
     },
 
     taiTucBHYT1thang() {
+      this.searchText = "";
       this.getBhyts({
         thang: 1,
         completed: "0",
@@ -469,6 +470,7 @@ export default {
       });
     },
     taiTucBHYT2thang() {
+      this.searchText = "";
       this.getBhyts({
         thang: 2,
         completed: "0",
@@ -479,6 +481,7 @@ export default {
     },
 
     async loadTaiTucBHXH() {
+      this.searchText = "";
       const khtts = await this.getDanhSachKhachHangTaiTuc({
         filterItems: [],
         maxResultCount: 500,
@@ -492,6 +495,7 @@ export default {
       this.capNhatBHXHTN([...new Set(khtts.map((t) => t.maSoBHXH))].join());
     },
     async loadTaiTucBHYT() {
+      this.searchText = "";
       const khtts = await this.getDanhSachKhachHangTaiTuc({
         filterItems: [],
         maxResultCount: 5000,
@@ -673,6 +677,7 @@ export default {
     },
 
     loadBhytByNamSinh() {
+      this.searchText = "";
       this.$q
         .dialog({
           title: "Tìm thẻ BHYT theo năm sinh",
@@ -743,6 +748,7 @@ export default {
         });
     },
     loadBhytThang() {
+      this.searchText = "";
       this.$q
         .dialog({
           title: "Tháng biên lai",
@@ -763,6 +769,7 @@ export default {
         });
     },
     loadBHXHThang() {
+      this.searchText = "";
       this.$q
         .dialog({
           title: "Tháng biên lai",
@@ -784,6 +791,7 @@ export default {
     },
     loadBhyts({ thang = 1 }) {
       this.searchText = "";
+      this.searchText = "";
       this.getBhyts({
         thang,
         completed: "0",
@@ -801,12 +809,14 @@ export default {
       });
     },
     loadBHXHTNs(data) {
+      this.searchText = "";
       this.getBhyts({
         ...data,
         name: this.searchText,
       });
     },
     loadBhytsHetHan() {
+      this.searchText = "";
       this.getBhyts({
         maXa: this.userDetails.maXa,
         completed: "0",
@@ -816,12 +826,14 @@ export default {
       });
     },
     loadBhytsDisable() {
+      this.searchText = "";
       this.getBhyts({
         maXa: this.userDetails.maXa,
         disabled: 1,
       });
     },
     loadBhytsCompleted() {
+      this.searchText = "";
       this.getBhyts({
         maXa: this.userDetails.maXa,
         completed: 1,
