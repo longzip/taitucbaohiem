@@ -43,9 +43,9 @@
             <q-icon name="expand_more" dense> </q-icon>
             <q-menu v-if="userDetails.isPro" touch-position>
               <q-list style="min-width: 150px">
-                <q-item clickable @click="loadBhytByName" v-close-popup>
+                <!-- <q-item clickable @click="loadBhytByName" v-close-popup>
                   <q-item-section>Tìm tất cả</q-item-section>
-                </q-item>
+                </q-item> -->
                 <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
                   <q-item-section>Tái tục BHYT bổ trợ</q-item-section>
                 </q-item>
@@ -407,6 +407,10 @@ export default {
           label: this.userDetails?.maNhanVienThu?.slice(0, 4),
           value: this.userDetails?.maNhanVienThu,
         },
+        {
+          label: this.name?.maNhanVienThu?.slice(0, 6),
+          value: this.name?.maNhanVienThu,
+        },
       ];
     },
     tongTienBHYT() {
@@ -714,7 +718,7 @@ export default {
         });
       else
         this.getBhyts({
-          userName: this.searchText,
+          userName: this.searchText || this.userDetails.id,
         });
     },
     loadBhytByName() {
@@ -792,7 +796,7 @@ export default {
     loadTaiTucBHYTBT() {
       this.searchText = "";
       this.getBhyts({
-        maXa: this.userDetails.maXa,
+        userName: this.userDetails.id,
         taiTucBHYTBT: "1",
       });
     },
