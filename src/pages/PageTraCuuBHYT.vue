@@ -43,14 +43,17 @@
             <q-icon name="expand_more" dense> </q-icon>
             <q-menu v-if="userDetails.isPro" touch-position>
               <q-list style="min-width: 150px">
+                <q-item clickable @click="loadBhytByName" v-close-popup>
+                  <q-item-section>Tìm tất cả</q-item-section>
+                </q-item>
                 <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
                   <q-item-section>Tái tục BHYT bổ trợ</q-item-section>
                 </q-item>
                 <q-item clickable @click="loadBhytThang" v-close-popup>
-                  <q-item-section>Đã nộp BHYT</q-item-section>
+                  <q-item-section>Hoa hồng BHYT</q-item-section>
                 </q-item>
                 <q-item clickable @click="loadBHXHThang" v-close-popup>
-                  <q-item-section>Đã nộp BHXH TN</q-item-section>
+                  <q-item-section>Hoa hồng BHXH TN</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
