@@ -32,7 +32,7 @@
           }}</a>
           {{ bhyt.mqhChuHo }}
         </q-item-label>
-        <q-item-label caption lines="2">
+        <q-item-label v-if="bhyt.uniqid" caption lines="2">
           Tờ khai:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.uniqid}`">{{
             bhyt.uniqid
           }}</a
@@ -229,9 +229,7 @@
           href="javascript:void(0);"
           @click="timTheoSoBienLai(bhyt.soBienLai)"
           >{{ bhyt.soBienLai }}</a
-        >
-        /
-        <a
+        >.<a
           v-if="bhyt.soBienLai"
           href="javascript:void(0);"
           @click="timTheoSoBienLai(bhyt.soBienLai)"
@@ -243,9 +241,8 @@
           >/{{ bhyt.ngayBienLai || bhyt.ngayLapTN }}</span
         >
       </q-item-label>
-      <q-item-label caption v-if="bhyt.updated_at"
-        ><br /><q-icon
-          class="q-ml-sm"
+      <q-item-label caption
+        ><q-icon
           @click="traCuuBHXH(bhyt.maSoBhxh || bhyt.maSoBHXH)"
           name="update"
           color="blue"
