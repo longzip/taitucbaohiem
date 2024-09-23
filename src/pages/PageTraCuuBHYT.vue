@@ -384,7 +384,6 @@ export default {
   },
   computed: {
     ...mapGetters("bhyts", [
-      "bhyts",
       "filteredBhyts",
       "tongTienBHXH",
       "tongMucDongBHXH",
@@ -549,7 +548,7 @@ export default {
         });
     },
     async inC17() {
-      if (!this.bhyts.length && !this.tuNgayDenNgay) {
+      if (!this.filteredBhyts.length && !this.tuNgayDenNgay) {
         Notify.create({
           type: "negative",
           message: "Vào báo cáo giao dịch trước khi xuất C17.",
@@ -596,7 +595,7 @@ export default {
             soBienLai: `${parseInt(data + 99) + 1}`,
             ngayLap: null,
           });
-          const xuatc17 = await this.bhyts.filter((t) =>
+          const xuatc17 = await this.filteredBhyts.filter((t) =>
             t.soBienLai.startsWith(data)
           );
           if (!xuatc17.length) {
@@ -606,8 +605,8 @@ export default {
             });
             return null;
           }
-          for (let index = 0; index < this.bhyts.length; index++) {
-            const t = this.bhyts[index];
+          for (let index = 0; index < this.filteredBhyts.length; index++) {
+            const t = this.filteredBhyts[index];
             if (ds.has(t.soBienLai)) {
               const g = ds.get(t.soBienLai);
               ds.set(t.soBienLai, {
@@ -914,14 +913,14 @@ export default {
     async printDanhSachTraThe() {
       let a = document.createElement("a");
       a.target = "_blank";
-      a.href = `https://app.hotham.vn/danh-sach-tra-the/1/pdf?maSoBhxhs=${this.bhyts
+      a.href = `https://app.hotham.vn/danh-sach-tra-the/1/pdf?maSoBhxhs=${this.filteredBhyts
         .map((i) => i.maSoBhxh)
         .join(",")}`;
       a.click();
     },
     copyMaSoBhxhToClipboard() {
       navigator.clipboard
-        .writeText(this.bhyts.map((bhyt) => bhyt.maSoBhxh))
+        .writeText(this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh))
         .then(
           function () {
             Notify.create({
@@ -942,7 +941,9 @@ export default {
         .writeText(
           [
             ...new Set(
-              this.bhyts.map((bhyt) => bhyt.soDienThoai2 || bhyt.soDienThoai)
+              this.filteredBhyts.map(
+                (bhyt) => bhyt.soDienThoai2 || bhyt.soDienThoai
+              )
             ),
           ].join("\r\n")
         )
@@ -963,7 +964,7 @@ export default {
     },
     copyNamePhoneClipboard() {
       const mapSoDienThoai = new Map();
-      for (let bhyt of this.bhyts) {
+      for (let bhyt of this.filteredBhyts) {
         mapSoDienThoai.set(bhyt.soDienThoai2 || bhyt.soDienThoai, bhyt);
       }
       this.download(
@@ -1011,21 +1012,6 @@ export default {
       } else {
         pom.click();
       }
-    },
-    async printPhuLucThanhVienHGD() {
-      if (this.bhyts.length > 15 || this.bhyts.length === 0) {
-        Notify.create({
-          type: "negative",
-          message: "Không thực hiện được!",
-        });
-        return;
-      }
-      let a = document.createElement("a");
-      a.target = "_blank";
-      a.href = `https://app.hotham.vn/thanh-vien-ho-gia-dinh/1/pdf?maXaUpdate=${
-        this.userDetails.maXa
-      }&maSoBhxhs=${this.bhyts.map((i) => i.maSoBhxh).join(",")}`;
-      a.click();
     },
   },
   watch: {
