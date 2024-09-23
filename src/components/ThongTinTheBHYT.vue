@@ -266,7 +266,10 @@ import { date } from "quasar";
 import { Notify } from "quasar";
 import moment from "moment";
 // Lấy ngày cuối cùng của tháng tới
-const lastDayNextMonth = moment().add(1, "month").endOf("month");
+const lastDayNextMonth = moment()
+  .add(1, "month")
+  .endOf("month")
+  .subtract(1, "day");
 export default {
   props: ["bhyt"],
   computed: {
