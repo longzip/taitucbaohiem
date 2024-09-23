@@ -1,12 +1,14 @@
 <template>
-  <q-item
+  <!-- <q-item
     :class="{
       'bg-warning': bhyt.coTheUuTienCaoHon,
       'bg-warning': bhyt.coTheUuTienCaoHon == 1,
       'bg-positive': getDateDiff(bhyt.denNgayDt) > 30,
       'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 1,
     }"
-  >
+  > -->
+  <q-item
+    >>
     <q-item-section>
       <q-item-label
         ><q-icon
@@ -62,17 +64,21 @@
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2">5 năm: {{ bhyt.ngay5Nam }}</q-item-label>
 
-      <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption
+      <!-- <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption
         ><span
           @click="setCurrentBhyt(bhyt)"
           :class="{
             'bg-red text-white text-bold q-pa-xs':
               getDateDiff(bhyt.denThangDt) < 32,
           }"
-          ><strong>BHXH {{ bhyt.maPhuongThucDong }}:</strong>
-          {{ bhyt.mucDong }} T{{ bhyt.tuThangTN }}:{{
-            bhyt.denThangDt?.slice(0, 7)
-          }}</span
+          ><strong>T{{ bhyt.tuThangTN }}+{{ bhyt.maPhuongThucDong }}:</strong>
+          {{ bhyt.mucDong }} {{ bhyt.denThangDt?.slice(0, 7) }}</span
+        ></q-item-label
+      > -->
+      <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption
+        ><span @click="setCurrentBhyt(bhyt)"
+          ><strong>T{{ bhyt.tuThangTN }}+{{ bhyt.maPhuongThucDong }}:</strong>
+          {{ bhyt.mucDong }} {{ bhyt.denThangDt?.slice(0, 7) }}</span
         ></q-item-label
       >
       <q-item-label
