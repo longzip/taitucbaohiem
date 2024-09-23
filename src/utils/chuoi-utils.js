@@ -152,6 +152,10 @@ function xacDinhLoaiChuoi(chuoi) {
   }
 }
 
+function khoangCachThoiGian(ngay) {
+  return moment(ngay).fromNow();
+}
+
 export {
   laHoTenHopLe,
   dinhDangHoTen,
@@ -164,4 +168,5 @@ export {
   dinhDangTien,
   laSoDienThoaiDiDongHopLe,
   xacDinhLoaiChuoi,
+  khoangCachThoiGian,
 };

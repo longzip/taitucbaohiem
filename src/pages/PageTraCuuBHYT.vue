@@ -355,7 +355,19 @@
       </q-card-section>
       <q-card-section v-else>
         Nhập họ và tên hoặc mã số BHXH, mã thẻ BHYT vào ô Tìm kiếm và nhấn ENTER
-        để tra cứu.
+        để tra cứu.<br />
+        Hạn sử dụng: {{ dinhDangNgayThang(userDetails.hetHan) }} ({{
+          khoangCachThoiGian(userDetails.hetHan)
+        }})
+      </q-card-section>
+      <q-card-section v-if="userDetails.isPro">
+        Hạn sử dụng: {{ dinhDangNgayThang(userDetails.hetHan) }} ({{
+          khoangCachThoiGian(userDetails.hetHan)
+        }})
+      </q-card-section>
+      <q-card-section v-else>
+        Bạn đang sử dụng gói miễn phí. Hãy liên hệ 0978333963, để có thêm nhiều
+        chức năng và hỗ trợ sử dụng.
       </q-card-section>
     </q-card>
     <q-dialog v-model="dialogShow" persistent>
@@ -369,7 +381,7 @@ import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { Notify } from "quasar";
 import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
 import { api } from "src/boot/axios";
-import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
+import { khoangCachThoiGian, xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
 export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
