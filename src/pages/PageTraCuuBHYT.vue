@@ -362,9 +362,8 @@
           khoangCachThoiGian(userDetails.hetHan)
         }})
       </q-card-section>
-      <q-card-section v-else>
-        Bạn đang sử dụng gói miễn phí. Hãy liên hệ 0978.333.963, để có thêm
-        nhiều chức năng và hỗ trợ sử dụng.
+      <q-card-section class="text-red text-bold" v-else>
+        Miễn phí sử dụng trọn đời.
       </q-card-section>
     </q-card>
     <q-dialog v-model="dialogShow" persistent>
@@ -384,7 +383,6 @@ export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
     return {
-      // searchText: "",
       tuNgayDenNgay: "",
       soBienLai: "",
       selectedUser: null,

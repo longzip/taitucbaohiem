@@ -89,18 +89,18 @@ const linksList = [
     icon: "timer",
     link: "/ho-so-chua-xu-ly",
   },
-  // {
-  //   title: "Hồ sơ đã nộp BDH",
-  //   caption: "Các hồ sơ đã nộp",
-  //   icon: "verified",
-  //   link: "/ho-so-da-nop",
-  // },
   {
     title: "Hồ sơ đã xử lý",
     caption: "Các hồ sơ đã xử lý",
     icon: "verified",
     link: "/ho-so-da-xu-ly",
   },
+  // {
+  //   title: "Settings",
+  //   caption: "Cài đặt để tra cứu",
+  //   icon: "verified",
+  //   link: "/settings",
+  // },
 ];
 
 export default defineComponent({
