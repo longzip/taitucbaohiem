@@ -1,13 +1,12 @@
 <template>
-  <!-- <q-item
+  <q-item
     :class="{
       'bg-warning': bhyt.coTheUuTienCaoHon,
       'bg-warning': bhyt.coTheUuTienCaoHon == 1,
-      'bg-positive': getDateDiff(bhyt.denNgayDt) > 30,
-      'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 1,
+      'bg-positive': !isDateBeforeLastDayNextMonth(bhyt.denNgayDt),
+      'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 0,
     }"
-  > -->
-  <q-item>
+  >
     <q-item-section>
       <q-item-label
         ><q-icon
@@ -76,7 +75,7 @@
       > -->
       <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption
         ><span @click="setCurrentBhyt(bhyt)"
-          >BHXH:
+          >BHXH
           <strong>T{{ bhyt.tuThangTN }}+{{ bhyt.maPhuongThucDong }}:</strong>
           {{ bhyt.mucDong / 1000000 }}Tr
           {{ bhyt.denThangDt?.slice(0, 7) }}</span
@@ -266,6 +265,8 @@ import { mapActions, mapState } from "vuex";
 import { date } from "quasar";
 import { Notify } from "quasar";
 import moment from "moment";
+// Lấy ngày cuối cùng của tháng tới
+const lastDayNextMonth = moment().add(1, "month").endOf("month");
 export default {
   props: ["bhyt"],
   computed: {
@@ -295,6 +296,21 @@ export default {
     ]),
     formatDate(date) {
       return moment(date).fromNow();
+    },
+    isDateBeforeLastDayNextMonth(dateString) {
+      // Chuyển đổi chuỗi ngày thành đối tượng Moment.js
+      const date = moment(dateString);
+
+      // Kiểm tra xem chuỗi ngày có hợp lệ không
+      if (!date.isValid()) {
+        return false;
+      }
+
+      // Lấy ngày cuối cùng của tháng tới
+      // const lastDayNextMonth = moment().add(1, 'month').endOf('month');
+
+      // So sánh ngày truyền vào với ngày cuối cùng của tháng tới
+      return date.isBefore(lastDayNextMonth);
     },
     timTheoSoBienLai(soBienLai) {
       this.getBhytsBySoBienLai(soBienLai);
