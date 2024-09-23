@@ -130,8 +130,13 @@
                   <q-item-section>Đóng BHXH (xã)</q-item-section>
                 </q-item>
                 <q-separator />
+                <q-item clickable @click="loadBhytsHetHanByUser" v-close-popup>
+                  <q-item-section
+                    >Đã hết hạn {{ userDetails.id }}</q-item-section
+                  >
+                </q-item>
                 <q-item clickable @click="loadBhytsHetHan" v-close-popup>
-                  <q-item-section>Đã hết hạn</q-item-section>
+                  <q-item-section>Đã hết hạn (xã)</q-item-section>
                 </q-item>
                 <q-item clickable @click="loadBhytsDisable" v-close-popup>
                   <q-item-section>Đã liên hệ</q-item-section>
@@ -175,12 +180,6 @@
                   <q-item-section>Lưu danh bạ</q-item-section>
                 </q-item>
                 <q-separator />
-                <q-item clickable @click="batTatRemove" v-close-popup>
-                  <q-item-section>Tắt/Bật danh sách</q-item-section>
-                </q-item>
-                <q-item clickable @click="timMoi(searchText)" v-close-popup>
-                  <q-item-section>Tìm mới</q-item-section>
-                </q-item>
                 <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
                   <q-item-section>Tìm theo năm sinh</q-item-section>
                 </q-item>
@@ -815,6 +814,15 @@ export default {
         name: this.searchText,
       });
     },
+    loadBhytsHetHanByUser() {
+      this.searchText = "";
+      this.getBhyts({
+        userName: this.userDetails.id,
+        completed: "0",
+        disabled: "0",
+        hetHan: "1",
+      });
+    },
     loadBhytsHetHan() {
       this.searchText = "";
       this.getBhyts({
@@ -822,7 +830,6 @@ export default {
         completed: "0",
         disabled: "0",
         hetHan: "1",
-        name: this.searchText,
       });
     },
     loadBhytsDisable() {
