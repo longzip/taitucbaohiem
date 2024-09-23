@@ -7,8 +7,7 @@
       'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 1,
     }"
   > -->
-  <q-item
-    >>
+  <q-item>
     <q-item-section>
       <q-item-label
         ><q-icon
