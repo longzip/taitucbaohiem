@@ -77,8 +77,10 @@
       > -->
       <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption
         ><span @click="setCurrentBhyt(bhyt)"
-          ><strong>T{{ bhyt.tuThangTN }}+{{ bhyt.maPhuongThucDong }}:</strong>
-          {{ bhyt.mucDong }} {{ bhyt.denThangDt?.slice(0, 7) }}</span
+          >BHXH:
+          <strong>T{{ bhyt.tuThangTN }}+{{ bhyt.maPhuongThucDong }}:</strong>
+          {{ bhyt.mucDong / 1000000 }}Tr
+          {{ bhyt.denThangDt?.slice(0, 7) }}</span
         ></q-item-label
       >
       <q-item-label
