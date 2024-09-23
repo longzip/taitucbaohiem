@@ -363,8 +363,8 @@
         }})
       </q-card-section>
       <q-card-section v-else>
-        Bạn đang sử dụng gói miễn phí. Hãy liên hệ 0978333963, để có thêm nhiều
-        chức năng và hỗ trợ sử dụng.
+        Bạn đang sử dụng gói miễn phí. Hãy liên hệ 0978.333.963, để có thêm
+        nhiều chức năng và hỗ trợ sử dụng.
       </q-card-section>
     </q-card>
     <q-dialog v-model="dialogShow" persistent>
@@ -378,11 +378,8 @@ import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { Notify } from "quasar";
 import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
 import { api } from "src/boot/axios";
-import {
-  dinhDangNgayThang,
-  khoangCachThoiGian,
-  xacDinhLoaiChuoi,
-} from "src/utils/chuoi-utils";
+import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
+import moment from "moment";
 export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
@@ -466,6 +463,14 @@ export default {
     ...mapMutations({
       setSearchText: "bhyts/SET_SEARCH_TEXT",
     }),
+    khoangCachThoiGian(ngay) {
+      return moment(ngay).fromNow(true);
+    },
+    dinhDangNgayThang(ngayThang) {
+      if (!ngayThang) return "";
+      const ngay = new Date(ngayThang);
+      return ngay.toLocaleDateString("vi-VN");
+    },
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
