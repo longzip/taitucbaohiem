@@ -21,6 +21,33 @@ export const registerUser = async ({ commit }, { isLogin, smsText }) => {
       smsText.password
     );
   } catch (error) {
+    //lấy thông tin người dùng
+    const { data: userData } = await axios.get(
+      "https://ssm-api.vnpost.vn/api/services/app/Session/GetCurrentLoginInformations",
+      {
+        headers: {
+          Authorization: `Bearer ${isLogin}`, // Replace with your actual token
+        },
+      }
+    );
+
+    const { data: mangLuoiData } = await axios.post(
+      "https://ssm-api.vnpost.vn/api/services/app/DanhMucSuggest/GetDsMangLuoiByNhapThay",
+      { IsChiBan: 0 },
+      {
+        headers: {
+          Authorization: `Bearer ${isLogin}`, // Replace with your actual token
+        },
+      }
+    );
+
+    const { maDmHuyen, maDmTinh, maDmXa, nguoiLienHe, ten, dienThoai } =
+      mangLuoiData.result[0];
+
+    const { addToDate } = date;
+    const newDate = addToDate(new Date(), { days: 30 });
+    const hetHan = newDate.toISOString().slice(0, 10);
+
     await createUserWithEmailAndPassword(
       firebaseAuth,
       `${smsText.userNameOrEmailAddress}@hotham.vn`,
@@ -31,10 +58,16 @@ export const registerUser = async ({ commit }, { isLogin, smsText }) => {
       set(ref(db, "users/" + user.uid), {
         smsText,
         isLogin,
+        maTinh: maDmTinh,
+        maHuyen: maDmHuyen,
+        maXa: maDmXa,
+        nguoiLienHe,
+        ten,
+        dienThoai,
+        ...userData.result.user,
         userId: user.uid,
-        maTinh: "01",
-        maHuyen: "250",
-        maXa: "000",
+        isPro: true,
+        hetHan,
       });
     });
   }
@@ -96,8 +129,7 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
             await commit("setIsLogin", isLogin);
 
             let loginInfo = await dispatch("getCurrentLoginInformations");
-            const mangLuoi = await dispatch("getDsMangLuoiByNhapThay");
-            console.log(mangLuoi);
+
             if (!loginInfo) {
               let config = {
                 method: "post",
@@ -112,14 +144,11 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
 
               const { data: tka } = await axios.request(config);
               commit("setIsLogin", tka.result.accessToken);
-              loginInfo = await dispatch("getCurrentLoginInformations");
 
               // cập nhật csdl
 
               const updateUserDetails = {
                 ...userDetails,
-                ...loginInfo,
-                userId,
                 hetHan,
                 isLogin: tka.result.accessToken,
                 isPro:
@@ -131,12 +160,6 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
               const db = getDatabase();
               await set(ref(db, "users/" + userId), updateUserDetails);
               window.location.reload();
-            } else if (!userDetails.maNhanVienThu) {
-              commit("setUserDetails", {
-                ...userDetails,
-                ...loginInfo,
-                hetHan,
-              });
             }
           } else {
             commit("setIsLogin", "");

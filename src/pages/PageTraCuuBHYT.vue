@@ -1049,6 +1049,7 @@ export default {
         .post("/api/update-bhyt-data", {
           api_key: this.userDetails.isLogin, // Truyền API key từ biến
           mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
+          user_name: this.userDetails.userName,
           force: false,
         })
         .then((response) => {
