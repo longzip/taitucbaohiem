@@ -57,6 +57,23 @@ export const getCurrentLoginInformations = async () => {
   return data.result.user;
 };
 
+export const getDsMangLuoiByNhapThay = async () => {
+  const { data } = await client.post(
+    "/api/services/app/DanhMucSuggest/GetDsMangLuoiByNhapThay",
+    { IsChiBan: 0 }
+  );
+  const { maDmHuyen, maDmTinh, maDmXa, nguoiLienHe, ten, dienThoai } =
+    data.result[0];
+  return {
+    maTinh: maDmTinh,
+    maHuyen: maDmHuyen,
+    maXa: maDmXa,
+    nguoiLienHe,
+    ten,
+    dienThoai,
+  };
+};
+
 export const handleAuthStateChanged = async ({ commit, dispatch }) => {
   const auth = getAuth();
   await onAuthStateChanged(auth, (user) => {
@@ -76,12 +93,11 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
               const newDate = addToDate(new Date(), { days: 7 });
               hetHan = newDate.toISOString().slice(0, 10);
             }
-            console.log(date.getDateDiff(new Date(), new Date(hetHan), "days"));
-            // if (date.getDateDiff(new Date(hetHan), new Date(), "days") < 0)
-            //   window.location.replace("https://zalo.me/g/dhtrpr868");
             await commit("setIsLogin", isLogin);
 
             let loginInfo = await dispatch("getCurrentLoginInformations");
+            const mangLuoi = await dispatch("getDsMangLuoiByNhapThay");
+            console.log(mangLuoi);
             if (!loginInfo) {
               let config = {
                 method: "post",
