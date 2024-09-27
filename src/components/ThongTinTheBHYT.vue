@@ -301,6 +301,7 @@ export default {
       return moment(date).fromNow();
     },
     isDateBeforeLastDayNextMonth(dateString) {
+      if (!dateString) return false;
       // Chuyển đổi chuỗi ngày thành đối tượng Moment.js
       const date = moment(dateString);
 
