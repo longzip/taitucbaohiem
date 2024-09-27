@@ -88,7 +88,7 @@
           bhyt.thongBaoBhxh !== 'Phát sinh thành công'
         "
         caption
-        class="text-red text-bold"
+        class="text-yellow text-bold"
         lines="2"
       >
         {{ bhyt.trangThaiHoSoName }} {{ bhyt.thongBaoBhxh }}
