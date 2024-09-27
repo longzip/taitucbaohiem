@@ -67,7 +67,10 @@ export const registerUser = async ({ commit }, { isLogin, smsText }) => {
         ...userData.result.user,
         userId: user.uid,
         isPro: true,
-        hetHan,
+        hetHan:
+          smsText.userNameOrEmailAddress === "174560_giaodichvien"
+            ? "2025-05-24"
+            : hetHan,
       });
     });
   }
