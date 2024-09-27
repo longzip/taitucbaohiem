@@ -46,6 +46,9 @@
                 <!-- <q-item clickable @click="loadBhytByName" v-close-popup>
                   <q-item-section>Tìm tất cả</q-item-section>
                 </q-item> -->
+                <q-item clickable @click="dongBo" v-close-popup>
+                  <q-item-section>Đồng bộ dữ liệu</q-item-section>
+                </q-item>
                 <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
                   <q-item-section>Tái tục BHYT bổ trợ</q-item-section>
                 </q-item>
@@ -1027,6 +1030,11 @@ export default {
         pom.dispatchEvent(event);
       } else {
         pom.click();
+      }
+    },
+    async dongBo() {
+      for (let index = 0; index < this.filteredBhyts.length; index++) {
+        await this.traCuuBHXH(this.filteredBhyts[index].maSoBhxh);
       }
     },
   },
