@@ -1,3 +1,7 @@
 {
-  "firebase_hosting": {}
+  "firebase_hosting": {
+    "deploymentHostingUrl": "https://taitucbaohiem.web.app"
+  },
+  "gemini_api": {},
+  "secrets_manager": {}
 }
