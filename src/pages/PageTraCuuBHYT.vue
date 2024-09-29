@@ -206,7 +206,7 @@
                   @click="
                     resetBhyt(
                       searchText
-                        ? bhyts.filter((bhyt) => bhyt.userName !== searchText)
+                        ? filteredBhyts.filter((bhyt) => bhyt.userName !== searchText)
                         : []
                     )
                   "
@@ -219,7 +219,7 @@
                   @click="
                     resetBhyt(
                       searchText
-                        ? bhyts.filter((bhyt) => bhyt.userName === searchText)
+                        ? filteredBhyts.filter((bhyt) => bhyt.userName === searchText)
                         : []
                     )
                   "
@@ -395,6 +395,7 @@ export default {
   },
   computed: {
     ...mapGetters("bhyts", [
+      "bhyts",
       "filteredBhyts",
       "tongTienBHXH",
       "tongMucDongBHXH",
