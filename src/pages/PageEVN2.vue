@@ -1,17 +1,27 @@
 <template>
   <div class="q-pa-md">
-    <ListHeader bgcolor="bg-orange-4"
-      >Danh sách {{ evns.length }} Khách hàng EVN / Tổng:
-      {{ tienDien.toLocaleString() }} /
-      {{ evns.filter((t) => t.soTien > 0).length }} ({{ tienLech.toLocaleString() }})
-      <q-btn
-        rounded
-        color="primary"
-        @click="copySoDienThoaiToClipboard()"
-        icon="content_copy"
-      />
-      <q-btn rounded color="primary" @click="showDialog = true" icon="print" />
-    </ListHeader>
+    <q-card class="my-card bg-orange-4">
+      <q-card-section>
+        Danh sách {{ evns.length }} Khách hàng EVN / Tổng:
+        {{ tienDien.toLocaleString() }} /
+        {{ evns.filter((t) => t.soTien > 0).length }} ({{
+          tienLech.toLocaleString()
+        }})
+        <q-btn
+          rounded
+          color="primary"
+          @click="copySoDienThoaiToClipboard()"
+          icon="content_copy"
+        />
+        <q-btn
+          rounded
+          color="primary"
+          @click="showDialog = true"
+          icon="print"
+        />
+      </q-card-section>
+    </q-card>
+
     <div class="q-gutter-y-md column">
       <q-input
         outlined
@@ -32,8 +42,20 @@
         </template>
       </q-input>
     </div>
-    <q-list v-for="evn in evns" :key="evn.id">
+    <div>
+      Đã chọn:
+      {{
+        totalPrice.toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        })
+      }}/{{ selectedEvns.length }} hóa đơn.
+    </div>
+    <q-list v-for="evn in evns" :key="evn.id" tag="label" v-ripple>
       <q-item>
+        <q-item-section avatar>
+          <q-checkbox v-model="selectedEvns" :val="evn.id" />
+        </q-item-section>
         <q-item-section>
           <q-item-label
             >{{ evn.ten }}
@@ -158,15 +180,15 @@
 <script>
 import { defineComponent } from "vue";
 import { Notify } from "quasar";
-import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 
 export default defineComponent({
-  components: { ListHeader },
-  name: "EVNPage",
+  name: "PageEVN2",
   data() {
     return {
       searchText: "",
       evns: [],
+      selectedEvns: [], // Array to store the IDs of selected evns
+
       tienLech: 0,
       tienDien: 0,
       tienBHXH: 0,
@@ -182,6 +204,14 @@ export default defineComponent({
       t2: "",
       t1: "",
     };
+  },
+  computed: {
+    totalPrice() {
+      return this.selectedEvns.reduce((total, evnId) => {
+        const evn = this.evns.find((evn) => evn.id === evnId);
+        return total + (evn ? Math.ceil(evn.soTien / 1000) * 1000 : 0); // Assuming 'price' property in evn object
+      }, 0);
+    },
   },
   methods: {
     xacNhanLoaiBo(evn) {
@@ -225,14 +255,14 @@ export default defineComponent({
           0
         );
 
-        const soThuThucTe = await data
-        .map((t) => Math.ceil(t.soTien/1000)*1000)
+      const soThuThucTe = await data
+        .map((t) => Math.ceil(t.soTien / 1000) * 1000)
         .reduce(
           (previousValue, currentValue) =>
             previousValue + parseInt(currentValue),
           0
         );
-        this.tienLech = soThuThucTe - this.tienDien;
+      this.tienLech = soThuThucTe - this.tienDien;
     },
     copyTextToClipboard(text) {
       navigator.clipboard.writeText(text).then(
