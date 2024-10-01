@@ -126,6 +126,7 @@
                     loadBHXHTNs({
                       tienNop: 1,
                       maXa: userDetails.maXa,
+                      khacUserName: userDetails.id,
                     })
                   "
                   v-close-popup
@@ -206,7 +207,9 @@
                   @click="
                     resetBhyt(
                       searchText
-                        ? filteredBhyts.filter((bhyt) => bhyt.userName !== searchText)
+                        ? filteredBhyts.filter(
+                            (bhyt) => bhyt.userName !== searchText
+                          )
                         : []
                     )
                   "
@@ -219,7 +222,9 @@
                   @click="
                     resetBhyt(
                       searchText
-                        ? filteredBhyts.filter((bhyt) => bhyt.userName === searchText)
+                        ? filteredBhyts.filter(
+                            (bhyt) => bhyt.userName === searchText
+                          )
                         : []
                     )
                   "
@@ -809,14 +814,13 @@ export default {
     },
     loadBhyts({ thang = 1 }) {
       this.searchText = "";
-      this.searchText = "";
       this.getBhyts({
         thang,
         completed: "0",
         disabled: "0",
         taiTuc: "1",
         maXa: this.userDetails.maXa,
-        name: this.searchText,
+        khacUserName: this.userDetails.id,
       });
     },
     loadTaiTucBHYTBT() {
@@ -849,6 +853,7 @@ export default {
         completed: "0",
         disabled: "0",
         hetHan: "1",
+        khacUserName: this.userDetails.id,
       });
     },
     loadBhytsDisable() {

@@ -172,6 +172,7 @@ export const getBhyts = async ({ commit }, payload) => {
     maXa,
     nam,
     userName,
+    khacUserName,
     isBHXHTN,
     isBHYT,
     tienNop,
@@ -192,6 +193,7 @@ export const getBhyts = async ({ commit }, payload) => {
   if (name) url += `&name=${name}`;
   if (nam) url += `&nam=${nam}`;
   if (userName) url += `&userName=${userName}`;
+  if (khacUserName) url += `&khacUserName=${khacUserName}`;
   if (completed) url += `&completed=${completed}`;
   if (disabled) url += `&disabled=${disabled}`;
   if (maHoGd) url += `&maHoGd=${maHoGd}`;
@@ -784,6 +786,7 @@ export const theoDoi = async (
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/completed`, {
     completed: !(completed == "1"),
     maXa: rootGetters["auth/maXa"],
+    userName: rootGetters["auth/userName"],
   });
   commit("updateBhyt", data);
 };
