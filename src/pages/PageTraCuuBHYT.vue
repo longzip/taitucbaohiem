@@ -43,9 +43,9 @@
             <q-icon name="expand_more" dense> </q-icon>
             <q-menu v-if="userDetails.isPro" touch-position>
               <q-list style="min-width: 150px">
-                <!-- <q-item clickable @click="loadBhytByName" v-close-popup>
+                <q-item clickable @click="loadBhytByName" v-close-popup>
                   <q-item-section>Tìm tất cả</q-item-section>
-                </q-item> -->
+                </q-item>
                 <q-item clickable @click="dongBo" v-close-popup>
                   <q-item-section>Đồng bộ dữ liệu</q-item-section>
                 </q-item>
@@ -155,6 +155,13 @@
                   v-close-popup
                 >
                   <q-item-section>Báo cáo Chi Tiết Giao Dịch</q-item-section>
+                </q-item>
+                <q-item
+                  clickable
+                  @click="loadBaoCaoChiTietGiaoDichBHXH"
+                  v-close-popup
+                >
+                  <q-item-section>Chi Tiết Giao Dịch (BHXH)</q-item-section>
                 </q-item>
                 <q-item clickable @click="inC17" v-close-popup>
                   <q-item-section>In C17</q-item-section>
@@ -532,6 +539,48 @@ export default {
       this.dongBoDuLieu([...new Set(khtts.map((t) => t.maSoBHXH))].join());
     },
 
+    async loadBaoCaoChiTietGiaoDichBHXH() {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth();
+
+      if (this.searchText.split(" : ").length !== 2) {
+        this.tuNgayDenNgay = this.searchText = `${new Date(year, month - 2, 1)
+          .toISOString()
+          .slice(0, 10)} : ${new Date(2024, 12, 31)
+          .toISOString()
+          .slice(0, 10)}`;
+      }
+
+      this.$q
+        .dialog({
+          title: "Báo cáo chi tiết giao dịch",
+          message: "Từ ngày : đến ngày?",
+          prompt: {
+            model: this.searchText,
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async (data) => {
+          const ngays = data.split(" : ");
+          try {
+            await this.hoSoDaXuLy({
+              tuNgay: ngays[0],
+              denNgay: ngays[1],
+              mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
+              maThuTuc: 0,
+            });
+            this.searchText = "";
+          } catch (error) {
+            Notify.create({
+              message: "Không thể kế nối đến máy chủ !",
+              color: "red",
+            });
+          }
+        });
+    },
     async loadBaoCaoChiTietGiaoDich() {
       const date = new Date();
       const year = date.getFullYear();
@@ -564,6 +613,7 @@ export default {
               denNgay: ngays[1],
               mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
             });
+            this.searchText = "";
           } catch (error) {
             Notify.create({
               message: "Không thể kế nối đến máy chủ !",
@@ -763,7 +813,7 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          // this.searchText = data;
+          this.searchText = data;
           this.getBhyts({
             name: data,
             maXa: data.length < 9 ? this.userDetails.maXa : null,
@@ -921,6 +971,18 @@ export default {
 
       const query = { ...this.$route.query, q: searchText };
       this.$router.replace({ query });
+      if (this.filteredBhyts.length === 0)
+        Notify.create({
+          type: "negative",
+          position: "top",
+          message: "Không tìm thấy!",
+        });
+      else
+        Notify.create({
+          type: "positive",
+          position: "top",
+          message: "Tìm thấy: " + this.filteredBhyts.length + " thẻ!",
+        });
     },
     async timMoi(searchText) {
       const ds = searchText.split(",");

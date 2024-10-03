@@ -48,7 +48,7 @@ export const getTraCuuThongTinBHXHTN = async ({ dispatch }, payload) => {
 export const capNhatBHXHTN = async ({ dispatch, state }, payload) => {
   let maSoBhxhs = payload.split(",");
   if (!payload) {
-    maSoBhxhs = state.bhyts.map((t) => t.maSoBhxh);
+    maSoBhxhs = [...new Set(state.bhyts.map((t) => t.maSoBhxh)).values()];
   }
   if (maSoBhxhs.length > 0) {
     for (let index = 0; index < maSoBhxhs.length; index++) {
@@ -280,7 +280,14 @@ export const hoSoChuaXuLy = async ({ commit }, { mangLuoiId = 4580 }) => {
 };
 
 export const hoSoDaXuLy = async ({ commit }, payload) => {
-  let { thangTruoc = 0, tuNgay, denNgay, mangLuoiId = 4580 } = payload;
+  let {
+    thangTruoc = 0,
+    tuNgay,
+    denNgay,
+    mangLuoiId = 4580,
+    maThuTuc,
+    keyMenu = "1",
+  } = payload;
 
   if (!denNgay)
     denNgay = moment()
@@ -296,7 +303,8 @@ export const hoSoDaXuLy = async ({ commit }, payload) => {
     filterItems: [],
     hoSoChuaThuTien: false,
     hoSoQuaHan: 0,
-    keyMenu: "1",
+    keyMenu,
+    maThuTuc,
     mangLuoiId,
     maxResultCount: 5000,
     skipCount: 0,
@@ -401,7 +409,7 @@ export const traCuuTheoTen = async (
 };
 
 export const dongBoDuLieu = async ({ dispatch }, payload) => {
-  const maSoBhxhs = payload.split(",").reverse();
+  const maSoBhxhs = [...new Set(payload.split(",")).values()];
   for (let index = 0; index < maSoBhxhs.length; index++) {
     await sleep();
     const maSoBhxh = maSoBhxhs[index];
