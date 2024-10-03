@@ -1039,9 +1039,10 @@ export default {
       }
     },
     async dongBo() {
-      for (let index = 0; index < this.filteredBhyts.length; index++) {
-        await this.traCuuBHXH(this.filteredBhyts[index].maSoBhxh);
-      }
+      if (this.filteredBhyts.length === 0) return;
+      // for (let index = 0; index < this.filteredBhyts.length; index++) {
+      //   await this.traCuuBHXH(this.filteredBhyts[index].maSoBhxh)
+      this.dongBoDuLieu(this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh).join());
     },
   },
   watch: {
