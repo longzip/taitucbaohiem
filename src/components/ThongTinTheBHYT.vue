@@ -99,6 +99,11 @@
           name="content_copy"
         />
       </q-item-label>
+      <q-item-label>
+        <q-badge color="gray" @click="showTrangThaiDialog(bhyt)">{{
+          bhyt.trangThaiTaiTuc
+        }}</q-badge>
+      </q-item-label>
     </q-item-section>
 
     <q-item-section v-if="userDetails.isPro" side top>
@@ -216,6 +221,7 @@
       /><q-badge class="q-mr-sm" v-if="bhyt.userName" color="gray">{{
         bhyt.userName
       }}</q-badge>
+
       <q-item-label caption>
         Bl:
         <a
@@ -282,6 +288,7 @@ export default {
       "updateTongTien",
       "copyBhyt",
       "setCurrentBhyt",
+      "updateTrangThaiTaiTuc",
       // mới
       "traCuuBHXH",
     ]),
@@ -792,6 +799,41 @@ export default {
       const s = [...maSoCanAn];
       s.splice(-7, 3, "***");
       return s.join("");
+    },
+    showTrangThaiDialog(bhyt) {
+      this.$q
+        .dialog({
+          title: "Chọn trạng thái tái tục",
+          message: "Vui lòng chọn trạng thái tái tục cho thẻ BHYT",
+          options: {
+            type: "radio",
+            model: bhyt.trangThaiTaiTuc,
+            items: [
+              { label: "Chưa liên hệ", value: "Chưa liên hệ" },
+              { label: "Đã liên hệ", value: "Đã liên hệ" },
+              { label: "Đã tái tục", value: "Đã tái tục" },
+              { label: "Từ chối", value: "Từ chối" },
+            ],
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async (data) => {
+          await this.updateTrangThaiTaiTuc({
+            trangThaiTaiTuc: data,
+            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            maXa: this.userDetails.maXa,
+          });
+
+          // Hiển thị thông báo sau khi cập nhật thành công
+          this.$q.notify({
+            message: `Đã cập nhật trạng thái tái tục thành "${data}"`,
+            color: "positive",
+          });
+        })
+        .onCancel(() => {
+          // Xử lý khi người dùng nhấn Cancel (nếu cần)
+        });
     },
   },
 };

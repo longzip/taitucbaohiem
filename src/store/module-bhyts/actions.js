@@ -3,6 +3,17 @@ import moment from "moment";
 import { Notify } from "quasar";
 import { api, apiServices } from "src/boot/axios";
 
+export const updateTrangThaiTaiTuc = async ({ commit }, { maSoBhxh, trangThaiTaiTuc }) => {
+  try {
+    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/trang-thai-tai-tuc`, { trangThaiTaiTuc });
+    await commit("updateBhyt", data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
 const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
 };

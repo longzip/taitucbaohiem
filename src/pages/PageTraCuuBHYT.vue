@@ -195,12 +195,7 @@
                   <q-item-section>Tìm theo năm sinh</q-item-section>
                 </q-item>
                 <q-separator />
-                <q-item clickable @click="loadTaiTucBHYT" v-close-popup>
-                  <q-item-section>Tái tục BHYT (ssm)</q-item-section>
-                </q-item>
-                <q-item clickable @click="loadTaiTucBHXH" v-close-popup>
-                  <q-item-section>Tái tục BHXH (ssm)</q-item-section>
-                </q-item>
+
                 <q-item
                   clickable
                   @click="capNhatBHXHTN(searchText)"
@@ -394,6 +389,7 @@ import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
 import { api } from "src/boot/axios";
 import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
 import moment from "moment";
+import client from "../utils";
 export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
@@ -508,35 +504,6 @@ export default {
         taiTuc: "1",
         userName: this.userDetails.id,
       });
-    },
-
-    async loadTaiTucBHXH() {
-      this.searchText = "";
-      const khtts = await this.getDanhSachKhachHangTaiTuc({
-        filterItems: [],
-        maxResultCount: 500,
-        skipCount: 0,
-        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-        tuThang: "2020-01-01 00:00:00",
-        denThang: "2025-01-01 00:00:00",
-        type: -1,
-        loaiDichVu: 0,
-      });
-      this.capNhatBHXHTN([...new Set(khtts.map((t) => t.maSoBHXH))].join());
-    },
-    async loadTaiTucBHYT() {
-      this.searchText = "";
-      const khtts = await this.getDanhSachKhachHangTaiTuc({
-        filterItems: [],
-        maxResultCount: 5000,
-        skipCount: 0,
-        mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-        tuThang: "2020-01-01 00:00:00",
-        denThang: "2025-01-01 00:00:00",
-        type: -1,
-        loaiDichVu: 1,
-      });
-      this.dongBoDuLieu([...new Set(khtts.map((t) => t.maSoBHXH))].join());
     },
 
     async loadBaoCaoChiTietGiaoDichBHXH() {
