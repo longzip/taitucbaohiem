@@ -435,6 +435,10 @@ export default {
           value: this.userDetails?.name,
         },
         {
+          label: this.userDetails?.quaTrinhCongTac.maXa,
+          value: this.userDetails?.quaTrinhCongTac.maXa,
+        },
+        {
           label: "Khác",
           value: "",
         },
