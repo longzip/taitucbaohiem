@@ -393,8 +393,6 @@ import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
 import { api } from "src/boot/axios";
 import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
 import moment from "moment";
-import client from "../utils";
-import { maXa } from "src/store/module-auth/getters";
 export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
@@ -435,8 +433,8 @@ export default {
           value: this.userDetails?.name,
         },
         {
-          label: this.userDetails?.quaTrinhCongTac.maXa,
-          value: this.userDetails?.quaTrinhCongTac.maXa,
+          label: this.userDetails?.maXa,
+          value: this.userDetails?.maXa,
         },
         {
           label: "Khác",
