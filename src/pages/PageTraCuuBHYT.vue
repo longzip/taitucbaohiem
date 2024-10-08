@@ -59,6 +59,10 @@
                   <q-item-section>Hoa hồng BHXH TN</q-item-section>
                 </q-item>
                 <q-separator />
+                <q-item clickable @click="loadBhytThangCTV" v-close-popup>
+                  <q-item-section>Hoa hồng CTV</q-item-section>
+                </q-item>
+                <q-separator />
                 <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
                   <q-item-section>Đã thu tiền BHYT</q-item-section>
                 </q-item>
@@ -390,6 +394,7 @@ import { api } from "src/boot/axios";
 import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
 import moment from "moment";
 import client from "../utils";
+import { maXa } from "src/store/module-auth/getters";
 export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
@@ -784,6 +789,28 @@ export default {
           this.getBhyts({
             name: data,
             maXa: data.length < 9 ? this.userDetails.maXa : null,
+          });
+        });
+    },
+    loadBhytThangCTV() {
+      this.searchText = "";
+      this.$q
+        .dialog({
+          title: "Tháng biên lai",
+          message: "Nhập tháng?",
+          prompt: {
+            model: new Date().getMonth() + 1,
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          // this.searchText = data || ;
+          this.getBhyts({
+            thangBienLai: data,
+            khacUserName: this.userDetails.id,
+            maXa: this.userDetails.maXa,
           });
         });
     },

@@ -456,8 +456,8 @@ export default {
     xacNhanDenNgayBHYTBT(bhyt) {
       this.$q
         .dialog({
-          title: "Cập nhật ngày biên lai",
-          message: "Ngày biên lai?",
+          title: "Cập nhật BHYT bổ trợ",
+          message: "Ngày hết hạn mới?",
           prompt: {
             model: bhyt.denNgayBHYTBT.slice(0, 10),
             isValid: (val) => val.length == 10, // << here is the magic
