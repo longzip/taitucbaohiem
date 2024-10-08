@@ -434,6 +434,10 @@ export default {
           label: this.userDetails?.name?.slice(0, 6),
           value: this.userDetails?.name,
         },
+        {
+          label: "Khác",
+          value: "",
+        },
       ];
     },
     tongTienBHYT() {

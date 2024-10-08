@@ -25,6 +25,9 @@ export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
   if (selectedUser) {
     filtered = filtered.filter((bhyt) => bhyt.userName == selectedUser);
   }
+  if (selectedUser === "") {
+    filtered = filtered.filter((bhyt) => !bhyt.userName);
+  }
   return filtered;
 };
 
