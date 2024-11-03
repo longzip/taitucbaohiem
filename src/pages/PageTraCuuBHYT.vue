@@ -436,6 +436,7 @@ export default {
           label: this.userDetails?.maXa,
           value: this.userDetails?.maXa,
         },
+        ...(this.userDetails?.ctv || []),
         {
           label: "Khác",
           value: "",

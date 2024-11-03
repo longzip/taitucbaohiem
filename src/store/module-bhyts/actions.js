@@ -3,16 +3,20 @@ import moment from "moment";
 import { Notify } from "quasar";
 import { api, apiServices } from "src/boot/axios";
 
-export const updateTrangThaiTaiTuc = async ({ commit }, { maSoBhxh, trangThaiTaiTuc }) => {
+export const updateTrangThaiTaiTuc = async (
+  { commit },
+  { maSoBhxh, trangThaiTaiTuc }
+) => {
   try {
-    const { data } = await api.put(`/api/bhyts/${maSoBhxh}/trang-thai-tai-tuc`, { trangThaiTaiTuc });
+    const { data } = await api.put(
+      `/api/bhyts/${maSoBhxh}/trang-thai-tai-tuc`,
+      { trangThaiTaiTuc }
+    );
     await commit("updateBhyt", data);
   } catch (error) {
     console.log(error);
   }
 };
-
-
 
 const sleep = () => {
   return new Promise((resolve) => setTimeout(resolve, 500));
@@ -633,12 +637,16 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
     if (trangThaiHoSo != 5) {
       if (maThuTuc === 0) {
         try {
-          const { ngayBienLai } = await dispatch("maTraCuu", bienLaiId);
+          const { maXacNhan, ngayBienLai, maTraCuu } = await dispatch(
+            "maTraCuu",
+            bienLaiId
+          );
           const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
             tienNop: tongTien,
             userName,
             isBHXHTN: 0, // đã nộp bhxhtn
-            soBienLaiTN: soBienLai,
+            soBienLaiTN: maTraCuu,
+            maXacNhanTN: maXacNhan,
             bienLaiIdTN: bienLaiId,
             // disabled: 0,
             completed:
@@ -665,7 +673,10 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
         }
       } else {
         try {
-          const { ngayBienLai } = await dispatch("maTraCuu", bienLaiId);
+          const { maXacNhan, ngayBienLai, maTraCuu } = await dispatch(
+            "maTraCuu",
+            bienLaiId
+          );
           // console.log(
           //   rootGetters["auth/userName"],
           //   rootGetters["auth/userName"] == userName
@@ -674,7 +685,8 @@ export const daXyLy = async ({ commit, dispatch, rootGetters }, payload) => {
             tongTien,
             isBHYT: 0, //Đã nộp bhyt
             userName,
-            soBienLai,
+            maXacNhan: maXacNhan,
+            soBienLai: maTraCuu,
             bienLaiId,
             // disabled: 0,
             completed:

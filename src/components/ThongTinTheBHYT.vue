@@ -223,13 +223,15 @@
       }}</q-badge>
 
       <q-item-label caption>
-        Bl:
         <a
           v-if="bhyt.soBienLai"
           href="javascript:void(0);"
           @click="timTheoSoBienLai(bhyt.soBienLai)"
           >{{ bhyt.soBienLai }}</a
-        >.<a
+        ><q-icon
+          @click="copyHoaDonToClipboard(bhyt.soBienLai)"
+          name="content_copy"
+        />.<a
           v-if="bhyt.soBienLai"
           href="javascript:void(0);"
           @click="timTheoSoBienLai(bhyt.soBienLai)"
@@ -259,6 +261,8 @@ import { mapActions, mapState } from "vuex";
 import { date } from "quasar";
 import { Notify } from "quasar";
 import moment from "moment";
+import { api } from "src/boot/axios";
+
 // Lấy ngày cuối cùng của tháng tới
 const lastDayNextMonth = moment()
   .add(1, "month")
@@ -372,11 +376,11 @@ export default {
     },
     xacNhanGiaHan(bhyt) {
       const options = [
-        { label: "T1: 1.263.600đ", value: "1263600", color: "secondary" },
-        { label: "T2: 884.520đ", value: "884520" },
-        { label: "T3: 758.160đ", value: "758160" },
-        { label: "T4: 631.800đ", value: "631800" },
-        { label: "T5: 505.440đ", value: "505440" },
+        { label: "T1: 1.263.600đ", value: 1263600, color: "secondary" },
+        { label: "T2: 884.520đ", value: 884520 },
+        { label: "T3: 758.160đ", value: 758160 },
+        { label: "T4: 631.800đ", value: 631800 },
+        { label: "T5: 505.440đ", value: 505440 },
         { label: "Hủy thu", value: "0" },
       ];
 
@@ -619,9 +623,8 @@ export default {
       maSoBhxh,
       maThuTuc = 1,
     }) {
-      const { maXacNhan, ngayBienLai, soBienLai } = await this.maTraCuu(
-        maThuTuc === 1 ? bienLaiId : bienLaiIdTN
-      );
+      const { maXacNhan, ngayBienLai, soBienLai, maTraCuu } =
+        await this.maTraCuu(maThuTuc === 1 ? bienLaiId : bienLaiIdTN);
       if (!maXacNhan) {
         Notify.create({
           type: "negative",
@@ -636,14 +639,14 @@ export default {
           maSoBhxh,
           maXacNhanTN: maXacNhan,
           ngayLapTN: ngayBienLai.split("/").reverse().join("-"),
-          soBienLaiTN: soBienLai,
+          soBienLaiTN: maTraCuu,
         };
       else
         updateBHYT = {
           maSoBhxh,
           maXacNhan,
           ngayLap: ngayBienLai.split("/").reverse().join("-"),
-          soBienLai,
+          soBienLai: maTraCuu,
         };
       const bhyt = await this.updateMaXacNhan(updateBHYT);
       navigator.clipboard
@@ -760,6 +763,56 @@ export default {
           }
         );
     },
+    async copyHoaDonToClipboard(invoiceId, description = "Xin chào") {
+      try {
+        const response = await api.get(`/api/hoa-don-dien-tu/${invoiceId}`, {
+          responseType: "blob",
+        });
+
+        const imageBlob = new Blob([response.data], { type: "image/png" });
+
+        // Concatenate description if provided:
+        const textToCopy = description ? `${description}\n\n` : "Cảm ơn!"; // Add newline for separation
+
+        try {
+          const imageData = [
+            new ClipboardItem({ [imageBlob.type]: imageBlob }),
+          ];
+          const textData = [
+            new ClipboardItem({
+              "text/plain": new Blob([textToCopy], { type: "text/plain" }),
+            }),
+          ];
+
+          // Write both image and text to clipboard simultaneously (if supported)
+          if (navigator.clipboard.writeText) {
+            // Check for writeText support (Chrome 104+)
+            // Copy text and image simultaneously
+            await Promise.all([
+              navigator.clipboard.write(imageData),
+              navigator.clipboard.writeText(textToCopy), //writeText is more efficient for text
+            ]);
+          } else {
+            // If `writeText` isn't supported:
+            await navigator.clipboard.write([...imageData, ...textData]); // Combine clipboard items
+          }
+
+          Notify.create({
+            type: "positive",
+            message: `Hình ảnh hóa đơn và văn bản đã được sao chép vào clipboard để dán vào Zalo!`,
+          });
+        } catch (clipboardError) {
+          console.error("Failed to copy to clipboard:", clipboardError);
+          alert("Không thể sao chép vào clipboard.");
+        }
+      } catch (error) {
+        Notify.create({
+          type: "negative",
+          message: "Không thực hiện được!" + error,
+        });
+      }
+    },
+
     async copyThoiHan(t) {
       this.$q.notify({
         message: `<p id="bhyt-text" style="font-size: 18px;">Mã thẻ: ${this.baoMatSoBHXH(

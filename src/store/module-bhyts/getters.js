@@ -118,7 +118,7 @@ export const tongMucDongBHXH = (state) => {
 export const tongSoBHXH = (state) => {
   if (state.bhyts.length === 0) return 0;
   return state.bhyts
-    .filter((t) => t.mucDong)
+    .filter((t) => t.tienNop > 0)
     .reduce((previousValue, currentValue) => previousValue + 1, 0);
 };
 
