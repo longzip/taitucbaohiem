@@ -592,7 +592,7 @@ export const thuTien = async (
     } else {
       //Thu BHYT
       const { data } = await api.put(`/api/bhyts/${maSoBhxh}/tong-tien`, {
-        tongTien: tongTien.replace(/\D/g, ""),
+        tongTien: tongTien,
         ngayLap: new Date().toISOString().slice(0, 10),
         userName,
         completed: 1,
