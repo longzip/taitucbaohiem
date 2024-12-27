@@ -423,6 +423,18 @@ export const traCuuTheoTen = async (
   // commit("getAllBhyts", [...bhyts.values()]);
 };
 
+export const dongBoMaSo = async ({ dispatch }, payload) => {
+  const maSoBhxhs = [...new Set(payload.split(",")).values()];
+  for (let index = 0; index < maSoBhxhs.length; index++) {
+    const maSoBhxh = maSoBhxhs[index];
+    try {
+      await dispatch("traCuuBHXH", maSoBhxh);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
 export const dongBoDuLieu = async ({ dispatch }, payload) => {
   const maSoBhxhs = [...new Set(payload.split(",")).values()];
   for (let index = 0; index < maSoBhxhs.length; index++) {

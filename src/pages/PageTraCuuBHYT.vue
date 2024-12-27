@@ -49,6 +49,9 @@
                 <q-item clickable @click="dongBo" v-close-popup>
                   <q-item-section>Đồng bộ dữ liệu</q-item-section>
                 </q-item>
+                <q-item clickable @click="dongBoMaSoBHXH" v-close-popup>
+                  <q-item-section>Đồng bộ mã số BHXH</q-item-section>
+                </q-item>
                 <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
                   <q-item-section>Tái tục BHYT bổ trợ</q-item-section>
                 </q-item>
@@ -470,6 +473,7 @@ export default {
       "updateBhyt",
       "hoSoDaXuLy",
       "dongBoDuLieu",
+      "dongBoMaSo",
       "traCuuTheoTen",
       "getDanhSachKhachHangTaiTuc",
       "copyHoTenToClipboard",
@@ -1106,6 +1110,17 @@ export default {
       // for (let index = 0; index < this.filteredBhyts.length; index++) {
       //   await this.traCuuBHXH(this.filteredBhyts[index].maSoBhxh)
       this.dongBoDuLieu(this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh).join());
+    },
+    async dongBoMaSoBHXH() {
+      if (this.filteredBhyts.length === 0) return;
+      // for (let index = 0; index < this.filteredBhyts.length; index++) {
+      //   await this.traCuuBHXH(this.filteredBhyts[index].maSoBhxh)
+      this.dongBoMaSo(
+        this.filteredBhyts
+          .filter((b) => b.soSoHoKhau === null && b.mqhChuHo === "Chủ hộ")
+          .map((bhyt) => bhyt.maSoBhxh)
+          .join()
+      );
     },
   },
   watch: {

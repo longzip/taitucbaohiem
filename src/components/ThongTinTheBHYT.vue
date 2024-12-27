@@ -29,6 +29,9 @@
         <q-item-label caption lines="2">
           Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
             bhyt.maHoGd
+          }}</a
+          >/<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.soSoHoKhau}`">{{
+            bhyt.soSoHoKhau
           }}</a>
           {{ bhyt.mqhChuHo }}
         </q-item-label>

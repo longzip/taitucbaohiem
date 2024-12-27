@@ -14,10 +14,11 @@ export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
         `${bhyt.hoTen} ${bhyt.ngaySinhDt}`.toLowerCase()?.includes(term) ||
         bhyt.maSoBhxh?.includes(term) ||
         bhyt.soCmnd?.includes(term) ||
-        bhyt.soTheBhyt?.includes(term) ||
+        bhyt.soTheBhyt?.toLowerCase()?.includes(term) ||
         bhyt.soDienThoai?.includes(term) ||
         bhyt.soDienThoai2?.includes(term) ||
-        bhyt.ghiChu?.includes(term) ||
+        bhyt.ghiChu?.toLowerCase()?.includes(term) ||
+        bhyt.mqhChuHo?.toLowerCase()?.includes(term) ||
         bhyt.userName?.includes(term)
       );
     });
