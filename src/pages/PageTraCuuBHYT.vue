@@ -810,8 +810,8 @@ export default {
           title: "Tháng biên lai",
           message: "Nhập tháng?",
           prompt: {
-            model: new Date().getMonth() + 1,
-            type: "text", // optional
+            model: 0,
+            type: "number", // optional
           },
           cancel: true,
           persistent: true,
@@ -819,7 +819,7 @@ export default {
         .onOk((data) => {
           // this.searchText = data || ;
           this.getBhyts({
-            thangBienLai: data,
+            thangBienLai: data.toString(),
             khacUserName: this.userDetails.id,
             maXa: this.userDetails.maXa,
           });
@@ -832,8 +832,8 @@ export default {
           title: "Tháng biên lai",
           message: "Nhập tháng?",
           prompt: {
-            model: new Date().getMonth() + 1,
-            type: "text", // optional
+            model: 0,
+            type: "number", // optional
           },
           cancel: true,
           persistent: true,
@@ -841,7 +841,7 @@ export default {
         .onOk((data) => {
           // this.searchText = data || ;
           this.getBhyts({
-            thangBienLai: data,
+            thangBienLai: data.toString(),
             userName: this.userDetails.id,
           });
         });
@@ -853,8 +853,8 @@ export default {
           title: "Tháng biên lai",
           message: "Nhập tháng?",
           prompt: {
-            model: new Date().getMonth() + 1,
-            type: "text", // optional
+            model: 0,
+            type: "number", // optional
           },
           cancel: true,
           persistent: true,
@@ -862,7 +862,7 @@ export default {
         .onOk((data) => {
           // this.searchText = data || new Date().getMonth() + 1;
           this.getBhyts({
-            thangBienLaiTN: data,
+            thangBienLaiTN: data.toString(),
             userName: this.userDetails.id,
           });
         });
@@ -1065,23 +1065,8 @@ export default {
           [
             ...new Set(
               [...mapSoDienThoai.values()].map(
-                ({
-                  soDienThoai2,
-                  soDienThoai,
-                  hoTen,
-                  ngaySinhDt,
-                  denNgayDt,
-                  userName,
-                  soTheBhyt,
-                }) =>
-                  `${hoTen} T${new Date(denNgayDt).getMonth() + 1}${
-                    soTheBhyt?.slice(0, 2) || ""
-                  }${
-                    userName == this.userDetails.id ||
-                    userName == this.userDetails.maNhanVienThu
-                      ? ""
-                      : "_"
-                  }${new Date(ngaySinhDt).getFullYear()}\t${
+                ({ soDienThoai2, soDienThoai, hoTen, ngaySinhDt }) =>
+                  `${hoTen} ${new Date(ngaySinhDt).getFullYear()}\t${
                     soDienThoai2 || soDienThoai
                   }`
               )
