@@ -1100,12 +1100,7 @@ export default {
       if (this.filteredBhyts.length === 0) return;
       // for (let index = 0; index < this.filteredBhyts.length; index++) {
       //   await this.traCuuBHXH(this.filteredBhyts[index].maSoBhxh)
-      this.dongBoMaSo(
-        this.filteredBhyts
-          .filter((b) => b.soSoHoKhau === null && b.mqhChuHo === "Chủ hộ")
-          .map((bhyt) => bhyt.maSoBhxh)
-          .join()
-      );
+      this.dongBoMaSo(this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh).join());
     },
   },
   watch: {
@@ -1113,30 +1108,30 @@ export default {
       if (newBhyt) this.dialogShow = true;
       else this.dialogShow = false;
     },
-    userDetails: async function ({ maXa }) {
-      if (!maXa) return;
-      // await this.getBhyts({
-      //   thang: 2,
-      //   completed: "0",
-      //   disabled: "0",
-      //   taiTuc: "1",
-      //   maXa,
-      // });
+    // userDetails: async function ({ maXa }) {
+    //   if (!maXa) return;
+    //   // await this.getBhyts({
+    //   //   thang: 2,
+    //   //   completed: "0",
+    //   //   disabled: "0",
+    //   //   taiTuc: "1",
+    //   //   maXa,
+    //   // });
 
-      api
-        .post("/api/update-bhyt-data", {
-          api_key: this.userDetails.isLogin, // Truyền API key từ biến
-          mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
-          user_name: this.userDetails.id,
-          force: false,
-        })
-        .then((response) => {
-          console.log("Cập nhật dữ liệu Bhyt thành công!");
-        })
-        .catch((error) => {
-          console.error("Lỗi cập nhật dữ liệu Bhyt:", error);
-        });
-    },
+    //   api
+    //     .post("/api/update-bhyt-data", {
+    //       api_key: this.userDetails.isLogin, // Truyền API key từ biến
+    //       mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
+    //       user_name: this.userDetails.id,
+    //       force: false,
+    //     })
+    //     .then((response) => {
+    //       console.log("Cập nhật dữ liệu Bhyt thành công!");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Lỗi cập nhật dữ liệu Bhyt:", error);
+    //     });
+    // },
   },
 };
 </script>

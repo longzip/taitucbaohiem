@@ -1,8 +1,7 @@
 <template>
   <q-item
     :class="{
-      'bg-warning': bhyt.coTheUuTienCaoHon,
-      'bg-warning': bhyt.coTheUuTienCaoHon == 1,
+      'bg-warning': bhyt.coTheUuTienCaoHon || !bhyt.soTheBhyt.startsWith('GD'),
       'bg-positive': !isDateBeforeLastDayNextMonth(bhyt.denNgayDt),
       'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 0,
     }"
@@ -84,9 +83,13 @@
       >
         {{ bhyt.trangThaiHoSoName }} {{ bhyt.thongBaoBhxh }}
       </q-item-label>
+
       <q-item-label v-if="userDetails.isPro" caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
         <q-icon @click="xacNhanGhiChu(bhyt)" name="edit" />
+      </q-item-label>
+      <q-item-label v-if="bhyt.coTheUuTienCaoHon" caption>
+        <q-badge color="warning">Đang tham gia BHXH bắt buộc</q-badge>
       </q-item-label>
       <q-item-label v-if="userDetails.isPro" caption lines="2">
         <a v-if="bhyt.ngaySinhDt" :href="`tel:${bhyt.soDienThoai2}`">{{
@@ -818,7 +821,9 @@ export default {
 
     async copyThoiHan(t) {
       this.$q.notify({
-        message: `<p id="bhyt-text" style="font-size: 18px;">Mã thẻ: ${this.baoMatSoBHXH(
+        message: `<p id="bhyt-text" style="font-size: 18px;">${
+          t.trangThaiHoSoName
+        }. Mã thẻ: ${this.baoMatSoBHXH(
           t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
         )}, Họ tên: <strong>${
           t.hoTen || t.hoVaTen
@@ -828,12 +833,7 @@ export default {
           t.tuNgayDt
         ).toLocaleDateString()} - ${new Date(
           t.denNgayDt
-        ).toLocaleDateString()} (${this.getDateDiff(
-          t.denNgayDt
-        )} ngày);</strong> Thời điểm đủ 5 năm liên tục: ${t.ngay5Nam?.slice(
-          6,
-          8
-        )}/${t.ngay5Nam?.slice(4, 6)}/${t.ngay5Nam?.slice(0, 4)}.
+        ).toLocaleDateString()}</strong>.
           </p>`,
         html: true,
       });
