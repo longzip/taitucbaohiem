@@ -1,7 +1,7 @@
 <template>
   <q-item
     :class="{
-      'bg-warning': bhyt.coTheUuTienCaoHon || !bhyt.soTheBhyt.startsWith('GD'),
+      'bg-warning': bhyt.coTheUuTienCaoHon || !bhyt.soTheBhyt?.startsWith('GD'),
       'bg-positive': !isDateBeforeLastDayNextMonth(bhyt.denNgayDt),
       'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 0,
     }"
