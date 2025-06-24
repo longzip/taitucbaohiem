@@ -131,39 +131,39 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
             }
             await commit("setIsLogin", isLogin);
 
-            let loginInfo = await dispatch("getCurrentLoginInformations");
+            // let loginInfo = await dispatch("getCurrentLoginInformations");
 
-            if (!loginInfo) {
-              let config = {
-                method: "post",
-                maxBodyLength: Infinity,
-                url: "https://ssm-api.vnpost.vn/api/TokenAuth/Authenticate",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                },
-                data: userDetails.smsText,
-              };
+            // if (!loginInfo) {
+            //   let config = {
+            //     method: "post",
+            //     maxBodyLength: Infinity,
+            //     url: "https://ssm-api.vnpost.vn/api/TokenAuth/Authenticate",
+            //     headers: {
+            //       Accept: "application/json",
+            //       "Content-Type": "application/json",
+            //     },
+            //     data: userDetails.smsText,
+            //   };
 
-              const { data: tka } = await axios.request(config);
-              commit("setIsLogin", tka.result.accessToken);
+            //   const { data: tka } = await axios.request(config);
+            //   commit("setIsLogin", tka.result.accessToken);
 
-              // cập nhật csdl
+            //   // cập nhật csdl
 
-              const updateUserDetails = {
-                ...userDetails,
-                hetHan,
-                isLogin: tka.result.accessToken,
-                isPro:
-                  date.getDateDiff(new Date(hetHan), new Date(), "days") < 0
-                    ? false
-                    : userDetails.isPro,
-              };
-              commit("setUserDetails", updateUserDetails);
-              const db = getDatabase();
-              await set(ref(db, "users/" + userId), updateUserDetails);
-              window.location.reload();
-            }
+            //   const updateUserDetails = {
+            //     ...userDetails,
+            //     hetHan,
+            //     isLogin: tka.result.accessToken,
+            //     isPro:
+            //       date.getDateDiff(new Date(hetHan), new Date(), "days") < 0
+            //         ? false
+            //         : userDetails.isPro,
+            //   };
+            //   commit("setUserDetails", updateUserDetails);
+            //   const db = getDatabase();
+            //   await set(ref(db, "users/" + userId), updateUserDetails);
+            //   window.location.reload();
+            // }
           } else {
             commit("setIsLogin", "");
           }

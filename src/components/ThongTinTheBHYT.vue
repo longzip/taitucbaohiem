@@ -61,6 +61,7 @@
         />
         <q-icon class="q-ml-md" @click="copyThoiHan(bhyt)" name="text_format" />
       </q-item-label>
+      <q-item-label caption lines="2">{{ bhyt.tenDvi }}</q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2">5 năm: {{ bhyt.ngay5Nam }}</q-item-label>
       <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption
@@ -118,6 +119,12 @@
           <q-menu>
             <q-list style="min-width: 300px">
               <q-item clickable v-close-popup>
+                <q-item-section
+                  @click="traCuuBHXHCu(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+                  >Tra cứu trạng thái đóng BHYT</q-item-section
+                >
+              </q-item>
+              <q-item clickable v-close-popup>
                 <q-item-section @click="copyMaTraCuuToClipboard(bhyt)"
                   >Mã tra cứu đóng BHYT</q-item-section
                 >
@@ -165,7 +172,6 @@
         <q-icon
           v-if="bhyt.isBHYT == 1"
           class="q-pr-sm"
-          @click="xacNhanHuyThu(bhyt, 1)"
           name="paid"
         />
         <strong
@@ -185,7 +191,6 @@
         <q-icon
           v-if="bhyt.isBHXHTN == 1"
           class="q-pr-sm"
-          @click="xacNhanHuyThu(bhyt, 0)"
           name="paid"
         />
 
@@ -301,6 +306,7 @@ export default {
       "updateTrangThaiTaiTuc",
       // mới
       "traCuuBHXH",
+      "traCuuBHXHCu",
     ]),
     formatDate(date) {
       return moment(date).fromNow();
@@ -413,13 +419,7 @@ export default {
           if (data !== "0") {
             this.thuTien(payload);
           } else {
-            this.huyThuTien({
-              ...payload,
-              disabled: 0,
-              tongTien: 0,
-              bienLaiId: bhyt.bienLaiId,
-              userName: this.userDetails.id,
-            });
+            this.thuTien({ ...payload, userName: null });
           }
         });
     },
@@ -820,9 +820,22 @@ export default {
     },
 
     async copyThoiHan(t) {
+      // --- 1. Prepare Date Logic for Renewal Status ---
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth(); // 0-indexed (0 for Jan, 11 for Dec)
+
+      // Calculate the last day of the NEXT month to check for renewal
+      // Example: If today is Oct 15 (month 9), currentMonth + 2 = 11.
+      // new Date(year, 11, 0) will be the last day of November (month 10).
+      const renewalCheckDate = new Date(currentYear, currentMonth + 2, 0);
+      const cardExpiryDate = new Date(t.denNgayDt);
+
+      const isGiaHan = cardExpiryDate <= renewalCheckDate;
+
       this.$q.notify({
         message: `<p id="bhyt-text" style="font-size: 18px;">${
-          t.trangThaiHoSoName
+          isGiaHan ? "Thẻ cần gia hạn" : t.trangThaiHoSoName
         }. Mã thẻ: ${this.baoMatSoBHXH(
           t.soTheBhyt ? t.soTheBhyt : t.maSoBhxh || t.maSoBHXH
         )}, Họ tên: <strong>${

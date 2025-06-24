@@ -197,6 +197,9 @@
                 <q-item clickable @click="copyNamePhoneClipboard" v-close-popup>
                   <q-item-section>Lưu danh bạ</q-item-section>
                 </q-item>
+                <q-item clickable @click="handleExport" v-close-popup>
+                  <q-item-section>Lưu danh bạ 2</q-item-section>
+                </q-item>
                 <q-separator />
                 <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
                   <q-item-section>Tìm theo năm sinh</q-item-section>
@@ -393,9 +396,11 @@ import { mapGetters, mapActions, mapState, mapMutations } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { Notify } from "quasar";
 import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
-import { api } from "src/boot/axios";
+import { useDanhBaGenerator } from "src/utils/useDanhBaGenerator";
 import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
 import moment from "moment";
+const { exportDanhBaCSV } = useDanhBaGenerator();
+
 export default {
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   data() {
@@ -489,6 +494,9 @@ export default {
     ...mapMutations({
       setSearchText: "bhyts/SET_SEARCH_TEXT",
     }),
+    handleExport() {
+      exportDanhBaCSV(this.filteredBhyts);
+    },
     khoangCachThoiGian(ngay) {
       return moment(ngay).fromNow(true);
     },
