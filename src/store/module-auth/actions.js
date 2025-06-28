@@ -130,40 +130,6 @@ export const handleAuthStateChanged = async ({ commit, dispatch }) => {
               hetHan = newDate.toISOString().slice(0, 10);
             }
             await commit("setIsLogin", isLogin);
-
-            // let loginInfo = await dispatch("getCurrentLoginInformations");
-
-            // if (!loginInfo) {
-            //   let config = {
-            //     method: "post",
-            //     maxBodyLength: Infinity,
-            //     url: "https://ssm-api.vnpost.vn/api/TokenAuth/Authenticate",
-            //     headers: {
-            //       Accept: "application/json",
-            //       "Content-Type": "application/json",
-            //     },
-            //     data: userDetails.smsText,
-            //   };
-
-            //   const { data: tka } = await axios.request(config);
-            //   commit("setIsLogin", tka.result.accessToken);
-
-            //   // cập nhật csdl
-
-            //   const updateUserDetails = {
-            //     ...userDetails,
-            //     hetHan,
-            //     isLogin: tka.result.accessToken,
-            //     isPro:
-            //       date.getDateDiff(new Date(hetHan), new Date(), "days") < 0
-            //         ? false
-            //         : userDetails.isPro,
-            //   };
-            //   commit("setUserDetails", updateUserDetails);
-            //   const db = getDatabase();
-            //   await set(ref(db, "users/" + userId), updateUserDetails);
-            //   window.location.reload();
-            // }
           } else {
             commit("setIsLogin", "");
           }

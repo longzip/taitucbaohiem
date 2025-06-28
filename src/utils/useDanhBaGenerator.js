@@ -60,8 +60,7 @@ export function useDanhBaGenerator() {
 
       uniqueMap.set(phone, {
         Name: contactName,
-        "Phone 1 - Value": phone,
-        Birthday: person.ngaySinhDt // yyyy-mm-dd
+        Phone: phone
       });
     });
 

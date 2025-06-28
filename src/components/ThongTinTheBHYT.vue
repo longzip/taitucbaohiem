@@ -173,6 +173,7 @@
           v-if="bhyt.isBHYT == 1"
           class="q-pr-sm"
           name="paid"
+          @click="xacNhanHuyThu(bhyt, 1)"
         />
         <strong
           @click="xacNhanGiaHan(bhyt)"
@@ -192,6 +193,7 @@
           v-if="bhyt.isBHXHTN == 1"
           class="q-pr-sm"
           name="paid"
+          @click="xacNhanHuyThu(bhyt, 0)"
         />
 
         <strong

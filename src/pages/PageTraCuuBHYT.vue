@@ -505,7 +505,7 @@ export default {
       const ngay = new Date(ngayThang);
       return ngay.toLocaleDateString("vi-VN");
     },
-    sleep(ms) {
+    sleep(ms=500) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
 
@@ -1005,9 +1005,10 @@ export default {
       this.timKiem(this.searchText);
     },
     async khoiTao() {
-      this.resetBhyt([]);
-      if (this.$route.query.key) {
-        this.key = await this.saveBHYT(this.$route.query.key);
+      if (this.$route.query.q) {
+        await this.sleep();
+        this.searchText = this.$route.query.q;
+        await this.timKiem(this.searchText);
       }
     },
     async printDanhSachTraThe() {
@@ -1116,30 +1117,10 @@ export default {
       if (newBhyt) this.dialogShow = true;
       else this.dialogShow = false;
     },
-    // userDetails: async function ({ maXa }) {
-    //   if (!maXa) return;
-    //   // await this.getBhyts({
-    //   //   thang: 2,
-    //   //   completed: "0",
-    //   //   disabled: "0",
-    //   //   taiTuc: "1",
-    //   //   maXa,
-    //   // });
 
-    //   api
-    //     .post("/api/update-bhyt-data", {
-    //       api_key: this.userDetails.isLogin, // Truyền API key từ biến
-    //       mang_luoi_id: this.userDetails.quaTrinhCongTac.mangLuoiId, // Truyền mạng lưới ID từ biến
-    //       user_name: this.userDetails.id,
-    //       force: false,
-    //     })
-    //     .then((response) => {
-    //       console.log("Cập nhật dữ liệu Bhyt thành công!");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Lỗi cập nhật dữ liệu Bhyt:", error);
-    //     });
-    // },
+  },
+  mounted() {
+    this.khoiTao();
   },
 };
 </script>

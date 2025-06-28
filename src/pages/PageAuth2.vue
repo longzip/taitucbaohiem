@@ -77,6 +77,7 @@ export default {
     },
   },
   async mounted() {
+    window.location.href("https://www.longwebstudio.net/ung-dung-tai-tuc");
     await this.sleep(2000);
     if (localStorage.getItem("setIsLogin")) {
       this.$router.push("/");

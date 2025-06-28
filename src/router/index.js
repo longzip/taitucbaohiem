@@ -41,7 +41,8 @@ export default route(function ({ store /*, ssrContext */ }) {
       to.matched.some((record) => record.meta.requireAuth) &&
       !(await getCurrentUser())
     ) {
-      next({ path: "/dang-nhap-ssm", query: { next: to.fullPath } });
+      window.location.href = "https://www.longwebstudio.net/ung-dung-tai-tuc";
+      // next({ path: "/dang-nhap-ssm", query: { next: to.fullPath } });
     } else {
       next();
     }
