@@ -50,7 +50,7 @@ export function useDanhBaGenerator() {
     const uniqueMap = new Map();
 
     data.forEach(person => {
-      const phone = person.soDienThoai || person.soDienThoai2;
+      const phone = person.soDienThoai2 || person.soDienThoai;
       if (!phone || uniqueMap.has(phone)) return; // Loại trùng số
 
       const name = `${person.hoTen} ${getBirthYear(person.ngaySinhDt)}`;

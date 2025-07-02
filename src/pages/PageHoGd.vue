@@ -154,8 +154,8 @@ export default defineComponent({
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
     async timKiem(searchText) {
-      const thongSoTheBHYTs = searchText.split("|");
-      if (thongSoTheBHYTs.length > 1) this.searchText = thongSoTheBHYTs[0];
+      // const thongSoTheBHYTs = searchText.split("|");
+      // if (thongSoTheBHYTs.length > 1) this.searchText = thongSoTheBHYTs[0];
       await this.dongBoDuLieu(this.searchText);
       this.$refs.inputSearch.select();
     },
