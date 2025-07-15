@@ -236,30 +236,23 @@
       }}</q-badge>
 
       <q-item-label caption>
-        <a
-          v-if="bhyt.soBienLai"
-          href="javascript:void(0);"
-          @click="timTheoSoBienLai(bhyt.soBienLai)"
-          >{{ bhyt.soBienLai }}</a
-        ><q-icon
+        {{ bhyt.soBienLai
+        }}<q-icon
           @click="copyHoaDonToClipboard(bhyt.soBienLai)"
           name="content_copy"
-        />.<a
-          v-if="bhyt.soBienLai"
-          href="javascript:void(0);"
-          @click="timTheoSoBienLai(bhyt.soBienLai)"
-          >{{ bhyt.soBienLaiTN }}</a
-        ><br />
+        />.{{ bhyt.soBienLaiTN
+        }}<q-icon
+          @click="copyHoaDonToClipboard(bhyt.soBienLaiTN)"
+          name="content_copy"
+        /><br />
         <small
-          >{{ bhyt.ngayBienLai || bhyt.ngayLap }}
-          <span v-if="bhyt.ngayLapTN"
-            >/{{ bhyt.ngayBienLai || bhyt.ngayLapTN }}</span
-          ></small
+          >{{ bhyt.ngayLap }}
+          <span v-if="bhyt.ngayLapTN">/{{ bhyt.ngayLapTN }}</span></small
         >
       </q-item-label>
       <q-item-label caption
         ><q-icon
-          @click="traCuuBHXH(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+          @click="handleTraCuuClick(bhyt.maSoBhxh || bhyt.maSoBHXH)"
           name="update"
           color="blue"
         />
@@ -904,6 +897,38 @@ export default {
         })
         .onCancel(() => {
           // Xử lý khi người dùng nhấn Cancel (nếu cần)
+        });
+    },
+
+    // Phương thức mới để xử lý click
+    handleTraCuuClick(maSo) {
+      // Kiểm tra nếu không có mã số thì không làm gì cả
+      if (!maSo) {
+        console.error("Không tìm thấy mã số BHXH để tra cứu.");
+        return;
+      }
+      // Sử dụng $q.dialog để yêu cầu xác nhận từ người dùng
+      this.$q
+        .dialog({
+          title: "Xác nhận tra cứu",
+          message: `Bạn có muốn tra cứu thông tin cho mã số BHXH: ${maSo}?`,
+          cancel: true, // Hiển thị nút "Hủy"
+          persistent: true, // Ngăn việc đóng dialog bằng cách nhấp bên ngoài
+        })
+        .onOk(() => {
+          // 1. Mở URL trong tab mới
+          const url = `https://ssm.vnpost.vn/qldv/tra-cuu/tra-cuu-thong-tin-the?q=${maSo}`;
+          window.open(url, "_blank");
+
+          // 2. Đặt bộ đếm thời gian 1.5 giây (1500ms)
+          setTimeout(() => {
+            // 3. Sau 1.5 giây, thực hiện phương thức tra cứu gốc
+            this.traCuuBHXH(maSo);
+          }, 3500);
+        })
+        .onCancel(() => {
+          // Hành động này sẽ được thực thi khi người dùng nhấn "Hủy"
+          this.traCuuBHXH(maSo);
         });
     },
   },
