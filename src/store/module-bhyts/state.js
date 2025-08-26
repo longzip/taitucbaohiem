@@ -5,6 +5,7 @@ export default function () {
     maXa: "",
     searchText: "",
     selectedUser: null,
+    selectedStatus: null,
     currentBhyt: null, // Thêm state cho currentBhyt
   };
 }

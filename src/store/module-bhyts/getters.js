@@ -5,7 +5,12 @@ export function getCurrentBhyt(state) {
   return state.currentBhyt;
 }
 
-export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
+export const filteredBhyts = ({
+  searchText,
+  selectedUser,
+  selectedStatus,
+  bhyts,
+}) => {
   let filtered = bhyts;
   const term = searchText.toLowerCase().trim();
   if (term) {
@@ -28,6 +33,49 @@ export const filteredBhyts = ({ searchText, selectedUser, bhyts }) => {
   }
   if (selectedUser === "") {
     filtered = filtered.filter((bhyt) => !bhyt.userName);
+  }
+
+  // *** Bổ sung: Lọc theo trạng thái đã chọn ***
+  if (selectedStatus) {
+    if (selectedStatus === "Chưa tái tục") {
+      // Giả sử bạn có một trạng thái như vậy
+
+      // --- Bắt đầu logic mới ---
+      const today = new Date();
+      const lastDayOfNextMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() + 2,
+        0
+      );
+
+      filtered = filtered.filter((bhyt) => {
+        const expirationDate = new Date(bhyt.denNgayDt);
+        return expirationDate < lastDayOfNextMonth; // Thêm điều kiện >= today để chỉ lấy các thẻ chưa hết hạn
+      });
+      // --- Kết thúc logic mới ---
+    } else if (selectedStatus === "Chưa đồng bộ") {
+      // --- Bắt đầu logic mới ---
+      const today = new Date();
+      const threeMonthsAgo = new Date(
+        today.getFullYear(),
+        today.getMonth() - 3,
+        today.getDate()
+      );
+
+      filtered = filtered.filter((bhyt) => {
+        return (
+          bhyt.ngayTraCuu === "0000-00-00 00:00:00" ||
+          new Date(bhyt.ngayTraCuu) < threeMonthsAgo
+        );
+      });
+      // --- Kết thúc logic mới ---
+    } else {
+      filtered = filtered.filter(
+        (bhyt) =>
+          bhyt.trangThaiTaiTuc === selectedStatus ||
+          bhyt.trangThaiHoSoName == selectedStatus
+      );
+    }
   }
   return filtered;
 };

@@ -7,6 +7,9 @@ export function SET_SEARCH_TEXT(state, text) {
 export function SET_SELECTED_USER(state, user) {
   state.selectedUser = user;
 }
+export function SET_SELECTED_STATUS(state, status) {
+  state.selectedStatus = status;
+}
 export const setSearchText = (state, payload) => {
   state.searchText = payload;
 };

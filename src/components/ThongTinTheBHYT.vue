@@ -924,7 +924,7 @@ export default {
           setTimeout(() => {
             // 3. Sau 1.5 giây, thực hiện phương thức tra cứu gốc
             this.traCuuBHXH(maSo);
-          }, 3500);
+          }, 6000);
         })
         .onCancel(() => {
           // Hành động này sẽ được thực thi khi người dùng nhấn "Hủy"

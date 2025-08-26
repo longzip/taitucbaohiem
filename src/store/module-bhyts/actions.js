@@ -32,6 +32,10 @@ export function searchBhyts({ commit, state }, searchText) {
 export function selectUser({ commit }, user) {
   commit("SET_SELECTED_USER", user);
 }
+export function selectStatus({ commit }, status) {
+  console.log(status);
+  commit("SET_SELECTED_STATUS", status);
+}
 
 export const batTatRemove = ({ commit }, payload) => {
   commit("setIsRemove", payload);

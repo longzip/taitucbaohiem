@@ -2,8 +2,9 @@
   <q-page padding>
     <q-card>
       <q-card-section>
-        <div class="row">
-          <div class="col-6">
+        <div class="row q-col-gutter-md">
+          <!-- Cột Tìm kiếm -->
+          <div class="col-12 col-md-4">
             <q-input
               label="Tìm kiếm"
               outlined
@@ -25,7 +26,8 @@
             </q-input>
           </div>
 
-          <div class="col-4">
+          <!-- Cột Lọc theo người dùng -->
+          <div class="col-12 col-md-3">
             <q-select
               v-model="selectedUser"
               :options="userOptions"
@@ -35,10 +37,27 @@
               emit-value
               map-options
               dense
+              clearable
             />
           </div>
 
-          <div class="col-2 text-right">
+          <!-- BỔ SUNG: Cột Lọc theo trạng thái -->
+          <div class="col-12 col-md-3">
+            <q-select
+              v-model="selectedStatus"
+              :options="statusOptions"
+              @update:modelValue="selectStatus"
+              label="Lọc theo trạng thái"
+              outlined
+              emit-value
+              map-options
+              dense
+              clearable
+            />
+          </div>
+
+          <!-- Cột Menu -->
+          <div class="col-12 col-md-2 text-right">
             Menu
             <q-icon name="expand_more" dense> </q-icon>
             <q-menu v-if="userDetails.isPro" touch-position>
@@ -46,12 +65,12 @@
                 <q-item clickable @click="loadBhytByName" v-close-popup>
                   <q-item-section>Tìm tất cả</q-item-section>
                 </q-item>
-                <q-item clickable @click="dongBo" v-close-popup>
+                <q-item clickable @click="moCuaSoVoiMaSo" v-close-popup>
                   <q-item-section>Đồng bộ dữ liệu</q-item-section>
                 </q-item>
-                <q-item clickable @click="dongBoMaSoBHXH" v-close-popup>
+                <!-- <q-item clickable @click="dongBoMaSoBHXH" v-close-popup>
                   <q-item-section>Đồng bộ mã số BHXH</q-item-section>
-                </q-item>
+                </q-item> -->
                 <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
                   <q-item-section>Tái tục BHYT bổ trợ</q-item-section>
                 </q-item>
@@ -94,7 +113,7 @@
 
                 <q-item
                   clickable
-                  @click="loadBhyts({ thang: 2 })"
+                  @click="loadBhyts({ thang: 1, taiTuc: 2 })"
                   v-close-popup
                 >
                   <q-item-section>Tái tục 2 tháng (xã)</q-item-section>
@@ -408,8 +427,25 @@ export default {
       tuNgayDenNgay: "",
       soBienLai: "",
       selectedUser: null,
+      selectedStatus: null,
       dialogShow: false,
       expanded: false,
+      statusOptions: [
+        { label: "Tất cả", value: null }, // Thêm tùy chọn để bỏ lọc
+        { label: "Chưa tái tục", value: "Chưa tái tục" },
+        { label: "Chưa đồng bộ 3 tháng", value: "Chưa đồng bộ" },
+        { label: "Chưa liên hệ", value: "Chưa liên hệ" },
+        { label: "Đã liên hệ", value: "Đã liên hệ" },
+        { label: "Đã tái tục", value: "Đã tái tục" },
+        { label: "Từ chối", value: "Từ chối" },
+        { label: "Đã nộp BĐH", value: "Đã nộp BĐH" },
+        { label: "Đã lưu", value: "Đã lưu" },
+        { label: "Đã xóa", value: "Đã xóa" },
+        { label: "Đã nhận kết quả phát sinh từ BHXH", value: "Đã nhận kết quả phát sinh từ BHXH" },
+        { label: "Đã xác nhận yêu cầu phát sinh", value: "Đã xác nhận yêu cầu phát sinh" },
+        { label: "Hồ sơ lỗi", value: "Hồ sơ lỗi" },
+        { label: "Đã gửi yêu cầu phát sinh nhưng chưa nộp tờ khai", value: "Đã gửi yêu cầu phát sinh nhưng chưa nộp tờ khai" },
+      ],
     };
   },
   computed: {
@@ -486,6 +522,7 @@ export default {
       "capNhatBHXHTN",
       "searchBhyts",
       "selectUser",
+      "selectStatus",
       // mới
       "traCuuBHXH",
       "traCuuMaSoBHXH",
@@ -505,7 +542,7 @@ export default {
       const ngay = new Date(ngayThang);
       return ngay.toLocaleDateString("vi-VN");
     },
-    sleep(ms=500) {
+    sleep(ms = 500) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
 
@@ -522,10 +559,10 @@ export default {
     taiTucBHYT2thang() {
       this.searchText = "";
       this.getBhyts({
-        thang: 2,
+        thang: 1,
         completed: "0",
         disabled: "0",
-        taiTuc: "1",
+        taiTuc: 2,
         userName: this.userDetails.id,
       });
     },
@@ -875,13 +912,13 @@ export default {
           });
         });
     },
-    loadBhyts({ thang = 1 }) {
+    loadBhyts({ thang = 1, taiTuc = 1 }) {
       this.searchText = "";
       this.getBhyts({
         thang,
         completed: "0",
         disabled: "0",
-        taiTuc: "1",
+        taiTuc,
         maXa: this.userDetails.maXa,
         khacUserName: this.userDetails.id,
       });
@@ -1037,6 +1074,34 @@ export default {
           }
         );
     },
+    // Hàm để mở URL với mã số tương ứng
+    moCuaSoVoiMaSo() {
+      // BƯỚC 1: Trích xuất danh sách mã số từ mảng đối tượng
+      // this.filteredBhyts có thể đến từ state, props hoặc một thuộc tính của class.
+      const danhSach = this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh);
+
+      // BƯỚC 2: Kiểm tra xem danh sách vừa tạo có rỗng hay không
+      if (!danhSach || danhSach.length === 0) {
+        console.log("Không có mã số nào để tra cứu. Danh sách rỗng.");
+        // Bạn có thể hiển thị một thông báo cho người dùng ở đây
+        // alert("Không có dữ liệu BHYT để tra cứu!");
+        return; // Dừng thực thi nếu không có gì để làm
+      }
+      let index = 0;
+      const thoiGianDelay = 6000; // 6 giây là thời gian chờ giữa các lần truy cập giây
+
+      const intervalId = setInterval(() => {
+        if (index < danhSach.length) {
+          const maSo = danhSach[index];
+          const url = `https://ssm.vnpost.vn/qldv/tra-cuu/tra-cuu-thong-tin-the?q=${maSo}`;
+          window.open(url, "_blank");
+          index++;
+        } else {
+          clearInterval(intervalId); // Dừng vòng lặp khi đã duyệt hết danh sách
+          console.log("Đã mở tất cả các URL.");
+        }
+      }, thoiGianDelay);
+    },
     copySoDienThoaiToClipboard() {
       navigator.clipboard
         .writeText(
@@ -1099,25 +1164,12 @@ export default {
         pom.click();
       }
     },
-    async dongBo() {
-      if (this.filteredBhyts.length === 0) return;
-      // for (let index = 0; index < this.filteredBhyts.length; index++) {
-      //   await this.traCuuBHXH(this.filteredBhyts[index].maSoBhxh)
-      this.dongBoDuLieu(this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh).join());
-    },
-    async dongBoMaSoBHXH() {
-      if (this.filteredBhyts.length === 0) return;
-      // for (let index = 0; index < this.filteredBhyts.length; index++) {
-      //   await this.traCuuBHXH(this.filteredBhyts[index].maSoBhxh)
-      this.dongBoMaSo(this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh).join());
-    },
   },
   watch: {
     getCurrentBhyt: function (newBhyt) {
       if (newBhyt) this.dialogShow = true;
       else this.dialogShow = false;
     },
-
   },
   mounted() {
     this.khoiTao();
