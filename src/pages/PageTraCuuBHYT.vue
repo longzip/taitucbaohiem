@@ -113,7 +113,7 @@
 
                 <q-item
                   clickable
-                  @click="loadBhyts({ thang: 1, taiTuc: 2 })"
+                  @click="loadBhyts({ thang: 2, taiTuc: 2 })"
                   v-close-popup
                 >
                   <q-item-section>Tái tục 2 tháng (xã)</q-item-section>
@@ -1088,7 +1088,7 @@ export default {
         return; // Dừng thực thi nếu không có gì để làm
       }
       let index = 0;
-      const thoiGianDelay = 6000; // 6 giây là thời gian chờ giữa các lần truy cập giây
+      const thoiGianDelay = 7000; // 6 giây là thời gian chờ giữa các lần truy cập giây
 
       const intervalId = setInterval(() => {
         if (index < danhSach.length) {

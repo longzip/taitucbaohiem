@@ -29,6 +29,29 @@
           </q-icon>
         </q-td>
       </template>
+            <!-- Slot tùy chỉnh cho cột "Họ và tên" -->
+      <template v-slot:body-cell-hoTen="props">
+        <q-td @click="copyToClipboard(props.value)" :props="props"> {{ props.value }} </q-td>
+      </template>
+
+      <!-- Slot tùy chỉnh cho cột "Mã số BHXH" -->
+      <template v-slot:body-cell-maSoBhxh="props">
+        <q-td @click="copyToClipboard(props.value)" :props="props"> {{ props.value }} </q-td>
+      </template>
+
+      <!-- Slot tùy chỉnh cho cột "Ngày sinh" -->
+      <template v-slot:body-cell-ngaySinhDt="props">
+        <q-td @click="copyToClipboard(formatDate(props.value))" :props="props"> {{ formatDate(props.value) }}  </q-td>
+      </template>
+
+      <!-- Slot tùy chỉnh cho cột "Thu tự" -->
+      <template v-slot:body-cell-thuTu="props">
+        <q-td :props="props"> {{ props.value }} </q-td>
+      </template>
+      <!-- Slot tùy chỉnh cho cột "Ghi chú" -->
+      <template v-slot:body-cell-ghiChu="props">
+        <q-td @click="copyToClipboard(props.value)" :props="props"> {{ props.value }} </q-td>
+      </template>
 
       <!-- Slot tùy chỉnh cho cột "Mức đóng theo quy định" -->
       <template v-slot:body-cell-mucDongQuyDinh="props">
@@ -122,16 +145,16 @@ export default defineComponent({
           align: "left",
         },
         { name: "hoTen", label: "Họ và tên", field: "hoTen", align: "left" },
-        // {
-        //   name: "thuTu",
-        //   label: "Thứ tự tham gia",
-        //   field: "thuTu",
-        //   align: "center",
-        // },
+        {
+          name: "ngaySinhDt",
+          label: "Ngày sinh",
+          field: "ngaySinhDt",
+          align: "center",
+        },
         { name: "tyLe", label: "%", field: "tyLe", align: "center" },
         {
           name: "soTienNop",
-          label: "Số tiền)",
+          label: "Số tiền",
           field: "soTienNop",
           align: "right",
         },
@@ -182,6 +205,36 @@ export default defineComponent({
       if (!value && value !== 0) return "";
       return value.toLocaleString("vi-VN");
     },
+        formatDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    },
+    async copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        this.$q.notify({
+          message: 'Đã sao chép: ' + text,
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'check_circle',
+          position: 'top'
+        });
+      } catch (err) {
+        console.error('Không thể sao chép: ', err);
+        this.$q.notify({
+          message: 'Không thể sao chép dữ liệu',
+          color: 'red-4',
+          textColor: 'white',
+          icon: 'error',
+          position: 'top'
+        });
+      }
+    }
+
   },
 
   computed: {
@@ -235,6 +288,7 @@ export default defineComponent({
           maSoBhxh: member.maSoBhxh,
           stt: participationOrder,
           hoTen: member.hoTen,
+          ngaySinhDt: member.ngaySinhDt,
           thuTu: `Người thứ ${participationOrder}`,
           tyLe: contributionRate * 100,
           soTienNop: member.tongTien, // Lấy từ dữ liệu gốc
