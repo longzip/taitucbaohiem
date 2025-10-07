@@ -252,7 +252,7 @@
       </q-item-label>
       <q-item-label caption
         ><q-icon
-          @click="handleTraCuuClick(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+          @click="handleTraCuuClick(bhyt.maSoBhxh || bhyt.maSoBHXH, bhyt.hoTen, bhyt.ngaySinhDt)"
           name="update"
           color="blue"
         />
@@ -901,7 +901,7 @@ export default {
     },
 
     // Phương thức mới để xử lý click
-    handleTraCuuClick(maSo) {
+    handleTraCuuClick(maSo,hoTen,ngaySinhDt) {
       // Kiểm tra nếu không có mã số thì không làm gì cả
       if (!maSo) {
         console.error("Không tìm thấy mã số BHXH để tra cứu.");
@@ -917,14 +917,14 @@ export default {
         })
         .onOk(() => {
           // 1. Mở URL trong tab mới
-          const url = `https://ssm.vnpost.vn/qldv/tra-cuu/tra-cuu-thong-tin-the?q=${maSo}`;
+          const url = `https://ssm.vnpost.vn/qldv/tra-cuu/tra-cuu-thong-tin-the?maSoBHXH=${maSo}&hoTen=${hoTen}&ngaySinhDt=${ngaySinhDt}`;
           window.open(url, "_blank");
 
           // 2. Đặt bộ đếm thời gian 1.5 giây (1500ms)
           setTimeout(() => {
             // 3. Sau 1.5 giây, thực hiện phương thức tra cứu gốc
             this.traCuuBHXH(maSo);
-          }, 7000);
+          }, 8000);
         })
         .onCancel(() => {
           // Hành động này sẽ được thực thi khi người dùng nhấn "Hủy"

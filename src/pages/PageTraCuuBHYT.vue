@@ -441,10 +441,19 @@ export default {
         { label: "Đã nộp BĐH", value: "Đã nộp BĐH" },
         { label: "Đã lưu", value: "Đã lưu" },
         { label: "Đã xóa", value: "Đã xóa" },
-        { label: "Đã nhận kết quả phát sinh từ BHXH", value: "Đã nhận kết quả phát sinh từ BHXH" },
-        { label: "Đã xác nhận yêu cầu phát sinh", value: "Đã xác nhận yêu cầu phát sinh" },
+        {
+          label: "Đã nhận kết quả phát sinh từ BHXH",
+          value: "Đã nhận kết quả phát sinh từ BHXH",
+        },
+        {
+          label: "Đã xác nhận yêu cầu phát sinh",
+          value: "Đã xác nhận yêu cầu phát sinh",
+        },
         { label: "Hồ sơ lỗi", value: "Hồ sơ lỗi" },
-        { label: "Đã gửi yêu cầu phát sinh nhưng chưa nộp tờ khai", value: "Đã gửi yêu cầu phát sinh nhưng chưa nộp tờ khai" },
+        {
+          label: "Đã gửi yêu cầu phát sinh nhưng chưa nộp tờ khai",
+          value: "Đã gửi yêu cầu phát sinh nhưng chưa nộp tờ khai",
+        },
       ],
     };
   },
@@ -1078,22 +1087,21 @@ export default {
     moCuaSoVoiMaSo() {
       // BƯỚC 1: Trích xuất danh sách mã số từ mảng đối tượng
       // this.filteredBhyts có thể đến từ state, props hoặc một thuộc tính của class.
-      const danhSach = this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh);
 
       // BƯỚC 2: Kiểm tra xem danh sách vừa tạo có rỗng hay không
-      if (!danhSach || danhSach.length === 0) {
+      if (this.filteredBhyts.length === 0) {
         console.log("Không có mã số nào để tra cứu. Danh sách rỗng.");
         // Bạn có thể hiển thị một thông báo cho người dùng ở đây
         // alert("Không có dữ liệu BHYT để tra cứu!");
         return; // Dừng thực thi nếu không có gì để làm
       }
       let index = 0;
-      const thoiGianDelay = 7000; // 6 giây là thời gian chờ giữa các lần truy cập giây
+      const thoiGianDelay = 8000; // 6 giây là thời gian chờ giữa các lần truy cập giây
 
       const intervalId = setInterval(() => {
-        if (index < danhSach.length) {
-          const maSo = danhSach[index];
-          const url = `https://ssm.vnpost.vn/qldv/tra-cuu/tra-cuu-thong-tin-the?q=${maSo}`;
+        if (index < this.filteredBhyts.length) {
+          const { maSoBhxh, hoTen, ngaySinhDt } = this.filteredBhyts[index];
+          const url = `https://ssm.vnpost.vn/qldv/tra-cuu/tra-cuu-thong-tin-the?maSoBHXH=${maSoBhxh}&hoTen=${hoTen}&ngaySinhDt=${ngaySinhDt}`;
           window.open(url, "_blank");
           index++;
         } else {
