@@ -34,13 +34,13 @@
           }}</a>
           {{ bhyt.mqhChuHo }}
         </q-item-label>
-        <q-item-label v-if="bhyt.uniqid" caption lines="2">
-          Tờ khai:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.uniqid}`">{{
-            bhyt.uniqid
+        <q-item-label v-if="bhyt.maToKhaiRieng" caption lines="2">
+          Tờ khai:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maToKhaiRieng}`">{{
+            bhyt.maToKhaiRieng
           }}</a
           ><a
             target="_blank"
-            :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.uniqid}/pdf`"
+            :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.maToKhaiRieng}/pdf`"
             ><q-icon class="q-ml-sm" name="print" color="blue"
           /></a>
         </q-item-label>
@@ -706,9 +706,9 @@ export default {
             isGiaHan
               ? this.userDetails.bhytHetHanSMSText.replace(
                   "_soTheBhyt",
-                  t.uniqid
+                  t.maToKhaiRieng
                 )
-              : this.userDetails.bhytSMSText.replace("_soTheBhyt", t.uniqid)
+              : this.userDetails.bhytSMSText.replace("_soTheBhyt", t.maToKhaiRieng)
           }`
         )
         .then(

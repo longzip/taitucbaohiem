@@ -134,7 +134,7 @@ export default defineComponent({
   data() {
     return {
       maHoGd: "",
-      uniqid: "",
+      maToKhaiRieng: "",
       searchText: "",
       columns: [
         { name: "stt", label: "STT", field: "stt", align: "center" },
@@ -183,9 +183,9 @@ export default defineComponent({
       this.$refs.inputSearch.select();
     },
     async loadData() {
-      if (this.uniqid)
+      if (this.maToKhaiRieng)
         await this.getAllBhyts({
-          uniqid: this.uniqid,
+          maToKhaiRieng: this.maToKhaiRieng,
         });
       else
         await this.getAllBhyts({
@@ -316,7 +316,7 @@ export default defineComponent({
 
   mounted() {
     this.maHoGd = this.$route.params.id;
-    if (this.maHoGd.length === 13) this.uniqid = this.maHoGd;
+    if (this.maHoGd.length === 13) this.maToKhaiRieng = this.maHoGd;
     this.loadData();
   },
 });
