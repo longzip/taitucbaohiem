@@ -9,23 +9,14 @@
       class="my-sticky-header-table"
     >
       <template v-slot:body="props">
-        <q-tr
-          :props="props"
-          @click="copyRowData(props.row)"
-          class="cursor-pointer"
-        >
+        <q-tr :props="props" @click="copyRowData(props.row)" class="cursor-pointer">
           <q-td key="stt" :props="props">{{ props.row.stt }}</q-td>
           <q-td key="maSoBhxh" :props="props">{{ props.row.maSoBhxh }}</q-td>
           <q-td key="hoTen" :props="props">{{ props.row.hoTen }}</q-td>
-          <q-td key="ngaySinhDt" :props="props">{{
-            formatDate(props.row.ngaySinhDt)
-          }}</q-td>
+          <q-td key="ngaySinhDt" :props="props">{{ formatDate(props.row.ngaySinhDt) }}</q-td>
           <q-td key="tyLe" :props="props">{{ props.row.tyLe }}%</q-td>
           <q-td key="soTienNop" :props="props">
-            <q-badge
-              color="blue-grey"
-              :label="formatCurrency(props.row.soTienNop)"
-            />
+            <q-badge color="blue-grey" :label="formatCurrency(props.row.soTienNop)" />
             <q-icon
               v-if="props.row.soTienNop !== props.row.mucDongQuyDinh"
               name="warning"
@@ -41,10 +32,7 @@
             </q-icon>
           </q-td>
           <q-td key="mucDongQuyDinh" :props="props">
-            <q-badge
-              color="green"
-              :label="formatCurrency(props.row.mucDongQuyDinh)"
-            />
+            <q-badge color="green" :label="formatCurrency(props.row.mucDongQuyDinh)" />
           </q-td>
           <q-td key="ghiChu" :props="props">{{ props.row.ghiChu }}</q-td>
         </q-tr>
@@ -110,6 +98,7 @@
 <script>
 import { defineComponent } from "vue";
 import { mapGetters, mapActions, mapState } from "vuex";
+import { useQuasar } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import ListHeader from "src/components/Tasks/Modals/Shared/ListHeader.vue";
 const currentYear = new Date().getFullYear();
@@ -117,6 +106,10 @@ const currentYear = new Date().getFullYear();
 export default defineComponent({
   components: { ThongTinTheBHYT, ListHeader },
   name: "IndexPage",
+  setup() {
+    const $q = useQuasar();
+    return { $q };
+  },
   data() {
     return {
       maHoGd: "",
@@ -163,10 +156,12 @@ export default defineComponent({
   methods: {
     ...mapActions("bhyts", ["getAllBhyts", "dongBoDuLieu"]),
     async timKiem(searchText) {
+      this.$q.loading.show();
       // const thongSoTheBHYTs = searchText.split("|");
       // if (thongSoTheBHYTs.length > 1) this.searchText = thongSoTheBHYTs[0];
       await this.dongBoDuLieu(this.searchText);
       this.$refs.inputSearch.select();
+      this.$q.loading.hide();
     },
     async loadData() {
       this.$q.loading.show();
@@ -178,6 +173,7 @@ export default defineComponent({
         await this.getAllBhyts({
           maHoGd: this.maHoGd,
         });
+      this.$q.loading.hide();
     },
     async print() {
       if (this.bhyts.length > 15 || this.bhyts.length === 0) return;
@@ -268,11 +264,7 @@ export default defineComponent({
         );
 
         // Tạo ghi chú: liệt kê tất cả người đóng mức cao hơn
-        const noteParts = [
-          member.soTheBhyt && member.soTheBhyt.startsWith("GD")
-            ? "Thắm ON;"
-            : "Thắm TM;",
-        ];
+        const noteParts = [member.soTheBhyt && member.soTheBhyt.startsWith('GD') ? 'Thắm ON;' : 'Thắm TM;'];
         if (i > 0) {
           // Lặp qua tất cả những người đã xử lý trước đó
           for (let j = 0; j < i; j++) {
