@@ -8,62 +8,48 @@
       hide-bottom
       class="my-sticky-header-table"
     >
-      <!-- Slot tùy chỉnh cho cột "Số tiền đã nộp" -->
-      <template v-slot:body-cell-soTienNop="props">
-        <q-td :props="props">
-          <q-badge color="blue-grey" :label="formatCurrency(props.value)" />
-
-          <!-- Icon cảnh báo nếu số tiền nộp không khớp với quy định -->
-          <q-icon
-            v-if="props.row.soTienNop !== props.row.mucDongQuyDinh"
-            name="warning"
-            color="orange"
-            class="q-ml-sm"
-          >
-            <q-tooltip class="bg-amber text-black shadow-4">
-              Số tiền nộp không khớp với mức đóng theo quy định ({{
-                formatCurrency(props.row.mucDongQuyDinh)
-              }}
-              VNĐ)
-            </q-tooltip>
-          </q-icon>
-        </q-td>
-      </template>
-            <!-- Slot tùy chỉnh cho cột "Họ và tên" -->
-      <template v-slot:body-cell-hoTen="props">
-        <q-td @click="copyToClipboard(props.value)" :props="props"> {{ props.value }} </q-td>
-      </template>
-
-      <!-- Slot tùy chỉnh cho cột "Mã số BHXH" -->
-      <template v-slot:body-cell-maSoBhxh="props">
-        <q-td @click="copyToClipboard(props.value)" :props="props"> {{ props.value }} </q-td>
-      </template>
-
-      <!-- Slot tùy chỉnh cho cột "Ngày sinh" -->
-      <template v-slot:body-cell-ngaySinhDt="props">
-        <q-td @click="copyToClipboard(formatDate(props.value))" :props="props"> {{ formatDate(props.value) }}  </q-td>
-      </template>
-
-      <!-- Slot tùy chỉnh cho cột "Thu tự" -->
-      <template v-slot:body-cell-thuTu="props">
-        <q-td :props="props"> {{ props.value }} </q-td>
-      </template>
-      <!-- Slot tùy chỉnh cho cột "Ghi chú" -->
-      <template v-slot:body-cell-ghiChu="props">
-        <q-td @click="copyToClipboard(props.value)" :props="props"> {{ props.value }} </q-td>
+      <template v-slot:body="props">
+        <q-tr
+          :props="props"
+          @click="copyRowData(props.row)"
+          class="cursor-pointer"
+        >
+          <q-td key="stt" :props="props">{{ props.row.stt }}</q-td>
+          <q-td key="maSoBhxh" :props="props">{{ props.row.maSoBhxh }}</q-td>
+          <q-td key="hoTen" :props="props">{{ props.row.hoTen }}</q-td>
+          <q-td key="ngaySinhDt" :props="props">{{
+            formatDate(props.row.ngaySinhDt)
+          }}</q-td>
+          <q-td key="tyLe" :props="props">{{ props.row.tyLe }}%</q-td>
+          <q-td key="soTienNop" :props="props">
+            <q-badge
+              color="blue-grey"
+              :label="formatCurrency(props.row.soTienNop)"
+            />
+            <q-icon
+              v-if="props.row.soTienNop !== props.row.mucDongQuyDinh"
+              name="warning"
+              color="orange"
+              class="q-ml-sm"
+            >
+              <q-tooltip class="bg-amber text-black shadow-4">
+                Số tiền nộp không khớp với mức đóng theo quy định ({{
+                  formatCurrency(props.row.mucDongQuyDinh)
+                }}
+                VNĐ)
+              </q-tooltip>
+            </q-icon>
+          </q-td>
+          <q-td key="mucDongQuyDinh" :props="props">
+            <q-badge
+              color="green"
+              :label="formatCurrency(props.row.mucDongQuyDinh)"
+            />
+          </q-td>
+          <q-td key="ghiChu" :props="props">{{ props.row.ghiChu }}</q-td>
+        </q-tr>
       </template>
 
-      <!-- Slot tùy chỉnh cho cột "Mức đóng theo quy định" -->
-      <template v-slot:body-cell-mucDongQuyDinh="props">
-        <q-td :props="props">
-          <q-badge color="green" :label="formatCurrency(props.value)" />
-        </q-td>
-      </template>
-
-      <!-- Slot tùy chỉnh cho cột "Tỷ lệ đóng" -->
-      <template v-slot:body-cell-tyLe="props">
-        <q-td :props="props"> {{ props.value }}% </q-td>
-      </template>
       <!-- *** THÊM HÀNG TỔNG CỘNG Ở ĐÂY *** -->
       <template v-slot:bottom-row>
         <q-tr class="text-bold">
@@ -183,6 +169,7 @@ export default defineComponent({
       this.$refs.inputSearch.select();
     },
     async loadData() {
+      this.$q.loading.show();
       if (this.maToKhaiRieng)
         await this.getAllBhyts({
           maToKhaiRieng: this.maToKhaiRieng,
@@ -205,36 +192,44 @@ export default defineComponent({
       if (!value && value !== 0) return "";
       return value.toLocaleString("vi-VN");
     },
-        formatDate(value) {
+    formatDate(value) {
       if (!value) return "";
-      const date = new Date(value);
-      const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const year = date.getFullYear();
-      return `${day}/${month}/${year}`;
+      return new Date(value).toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+    },
+    copyRowData(row) {
+      const dataToCopy = [
+        row.hoTen,
+        row.maSoBhxh,
+        this.formatDate(row.ngaySinhDt),
+        row.ghiChu,
+      ].join(", ");
+      this.copyToClipboard(dataToCopy);
     },
     async copyToClipboard(text) {
       try {
         await navigator.clipboard.writeText(text);
         this.$q.notify({
-          message: 'Đã sao chép: ' + text,
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'check_circle',
-          position: 'top'
+          message: "Đã sao chép: " + text,
+          color: "green-4",
+          textColor: "white",
+          icon: "check_circle",
+          position: "top",
         });
       } catch (err) {
-        console.error('Không thể sao chép: ', err);
+        console.error("Không thể sao chép: ", err);
         this.$q.notify({
-          message: 'Không thể sao chép dữ liệu',
-          color: 'red-4',
-          textColor: 'white',
-          icon: 'error',
-          position: 'top'
+          message: "Không thể sao chép dữ liệu",
+          color: "red-4",
+          textColor: "white",
+          icon: "error",
+          position: "top",
         });
       }
-    }
-
+    },
   },
 
   computed: {
@@ -273,7 +268,11 @@ export default defineComponent({
         );
 
         // Tạo ghi chú: liệt kê tất cả người đóng mức cao hơn
-        const noteParts = [member.soTheBhyt && member.soTheBhyt.startsWith('GD') ? 'Thắm ON;' : 'Thắm TM;'];
+        const noteParts = [
+          member.soTheBhyt && member.soTheBhyt.startsWith("GD")
+            ? "Thắm ON;"
+            : "Thắm TM;",
+        ];
         if (i > 0) {
           // Lặp qua tất cả những người đã xử lý trước đó
           for (let j = 0; j < i; j++) {

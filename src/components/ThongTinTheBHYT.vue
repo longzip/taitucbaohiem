@@ -60,6 +60,16 @@
           name="content_copy"
         />
         <q-icon class="q-ml-md" @click="copyThoiHan(bhyt)" name="text_format" />
+        <q-icon
+          class="q-ml-md"
+          @click="copyCustomData(bhyt)"
+          name="library_add"
+        />
+        <q-icon
+          class="q-ml-md"
+          @click="openVssIdTraCuu(bhyt)"
+          name="travel_explore"
+        />
       </q-item-label>
       <q-item-label caption lines="2">{{ bhyt.tenDvi }}</q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
@@ -746,6 +756,27 @@ export default {
           }
         );
     },
+    copyCustomData(bhyt) {
+      const hoTen = bhyt.hoTen || bhyt.hoVaTen;
+      const maSoBhxh = bhyt.maSoBhxh || bhyt.maSoBHXH;
+      const ngaySinh = new Date(bhyt.ngaySinhDt).toLocaleDateString("vi-VN");
+      const dataToCopy = `${hoTen}, ${maSoBhxh}, ${ngaySinh}, Nhập tờ khai bảo hiểm`;
+
+      navigator.clipboard.writeText(dataToCopy).then(
+        () => {
+          this.$q.notify({
+            type: "positive",
+            message: "Đã sao chép: " + dataToCopy,
+          });
+        },
+        (err) => {
+          this.$q.notify({
+            type: "negative",
+            message: "Không thể sao chép: " + err,
+          });
+        }
+      );
+    },
     copySDTToClipboard(soDienThoai) {
       navigator.clipboard
         .writeText(soDienThoai.toString().slice(soDienThoai.length - 10))
@@ -812,6 +843,28 @@ export default {
           message: "Không thực hiện được!" + error,
         });
       }
+    },
+
+    openVssIdTraCuu(bhyt) {
+      const mathe = bhyt.maSoBhxh;
+      const hoten = encodeURIComponent(bhyt.hoTen || "");
+      let ngaysinh = "";
+      if (bhyt.ngaySinhDt) {
+        const date = new Date(bhyt.ngaySinhDt);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        ngaysinh = `${day}/${month}/${year}`;
+      }
+      if (!mathe) {
+        this.$q.notify({
+          type: "negative",
+          message: "Không có mã thẻ BHYT để tra cứu.",
+        });
+        return;
+      }
+      const url = `https://baohiemxahoi.gov.vn/tracuu/Pages/tra-cuu-thoi-han-su-dung-the-bhyt.aspx?mathe=${mathe}&hoten=${hoten}&ngaysinh=${ngaysinh}`;
+      window.open(url, "_blank");
     },
 
     async copyThoiHan(t) {
