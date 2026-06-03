@@ -35,9 +35,10 @@
           {{ bhyt.mqhChuHo }}
         </q-item-label>
         <q-item-label v-if="bhyt.maToKhaiRieng" caption lines="2">
-          Tờ khai:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maToKhaiRieng}`">{{
-            bhyt.maToKhaiRieng
-          }}</a
+          Tờ khai:<a
+            target="_blank"
+            :href="`/#/ho-gia-dinh/${bhyt.maToKhaiRieng}`"
+            >{{ bhyt.maToKhaiRieng }}</a
           ><a
             target="_blank"
             :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.maToKhaiRieng}/pdf`"
@@ -128,6 +129,22 @@
         <q-btn size="12px" flat dense round icon="more_horiz">
           <q-menu>
             <q-list style="min-width: 300px">
+              <q-item clickable v-close-popup>
+                <q-item-section
+                  @click="
+                    window.open(
+                      `https://bhxh.pvi.com.vn/#/bhxh/bhxh-renew?ms=${
+                        bhyt.maSoBhxh || bhyt.maSoBHXH
+                      }&ten=${bhyt.hoTen || bhyt.hoVaTen}&ns=${new Date(
+                        bhyt.ngaySinhDt
+                      ).toLocaleDateString('vi-VN')}`,
+                      '_blank'
+                    )
+                  "
+                  >Gia hạn thẻ BHYT với PVI</q-item-section
+                >
+              </q-item>
+
               <q-item clickable v-close-popup>
                 <q-item-section
                   @click="traCuuBHXHCu(bhyt.maSoBhxh || bhyt.maSoBHXH)"
@@ -262,7 +279,13 @@
       </q-item-label>
       <q-item-label caption
         ><q-icon
-          @click="handleTraCuuClick(bhyt.maSoBhxh || bhyt.maSoBHXH, bhyt.hoTen, bhyt.ngaySinhDt)"
+          @click="
+            handleTraCuuClick(
+              bhyt.maSoBhxh || bhyt.maSoBHXH,
+              bhyt.hoTen,
+              bhyt.ngaySinhDt
+            )
+          "
           name="update"
           color="blue"
         />
@@ -718,7 +741,10 @@ export default {
                   "_soTheBhyt",
                   t.maToKhaiRieng
                 )
-              : this.userDetails.bhytSMSText.replace("_soTheBhyt", t.maToKhaiRieng)
+              : this.userDetails.bhytSMSText.replace(
+                  "_soTheBhyt",
+                  t.maToKhaiRieng
+                )
           }`
         )
         .then(
@@ -954,7 +980,7 @@ export default {
     },
 
     // Phương thức mới để xử lý click
-    handleTraCuuClick(maSo,hoTen,ngaySinhDt) {
+    handleTraCuuClick(maSo, hoTen, ngaySinhDt) {
       // Kiểm tra nếu không có mã số thì không làm gì cả
       if (!maSo) {
         console.error("Không tìm thấy mã số BHXH để tra cứu.");
