@@ -411,17 +411,23 @@
   </q-page>
 </template>
 <script>
+import { defineComponent } from "vue";
 import { mapGetters, mapActions, mapState, mapMutations } from "vuex";
+import { useQuasar, Notify } from "quasar";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
-import { Notify } from "quasar";
 import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
 import { useDanhBaGenerator } from "src/utils/useDanhBaGenerator";
 import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
 import moment from "moment";
 const { exportDanhBaCSV } = useDanhBaGenerator();
 
-export default {
+export default defineComponent({
+  name: "PageTraCuuBHYT",
   components: { ThongTinTheBHYT, BhytUpdateDialog },
+  setup() {
+    const $q = useQuasar();
+    return { $q };
+  },
   data() {
     return {
       tuNgayDenNgay: "",
@@ -556,24 +562,34 @@ export default {
     },
 
     taiTucBHYT1thang() {
-      this.searchText = "";
-      this.getBhyts({
-        thang: 1,
-        completed: "0",
-        disabled: "0",
-        taiTuc: "1",
-        userName: this.userDetails.id,
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          thang: 1,
+          completed: "0",
+          disabled: "0",
+          taiTuc: "1",
+          userName: this.userDetails.id,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     taiTucBHYT2thang() {
-      this.searchText = "";
-      this.getBhyts({
-        thang: 1,
-        completed: "0",
-        disabled: "0",
-        taiTuc: 2,
-        userName: this.userDetails.id,
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          thang: 1,
+          completed: "0",
+          disabled: "0",
+          taiTuc: 2,
+          userName: this.userDetails.id,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
 
     async loadBaoCaoChiTietGiaoDichBHXH() {
@@ -602,6 +618,7 @@ export default {
         })
         .onOk(async (data) => {
           const ngays = data.split(" : ");
+          this.$q.loading.show();
           try {
             await this.hoSoDaXuLy({
               tuNgay: ngays[0],
@@ -615,6 +632,8 @@ export default {
               message: "Không thể kế nối đến máy chủ !",
               color: "red",
             });
+          } finally {
+            this.$q.loading.hide();
           }
         });
     },
@@ -644,6 +663,7 @@ export default {
         })
         .onOk(async (data) => {
           const ngays = data.split(" : ");
+          this.$q.loading.show();
           try {
             await this.hoSoDaXuLy({
               tuNgay: ngays[0],
@@ -656,6 +676,8 @@ export default {
               message: "Không thể kế nối đến máy chủ !",
               color: "red",
             });
+          } finally {
+            this.$q.loading.hide();
           }
         });
     },
@@ -680,99 +702,104 @@ export default {
           persistent: true,
         })
         .onOk(async (data) => {
-          if (!data) return;
-          const ds = new Map();
-          for (let index = 1; index < 10; index++) {
-            await ds.set(`${data}0${index}`, {
-              tongTien: 0,
-              tienBHYT: 0,
-              tienBHXH: 0,
-              soBienLai: `${data}0${index}`,
-              ngayLap: null,
-            });
-          }
-          for (let index = 10; index < 100; index++) {
-            await ds.set(`${data}${index}`, {
-              tongTien: 0,
-              tienBHYT: 0,
-              tienBHXH: 0,
-              soBienLai: `${data}${index}`,
-              ngayLap: null,
-            });
-          }
-          await ds.set(`${parseInt(data + 99) + 1}`, {
-            tongTien: 0,
-            tienBHYT: 0,
-            tienBHXH: 0,
-            soBienLai: `${parseInt(data + 99) + 1}`,
-            ngayLap: null,
-          });
-          const xuatc17 = await this.filteredBhyts.filter((t) =>
-            t.soBienLai.startsWith(data)
-          );
-          if (!xuatc17.length) {
-            Notify.create({
-              type: "negative",
-              message: "Không tìm thấy quyển biên lai!",
-            });
-            return null;
-          }
-          for (let index = 0; index < this.filteredBhyts.length; index++) {
-            const t = this.filteredBhyts[index];
-            if (ds.has(t.soBienLai)) {
-              const g = ds.get(t.soBienLai);
-              ds.set(t.soBienLai, {
-                ...g,
-                ngayLap: t.ngayLap,
-                tienBHYT:
-                  t.maThuTuc === 1
-                    ? parseInt(t.tongTien) + g.tienBHYT
-                    : g.tienBHYT,
-                tienBHXH:
-                  t.maThuTuc === 0
-                    ? parseInt(t.tongTien) + g.tienBHXH
-                    : g.tienBHXH,
-                tongTien: parseInt(t.tongTien) + g.tongTien,
+          this.$q.loading.show();
+          try {
+            if (!data) return;
+            const ds = new Map();
+            for (let index = 1; index < 10; index++) {
+              await ds.set(`${data}0${index}`, {
+                tongTien: 0,
+                tienBHYT: 0,
+                tienBHXH: 0,
+                soBienLai: `${data}0${index}`,
+                ngayLap: null,
               });
             }
-          }
-          await this.sleep(1000);
-          const res = await fetch(
-            `https://app.hotham.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
-              .filter((t) => t.maThuTuc == 1)
-              .map((t) => t.tongTien)
-              .reduce(
-                (previousValue, currentValue) => previousValue + currentValue,
-                0
-              )}&tienBHXH=${xuatc17
-              .filter((t) => t.maThuTuc == 0)
-              .map((t) => t.tongTien)
-              .reduce(
-                (previousValue, currentValue) => previousValue + currentValue,
-                0
-              )}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              body: JSON.stringify([...ds.values()]),
+            for (let index = 10; index < 100; index++) {
+              await ds.set(`${data}${index}`, {
+                tongTien: 0,
+                tienBHYT: 0,
+                tienBHXH: 0,
+                soBienLai: `${data}${index}`,
+                ngayLap: null,
+              });
             }
-          );
+            await ds.set(`${parseInt(data + 99) + 1}`, {
+              tongTien: 0,
+              tienBHYT: 0,
+              tienBHXH: 0,
+              soBienLai: `${parseInt(data + 99) + 1}`,
+              ngayLap: null,
+            });
+            const xuatc17 = await this.filteredBhyts.filter((t) =>
+              t.soBienLai.startsWith(data)
+            );
+            if (!xuatc17.length) {
+              Notify.create({
+                type: "negative",
+                message: "Không tìm thấy quyển biên lai!",
+              });
+              return null;
+            }
+            for (let index = 0; index < this.filteredBhyts.length; index++) {
+              const t = this.filteredBhyts[index];
+              if (ds.has(t.soBienLai)) {
+                const g = ds.get(t.soBienLai);
+                ds.set(t.soBienLai, {
+                  ...g,
+                  ngayLap: t.ngayLap,
+                  tienBHYT:
+                    t.maThuTuc === 1
+                      ? parseInt(t.tongTien) + g.tienBHYT
+                      : g.tienBHYT,
+                  tienBHXH:
+                    t.maThuTuc === 0
+                      ? parseInt(t.tongTien) + g.tienBHXH
+                      : g.tienBHXH,
+                  tongTien: parseInt(t.tongTien) + g.tongTien,
+                });
+              }
+            }
+            await this.sleep(1000);
+            const res = await fetch(
+              `https://app.hotham.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
+                .filter((t) => t.maThuTuc == 1)
+                .map((t) => t.tongTien)
+                .reduce(
+                  (previousValue, currentValue) => previousValue + currentValue,
+                  0
+                )}&tienBHXH=${xuatc17
+                .filter((t) => t.maThuTuc == 0)
+                .map((t) => t.tongTien)
+                .reduce(
+                  (previousValue, currentValue) => previousValue + currentValue,
+                  0
+                )}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: JSON.stringify([...ds.values()]),
+              }
+            );
 
-          const blob = await res.blob();
-          if (blob.errors) {
-            console.error(blob.errors);
-            throw new Error("Failed to fetch API");
+            const blob = await res.blob();
+            if (blob.errors) {
+              console.error(blob.errors);
+              throw new Error("Failed to fetch API");
+            }
+
+            var link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `${new Date()
+              .toISOString()
+              .slice(0, 10)}-tham-tu-lap-c17.pdf`;
+            link.click();
+          } finally {
+            this.$q.loading.hide();
           }
-
-          var link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.download = `${new Date()
-            .toISOString()
-            .slice(0, 10)}-tham-tu-lap-c17.pdf`;
-          link.click();
         });
     },
 
@@ -801,40 +828,54 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          // if (data) this.searchText = data;
-          this.getBhyts({
-            completed: "0",
-            disabled: "0",
-            maXa: this.userDetails.maXa,
-            nam: data,
-          });
+          this.$q.loading.show();
+          try {
+            this.getBhyts({
+              completed: "0",
+              disabled: "0",
+              maXa: this.userDetails.maXa,
+              nam: data,
+            });
+          } finally {
+            this.$q.loading.hide();
+          }
         });
     },
     loadBhytByUserNameTaiTuc() {
-      this.getBhyts({
-        userName: this.searchText,
-        completed: "0",
-        disabled: "0",
-      });
+      this.$q.loading.show();
+      try {
+        this.getBhyts({
+          userName: this.searchText,
+          completed: "0",
+          disabled: "0",
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     loadBhytByUserName(user) {
-      if (!this.searchText) {
-        // this.searchText = this.userDetails.maNhanVienThu;
+      this.$q.loading.show();
+      try {
+        if (!this.searchText) {
+          // this.searchText = this.userDetails.maNhanVienThu;
+        }
+        if (user === 1)
+          this.getBhyts({
+            userName: this.userDetails.maNhanVienThu,
+            isBHYT: 1,
+          });
+        else if (user === 0)
+          this.getBhyts({
+            userName: this.userDetails.maNhanVienThu,
+            isBHXHTN: 1,
+          });
+        else
+          this.getBhyts({
+            userName: this.searchText || this.userDetails.id,
+          });
+      } finally {
+        this.$q.loading.hide();
       }
-      if (user === 1)
-        this.getBhyts({
-          userName: this.userDetails.maNhanVienThu,
-          isBHYT: 1,
-        });
-      else if (user === 0)
-        this.getBhyts({
-          userName: this.userDetails.maNhanVienThu,
-          isBHXHTN: 1,
-        });
-      else
-        this.getBhyts({
-          userName: this.searchText || this.userDetails.id,
-        });
     },
     loadBhytByName() {
       this.$q
@@ -850,11 +891,16 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          this.searchText = data;
-          this.getBhyts({
-            name: data,
-            maXa: data.length < 9 ? this.userDetails.maXa : null,
-          });
+          this.$q.loading.show();
+          try {
+            this.searchText = data;
+            this.getBhyts({
+              name: data,
+              maXa: data.length < 9 ? this.userDetails.maXa : null,
+            });
+          } finally {
+            this.$q.loading.hide();
+          }
         });
     },
     loadBhytThangCTV() {
@@ -871,12 +917,16 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          // this.searchText = data || ;
-          this.getBhyts({
-            thangBienLai: data.toString(),
-            khacUserName: this.userDetails.id,
-            maXa: this.userDetails.maXa,
-          });
+          this.$q.loading.show();
+          try {
+            this.getBhyts({
+              thangBienLai: data.toString(),
+              khacUserName: this.userDetails.id,
+              maXa: this.userDetails.maXa,
+            });
+          } finally {
+            this.$q.loading.hide();
+          }
         });
     },
     loadBhytThang() {
@@ -893,11 +943,15 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          // this.searchText = data || ;
-          this.getBhyts({
-            thangBienLai: data.toString(),
-            userName: this.userDetails.id,
-          });
+          this.$q.loading.show();
+          try {
+            this.getBhyts({
+              thangBienLai: data.toString(),
+              userName: this.userDetails.id,
+            });
+          } finally {
+            this.$q.loading.hide();
+          }
         });
     },
     loadBHXHThang() {
@@ -914,134 +968,178 @@ export default {
           persistent: true,
         })
         .onOk((data) => {
-          // this.searchText = data || new Date().getMonth() + 1;
-          this.getBhyts({
-            thangBienLaiTN: data.toString(),
-            userName: this.userDetails.id,
-          });
+          this.$q.loading.show();
+          try {
+            this.getBhyts({
+              thangBienLaiTN: data.toString(),
+              userName: this.userDetails.id,
+            });
+          } finally {
+            this.$q.loading.hide();
+          }
         });
     },
     loadBhyts({ thang = 1, taiTuc = 1 }) {
-      this.searchText = "";
-      this.getBhyts({
-        thang,
-        completed: "0",
-        disabled: "0",
-        taiTuc,
-        maXa: this.userDetails.maXa,
-        khacUserName: this.userDetails.id,
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          thang,
+          completed: "0",
+          disabled: "0",
+          taiTuc,
+          maXa: this.userDetails.maXa,
+          khacUserName: this.userDetails.id,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     loadTaiTucBHYTBT() {
-      this.searchText = "";
-      this.getBhyts({
-        userName: this.userDetails.id,
-        taiTucBHYTBT: "1",
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          userName: this.userDetails.id,
+          taiTucBHYTBT: "1",
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     loadBHXHTNs(data) {
-      this.searchText = "";
-      this.getBhyts({
-        ...data,
-        name: this.searchText,
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          ...data,
+          name: this.searchText,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     loadBhytsHetHanByUser() {
-      this.searchText = "";
-      this.getBhyts({
-        userName: this.userDetails.id,
-        completed: "0",
-        disabled: "0",
-        hetHan: "1",
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          userName: this.userDetails.id,
+          completed: "0",
+          disabled: "0",
+          hetHan: "1",
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     loadBhytsHetHan() {
-      this.searchText = "";
-      this.getBhyts({
-        maXa: this.userDetails.maXa,
-        completed: "0",
-        disabled: "0",
-        hetHan: "1",
-        khacUserName: this.userDetails.id,
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          maXa: this.userDetails.maXa,
+          completed: "0",
+          disabled: "0",
+          hetHan: "1",
+          khacUserName: this.userDetails.id,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     loadBhytsDisable() {
-      this.searchText = "";
-      this.getBhyts({
-        maXa: this.userDetails.maXa,
-        disabled: 1,
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          maXa: this.userDetails.maXa,
+          disabled: 1,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     loadBhytsCompleted() {
-      this.searchText = "";
-      this.getBhyts({
-        maXa: this.userDetails.maXa,
-        completed: 1,
-        disabled: "0",
-      });
+      this.$q.loading.show();
+      try {
+        this.searchText = "";
+        this.getBhyts({
+          maXa: this.userDetails.maXa,
+          completed: 1,
+          disabled: "0",
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     async timKiem(searchText) {
-      const thongSoTheBHYTs = searchText.split("|");
-      if (thongSoTheBHYTs.length > 1) {
-        searchText = thongSoTheBHYTs[0];
-        this.setSearchText(thongSoTheBHYTs[0]); // Gọi mutation SET_SEARCH_TEXT để cập nhật state
-      }
-      const danhSachTimKiem = searchText.split(",");
+      this.$q.loading.show();
+      try {
+        const thongSoTheBHYTs = searchText.split("|");
+        if (thongSoTheBHYTs.length > 1) {
+          searchText = thongSoTheBHYTs[0];
+          this.setSearchText(thongSoTheBHYTs[0]); // Gọi mutation SET_SEARCH_TEXT để cập nhật state
+        }
+        const danhSachTimKiem = searchText.split(",");
 
-      const regex = /[0-9]/g;
+        const regex = /[0-9]/g;
 
-      for (let index = 0; index < danhSachTimKiem.length; index++) {
-        const name = danhSachTimKiem[index]
-          .split(" ")
-          .map((value) => value.charAt(0).toUpperCase() + value.slice(1))
-          .join(" ");
-        const maSo = name.match(regex);
-        const loaiTimKiem = xacDinhLoaiChuoi(maSo?.join(""));
+        for (let index = 0; index < danhSachTimKiem.length; index++) {
+          const name = danhSachTimKiem[index]
+            .split(" ")
+            .map((value) => value.charAt(0).toUpperCase() + value.slice(1))
+            .join(" ");
+          const maSo = name.match(regex);
+          const loaiTimKiem = xacDinhLoaiChuoi(maSo?.join(""));
 
-        if (loaiTimKiem === "Dãy 10 chữ số cuối") {
-          try {
-            const maSoBHXHTimKiem = maSo.join("").slice(-10);
-            this.traCuuBHXH(maSoBHXHTimKiem);
-            this.searchText = maSoBHXHTimKiem;
-          } catch (error) {
-            console.log(error);
-          }
-        } else {
-          try {
-            await this.traCuuMaSoBHXH({
-              hoTen: name,
-              maXa: this.userDetails.maXa,
-              userName: this.userDetails.id,
-              maHuyen: this.userDetails.maHuyen,
-              maTinh: this.userDetails.maTinh,
-            });
-          } catch (error) {
-            Notify.create({
-              type: "negative",
-              message: "Không thực hiện được!" + error,
-            });
+          if (loaiTimKiem === "Dãy 10 chữ số cuối") {
+            try {
+              const maSoBHXHTimKiem = maSo.join("").slice(-10);
+              this.traCuuBHXH(maSoBHXHTimKiem);
+              this.searchText = maSoBHXHTimKiem;
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            try {
+              await this.traCuuMaSoBHXH({
+                hoTen: name,
+                maXa: this.userDetails.maXa,
+                userName: this.userDetails.id,
+                maHuyen: this.userDetails.maHuyen,
+                maTinh: this.userDetails.maTinh,
+              });
+            } catch (error) {
+              Notify.create({
+                type: "negative",
+                message: "Không thực hiện được!" + error,
+              });
+            }
           }
         }
-      }
-      if (danhSachTimKiem.length > 1) {
-        this.searchText = "";
-      }
-      this.$refs.inputSearch.select();
+        if (danhSachTimKiem.length > 1) {
+          this.searchText = "";
+        }
+        this.$refs.inputSearch.select();
 
-      const query = { ...this.$route.query, q: searchText };
-      this.$router.replace({ query });
-      if (this.filteredBhyts.length === 0)
-        Notify.create({
-          type: "negative",
-          position: "top",
-          message: "Không tìm thấy!",
-        });
-      else
-        Notify.create({
-          type: "positive",
-          position: "top",
-          message: "Tìm thấy: " + this.filteredBhyts.length + " thẻ!",
-        });
+        const query = { ...this.$route.query, q: searchText };
+        this.$router.replace({ query });
+        if (this.filteredBhyts.length === 0)
+          Notify.create({
+            type: "negative",
+            position: "top",
+            message: "Không tìm thấy!",
+          });
+        else
+          Notify.create({
+            type: "positive",
+            position: "top",
+            message: "Tìm thấy: " + this.filteredBhyts.length + " thẻ!",
+          });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     async timMoi(searchText) {
       const ds = searchText.split(",");
@@ -1052,9 +1150,14 @@ export default {
     },
     async khoiTao() {
       if (this.$route.query.q) {
-        await this.sleep();
-        this.searchText = this.$route.query.q;
-        await this.timKiem(this.searchText);
+        this.$q.loading.show();
+        try {
+          await this.sleep();
+          this.searchText = this.$route.query.q;
+          await this.timKiem(this.searchText);
+        } finally {
+          this.$q.loading.hide();
+        }
       }
     },
     async printDanhSachTraThe() {
@@ -1182,7 +1285,7 @@ export default {
   mounted() {
     this.khoiTao();
   },
-};
+});
 </script>
 
 <style>
