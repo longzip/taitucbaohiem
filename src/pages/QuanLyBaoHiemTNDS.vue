@@ -175,7 +175,7 @@ const UPDATE_TNDS = gql`
 // Apollo Composables
 const { result, loading, error, refetch } = useQuery(GET_ALL_TNDS);
 
-const { mutate: createTNDS, onDone: onCreateDone, onError: onSaveError } = useMutation(CREATE_TNDS, {
+const { mutate: createTNDS, onDone: onCreateDone, onError: onCreateError } = useMutation(CREATE_TNDS, {
   update: (cache, { data: { createTNDS: result } }) => {
     const data = cache.readQuery({ query: GET_ALL_TNDS });
     if (data && result) {
@@ -189,7 +189,7 @@ const { mutate: createTNDS, onDone: onCreateDone, onError: onSaveError } = useMu
   },
 });
 
-const { mutate: updateTNDS, onDone: onUpdateDone, onError: onSaveError } = useMutation(UPDATE_TNDS, {
+const { mutate: updateTNDS, onDone: onUpdateDone, onError: onUpdateError } = useMutation(UPDATE_TNDS, {
   update: (cache, { data: { updateTNDS: result } }) => {
     const data = cache.readQuery({ query: GET_ALL_TNDS });
     if (data && result) {
@@ -211,11 +211,14 @@ watch(error, (newError) => {
   }
 });
 
-onSaveError((error) => {
+const onSaveError = (error) => {
   console.error(error);
   $q.notify({ type: 'negative', message: 'Thao tác thất bại. Vui lòng kiểm tra lại dữ liệu và các trường bắt buộc.' });
   isSaving.value = false;
-});
+};
+
+onCreateError(onSaveError);
+onUpdateError(onSaveError);
 
 onCreateDone(() => {
   $q.notify({ type: 'positive', message: 'Thêm mới thành công!' });
@@ -258,22 +261,24 @@ const save = () => {
   }
 
   isSaving.value = true;
-  const input = { ...form.value };
-  delete input.__typename;
-  delete input.soNgayConLai;
+  const inputData = { ...form.value };
+  delete inputData.__typename;
+  delete inputData.soNgayConLai;
 
   const numericFields = ['phiBaoHiem', 'namSanXuat', 'soCho', 'trongTai'];
   for (const field of numericFields) {
-    if (input[field] != null) {
-      const num = parseFloat(input[field]);
-      input[field] = isNaN(num) ? null : num;
+    if (inputData[field] != null) {
+      const num = parseFloat(inputData[field]);
+      inputData[field] = isNaN(num) ? null : num;
     }
   }
 
+  const variables = { input: inputData };
+
   if (isEditMode.value) {
-    updateTNDS({ input });
+    updateTNDS(variables);
   } else {
-    createTNDS({ input });
+    createTNDS(variables);
   }
 };
 
