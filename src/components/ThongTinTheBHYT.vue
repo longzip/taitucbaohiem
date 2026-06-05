@@ -130,21 +130,25 @@
           <q-menu>
             <q-list style="min-width: 300px">
               <q-item clickable v-close-popup>
-                <q-item-section
-                  @click="
-                    window.open(
-                      `https://bhxh.pvi.com.vn/#/bhxh/bhxh-renew?ms=${
-                        bhyt.maSoBhxh || bhyt.maSoBHXH
-                      }&ten=${bhyt.hoTen || bhyt.hoVaTen}&ns=${new Date(
-                        bhyt.ngaySinhDt
-                      ).toLocaleDateString('vi-VN')}`,
-                      '_blank'
-                    )
-                  "
-                  >Gia hạn thẻ BHYT với PVI</q-item-section
+                <q-item-section @click="openPviWindow(bhyt, 'bhyt-renew')"
+                  >Gia hạn nối tiếp thẻ BHYT với PVI</q-item-section
                 >
               </q-item>
-
+              <q-item clickable v-close-popup>
+                <q-item-section @click="openPviWindow(bhyt, 'bhxh-renew')"
+                  >Gia hạn nối tiếp BHXH với PVI</q-item-section
+                >
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section @click="openPviWindow(bhyt, 'bhyt-new')"
+                  >Đăng ký mới BHYT với PVI</q-item-section
+                >
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section @click="openPviWindow(bhyt, 'bhxh-new')"
+                  >Đăng ký mới BHXH với PVI</q-item-section
+                >
+              </q-item>
               <q-item clickable v-close-popup>
                 <q-item-section
                   @click="traCuuBHXHCu(bhyt.maSoBhxh || bhyt.maSoBHXH)"
@@ -336,6 +340,33 @@ export default {
       "traCuuBHXH",
       "traCuuBHXHCu",
     ]),
+    openPviWindow(bhyt, type) {
+      const maSo = bhyt.maSoBhxh || bhyt.maSoBHXH;
+      const hoTen = bhyt.hoTen || bhyt.hoVaTen;
+      const date = new Date(bhyt.ngaySinhDt);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+      const ngaySinh = `${day}/${month}/${year}`;
+      let url = `https://bhxh.pvi.com.vn/#/`;
+
+      switch (type) {
+        case "bhyt-renew":
+          url += `bhyt/bhyt-renew?ms=${maSo}&ten=${hoTen}&ns=${ngaySinh}`;
+          break;
+        case "bhxh-renew":
+          url += `bhxh/bhxh-renew?ms=${maSo}&ten=${hoTen}&ns=${ngaySinh}`;
+          break;
+        case "bhyt-new":
+          url += `bhyt/bhyt-new?ms=${maSo}&ten=${hoTen}&ns=${ngaySinh}`;
+          break;
+        case "bhxh-new":
+          url += `bhxh/bhxh-new?ms=${maSo}&ten=${hoTen}&ns=${ngaySinh}`;
+          break;
+      }
+
+      window.open(url, "_blank");
+    },
     formatDate(date) {
       return moment(date).fromNow();
     },

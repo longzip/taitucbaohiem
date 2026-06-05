@@ -78,10 +78,28 @@ import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
   {
-    title: "Tra cứu",
+    title: "Tra cứu BHYT",
     caption: "Theo Tên, Mã thẻ, số đt",
     icon: "search",
     link: "/",
+  },
+  {
+    title: "Người tham gia BHXH tự nguyện",
+    caption: "Tra cứu theo Mã số BHXH",
+    icon: "find_in_page",
+    link: "/tra-cuu-ho-so",
+  },
+  {
+    title: "Tái tục MIC",
+    caption: "Quản lý tái tục MIC",
+    icon: "autorenew",
+    link: "/mic",
+  },
+  {
+    title: "Bảo hiểm TNDS",
+    caption: "Quản lý bảo hiểm TNDS",
+    icon: "directions_car",
+    link: "/tnds",
   },
 ];
 

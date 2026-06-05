@@ -9,18 +9,27 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
+        path: "/tra-cuu-ho-so",
+        component: () => import("src/pages/PageTraCuuHoSo.vue"),
+        meta: { requireAuth: true },
+      },
+      {
         path: "/ho-gia-dinh/:id",
         component: () => import("pages/PageHoGd.vue"),
         meta: { requireAuth: true },
       },
+      {
+        path: "/mic",
+        component: () => import("src/pages/QuanLyTaiTucMic.vue"),
+        meta: { requireAuth: true },
+      },
+      {
+        path: "/tnds",
+        component: () => import("src/pages/QuanLyBaoHiemTNDS.vue"),
+        meta: { requireAuth: true },
+      },
     ],
   },
-  // {
-  //   path: "/dang-nhap-ssm",
-  //   name: "auth",
-  //   component: () => import("pages/PageAuth2.vue"),
-  //   meta: { requireAuth: true },
-  // },
   {
     path: "/dang-ky-142010",
     name: "dka",
