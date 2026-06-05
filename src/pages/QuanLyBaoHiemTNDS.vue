@@ -174,8 +174,34 @@ const UPDATE_TNDS = gql`
 
 // Apollo Composables
 const { result, loading, error, refetch } = useQuery(GET_ALL_TNDS);
-const { mutate: createTNDS, onDone: onCreateDone, onError: onSaveError } = useMutation(CREATE_TNDS);
-const { mutate: updateTNDS, onDone: onUpdateDone } = useMutation(UPDATE_TNDS);
+
+const { mutate: createTNDS, onDone: onCreateDone, onError: onSaveError } = useMutation(CREATE_TNDS, {
+  update: (cache, { data: { createTNDS: result } }) => {
+    const data = cache.readQuery({ query: GET_ALL_TNDS });
+    if (data && result) {
+      cache.writeQuery({
+        query: GET_ALL_TNDS,
+        data: {
+          tnds: [...data.tnds, result.tnds],
+        },
+      });
+    }
+  },
+});
+
+const { mutate: updateTNDS, onDone: onUpdateDone, onError: onSaveError } = useMutation(UPDATE_TNDS, {
+  update: (cache, { data: { updateTNDS: result } }) => {
+    const data = cache.readQuery({ query: GET_ALL_TNDS });
+    if (data && result) {
+      cache.writeQuery({
+        query: GET_ALL_TNDS,
+        data: {
+          tnds: data.tnds.map(t => (t.id === result.tnds.id ? result.tnds : t)),
+        },
+      });
+    }
+  },
+});
 
 const list = computed(() => result.value?.tnds ?? []);
 
@@ -195,14 +221,12 @@ onCreateDone(() => {
   $q.notify({ type: 'positive', message: 'Thêm mới thành công!' });
   dialogOpen.value = false;
   isSaving.value = false;
-  refetch();
 });
 
 onUpdateDone(() => {
   $q.notify({ type: 'positive', message: 'Cập nhật thành công!' });
   dialogOpen.value = false;
   isSaving.value = false;
-  refetch();
 });
 
 
