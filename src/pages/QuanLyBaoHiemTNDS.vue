@@ -89,17 +89,17 @@
 
         <q-card-section class="q-pa-md q-gutter-y-sm">
           <div class="row q-col-gutter-md">
-            <div class="col-12 col-sm-6"><q-input v-model="form.chuXeHoTen" dense outlined label="Tên chủ xe"/></div>
+            <div class="col-12 col-sm-6"><q-input v-model="form.chuXeHoTen" dense outlined label="Tên chủ xe (*)" :rules="[val => !!val || 'Vui lòng nhập tên']"/></div>
             <div class="col-12 col-sm-6"><q-input v-model="form.soDienThoai" dense outlined label="Số điện thoại"/></div>
             <div class="col-12"><q-input v-model="form.diaChi" dense outlined label="Địa chỉ"/></div>
-            <div class="col-12 col-sm-4"><q-input v-model="form.bienSoXe" dense outlined label="Biển số xe"/></div>
+            <div class="col-12 col-sm-4"><q-input v-model="form.bienSoXe" dense outlined label="Biển số xe (*)" :rules="[val => !!val || 'Vui lòng nhập biển số']"/></div>
             <div class="col-12 col-sm-4"><q-select v-model="form.loaiXe" :options="['Ô tô', 'Xe máy']" dense outlined label="Loại xe"/></div>
             <div class="col-12 col-sm-4"><q-input v-model="form.hangXe" dense outlined label="Hãng xe"/></div>
             <div class="col-12 col-sm-6"><q-input v-model="form.soKhung" dense outlined label="Số khung"/></div>
             <div class="col-12 col-sm-6"><q-input v-model="form.soMay" dense outlined label="Số máy"/></div>
             <div class="col-12 col-sm-6"><q-input v-model="form.ngayBatDau" type="date" dense outlined stack-label label="Ngày bắt đầu"/></div>
-            <div class="col-12 col-sm-6"><q-input v-model="form.ngayHetHan" type="date" dense outlined stack-label label="Ngày hết hạn"/></div>
-            <div class="col-12 col-sm-6"><q-input v-model.number="form.phiBaoHiem" type="number" dense outlined label="Phí bảo hiểm"/></div>
+            <div class="col-12 col-sm-6"><q-input v-model="form.ngayHetHan" type="date" dense outlined stack-label label="Ngày hết hạn (*)" :rules="[val => !!val || 'Vui lòng chọn ngày']"/></div>
+            <div class="col-12 col-sm-6"><q-input v-model.number="form.phiBaoHiem" type="number" dense outlined label="Phí bảo hiểm (*)" :rules="[val => val > 0 || 'Phí phải lớn hơn 0']"/></div>
             <div class="col-12 col-sm-6"><q-select v-model="form.trangThai" :options="['Hiệu lực', 'Hết hạn', 'Cần tái tục']" dense outlined label="Trạng thái"/></div>
             <div class="col-12"><q-input v-model="form.ghiChu" type="textarea" dense outlined label="Ghi chú"/></div>
           </div>
@@ -155,7 +155,7 @@ const GET_ALL_TNDS = gql`
 `;
 
 const CREATE_TNDS = gql`
-  mutation CreateTNDS($input: createTNDSInput!) {
+  mutation CreateTNDS($input: CreateTNDSInput!) {
     createTNDS(input: $input) {
       tnds { ...TndsDetails }
     }
@@ -187,7 +187,7 @@ watch(error, (newError) => {
 
 onSaveError((error) => {
   console.error(error);
-  $q.notify({ type: 'negative', message: 'Thao tác thất bại. Vui lòng kiểm tra lại dữ liệu.' });
+  $q.notify({ type: 'negative', message: 'Thao tác thất bại. Vui lòng kiểm tra lại dữ liệu và các trường bắt buộc.' });
   isSaving.value = false;
 });
 
@@ -227,14 +227,23 @@ const openEditDialog = (item) => {
 };
 
 const save = () => {
+  const { chuXeHoTen, bienSoXe, ngayHetHan, phiBaoHiem } = form.value;
+  if (!chuXeHoTen || !bienSoXe || !ngayHetHan || !phiBaoHiem || parseFloat(phiBaoHiem) <= 0) {
+    $q.notify({ type: 'negative', message: 'Vui lòng điền đầy đủ các trường bắt buộc (*).' });
+    return;
+  }
+
   isSaving.value = true;
   const input = { ...form.value };
   delete input.__typename;
+  delete input.soNgayConLai;
 
-  // Sanitize numeric fields
   const numericFields = ['phiBaoHiem', 'namSanXuat', 'soCho', 'trongTai'];
   for (const field of numericFields) {
-    if (input[field]) input[field] = parseFloat(input[field]);
+    if (input[field] != null) {
+      const num = parseFloat(input[field]);
+      input[field] = isNaN(num) ? null : num;
+    }
   }
 
   if (isEditMode.value) {
