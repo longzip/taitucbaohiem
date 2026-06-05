@@ -1,15 +1,14 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client/core';
 
-const LOGIN_USER = gql`
-mutation($input: LoginInput!) {
-  login( input: $input ) {
-    authToken
-    user {
-      id
-      name
+export const LOGIN_USER = gql`
+  mutation LoginUser($username: String!, $password: String!) {
+    login(input: { username: $username, password: $password }) {
+      authToken
+      refreshToken
+      user {
+        id
+        name
+      }
     }
   }
-}
 `;
-
-export default LOGIN_USER;

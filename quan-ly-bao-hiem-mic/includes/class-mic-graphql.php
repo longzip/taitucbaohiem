@@ -66,6 +66,9 @@ class QLBH_MIC_GraphQL {
                         'type' => 'LichSuThuTienType',
                         'description' => 'Lấy thông tin lần thu tiền gần nhất đang ở trạng thái Chờ duyệt',
                         'resolve' => function($contract) use ($lich_su_select_fields_clause) {
+                            if (!is_user_logged_in()) {
+                                throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                            }
                             global $wpdb;
                             $id_hop_dong = $contract->id_hop_dong; 
                             
@@ -88,6 +91,9 @@ class QLBH_MIC_GraphQL {
                         'type' => array( 'list_of' => 'LichSuThuTienType' ),
                         'description' => 'Lấy tất cả lịch sử thu tiền của hợp đồng',
                         'resolve' => function($contract) use ($lich_su_select_fields_clause) {
+                            if (!is_user_logged_in()) {
+                                throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                            }
                             global $wpdb;
                             $id_hop_dong = $contract->id_hop_dong;
 
@@ -115,6 +121,9 @@ class QLBH_MIC_GraphQL {
                 ),
                 'description' => 'Lấy danh sách tất cả các hợp đồng MIC, có thể tìm kiếm',
                 'resolve' => function($root, $args) {
+                    if (!is_user_logged_in()) {
+                        throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                    }
                     global $wpdb;
                     $table_hopdong = $wpdb->prefix . 'qlbh_hopdong_mic';
                     $search_keyword = !empty($args['searchKeyword']) ? $args['searchKeyword'] : null;
@@ -165,6 +174,9 @@ class QLBH_MIC_GraphQL {
                     'message' => ['type' => 'String'],
                 ],
                 'mutateAndGetPayload' => function($input) {
+                    if (!is_user_logged_in()) {
+                        throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                    }
                     global $wpdb;
                     $id_hop_dong = $input['idHopDong'];
                     $id_log = $input['idLog'] ?? null;
@@ -268,6 +280,9 @@ class QLBH_MIC_GraphQL {
                     'message' => ['type' => 'String'],
                 ],
                 'mutateAndGetPayload' => function($input) {
+                    if (!is_user_logged_in()) {
+                        throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                    }
                     global $wpdb;
                     $id_log = $input['idLog'];
                     $table_lichsu = $wpdb->prefix . 'qlbh_mic_lich_su_thu_tien';
@@ -316,6 +331,9 @@ class QLBH_MIC_GraphQL {
                     'message' => ['type' => 'String'],
                 ],
                 'mutateAndGetPayload' => function($input) {
+                    if (!is_user_logged_in()) {
+                        throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                    }
                     global $wpdb;
                     $ma_so_bhxh = $input['maSoBhxh'];
 
@@ -409,6 +427,9 @@ class QLBH_MIC_GraphQL {
                     'message' => ['type' => 'String'],
                 ],
                 'mutateAndGetPayload' => function($input) {
+                    if (!is_user_logged_in()) {
+                        throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                    }
                     global $wpdb;
                     $table_hopdong = $wpdb->prefix . 'qlbh_hopdong_mic';
                     $cccd = trim($input['ndbhCccd']);

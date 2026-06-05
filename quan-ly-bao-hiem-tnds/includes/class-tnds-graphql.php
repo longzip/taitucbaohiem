@@ -89,6 +89,9 @@ class QLBH_TNDS_GraphQL {
                 'trangThai' => ['type' => 'String'],
             ],
             'resolve' => function($root, $args) {
+                if (!is_user_logged_in()) {
+                    throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                }
                 global $wpdb;
                 $table_name = $wpdb->prefix . 'qlbh_tnds';
                 $sql = "SELECT * FROM $table_name ORDER BY ngayHetHan ASC";
@@ -107,6 +110,9 @@ class QLBH_TNDS_GraphQL {
                 'tnds' => ['type' => 'TNDS'],
             ],
             'mutateAndGetPayload' => function($input) {
+                if (!is_user_logged_in()) {
+                    throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                }
                 global $wpdb;
                 $table_name = $wpdb->prefix . 'qlbh_tnds';
                 
@@ -135,6 +141,9 @@ class QLBH_TNDS_GraphQL {
                 'tnds' => ['type' => 'TNDS'],
             ],
             'mutateAndGetPayload' => function($input) {
+                if (!is_user_logged_in()) {
+                    throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                }
                 global $wpdb;
                 $table_name = $wpdb->prefix . 'qlbh_tnds';
                 $id = $input['id'];

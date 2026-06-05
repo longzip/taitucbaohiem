@@ -17,8 +17,7 @@
           round
           color="primary"
           icon="logout"
-          @click="logoutUser"
-          :to="'/dang-nhap-ssm'"
+          @click="logout"
         />
       </q-toolbar>
     </q-header>
@@ -73,7 +72,8 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import { mapActions } from "vuex";
+import { useRouter } from 'vue-router';
+import { useApolloClient } from '@vue/apollo-composable';
 import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
@@ -112,6 +112,21 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false);
+    const router = useRouter();
+    const { client } = useApolloClient();
+
+    const logout = () => {
+      // Remove token from local storage
+      localStorage.removeItem('authToken');
+      
+      // Reset Apollo Client store
+      if (client) {
+        client.resetStore();
+      }
+      
+      // Redirect to login page
+      router.push({ name: 'auth' });
+    };
 
     return {
       essentialLinks: linksList,
@@ -119,10 +134,8 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      logout,
     };
-  },
-  methods: {
-    ...mapActions("auth", ["logoutUser"]),
   },
 });
 </script>

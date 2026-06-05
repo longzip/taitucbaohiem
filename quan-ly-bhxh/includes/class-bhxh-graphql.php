@@ -48,6 +48,9 @@ class QLBHXH_GraphQL {
                 'lichSuThanhToan' => [
                     'type' => ['list_of' => 'LichSuThanhToan'],
                     'resolve' => function ($hoso) {
+                        if (!is_user_logged_in()) {
+                            throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                        }
                         global $wpdb;
                         $table_name = $wpdb->prefix . 'qlbhxh_lich_su_thanh_toan';
                         return $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE maSoBhxh = %s", $hoso->maSoBhxh));
@@ -63,6 +66,9 @@ class QLBHXH_GraphQL {
                 'maSoBhxh' => ['type' => 'String'],
             ],
             'resolve' => function ($root, $args) {
+                if (!is_user_logged_in()) {
+                    throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                }
                 global $wpdb;
                 $table_name = $wpdb->prefix . 'qlbhxh_hoso';
                 $sql = "SELECT * FROM $table_name";
@@ -111,6 +117,9 @@ class QLBHXH_GraphQL {
                 'hoSo' => ['type' => 'HoSoBHXH'],
             ],
             'mutateAndGetPayload' => function ($input) {
+                if (!is_user_logged_in()) {
+                    throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
+                }
                 global $wpdb;
                 $hoso_table = $wpdb->prefix . 'qlbhxh_hoso';
                 $lich_su_table = $wpdb->prefix . 'qlbhxh_lich_su_thanh_toan';

@@ -31,10 +31,11 @@ const routes = [
     ],
   },
   {
-    path: "/dang-ky-142010",
-    name: "dka",
-    component: () => import("pages/PageAuth.vue"),
-    meta: { requireAuth: false },
+    path: '/auth',
+    component: () => import('layouts/AuthLayout.vue'),
+    children: [
+      { path: '', name: 'auth', component: () => import('pages/PageAuth.vue'), meta: { requireAuth: false } }
+    ]
   },
 
   // Always leave this as last one,

@@ -1,49 +1,90 @@
 <template>
-  <div class="login-page">
-    <div class="container">
-      <div class="row justify-center">
-        <div class="col-md-6">
-          <q-card class="q-pa-md">
-            <q-tabs
-              v-model="tab"
-              dense
-              class="text-grey"
-              active-color="primary"
-              indicator-color="primary"
-              align="justify"
-              narrow-indicator
-            >
-              <q-tab name="login" label="Đăng nhập" />
-              <q-tab name="register" label="Đăng ký" />
-            </q-tabs>
+  <q-page class="flex flex-center" padding>
+    <q-card flat bordered style="width: 100%; max-width: 400px;">
+      <q-card-section>
+        <div class="text-h6">{{ isLogin ? 'Login' : 'Register' }}</div>
+      </q-card-section>
 
-            <q-separator />
+      <q-card-section>
+        <q-form @submit.prevent="submitForm">
+          <q-input
+            v-model="formData.username"
+            label="Username"
+            outlined
+            required
+          />
+          <q-input
+            v-model="formData.password"
+            label="Password"
+            type="password"
+            outlined
+            required
+            class="q-mt-md"
+          />
 
-            <q-tab-panels v-model="tab" animated>
-              <q-tab-panel name="login">
-                <login-register :tab="tab" />
-              </q-tab-panel>
+          <q-btn
+            :label="isLogin ? 'Login' : 'Register'"
+            type="submit"
+            color="primary"
+            class="q-mt-md full-width"
+            :loading="loading"
+          />
+        </q-form>
+      </q-card-section>
 
-              <q-tab-panel name="register">
-                <login-register :tab="tab" />
-              </q-tab-panel>
-            </q-tab-panels>
-          </q-card>
-        </div>
-      </div>
-    </div>
-  </div>
+      <q-card-actions align="right">
+        <q-btn
+          flat
+          :label="isLogin ? 'Need to register?' : 'Already registered?'"
+          @click="isLogin = !isLogin"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-page>
 </template>
 
 <script>
+import { ref } from 'vue';
+import { useMutation } from '@vue/apollo-composable';
+import { useRouter } from 'vue-router';
+import { LOGIN_USER } from 'src/mutations/login-user';
+
 export default {
-  data() {
-    return {
-      tab: "login",
+  name: 'PageAuth',
+  setup() {
+    const isLogin = ref(true);
+    const router = useRouter();
+    const formData = ref({
+      username: '',
+      password: ''
+    });
+
+    const { mutate: login, loading, error } = useMutation(LOGIN_USER, () => ({
+      variables: {
+        username: formData.value.username,
+        password: formData.value.password
+      }
+    }));
+
+    const submitForm = async () => {
+      try {
+        const result = await login();
+        const { authToken, refreshToken } = result.data.login;
+        // Store the token (e.g., in localStorage) and redirect
+        localStorage.setItem('authToken', authToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        router.push('/');
+      } catch (e) {
+        console.error('Login failed:', e);
+      }
     };
-  },
-  components: {
-    "login-register": require("components/LoginRegister.vue").default,
-  },
+
+    return {
+      isLogin,
+      formData,
+      submitForm,
+      loading
+    };
+  }
 };
 </script>
