@@ -28,3 +28,59 @@ add_action('init', function() {
         new QLBH_GraphQL();
     }
 });
+
+/**
+ * =========================================================================
+ *  QUẢN LÝ VAI TRÒ NGƯỜI DÙNG KHI KÍCH HOẠT/VÔ HIỆU HÓA PLUGIN
+ * =========================================================================
+ */
+
+/**
+ * Hàm được gọi khi plugin được kích hoạt.
+ *
+ * Chịu trách nhiệm tạo ra các vai trò tùy chỉnh cần thiết cho plugin.
+ */
+function qlbh_on_activate_add_roles() {
+  // Lấy quyền hạn cơ bản của vai trò "Subscriber" để làm mẫu
+  // Họ chỉ có quyền 'read' - rất an toàn để bắt đầu.
+  $subscriber_caps = get_role('subscriber')->capabilities;
+
+  // Thêm vai trò "Đại lý thu"
+  // ID: dai_ly_thu
+  add_role(
+      'dai_ly_thu',
+      'Đại lý thu',
+      $subscriber_caps
+  );
+
+  // Thêm vai trò "Cộng tác viên"
+  // ID: cong_tac_vien
+  add_role(
+      'cong_tac_vien',
+      'Cộng tác viên (QLBH)',
+      $subscriber_caps
+  );
+}
+
+/**
+* Hàm được gọi khi plugin bị vô hiệu hóa.
+*
+* Chịu trách nhiệm xóa các vai trò đã tạo để dọn dẹp hệ thống.
+*/
+function qlbh_on_deactivate_remove_roles() {
+  // Xóa vai trò "Đại lý thu" nếu nó tồn tại
+  if ( get_role('dai_ly_thu') ) {
+      remove_role('dai_ly_thu');
+  }
+  // Xóa vai trò "Cộng tác viên" nếu nó tồn tại
+  if ( get_role('cong_tac_vien') ) {
+      remove_role('cong_tac_vien');
+  }
+}
+
+// Đăng ký các hàm trên với WordPress hooks
+// Chạy hàm 'qlbh_on_activate_add_roles' khi plugin được kích hoạt
+register_activation_hook( __FILE__, 'qlbh_on_activate_add_roles' );
+
+// Chạy hàm 'qlbh_on_deactivate_remove_roles' khi plugin bị vô hiệu hóa
+register_deactivation_hook( __FILE__, 'qlbh_on_deactivate_remove_roles' );

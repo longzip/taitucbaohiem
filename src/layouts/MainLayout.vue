@@ -84,6 +84,12 @@ const linksList = [
     link: "/",
   },
   {
+    title: "Tra cứu BHYT (GraphQL)",
+    caption: "Tìm kiếm BHYT bằng GraphQL",
+    icon: "bolt",
+    link: "/bhyt-gql",
+  },
+  {
     title: "Người tham gia BHXH tự nguyện",
     caption: "Tra cứu theo Mã số BHXH",
     icon: "find_in_page",

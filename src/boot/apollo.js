@@ -60,7 +60,7 @@ const errorLink = onError(
                 if (result.errors) {
                   throw new Error(result.errors[0].message);
                 }
-                const newAuthToken = result.data.refreshToken.authToken;
+                const newAuthToken = result.data.refreshJwtAuthToken.authToken;
                 localStorage.setItem("authToken", newAuthToken);
 
                 const oldHeaders = operation.getContext().headers;
@@ -79,7 +79,7 @@ const errorLink = onError(
               })
               .catch((error) => {
                 localStorage.removeItem("authToken");
-                //localStorage.removeItem('refreshToken');
+                localStorage.removeItem('refreshToken');
                 window.location.href = "/#/auth";
                 observer.error(error);
               });
