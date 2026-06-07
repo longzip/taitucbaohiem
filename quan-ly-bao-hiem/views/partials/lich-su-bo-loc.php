@@ -13,7 +13,7 @@
     <form method="get" action="" style="margin:0;">
         <input type="hidden" name="page" value="qlbh_lich_su">
         <select name="thang_loc"><?php for($m=1; $m<=12; $m++) { echo '<option value="'.$m.'" '.selected($m,$thang_loc,false).'>Tháng '.$m.'</option>'; } ?></select>
-        <select name="nam_loc"><?php $ny=date('Y'); for($y=$ny-2; $y<=$ny+2; $y++) { echo '<option value="'.$y.'" '.selected($y,$nam_loc,false).'>Năm '.$y.'</option>'; } ?></select>
+        <select name="nam_loc"><?php $ny=date('Y'); for($y=$ny-3; $y<=$ny+2; $y++) { echo '<option value="'.$y.'" '.selected($y,$nam_loc,false).'>Năm '.$y.'</option>'; } ?></select>
         <input type="submit" class="button button-secondary" value="Lọc">
     </form>
     <?php endif; ?>

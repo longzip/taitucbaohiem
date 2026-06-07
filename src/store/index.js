@@ -3,7 +3,6 @@ import { createStore } from "vuex";
 
 import bhyts from "./module-bhyts";
 import auth from "./module-auth";
-import items from "./module-item";
 
 /*
  * If not building with SSR mode, you can
