@@ -8,7 +8,7 @@ class QLBH_Frontend {
 
     public function hien_thi_o_tra_cuu() {
         global $wpdb;
-        $t_bhyt = $wpdb->prefix . 'qlbh_bhyt';
+        $t_bhyt = $wpdb->prefix . 'bhyts';
         $t_bhxh = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
         $t_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
 

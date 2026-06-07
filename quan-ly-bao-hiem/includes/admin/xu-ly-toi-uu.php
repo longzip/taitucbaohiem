@@ -2,7 +2,7 @@
 if (!current_user_can('manage_options')) wp_die('Chặn.');
 global $wpdb;
 $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
-$table_bhyt = $wpdb->prefix . 'qlbh_bhyt';
+$table_bhyt = $wpdb->prefix . 'bhyts';
 $thong_bao = '';
 
 // 1. LOGIC XÓA RÁC CACHE HỆ THỐNG

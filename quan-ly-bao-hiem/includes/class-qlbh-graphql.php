@@ -33,10 +33,10 @@ class QLBH_GraphQL {
                 ],
                 'mutateAndGetPayload' => function ($input) {
                     global $wpdb;
-                    
+
                     ini_set('memory_limit', '1024M');
 
-                    $t_bhyt = $wpdb->prefix . 'qlbh_bhyt';
+                    $t_bhyt = $wpdb->prefix . 'bhyts';
                     $t_bhxh = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
                     $t_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
 
@@ -110,7 +110,7 @@ class QLBH_GraphQL {
                             $khach_hang_id = $wpdb->insert_id;
                             $count_them_moi++;
                         }
-                        
+
                         $so_tien = !empty($row['tongTien']) ? intval($row['tongTien']) : 0;
                         $loai_gd = ($ten_thu_tuc == '602') ? 'BHXH' : 'BHYT';
                         $phan_tram = ($loai_gd == 'BHXH') ? 5.0 : 3.5;

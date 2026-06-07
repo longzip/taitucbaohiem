@@ -36,7 +36,7 @@ class QLBH_Admin {
     public function trang_chi_tiet_ho_gia_dinh() {
       if (!current_user_can('manage_options')) wp_die('Chặn truy cập.');
       global $wpdb;
-      $table_bhyt = $wpdb->prefix . 'qlbh_bhyt';
+      $table_bhyt = $wpdb->prefix . 'bhyts';
       $table_bhxh = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
 
       // Lấy mã tờ khai từ đường link url

@@ -1,7 +1,7 @@
 <?php
 if (!current_user_can('manage_options')) wp_die('Chặn.');
 global $wpdb;
-$table_bhyt = $wpdb->prefix . 'qlbh_bhyt';
+$table_bhyt = $wpdb->prefix . 'bhyts';
 $table_bhxh = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
 $thong_bao = '';
 $khach_id_get = isset($_GET['khach_id']) ? intval($_GET['khach_id']) : '';
@@ -26,4 +26,3 @@ if (isset($_POST['qlbh_Luu_bhxh']) && check_admin_referer('qlbh_kich_hoat_bhxh_n
 
 $danh_sach_goc = $wpdb->get_results("SELECT id, hoTen FROM $table_bhyt ORDER BY hoTen ASC");
 
-include QLBH_PATH . 'views/kich_hoat_bhxh.php';

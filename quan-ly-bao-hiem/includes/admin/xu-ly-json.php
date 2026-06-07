@@ -1,7 +1,7 @@
 <?php
 if (!current_user_can('manage_options')) wp_die('Chặn truy cập.');
 global $wpdb;
-$t_bhyt = $wpdb->prefix . 'qlbh_bhyt';
+$t_bhyt = $wpdb->prefix . 'bhyts';
 $t_bhxh = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
 $t_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
 $thong_bao = '';

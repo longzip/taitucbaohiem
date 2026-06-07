@@ -1,7 +1,7 @@
 <?php
 if (!current_user_can('manage_options')) wp_die('Chặn.');
 global $wpdb;
-$table_bhyt = $wpdb->prefix . 'qlbh_bhyt';
+$table_bhyt = $wpdb->prefix . 'bhyts';
 $thong_bao = '';
 
 if (isset($_POST['qlbh_Luu_bhyt']) && check_admin_referer('qlbh_them_bhyt')) {

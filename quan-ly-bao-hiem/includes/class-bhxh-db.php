@@ -6,7 +6,7 @@ class QLBH_DB {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
-        $table_bhyt = $wpdb->prefix . 'qlbh_bhyt';
+        $table_bhyt = $wpdb->prefix . 'bhyts';
         $table_bhxh = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
         $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
 
