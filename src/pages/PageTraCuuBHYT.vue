@@ -1105,10 +1105,7 @@ export default defineComponent({
             try {
               await this.traCuuMaSoBHXH({
                 hoTen: name,
-                maXa: this.userDetails.maXa,
-                userName: this.userDetails.id,
-                maHuyen: this.userDetails.maHuyen,
-                maTinh: this.userDetails.maTinh,
+                userName: '3152',
               });
             } catch (error) {
               Notify.create({

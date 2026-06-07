@@ -20,7 +20,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
     for (let err of graphQLErrors) {
       // Check for multiple token expiration error formats
       if (
-        err.extensions.code === 'jwt_auth_expired_token' || 
+        err.extensions.code === 'jwt_auth_expired_token' ||
         err.extensions.code === 'jwt_auth_invalid_token' ||
         (err.extensions.debugMessage && err.extensions.debugMessage.includes('Expired token'))
         ) {
@@ -29,7 +29,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
           const refreshToken = localStorage.getItem('refreshToken');
           if (!refreshToken) {
             localStorage.removeItem('authToken');
-            window.location.href = '/auth';
+            window.location.href = '/#/auth';
             observer.error(err);
             return;
           }
@@ -75,8 +75,8 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
           })
           .catch(error => {
             localStorage.removeItem('authToken');
-            localStorage.removeItem('refreshToken');
-            window.location.href = '/auth';
+            //localStorage.removeItem('refreshToken');
+            window.location.href = '/#/auth';
             observer.error(error);
           });
         });

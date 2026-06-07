@@ -918,7 +918,7 @@ export async function traCuuMaSoBHXH(
 ) {
   try {
     const { data } = await api.get(
-      `/api/tim-kiem-bhyts?maTinh=${maTinh}&maHuyen=${maHuyen}&maXa=${maXa}&hoTen=${hoTen}`
+      `/api/tim-kiem-bhyts?hoTen=${hoTen}`
     );
 
     if (data.data.length) {
