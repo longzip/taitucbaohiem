@@ -18,8 +18,12 @@ const httpLink = createHttpLink({
 const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
   if (graphQLErrors) {
     for (let err of graphQLErrors) {
-      // Check for expired token error
-      if (err.extensions.code === 'invalid-jwt' || (err.message && err.message.includes('expired'))) {
+      // Check for multiple token expiration error formats
+      if (
+        err.extensions.code === 'jwt_auth_expired_token' || 
+        err.extensions.code === 'jwt_auth_invalid_token' ||
+        (err.extensions.debugMessage && err.extensions.debugMessage.includes('Expired token'))
+        ) {
 
         return new Observable(observer => {
           const refreshToken = localStorage.getItem('refreshToken');
