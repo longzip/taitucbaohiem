@@ -15,7 +15,7 @@
         {{ bhyt.ngaySinhDt || bhyt.ngayThangNamSinh }}
 
         <q-icon
-          v-if="userDetails.isPro"
+          
           @click="xacNhanLoaiBo(bhyt)"
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
@@ -24,7 +24,7 @@
       <q-item-label caption lines="2">
         {{ bhyt.diaChiLh }}
       </q-item-label>
-      <div v-if="userDetails.isPro">
+      <div >
         <q-item-label caption lines="2">
           Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
             bhyt.maHoGd
@@ -85,7 +85,7 @@
       >
       <q-item-label
         v-if="
-          userDetails.isPro &&
+
           bhyt.trangThaiHoSoName !== 'Đã nhận kết quả phát sinh từ BHXH' &&
           bhyt.thongBaoBhxh !== 'Phát sinh thành công'
         "
@@ -96,14 +96,14 @@
         {{ bhyt.trangThaiHoSoName }} {{ bhyt.thongBaoBhxh }}
       </q-item-label>
 
-      <q-item-label v-if="userDetails.isPro" caption lines="2">
+      <q-item-label  caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
         <q-icon @click="xacNhanGhiChu(bhyt)" name="edit" />
       </q-item-label>
       <q-item-label v-if="bhyt.coTheUuTienCaoHon" caption>
         <q-badge color="warning">Đang tham gia BHXH bắt buộc</q-badge>
       </q-item-label>
-      <q-item-label v-if="userDetails.isPro" caption lines="2">
+      <q-item-label  caption lines="2">
         <a v-if="bhyt.ngaySinhDt" :href="`tel:${bhyt.soDienThoai2}`">{{
           bhyt.soDienThoai2 || "Thêm sđt:"
         }}</a>
@@ -124,7 +124,7 @@
       </q-item-label>
     </q-item-section>
 
-    <q-item-section v-if="userDetails.isPro" side top>
+    <q-item-section  side top>
       <div class="q-gutter-xs">
         <q-btn size="12px" flat dense round icon="more_horiz">
           <q-menu>
