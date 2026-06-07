@@ -32,7 +32,11 @@ if (isset($_POST['qlbh_hoan_thanh_gia_han'])) {
     }
 }
 
-// Logic truy vấn mới
+// Lấy mã nhân viên thu của người dùng hiện tại
+$current_user_id = get_current_user_id();
+$ma_nhan_vien_thu = get_user_meta($current_user_id, 'qlbh_ma_nhan_vien_thu', true);
+
+// Mặc định lọc theo tháng hiện tại nếu không có lựa chọn
 $thang_loc = isset($_GET['thang_loc']) ? sanitize_text_field($_GET['thang_loc']) : date('m');
 $nam_loc = isset($_GET['nam_loc']) ? sanitize_text_field($_GET['nam_loc']) : date('Y');
 $search_bhxh = isset($_POST['s_bhxh']) ? sanitize_text_field($_POST['s_bhxh']) : '';
@@ -41,8 +45,19 @@ $base_sql = "SELECT ls.*, b.hoTen, b.soDienThoai, b.maSoBhxh FROM {$table_lich_s
 $where_clauses = array();
 $params = array();
 
-$where_clauses[] = "MONTH(ls.ngayLap) = %d AND YEAR(ls.ngayLap) = %d";
-$params[] = $thang_loc;
+// Thêm điều kiện lọc theo mã nhân viên thu nếu có
+if (!empty($ma_nhan_vien_thu)) {
+    $where_clauses[] = "ls.nguoiThu = %s";
+    $params[] = $ma_nhan_vien_thu;
+}
+
+// Bỏ qua điều kiện lọc tháng nếu chọn "Cả năm"
+if (!empty($thang_loc)) {
+    $where_clauses[] = "MONTH(ls.ngayLap) = %d";
+    $params[] = $thang_loc;
+}
+
+$where_clauses[] = "YEAR(ls.ngayLap) = %d";
 $params[] = $nam_loc;
 
 if (!empty($search_bhxh)) {

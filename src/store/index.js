@@ -18,7 +18,6 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       bhyts,
       auth,
-      items,
     },
 
     // enable strict mode (adds overhead!)

@@ -60,7 +60,7 @@
           <div class="col-12 col-md-2 text-right">
             Menu
             <q-icon name="expand_more" dense> </q-icon>
-            <q-menu v-if="userDetails.isPro" touch-position>
+            <q-menu touch-position>
               <q-list style="min-width: 150px">
                 <q-item clickable @click="loadBhytByName" v-close-popup>
                   <q-item-section>Tìm tất cả</q-item-section>
@@ -383,7 +383,7 @@
           </span>
         </q-expansion-item>
         <q-list>
-          <!-- <q-item-label v-if="userDetails.isPro" header>
+          <!-- <q-item-label header>
 
           </q-item-label> -->
           <div v-for="bhyt in filteredBhyts" :key="bhyt.id">
@@ -395,14 +395,6 @@
       <q-card-section v-else>
         Nhập họ và tên hoặc mã số BHXH, mã thẻ BHYT vào ô Tìm kiếm và nhấn ENTER
         để tra cứu.
-      </q-card-section>
-      <q-card-section v-if="userDetails.isPro">
-        Hạn sử dụng: {{ dinhDangNgayThang(userDetails.hetHan) }} ({{
-          khoangCachThoiGian(userDetails.hetHan)
-        }})
-      </q-card-section>
-      <q-card-section class="text-red text-bold" v-else>
-        Miễn phí sử dụng trọn đời.
       </q-card-section>
     </q-card>
     <q-dialog v-model="dialogShow" persistent>

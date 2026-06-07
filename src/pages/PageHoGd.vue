@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userDetails.isPro" class="q-pa-md">
+  <div class="q-pa-md">
     <q-table
       title="Đóng BHYT Hộ gia đình (Lương cơ sở: 2.340.000 VNĐ)"
       :rows="householdMembers"
