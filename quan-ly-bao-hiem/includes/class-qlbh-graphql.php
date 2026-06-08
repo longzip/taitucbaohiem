@@ -19,18 +19,19 @@ class QLBH_GraphQL {
 
     public function register_collaborators_query() {
         register_graphql_object_type('Collaborator', [
-            'description' => __('Một người dùng Đại lý hoặc CTV', 'qlbh'),
+            'description' => __('Một người dùng có vai trò trong hệ thống', 'qlbh'),
             'fields' => [
                 'label'         => ['type' => 'String'],
                 'value'         => ['type' => 'String'],
                 'maNhanVienThu' => ['type' => 'String'],
                 'userIdBhxh'    => ['type' => 'String'],
+                'vaiTro'        => ['type' => 'String'],
             ]
         ]);
 
         register_graphql_field('RootQuery', 'collaborators', [
             'type' => ['list_of' => 'Collaborator'],
-            'description' => __('Lấy danh sách người dùng là Đại lý thu và Cộng tác viên.', 'qlbh'),
+            'description' => __('Lấy danh sách người dùng có vai trò đại lý, ctv, editor, admin.', 'qlbh'),
             'resolve' => function() {
                 if (!$this->can_user_access_qlbh()) {
                     throw new \GraphQL\Error\UserError(__('Bạn không có quyền thực hiện hành động này.', 'qlbh'));
@@ -40,17 +41,26 @@ class QLBH_GraphQL {
                 if (empty($users)) return [];
 
                 $collaborators = array_map(function($user) {
-                    $maNhanVienThu = get_user_meta($user->ID, 'qlbh_ma_nhan_vien_thu', true) ?: '';
-                    $userIdBhxh    = get_user_meta($user->ID, 'qlbh_userid_bhxh', true) ?: '';
+                    // Label: Use MaNhanVienThu if it exists, otherwise fall back to display name
+                    $maNhanVienThu = get_user_meta($user->ID, 'qlbh_ma_nhan_vien_thu', true);
+                    $label = !empty($maNhanVienThu) ? $maNhanVienThu : $user->display_name;
+                    
+                    $vaiTro = !empty($user->roles[0]) ? $user->roles[0] : '';
+                    
                     return [
-                        'label'         => $maNhanVienThu,
-                        'value'         => $userIdBhxh,
-                        'maNhanVienThu' => $maNhanVienThu,
-                        'userIdBhxh'    => $userIdBhxh,
+                        'label'         => $label,
+                        'value'         => $user->user_login, // Use user_login as the consistent value
+                        'maNhanVienThu' => $maNhanVienThu ?: '',
+                        'userIdBhxh'    => get_user_meta($user->ID, 'qlbh_userid_bhxh', true) ?: '',
+                        'vaiTro'        => $vaiTro,
                     ];
                 }, $users);
 
-                $filtered = array_filter($collaborators, function($c) { return !empty($c['label']) && !empty($c['value']); });
+                // Filter out users who might not have a proper label or value
+                $filtered = array_filter($collaborators, function($c) {
+                    return !empty($c['label']) && !empty($c['value']);
+                });
+
                 return array_values($filtered);
             }
         ]);
@@ -85,20 +95,17 @@ class QLBH_GraphQL {
                     array_push($params, $name_search, $name_search, $name_search);
                 }
 
+                // SIMPLIFIED: The 'userName' argument from GraphQL is now always the user_login
                 if (!empty($args['userName'])) {
-                    $user_query = new WP_User_Query(['meta_key' => 'qlbh_userid_bhxh', 'meta_value' => $args['userName'], 'number' => 1, 'fields' => 'user_login']);
-                    $found_users = $user_query->get_results();
-                    if (!empty($found_users)) {
-                        $query .= " AND userName = %s";
-                        $params[] = $found_users[0];
-                    } else { return []; }
+                    $query .= " AND userName = %s";
+                    $params[] = $args['userName'];
                 }
 
                 if (!empty($args['trangThai'])) {
                     $query .= " AND trangThaiTaiTuc = %s";
                     $params[] = $args['trangThai'];
                 }
-
+                
                 $query .= " ORDER BY updated_at DESC LIMIT 50";
                 return $wpdb->get_results($wpdb->prepare($query, $params), ARRAY_A) ?: [];
             }
@@ -118,60 +125,5 @@ class QLBH_GraphQL {
         register_graphql_mutation('updateGhiChu',['inputFields' => ['maSoBhxh' => ['type' => ['non_null' => 'String']], 'ghiChu' => ['type' => ['non_null' => 'String']]], 'outputFields' => ['success' => ['type' => 'Boolean'], 'message' => ['type' => 'String']], 'mutateAndGetPayload' => $mutation_logic(function($i) { return ['ghiChu' => $i['ghiChu']]; })]);
         register_graphql_mutation('theoDoi', ['inputFields' => ['maSoBhxh' => ['type' => ['non_null' => 'String']], 'completed' => ['type' => ['non_null' => 'Boolean']]], 'outputFields' => ['success' => ['type' => 'Boolean'], 'message' => ['type' => 'String']], 'mutateAndGetPayload' => $mutation_logic(function($i) { return ['completed' => $i['completed'] ? 1 : 0]; })]);
         register_graphql_mutation('loaiBo', ['inputFields' => ['maSoBhxh' => ['type' => ['non_null' => 'String']], 'disabled' => ['type' => ['non_null' => 'Boolean']]], 'outputFields' => ['success' => ['type' => 'Boolean'], 'message' => ['type' => 'String']], 'mutateAndGetPayload' => $mutation_logic(function($i) { return ['disabled' => $i['disabled'] ? 1 : 0]; })]);
-
-        register_graphql_mutation('giaHanBHYT', [
-            'inputFields' => [
-                'maSoBhxh' => ['type' => ['non_null' => 'String'], 'description' => 'Mã số BHXH của đối tượng cần gia hạn.'],
-                'soThang' => ['type' => ['non_null' => 'Int'], 'description' => 'Số tháng muốn gia hạn.'],
-                'ghiChu' => ['type' => 'String', 'description' => 'Ghi chú cho lần gia hạn này.'],
-            ],
-            'outputFields' => ['success' => ['type' => 'Boolean'], 'message' => ['type' => 'String']],
-            'mutateAndGetPayload' => function($input) {
-                if (!$this->can_user_access_qlbh()) {
-                    throw new \GraphQL\Error\UserError(__('Bạn không có quyền thực hiện hành động này.', 'qlbh'));
-                }
-
-                global $wpdb;
-                $table_name = $wpdb->prefix . 'bhyts';
-                $soThang = intval($input['soThang']);
-
-                if ($soThang <= 0) {
-                     throw new \GraphQL\Error\UserError(__('Số tháng gia hạn phải là một số nguyên dương.', 'qlbh'));
-                }
-
-                $bhyt = $wpdb->get_row($wpdb->prepare("SELECT denNgayDt, ghiChu FROM {$table_name} WHERE maSoBhxh = %s", $input['maSoBhxh']));
-                if (!$bhyt) {
-                    throw new \GraphQL\Error\UserError(__('Không tìm thấy đối tượng BHYT với mã số cung cấp.', 'qlbh'));
-                }
-
-                try {
-                    $expiry_date = new DateTime($bhyt->denNgayDt);
-                    $new_tuNgayDt = (clone $expiry_date)->modify('+1 day');
-                    $new_denNgayDt = (clone $new_tuNgayDt)->modify('+' . $soThang . ' months - 1 day');
-                } catch (Exception $e) {
-                    throw new \GraphQL\Error\UserError(__('Định dạng ngày tháng trong database không hợp lệ.', 'qlbh'));
-                }
-
-                $update_data = [
-                    'tuNgayDt'        => $new_tuNgayDt->format('Y-m-d'),
-                    'denNgayDt'       => $new_denNgayDt->format('Y-m-d'),
-                    'updated_at'      => current_time('mysql'),
-                    'trangThaiTaiTuc' => 'Đã tái tục',
-                ];
-
-                if (!empty($input['ghiChu'])) {
-                    $new_note = "[" . current_time('d/m/Y') . " - Gia hạn " . $soThang . " tháng]: " . $input['ghiChu'];
-                    $update_data['ghiChu'] = !empty($bhyt->ghiChu) ? $bhyt->ghiChu . "\n" . $new_note : $new_note;
-                }
-
-                $result = $wpdb->update($table_name, $update_data, ['maSoBhxh' => $input['maSoBhxh']]);
-
-                if ($result === false) {
-                     return ['success' => false, 'message' => 'Gia hạn thất bại do lỗi database.'];
-                }
-
-                return ['success' => true, 'message' => 'Gia hạn BHYT thành công cho ' . $soThang . ' tháng!'];
-            },
-        ]);
     }
 }
