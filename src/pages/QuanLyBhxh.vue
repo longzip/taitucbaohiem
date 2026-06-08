@@ -125,8 +125,11 @@
           <q-card-section class="q-pa-md q-gutter-y-sm" style="font-size: 13px;">
             <div class="row"><span class="col-4 text-grey-8">Mã số BHXH:</span><span class="col-8 text-bold text-primary">{{ nguoiThamGia.maSoBhxh }}</span></div>
             <div class="row"><span class="col-4 text-grey-8">Ngày sinh:</span><span class="col-8 text-bold">{{ dinhDangNgay(nguoiThamGia.ngaySinh) }}</span></div>
+            <div class="row"><span class="col-4 text-grey-8">Giới tính:</span><span class="col-8">{{ gioiTinhText(nguoiThamGia.gioiTinh) }}</span></div>
             <div class="row"><span class="col-4 text-grey-8">CCCD:</span><span class="col-8 text-bold">{{ nguoiThamGia.cccd }}</span></div>
+            <div class="row"><span class="col-4 text-grey-8">Mã hộ GĐ:</span><span class="col-8">{{ nguoiThamGia.maHoGd }}</span></div>
             <div class="row"><span class="col-4 text-grey-8">Điện thoại:</span><span class="col-8"><a :href="`tel:${nguoiThamGia.sdt}`">{{ nguoiThamGia.sdt || 'N/A' }}</a></span></div>
+            <div class="row"><span class="col-4 text-grey-8">Điện thoại 2:</span><span class="col-8"><a :href="`tel:${nguoiThamGia.soDienThoai2}`">{{ nguoiThamGia.soDienThoai2 || 'N/A' }}</a></span></div>
             <div class="row"><span class="col-4 text-grey-8">Địa chỉ:</span><span class="col-8 text-caption">{{ nguoiThamGia.diaChi || 'N/A' }}</span></div>
 
             <q-separator class="q-my-md" />
@@ -265,8 +268,11 @@ const QUERY_DANH_SACH_BHXH = gql`
       hoTen
       maSoBhxh
       ngaySinh
+      gioiTinh
       cccd
+      maHoGd
       sdt
+      soDienThoai2
       diaChi
       phuongThucDong
       soThangDong
@@ -364,5 +370,6 @@ const xuLyThemMoiNguoiThamGia = () => {
 const xoaTimKiem = () => { tuKhoaTimKiem.value = ''; refetch(); }
 const dinhDangNgay = (d) => { if(!d) return 'N/A'; const [y,m,df] = d.split('-'); return `${df}/${m}/${y}`; }
 const dinhDangTien = (val) => val ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val) : '0 đ'
+const gioiTinhText = (gt) => gt === 1 ? 'Nam' : (gt === 0 ? 'Nữ' : 'N/A')
 
 </script>

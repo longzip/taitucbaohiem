@@ -57,15 +57,18 @@ class QLBH_DB {
         // Bảng mở rộng BHXH (camelCase)
         $sql_bhxh = "CREATE TABLE $table_bhxh (
             maSoBhxh varchar(50) NOT NULL,
-            ngayHetHanBhxh date NOT NULL,
+            ngayHetHanBhxh date NULL,
             ghiChuBhxh text,
             ngayDk DATE NULL,
             maDonViBhxh VARCHAR(50) NULL,
             tenDonViBhxh VARCHAR(255) NULL,
             phuongAn VARCHAR(10) NULL,
             mucTienDong DECIMAL(20, 2) NULL,
-            phuongThucDong VARCHAR(10) NULL,
+            soTien DECIMAL(20, 2) NULL,
+            phuongThucDong VARCHAR(50) NULL,
+            soThangDong INT NULL,
             tuThangNam VARCHAR(7) NULL,
+            trangThai varchar(50) DEFAULT 'TAM_DUNG',
             PRIMARY KEY  (maSoBhxh)
         ) $charset_collate;";
 
@@ -94,9 +97,5 @@ class QLBH_DB {
         dbDelta($sql_bhyt);
         dbDelta($sql_bhxh);
         dbDelta($sql_lich_su);
-
-        if (!wp_next_scheduled('qlbh_cronjob_quet_hang_ngay')) {
-            wp_schedule_event(strtotime('08:00:00'), 'daily', 'qlbh_cronjob_quet_hang_ngay');
-        }
     }
 }
