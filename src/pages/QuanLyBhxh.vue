@@ -1,21 +1,21 @@
 <template>
   <q-page class="page-quan-ly-bhxh">
     <BhxhHeader
-      :total="data?.danhSachBhxh.length"
+      :total="danhSachBhxh.length"
       v-model:tu-khoa="tuKhoaTimKiem"
       @tim-kiem="refetch()"
       @xoa-tim-kiem="xoaTimKiem"
       @them-moi="moDialogThemMoi"
     />
 
-    <div v-if="loading && !data" class="loading-container">
+    <div v-if="loading && !danhSachBhxh.length" class="loading-container">
       <q-spinner-dots color="primary" size="40px" />
     </div>
 
     <div v-else>
       <BhxhList
-        v-if="data?.danhSachBhxh.length"
-        :list="data.danhSachBhxh"
+        v-if="danhSachBhxh.length"
+        :list="danhSachBhxh"
         @ghi-danh="moDialogThemLichSu"
         @xem-lich-su="moDialogXemLichSu"
       />
@@ -96,13 +96,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useQuery, useMutation, useLazyQuery } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 import { useQuasar } from "quasar";
-import { NGUOI_THAM_GIA_BHXH_QUERY } from "src/queries/nguoi-tham-gia-bhxh.js";
-import { LICH_SU_DONG_BHXH_QUERY } from "src/queries/lich-su-dong-bhxh.js";
-import { THEM_LICH_SU_DONG } from "src/mutations/them-lich-su-dong.js";
-import { THEM_NGUOI_THAM_GIA_BHXH } from "src/mutations/them-nguoi-tham-gia-bhxh.js";
+import {
+  NGUOI_THAM_GIA_BHXH_QUERY,
+  THEM_LICH_SU_DONG,
+  THEM_NGUOI_THAM_GIA_BHXH,
+} from "./graphql";
 
 import BhxhHeader from "src/components/bhxh/BhxhHeader.vue";
 import BhxhList from "src/components/bhxh/BhxhList.vue";
@@ -117,6 +119,19 @@ const dialogThemLichSu = ref(false);
 const dialogThemMoi = ref(false);
 const dialogXemLichSu = ref(false);
 const nguoiThamGiaLichSu = ref(null);
+
+const LICH_SU_DONG_BHXH_QUERY = gql`
+  query LichSuDongBhxhQuery($idNguoiThamGia: Int!) {
+    lichSuDongBhxh(idNguoiThamGia: $idNguoiThamGia) {
+      id
+      ngayLap
+      tongTien
+      hinhThucTt
+      ghiChuDong
+      nguoiThu
+    }
+  }
+`;
 
 const {
   result: lichSuDongResult,
@@ -133,9 +148,11 @@ const moDialogXemLichSu = (nguoiThamGia) => {
 const formLichSu = ref(null);
 const formNguoiMoi = ref(null);
 
-const { result: data, loading, refetch } = useQuery(NGUOI_THAM_GIA_BHXH_QUERY, {
+const { result, loading, refetch } = useQuery(NGUOI_THAM_GIA_BHXH_QUERY, {
   searchKeyword: tuKhoaTimKiem,
 });
+
+const danhSachBhxh = computed(() => result.value?.danhSachBhxh ?? []);
 
 const { mutate: themLichSuDong, onDone: onThemLichSuDong } = useMutation(
   THEM_LICH_SU_DONG,
