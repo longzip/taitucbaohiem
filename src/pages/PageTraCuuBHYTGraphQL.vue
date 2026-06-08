@@ -1,138 +1,33 @@
 <template>
   <q-page class="q-pa-md">
-    <!-- THANH TIÊU ĐỀ & NÚT LÀM MỚI -->
-    <div class="row items-center justify-between q-mb-md">
-      <div class="row items-center">
-        <q-icon name="search" size="md" color="primary" class="q-mr-sm" />
-        <div>
-          <div class="text-h6 text-bold">Tra Cứu Thông Tin BHYT</div>
-          <div class="text-caption text-grey">Tra cứu, quản lý và tái tục thẻ BHYT</div>
-        </div>
-      </div>
-      <q-btn
-        round
-        flat
-        color="primary"
-        icon="refresh"
-        @click="refetchAll"
-        :loading="loading"
-      >
-        <q-tooltip>Làm mới dữ liệu</q-tooltip>
-      </q-btn>
-    </div>
+    <bhyt-header :loading="loading" @refresh="refetchAll" />
 
-    <!-- THANH TÌM KIẾM & COMBOBOX LỌC -->
-    <q-card class="q-mb-md">
-      <q-card-section class="row q-col-gutter-sm items-center">
-        <div class="col-12 col-md-5">
-          <q-input
-            v-model="searchText"
-            outlined
-            dense
-            placeholder="Gõ để tìm kiếm (Họ tên, Mã số BHXH, Thẻ BHYT)..."
-            @keyup.enter="search"
-            clearable
-            @clear="searchText = null"
-          >
-            <template v-slot:append>
-              <q-icon name="search" @click="search" class="cursor-pointer" />
-            </template>
-          </q-input>
-        </div>
+    <bhyt-filters
+      v-model:searchText="searchText"
+      v-model:selectedUser="selectedUser"
+      v-model:selectedStatus="selectedStatus"
+      :user-options="userOptions"
+      :status-options="statusOptions"
+      @search="search"
+    >
+      <template #summary>
+        <bhyt-result-summary
+          :search-text="searchText"
+          :selected-user="selectedUser"
+          :selected-status="selectedStatus"
+          :count="bhyts.length"
+        />
+      </template>
+    </bhyt-filters>
 
-        <div class="col-12 col-md-4">
-          <q-select
-            v-model="selectedUser"
-            :options="userOptions"
-            label="Lọc theo người dùng"
-            outlined
-            dense
-            emit-value
-            map-options
-            clearable
-          >
-             <template v-slot:prepend>
-              <q-icon name="person" />
-            </template>
-          </q-select>
-        </div>
+    <bhyt-stats :stats="stats" />
 
-        <div class="col-12 col-md-3">
-          <q-select
-            v-model="selectedStatus"
-            :options="statusOptions"
-            label="Lọc theo trạng thái"
-            outlined
-            dense
-            emit-value
-            map-options
-            clearable
-          >
-            <template v-slot:prepend>
-              <q-icon name="filter_alt" />
-            </template>
-          </q-select>
-        </div>
-      </q-card-section>
-
-       <!-- TÓM TẮT KẾT QUẢ VÀ BỘ LỌC -->
-      <q-card-section v-if="searchText || selectedUser || selectedStatus" class="bg-grey-2 row items-center justify-between text-caption q-px-md q-py-sm">
-        <div>
-          Đang áp dụng bộ lọc:
-          <strong v-if="searchText">Từ khóa "{{ searchText }}" </strong>
-          <strong v-if="selectedUser">| Người dùng: {{ selectedUser }} </strong>
-          <strong v-if="selectedStatus">| Trạng thái: {{ selectedStatus }}</strong>
-        </div>
-        <q-badge color="primary">Tìm thấy: {{ bhyts.length }} thẻ</q-badge>
-      </q-card-section>
-    </q-card>
-
-    <!-- THỐNG KÊ -->
-    <q-card class="q-mb-md" v-if="stats">
-      <q-card-section class="row q-col-gutter-sm items-center">
-        <div class="col-4 text-center">
-          <div class="text-h6 text-bold">{{ stats.total }}</div>
-          <div class="text-caption">Tổng số thẻ</div>
-        </div>
-        <div class="col-4 text-center">
-          <div class="text-h6 text-bold text-positive">{{ stats.active }}</div>
-          <div class="text-caption">Đang hoạt động</div>
-        </div>
-        <div class="col-4 text-center">
-          <div class="text-h6 text-bold text-negative">{{ stats.expired }}</div>
-          <div class="text-caption">Đã hết hạn</div>
-        </div>
-      </q-card-section>
-    </q-card>
-
-    <!-- TRẠNG THÁI LOADING -->
-    <div v-if="loading" class="row justify-center q-my-xl">
-      <q-spinner color="primary" size="40px" />
-    </div>
-    <!-- TRẠNG THÁI LỖI -->
-    <div v-else-if="error" class="column items-center justify-center q-my-xl text-negative">
-      <q-icon name="error" size="64px" />
-      <div class="text-subtitle1 q-mt-sm">Lỗi khi tải dữ liệu: {{ error.message }}</div>
-      <q-btn label="Thử lại" @click="refetchAll" color="primary" class="q-mt-md"/>
-    </div>
-    <!-- TRẠNG THÁI DANH SÁCH TRỐNG -->
-    <div v-else-if="!bhyts || bhyts.length === 0" class="column items-center justify-center q-my-xl text-grey">
-      <q-icon name="person_search" size="64px" />
-      <div class="text-subtitle1 q-mt-sm">Không tìm thấy kết quả nào.</div>
-       <div class="text-caption">Hãy thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</div>
-    </div>
-
-    <!-- LƯỚI HIỂN THỊ KẾT QUẢ -->
-    <div v-else class="row q-col-gutter-md">
-      <div
-        v-for="bhyt in bhyts"
-        :key="bhyt.id"
-        class="col-12 col-md-6"
-      >
-        <ThongTinTheBHYT :bhyt="bhyt" />
-      </div>
-    </div>
-
+    <bhyt-card-list
+      :bhyts="bhyts"
+      :loading="loading"
+      :error="error"
+      @refetch="refetchAll"
+    />
   </q-page>
 </template>
 
@@ -141,8 +36,13 @@ import { ref, computed } from "vue";
 import { useQuery, useResult } from "@vue/apollo-composable";
 import { gql } from "graphql-tag";
 import { useQuasar, Notify } from "quasar";
-import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import { useStore } from "vuex";
+
+import BhytHeader from "src/components/bhyt/BhytHeader.vue";
+import BhytFilters from "src/components/bhyt/BhytFilters.vue";
+import BhytResultSummary from "src/components/bhyt/BhytResultSummary.vue";
+import BhytStats from "src/components/bhyt/BhytStats.vue";
+import BhytCardList from "src/components/bhyt/BhytCardList.vue";
 
 // GRAPHQL QUERIES
 const BHYTS_QUERY = gql`
@@ -290,15 +190,3 @@ onBhytsResult((queryResult) => {
   }
 });
 </script>
-
-<style scoped>
-.text-h6 {
-  font-size: 1.1rem;
-}
-.q-card {
-  transition: box-shadow 0.3s;
-}
-.q-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-</style>
