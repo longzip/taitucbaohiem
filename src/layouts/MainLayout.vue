@@ -84,16 +84,16 @@ const linksList = [
     link: "/",
   },
   {
-    title: "Tra cứu BHYT (GraphQL)",
-    caption: "Tìm kiếm BHYT bằng GraphQL",
+    title: "Tra cứu BHYT (Mới)",
+    caption: "Tìm kiếm BHYT & Lịch sử",
     icon: "bolt",
-    link: "/bhyt-gql",
+    link: "/bhyt",
   },
   {
-    title: "Người tham gia BHXH tự nguyện",
-    caption: "Tra cứu theo Mã số BHXH",
-    icon: "find_in_page",
-    link: "/tra-cuu-ho-so",
+    title: "Quản lý BHXH",
+    caption: "Danh sách người tham gia BHXH",
+    icon: "groups",
+    link: "/bhxh",
   },
   {
     title: "Tái tục MIC",
@@ -124,12 +124,12 @@ export default defineComponent({
     const logout = () => {
       // Remove token from local storage
       localStorage.removeItem('authToken');
-      
+
       // Reset Apollo Client store
       if (client) {
         client.resetStore();
       }
-      
+
       // Redirect to login page
       router.push({ name: 'auth' });
     };

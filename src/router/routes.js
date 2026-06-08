@@ -9,7 +9,7 @@ const routes = [
         meta: { requireAuth: true },
       },
       {
-        path: "/bhyt-gql",
+        path: "/bhyt",
         component: () => import("src/pages/PageTraCuuBHYTGraphQL.vue"),
         meta: { requireAuth: true },
       },
@@ -26,6 +26,11 @@ const routes = [
       {
         path: "/tnds",
         component: () => import("src/pages/QuanLyBaoHiemTNDS.vue"),
+        meta: { requireAuth: true },
+      },
+      {
+        path: "/bhxh",
+        component: () => import("src/pages/QuanLyBhxh.vue"),
         meta: { requireAuth: true },
       },
     ],
