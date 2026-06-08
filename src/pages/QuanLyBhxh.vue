@@ -1,26 +1,36 @@
 <template>
-  <q-page class="page-quan-ly-bhxh">
-    <BhxhHeader
-      :total="danhSachBhxh.length"
-      v-model:tu-khoa="tuKhoaTimKiem"
-      @tim-kiem="refetch()"
-      @xoa-tim-kiem="xoaTimKiem"
-      @them-moi="moDialogThemMoi"
+  <q-page class="q-pa-md">
+    <bhxh-header
+      :loading="loading"
+      @add="moDialogThemMoi"
+      @refresh="refetch"
     />
-
-    <div v-if="loading && !danhSachBhxh.length" class="loading-container">
-      <q-spinner-dots color="primary" size="40px" />
-    </div>
-
-    <div v-else>
-      <BhxhList
-        v-if="danhSachBhxh.length"
-        :list="danhSachBhxh"
-        @ghi-danh="moDialogThemLichSu"
-        @xem-lich-su="moDialogXemLichSu"
-      />
-      <BhxhEmptyState v-else @them-moi="moDialogThemMoi" />
-    </div>
+    <bhxh-filter
+      v-model:searchTerm="tuKhoaTimKiem"
+      v-model:status="trangThaiChon"
+      :status-options="danhSachTrangThai"
+      @search="refetch"
+      @clear="xoaTimKiem"
+    />
+    <bhxh-list :items="danhSachHienThi" :loading="loading">
+      <template #default="{ item }">
+        <bhxh-list-item
+          :participant="item"
+          @view-history="moDialogXemLichSu"
+          @record-payment="moDialogThemLichSu"
+        />
+      </template>
+    </bhxh-list>
+    <bhxh-record-payment-dialog
+      v-model="dialogThemLichSu"
+      v-model:payment="formLichSu"
+      @submit="xuLyThemLichSu"
+    />
+    <bhxh-add-participant-dialog
+      v-model="dialogThemMoi"
+      v-model:participant="formNguoiMoi"
+      @submit="xuLyThemMoiNguoiThamGia"
+    />
 
     <q-dialog v-model="dialogXemLichSu">
       <q-card style="width: 700px; max-width: 80vw">
@@ -78,50 +88,65 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
-    <BhxhAddParticipantDialog
-      :model-value="dialogThemMoi"
-      :form-nguoi-moi="formNguoiMoi"
-      @update:model-value="dialogThemMoi = $event"
-      @submit="xuLyThemMoiNguoiThamGia"
-    />
-
-    <BhxhRecordPaymentDialog
-      :model-value="dialogThemLichSu"
-      :form-lich-su="formLichSu"
-      @update:model-value="dialogThemLichSu = $event"
-      @submit="xuLyThemLichSu"
-    />
   </q-page>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
+import { useQuasar } from "quasar";
 import { useQuery, useMutation, useLazyQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import { useQuasar } from "quasar";
-import {
-  NGUOI_THAM_GIA_BHXH_QUERY,
-  THEM_LICH_SU_DONG,
-  THEM_NGUOI_THAM_GIA_BHXH,
-} from "./graphql";
 
 import BhxhHeader from "src/components/bhxh/BhxhHeader.vue";
+import BhxhFilter from "src/components/bhxh/BhxhFilter.vue";
 import BhxhList from "src/components/bhxh/BhxhList.vue";
-import BhxhEmptyState from "src/components/bhxh/BhxhEmptyState.vue";
-import BhxhAddParticipantDialog from "src/components/bhxh/BhxhAddParticipantDialog.vue";
+import BhxhListItem from "src/components/bhxh/BhxhListItem.vue";
 import BhxhRecordPaymentDialog from "src/components/bhxh/BhxhRecordPaymentDialog.vue";
+import BhxhAddParticipantDialog from "src/components/bhxh/BhxhAddParticipantDialog.vue";
 
 const $q = useQuasar();
 
+// STATES DỮ LIỆU
 const tuKhoaTimKiem = ref("");
+const trangThaiChon = ref("ALL");
 const dialogThemLichSu = ref(false);
 const dialogThemMoi = ref(false);
 const dialogXemLichSu = ref(false);
 const nguoiThamGiaLichSu = ref(null);
 
-const LICH_SU_DONG_BHXH_QUERY = gql`
-  query LichSuDongBhxhQuery($idNguoiThamGia: Int!) {
+const formLichSu = ref({});
+const formNguoiMoi = ref({});
+
+const danhSachTrangThai = [
+  { label: "Tất cả", value: "ALL" },
+  { label: "Đang tham gia", value: "DANG_THAM_GIA" },
+  { label: "Tạm dừng", value: "TAM_DUNG" },
+];
+
+// GRAPHQL
+const QUERY_DANH_SACH_BHXH = gql`
+  query GetDanhSachBhxh($searchKeyword: String) {
+    danhSachBhxh(searchKeyword: $searchKeyword) {
+      id
+      hoTen
+      maSoBhxh
+      ngaySinh
+      gioiTinh
+      cccd
+      maHoGd
+      sdt
+      soDienThoai2
+      diaChi
+      phuongThucDong
+      soThangDong
+      soTien
+      trangThai
+    }
+  }
+`;
+
+const QUERY_LICH_SU_DONG_BHXH = gql`
+  query GetLichSuDongBhxh($idNguoiThamGia: Int!) {
     lichSuDongBhxh(idNguoiThamGia: $idNguoiThamGia) {
       id
       ngayLap
@@ -133,70 +158,98 @@ const LICH_SU_DONG_BHXH_QUERY = gql`
   }
 `;
 
+const MUTATION_THEM_LICH_SU = gql`
+  mutation ThemDongBhxh($input: ThemDongBhxhInput!) {
+    themDongBhxh(input: $input) {
+      success
+      message
+    }
+  }
+`;
+const MUTATION_THEM_NGUOI_MOI = gql`
+  mutation ThemNguoiThamGiaBhxh($input: ThemNguoiThamGiaBhxhInput!) {
+    themNguoiThamGiaBhxh(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+const { result, loading, error, refetch } = useQuery(
+  QUERY_DANH_SACH_BHXH,
+  () => ({ searchKeyword: tuKhoaTimKiem.value ? tuKhoaTimKiem.value.trim() : null }),
+  { fetchPolicy: "network-only" }
+);
+
 const {
   result: lichSuDongResult,
   load: loadLichSuDong,
   loading: lichSuDongLoading,
-} = useLazyQuery(LICH_SU_DONG_BHXH_QUERY);
+} = useLazyQuery(QUERY_LICH_SU_DONG_BHXH);
 
-const moDialogXemLichSu = (nguoiThamGia) => {
-  nguoiThamGiaLichSu.value = nguoiThamGia;
-  loadLichSuDong(undefined, { idNguoiThamGia: parseInt(nguoiThamGia.id, 10) });
-  dialogXemLichSu.value = true;
-};
-
-const formLichSu = ref(null);
-const formNguoiMoi = ref(null);
-
-const { result, loading, refetch } = useQuery(NGUOI_THAM_GIA_BHXH_QUERY, {
-  searchKeyword: tuKhoaTimKiem,
-});
-
-const danhSachBhxh = computed(() => result.value?.danhSachBhxh ?? []);
-
-const { mutate: themLichSuDong, onDone: onThemLichSuDong } = useMutation(
-  THEM_LICH_SU_DONG,
-  {
-    refetchQueries: [
-      { query: NGUOI_THAM_GIA_BHXH_QUERY, variables: { searchKeyword: "" } },
-    ],
-  }
+const { mutate: themLichSuDong, onDone: onThemLichSuDone } = useMutation(
+  MUTATION_THEM_LICH_SU
 );
-onThemLichSuDong(() => {
-  $q.loading.hide();
-  $q.notify({
-    message: "Ghi nhận lịch sử thành công",
-    color: "positive",
-  });
-  dialogThemLichSu.value = false;
-});
-
-const { mutate: themNguoiMoi, onDone: onThemNguoiMoi } = useMutation(
-  THEM_NGUOI_THAM_GIA_BHXH,
-  {
-    refetchQueries: [
-      { query: NGUOI_THAM_GIA_BHXH_QUERY, variables: { searchKeyword: "" } },
-    ],
-  }
+const { mutate: themNguoiMoi, onDone: onThemNguoiMoiDone } = useMutation(
+  MUTATION_THEM_NGUOI_MOI
 );
 
-onThemNguoiMoi(() => {
+const danhSachGoc = computed(() => result.value?.danhSachBhxh ?? []);
+
+const danhSachHienThi = computed(() => {
+  if (trangThaiChon.value === "ALL") {
+    return danhSachGoc.value;
+  }
+  return danhSachGoc.value.filter(
+    (item) => item.trangThai === trangThaiChon.value
+  );
+});
+
+onThemLichSuDone(({ data }) => {
+  const result = data.themDongBhxh;
+  if (result?.success) {
+    $q.notify({
+      type: "positive",
+      message: result.message || "Ghi nhận thành công!",
+    });
+    dialogThemLichSu.value = false;
+    refetch();
+  } else {
+    $q.notify({ type: "negative", message: result?.message || "Có lỗi xảy ra." });
+  }
   $q.loading.hide();
-  $q.notify({
-    message: "Thêm người tham gia thành công",
-    color: "positive",
-  });
-  dialogThemMoi.value = false;
+});
+
+onThemNguoiMoiDone(({ data }) => {
+  const result = data.themNguoiThamGiaBhxh;
+  if (result?.success) {
+    $q.notify({
+      type: "positive",
+      message: result.message || "Thêm người tham gia thành công!",
+    });
+    dialogThemMoi.value = false;
+    refetch();
+  } else {
+    $q.notify({ type: "negative", message: result?.message || "Có lỗi xảy ra." });
+  }
+  $q.loading.hide();
 });
 
 const moDialogThemLichSu = (nguoiThamGia) => {
   formLichSu.value = {
-    idNguoiThamGia: parseInt(nguoiThamGia.id, 10),
+    idNguoiThamGia: nguoiThamGia.id,
+    tenNguoiThamGia: nguoiThamGia.hoTen,
     soThang: nguoiThamGia.soThangDong,
     soTien: nguoiThamGia.soTien,
     phuongThuc: "Chuyen khoan",
   };
   dialogThemLichSu.value = true;
+};
+
+const moDialogXemLichSu = (nguoiThamGia) => {
+  nguoiThamGiaLichSu.value = nguoiThamGia;
+  loadLichSuDong(null, { idNguoiThamGia: parseInt(nguoiThamGia.id, 10) });
+  dialogXemLichSu.value = true;
 };
 
 const xuLyThemLichSu = () => {
