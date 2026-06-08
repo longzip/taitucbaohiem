@@ -8,6 +8,7 @@ class QLBH_GraphQL {
         add_action('graphql_register_types', [$this, 'register_bhyt_query']);
         add_action('graphql_register_types', [$this, 'register_bhyt_mutations']);
         add_action('graphql_register_types', [$this, 'register_collaborators_query']);
+        add_action('graphql_register_types', [$this, 'register_bhyt_stats_query']);
     }
 
     private function can_user_access_qlbh() {
@@ -34,29 +35,29 @@ class QLBH_GraphQL {
             'description' => __('Lấy danh sách người dùng có vai trò đại lý, ctv, editor, admin.', 'qlbh'),
             'resolve' => function() {
                 if (!$this->can_user_access_qlbh()) {
-                    throw new \GraphQL\Error\UserError(__('Bạn không có quyền thực hiện hành động này.', 'qlbh'));
+                   return [];
                 }
 
                 $users = get_users(['role__in' => ['dai_ly_thu', 'cong_tac_vien', 'editor', 'administrator'], 'orderby' => 'display_name']);
                 if (empty($users)) return [];
 
                 $collaborators = array_map(function($user) {
-                    // Label: Use MaNhanVienThu if it exists, otherwise fall back to display name
                     $maNhanVienThu = get_user_meta($user->ID, 'qlbh_ma_nhan_vien_thu', true);
+                    $userIdBhxh = get_user_meta($user->ID, 'qlbh_userid_bhxh', true);
                     $label = !empty($maNhanVienThu) ? $maNhanVienThu : $user->display_name;
-                    
+                    $value = !empty($userIdBhxh) ? $userIdBhxh : $user->user_login;
+
                     $vaiTro = !empty($user->roles[0]) ? $user->roles[0] : '';
-                    
+
                     return [
                         'label'         => $label,
-                        'value'         => $user->user_login, // Use user_login as the consistent value
+                        'value'         => $value,
                         'maNhanVienThu' => $maNhanVienThu ?: '',
-                        'userIdBhxh'    => get_user_meta($user->ID, 'qlbh_userid_bhxh', true) ?: '',
+                        'userIdBhxh'    => $userIdBhxh ?: '',
                         'vaiTro'        => $vaiTro,
                     ];
                 }, $users);
 
-                // Filter out users who might not have a proper label or value
                 $filtered = array_filter($collaborators, function($c) {
                     return !empty($c['label']) && !empty($c['value']);
                 });
@@ -67,10 +68,59 @@ class QLBH_GraphQL {
     }
 
     public function register_graphql_types() {
-         register_graphql_object_type('Bhyt', [
+        register_graphql_object_type('Bhyt', [
             'description' => __('Đối tượng BHYT', 'qlbh'),
             'fields' => [
-                'id' => ['type' => 'Int'], 'hoTen' => ['type' => 'String'], 'maSoBhxh' => ['type' => 'String'], 'soTheBhyt' => ['type' => 'String'], 'ngaySinhDt' => ['type' => 'String'], 'diaChiLh' => ['type' => 'String'], 'gioiTinh' => ['type' => 'String'], 'tenDvi' => ['type' => 'String'], 'maKCB' => ['type' => 'String'], 'ngay5Nam' => ['type' => 'String'], 'tuNgayDt' => ['type' => 'String'], 'denNgayDt' => ['type' => 'String'], 'coTheUuTienCaoHon' => ['type' => 'Boolean'], 'trangThaiTaiTuc' => ['type' => 'String'], 'completed' => ['type' => 'Boolean'], 'updated_at' => ['type' => 'String'], 'disabled' => ['type' => 'Boolean'], 'ghiChu' => ['type' => 'String'], 'soDienThoai' => ['type' => 'String'], 'soDienThoai2' => ['type' => 'String'], 'userName' => ['type' => 'String'],
+                'id' => ['type' => 'ID'],
+                'maSoBhxh' => ['type' => 'String'],
+                'hoTen' => ['type' => 'String'],
+                'ngaySinhDt' => ['type' => 'String'],
+                'gioiTinh' => ['type' => 'Int'],
+                'soCmnd' => ['type' => 'String'],
+                'maHoGd' => ['type' => 'String'],
+                'soDienThoai' => ['type' => 'String'],
+                'soDienThoai2' => ['type' => 'String'],
+                'email' => ['type' => 'String'],
+                'facebook' => ['type' => 'String'],
+                'diaChiLh' => ['type' => 'String'],
+                'ghiChu' => ['type' => 'String'],
+                'starRating' => ['type' => 'Int'],
+                'trangThaiTaiTuc' => ['type' => 'String'],
+                'soTheBhyt' => ['type' => 'String'],
+                'tuNgayDt' => ['type' => 'String'],
+                'denNgayDt' => ['type' => 'String'],
+                'ngay5Nam' => ['type' => 'String'],
+                'maKCB' => ['type' => 'String'],
+                'tenDvi' => ['type' => 'String'],
+                'maToKhaiRieng' => ['type' => 'String'],
+                'tongTien' => ['type' => 'Float'],
+                'ngayLap' => ['type' => 'String'],
+                'maBienLai' => ['type' => 'String'],
+                'maTraCuu' => ['type' => 'String'],
+                'soThang' => ['type' => 'Int'],
+                'nguoiThuMay' => ['type' => 'String'],
+                'userName' => ['type' => 'String'],
+                'completed' => ['type' => 'Boolean'],
+                'thuTruoc' => ['type' => 'Boolean'],
+                'ngayThuTruoc' => ['type' => 'String'],
+                'soTienThuTruoc' => ['type' => 'Float'],
+                'nhanVienThu' => ['type' => 'String'],
+                'ngayTraCuu' => ['type' => 'String'],
+                'createdAt' => ['type' => 'String'],
+                'updatedAt' => ['type' => 'String'],
+                // Fields for backwards compatibility
+                'coTheUuTienCaoHon' => ['type' => 'Boolean'],
+                'disabled' => ['type' => 'Boolean'],
+                'updated_at' => ['type' => 'String'],
+            ],
+        ]);
+
+        register_graphql_object_type('BhytStats', [
+            'description' => __('Thống kê BHYT', 'qlbh'),
+            'fields' => [
+                'total' => ['type' => 'Int'],
+                'active' => ['type' => 'Int'],
+                'expired' => ['type' => 'Int'],
             ],
         ]);
     }
@@ -81,7 +131,7 @@ class QLBH_GraphQL {
             'args' => [ 'name' => ['type' => 'String'], 'userName' => ['type' => 'String'], 'trangThai' => ['type' => 'String'], ],
             'resolve' => function ($root, $args) {
                 if (!$this->can_user_access_qlbh()) {
-                    throw new \GraphQL\Error\UserError(__('Bạn không có quyền truy vấn dữ liệu BHYT.', 'qlbh'));
+                    return [];
                 }
 
                 global $wpdb;
@@ -95,7 +145,6 @@ class QLBH_GraphQL {
                     array_push($params, $name_search, $name_search, $name_search);
                 }
 
-                // SIMPLIFIED: The 'userName' argument from GraphQL is now always the user_login
                 if (!empty($args['userName'])) {
                     $query .= " AND userName = %s";
                     $params[] = $args['userName'];
@@ -108,6 +157,38 @@ class QLBH_GraphQL {
                 
                 $query .= " ORDER BY updated_at DESC LIMIT 50";
                 return $wpdb->get_results($wpdb->prepare($query, $params), ARRAY_A) ?: [];
+            }
+        ]);
+    }
+
+    public function register_bhyt_stats_query() {
+        register_graphql_field('RootQuery', 'bhytStats', [
+            'type' => 'BhytStats',
+            'args' => [ 'userName' => ['type' => 'String'] ],
+            'resolve' => function($root, $args) {
+                if (!$this->can_user_access_qlbh()) {
+                     return ['total' => 0, 'active' => 0, 'expired' => 0];
+                }
+
+                global $wpdb;
+                $table_name = $wpdb->prefix . 'bhyts';
+                $params = [];
+                $where_clause = 'WHERE 1=1';
+
+                if (!empty($args['userName'])) {
+                    $where_clause .= " AND userName = %s";
+                    $params[] = $args['userName'];
+                }
+
+                $total = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$table_name} {$where_clause}", $params));
+                $active = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$table_name} {$where_clause} AND denNgayDt >= CURDATE()", $params));
+                $expired = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$table_name} {$where_clause} AND denNgayDt < CURDATE()", $params));
+
+                return [
+                    'total' => (int) $total,
+                    'active' => (int) $active,
+                    'expired' => (int) $expired,
+                ];
             }
         ]);
     }
