@@ -125,6 +125,18 @@ class QLBH_GraphQL {
                 'expired' => ['type' => 'Int'],
             ],
         ]);
+
+        register_graphql_object_type('LichSuDong', [
+            'description' => 'Một bản ghi trong lịch sử đóng tiền',
+            'fields' => [
+                'id' => ['type' => 'ID'],
+                'ngayLap' => ['type' => 'String'],
+                'tongTien' => ['type' => 'Float'],
+                'hinhThucTt' => ['type' => 'String'],
+                'ghiChuDong' => ['type' => 'String'],
+                'nguoiThu' => ['type' => 'String'],
+            ]
+        ]);
     }
 
     public function register_bhyt_query() {
@@ -253,6 +265,31 @@ class QLBH_GraphQL {
                 $results = $wpdb->get_results($wpdb->prepare($query, $params), ARRAY_A);
 
                 return $results ?: [];
+            }
+        ]);
+
+        register_graphql_field('RootQuery', 'lichSuDongBhxh', [
+            'type' => ['list_of' => 'LichSuDong'],
+            'description' => __('Lấy lịch sử đóng BHXH tự nguyện của một người.', 'qlbh'),
+            'args' => [
+                'idNguoiThamGia' => ['type' => ['non_null' => 'Int']],
+            ],
+            'resolve' => function($root, $args) {
+                if (!$this->can_user_access_qlbh()) {
+                   return [];
+                }
+                global $wpdb;
+                $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
+                $id_nguoi_tham_gia = $args['idNguoiThamGia'];
+        
+                $query = "
+                    SELECT id, ngayLap, tongTien, hinhThucTt, ghiChuDong, nguoiThu
+                    FROM {$table_lich_su}
+                    WHERE khachHangId = %d AND loaiGiaoDich = 'BHXH_TN'
+                    ORDER BY ngayLap DESC
+                ";
+        
+                return $wpdb->get_results($wpdb->prepare($query, $id_nguoi_tham_gia), ARRAY_A) ?: [];
             }
         ]);
     }
@@ -391,6 +428,19 @@ class QLBH_GraphQL {
                 if ($result === false) {
                     return ['success' => false, 'message' => 'Lỗi khi cập nhật cơ sở dữ liệu.'];
                 }
+
+                // Add payment to history
+                $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
+                $lich_su_data = [
+                    'khachHangId' => $id_nguoi_tham_gia,
+                    'loaiGiaoDich' => 'BHXH_TN', // BHXH Tự nguyện
+                    'ngayLap' => current_time('mysql', 1),
+                    'tongTien' => $so_tien,
+                    'hinhThucTt' => $input['phuongThuc'] ?? 'Chưa rõ',
+                    'ghiChuDong' => "Đóng BHXH Tự nguyện - {$so_thang} tháng",
+                    'nguoiThu' => wp_get_current_user()->user_login,
+                ];
+                $wpdb->insert($table_lich_su, $lich_su_data);
 
                 return ['success' => true, 'message' => 'Ghi nhận đóng BHXH thành công.'];
             }
