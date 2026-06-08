@@ -1,166 +1,180 @@
 <template>
-  <q-page class="q-pa-md">
-    <bhxh-header
-      :loading="loading"
-      @add="moDialogThemMoi"
-      @refresh="refetch"
+  <q-page class="page-quan-ly-bhxh">
+    <BhxhHeader
+      :total="data?.danhSachBhxh.length"
+      v-model:tu-khoa="tuKhoaTimKiem"
+      @tim-kiem="refetch()"
+      @xoa-tim-kiem="xoaTimKiem"
+      @them-moi="moDialogThemMoi"
     />
-    <bhxh-filter
-      v-model:searchTerm="tuKhoaTimKiem"
-      v-model:status="trangThaiChon"
-      :status-options="danhSachTrangThai"
-      @search="refetch"
-      @clear="xoaTimKiem"
-    />
-    <bhxh-list :items="danhSachHienThi" :loading="loading">
-      <template #default="{ item }">
-        <bhxh-list-item
-          :participant="item"
-          @view-history="moDialogXemLichSu"
-          @record-payment="moDialogThemLichSu"
-        />
-      </template>
-    </bhxh-list>
-    <bhxh-record-payment-dialog
-      v-model="dialogThemLichSu"
-      v-model:payment="formLichSu"
-      @submit="xuLyThemLichSu"
-    />
-    <bhxh-add-participant-dialog
-      v-model="dialogThemMoi"
-      v-model:participant="formNguoiMoi"
+
+    <div v-if="loading && !data" class="loading-container">
+      <q-spinner-dots color="primary" size="40px" />
+    </div>
+
+    <div v-else>
+      <BhxhList
+        v-if="data?.danhSachBhxh.length"
+        :list="data.danhSachBhxh"
+        @ghi-danh="moDialogThemLichSu"
+        @xem-lich-su="moDialogXemLichSu"
+      />
+      <BhxhEmptyState v-else @them-moi="moDialogThemMoi" />
+    </div>
+
+    <q-dialog v-model="dialogXemLichSu">
+      <q-card style="width: 700px; max-width: 80vw">
+        <q-card-section>
+          <div class="text-h6">Lịch sử đóng</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <div v-if="nguoiThamGiaLichSu">
+            <p>
+              <strong>Họ và tên:</strong>
+              {{ nguoiThamGiaLichSu.hoTen }}
+            </p>
+          </div>
+
+          <div v-if="lichSuDongLoading" class="row justify-center q-my-md">
+            <q-spinner-dots color="primary" size="40px" />
+          </div>
+
+          <q-list
+            v-else-if="lichSuDongResult?.lichSuDongBhxh.length"
+            bordered
+            separator
+          >
+            <q-item
+              v-for="item in lichSuDongResult.lichSuDongBhxh"
+              :key="item.id"
+            >
+              <q-item-section>
+                <q-item-label>{{ item.ghiChuDong }}</q-item-label>
+                <q-item-label caption>
+                  Ngày đóng:
+                  {{ new Date(item.ngayLap).toLocaleDateString() }}
+                  - Số tiền:
+                  {{
+                    new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(item.tongTien)
+                  }}
+                  -
+                  {{ item.hinhThucTt }}
+                  - Thu bởi:
+                  {{ item.nguoiThu }}
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+
+          <div v-else class="text-center q-my-md">Chưa có lịch sử đóng.</div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Đóng" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <BhxhAddParticipantDialog
+      :model-value="dialogThemMoi"
+      :form-nguoi-moi="formNguoiMoi"
+      @update:model-value="dialogThemMoi = $event"
       @submit="xuLyThemMoiNguoiThamGia"
+    />
+
+    <BhxhRecordPaymentDialog
+      :model-value="dialogThemLichSu"
+      :form-lich-su="formLichSu"
+      @update:model-value="dialogThemLichSu = $event"
+      @submit="xuLyThemLichSu"
     />
   </q-page>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
+import { useQuery, useMutation, useLazyQuery } from "@vue/apollo-composable";
 import { useQuasar } from "quasar";
-import { useQuery, useMutation } from "@vue/apollo-composable";
-import gql from "graphql-tag";
+import { NGUOI_THAM_GIA_BHXH_QUERY } from "src/queries/nguoi-tham-gia-bhxh.js";
+import { LICH_SU_DONG_BHXH_QUERY } from "src/queries/lich-su-dong-bhxh.js";
+import { THEM_LICH_SU_DONG } from "src/mutations/them-lich-su-dong.js";
+import { THEM_NGUOI_THAM_GIA_BHXH } from "src/mutations/them-nguoi-tham-gia-bhxh.js";
 
 import BhxhHeader from "src/components/bhxh/BhxhHeader.vue";
-import BhxhFilter from "src/components/bhxh/BhxhFilter.vue";
 import BhxhList from "src/components/bhxh/BhxhList.vue";
-import BhxhListItem from "src/components/bhxh/BhxhListItem.vue";
-import BhxhRecordPaymentDialog from "src/components/bhxh/BhxhRecordPaymentDialog.vue";
+import BhxhEmptyState from "src/components/bhxh/BhxhEmptyState.vue";
 import BhxhAddParticipantDialog from "src/components/bhxh/BhxhAddParticipantDialog.vue";
+import BhxhRecordPaymentDialog from "src/components/bhxh/BhxhRecordPaymentDialog.vue";
 
 const $q = useQuasar();
 
-// STATES DỮ LIỆU
 const tuKhoaTimKiem = ref("");
-const trangThaiChon = ref("ALL");
 const dialogThemLichSu = ref(false);
 const dialogThemMoi = ref(false);
+const dialogXemLichSu = ref(false);
+const nguoiThamGiaLichSu = ref(null);
 
-const formLichSu = ref({});
-const formNguoiMoi = ref({});
+const {
+  result: lichSuDongResult,
+  load: loadLichSuDong,
+  loading: lichSuDongLoading,
+} = useLazyQuery(LICH_SU_DONG_BHXH_QUERY);
 
-const danhSachTrangThai = [
-  { label: "Tất cả", value: "ALL" },
-  { label: "Đang tham gia", value: "DANG_THAM_GIA" },
-  { label: "Tạm dừng", value: "TAM_DUNG" },
-];
+const moDialogXemLichSu = (nguoiThamGia) => {
+  nguoiThamGiaLichSu.value = nguoiThamGia;
+  loadLichSuDong(undefined, { idNguoiThamGia: parseInt(nguoiThamGia.id, 10) });
+  dialogXemLichSu.value = true;
+};
 
-// GRAPHQL
-const QUERY_DANH_SACH_BHXH = gql`
-  query GetDanhSachBhxh($searchKeyword: String) {
-    danhSachBhxh(searchKeyword: $searchKeyword) {
-      id
-      hoTen
-      maSoBhxh
-      ngaySinh
-      gioiTinh
-      cccd
-      maHoGd
-      sdt
-      soDienThoai2
-      diaChi
-      phuongThucDong
-      soThangDong
-      soTien
-      trangThai
-    }
-  }
-`;
+const formLichSu = ref(null);
+const formNguoiMoi = ref(null);
 
-const MUTATION_THEM_LICH_SU = gql`
-  mutation ThemDongBhxh($input: ThemDongBhxhInput!) {
-    themDongBhxh(input: $input) {
-      success
-      message
-    }
-  }
-`;
-const MUTATION_THEM_NGUOI_MOI = gql`
-  mutation ThemNguoiThamGiaBhxh($input: ThemNguoiThamGiaBhxhInput!) {
-    themNguoiThamGiaBhxh(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-const { result, loading, error, refetch } = useQuery(
-  QUERY_DANH_SACH_BHXH,
-  () => ({ searchKeyword: tuKhoaTimKiem.value ? tuKhoaTimKiem.value.trim() : null }),
-  { fetchPolicy: "network-only" }
-);
-
-const { mutate: themLichSuDong, onDone: onThemLichSuDone } = useMutation(
-  MUTATION_THEM_LICH_SU
-);
-const { mutate: themNguoiMoi, onDone: onThemNguoiMoiDone } = useMutation(
-  MUTATION_THEM_NGUOI_MOI
-);
-
-const danhSachGoc = computed(() => result.value?.danhSachBhxh ?? []);
-
-const danhSachHienThi = computed(() => {
-  if (trangThaiChon.value === "ALL") {
-    return danhSachGoc.value;
-  }
-  return danhSachGoc.value.filter(
-    (item) => item.trangThai === trangThaiChon.value
-  );
+const { result: data, loading, refetch } = useQuery(NGUOI_THAM_GIA_BHXH_QUERY, {
+  searchKeyword: tuKhoaTimKiem,
 });
 
-onThemLichSuDone(({ data }) => {
-  const result = data.themDongBhxh;
-  if (result?.success) {
-    $q.notify({
-      type: "positive",
-      message: result.message || "Ghi nhận thành công!",
-    });
-    dialogThemLichSu.value = false;
-    refetch();
-  } else {
-    $q.notify({ type: "negative", message: result?.message || "Có lỗi xảy ra." });
+const { mutate: themLichSuDong, onDone: onThemLichSuDong } = useMutation(
+  THEM_LICH_SU_DONG,
+  {
+    refetchQueries: [
+      { query: NGUOI_THAM_GIA_BHXH_QUERY, variables: { searchKeyword: "" } },
+    ],
   }
+);
+onThemLichSuDong(() => {
   $q.loading.hide();
+  $q.notify({
+    message: "Ghi nhận lịch sử thành công",
+    color: "positive",
+  });
+  dialogThemLichSu.value = false;
 });
 
-onThemNguoiMoiDone(({ data }) => {
-  const result = data.themNguoiThamGiaBhxh;
-  if (result?.success) {
-    $q.notify({
-      type: "positive",
-      message: result.message || "Thêm người tham gia thành công!",
-    });
-    dialogThemMoi.value = false;
-    refetch();
-  } else {
-    $q.notify({ type: "negative", message: result?.message || "Có lỗi xảy ra." });
+const { mutate: themNguoiMoi, onDone: onThemNguoiMoi } = useMutation(
+  THEM_NGUOI_THAM_GIA_BHXH,
+  {
+    refetchQueries: [
+      { query: NGUOI_THAM_GIA_BHXH_QUERY, variables: { searchKeyword: "" } },
+    ],
   }
+);
+
+onThemNguoiMoi(() => {
   $q.loading.hide();
+  $q.notify({
+    message: "Thêm người tham gia thành công",
+    color: "positive",
+  });
+  dialogThemMoi.value = false;
 });
 
 const moDialogThemLichSu = (nguoiThamGia) => {
   formLichSu.value = {
-    idNguoiThamGia: nguoiThamGia.id,
-    tenNguoiThamGia: nguoiThamGia.hoTen,
+    idNguoiThamGia: parseInt(nguoiThamGia.id, 10),
     soThang: nguoiThamGia.soThangDong,
     soTien: nguoiThamGia.soTien,
     phuongThuc: "Chuyen khoan",
@@ -189,5 +203,4 @@ const xoaTimKiem = () => {
   tuKhoaTimKiem.value = "";
   refetch();
 };
-
 </script>
