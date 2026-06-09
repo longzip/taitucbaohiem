@@ -43,7 +43,7 @@ class QLBH_GraphQL_BHXH
                 'soTien'              => ['type' => 'Float'],
                 'mucTienDong'         => ['type' => 'Float'],
                 'trangThai'           => ['type' => 'String'],
-                'maTraCuu'            => ['type' => 'String'],
+                'ngayHetHanBhxh'      => ['type' => 'String'],
                 'lichSuDongDaThuTien' => [
                     'type'        => 'LichSuDong',
                     'description' => 'Lấy lịch sử đóng tiền gần nhất đã thu nhưng chưa có mã tra cứu.',
@@ -123,7 +123,8 @@ class QLBH_GraphQL_BHXH
                         h.soThangDong,
                         h.soTien,
                         h.mucTienDong,
-                        h.trangThai
+                        h.trangThai,
+                        h.ngayHetHanBhxh
                     FROM
                         {$table_bhxh} h
                     LEFT JOIN
@@ -141,7 +142,18 @@ class QLBH_GraphQL_BHXH
 
                 $results  = $wpdb->get_results($wpdb->prepare($query, $params), ARRAY_A);
 
-                return $results ?: [];
+                if (empty($results)) {
+                    return [];
+                }
+
+                return array_map(function ($item) {
+                    $item['id'] = isset($item['id']) ? (int) $item['id'] : null;
+                    $item['gioiTinh'] = isset($item['gioiTinh']) ? (int) $item['gioiTinh'] : null;
+                    $item['soThangDong'] = isset($item['soThangDong']) ? (int) $item['soThangDong'] : null;
+                    $item['soTien'] = isset($item['soTien']) ? (float) $item['soTien'] : null;
+                    $item['mucTienDong'] = isset($item['mucTienDong']) ? (float) $item['mucTienDong'] : null;
+                    return $item;
+                }, $results);
             },
         ]);
 
@@ -389,6 +401,41 @@ class QLBH_GraphQL_BHXH
                 }
 
                 return ['success' => true, 'message' => 'Thêm người tham gia BHXH thành công.'];
+            },
+        ]);
+
+        register_graphql_mutation('xoaLichSuDongBhxh', [
+            'inputFields'         => [
+                'id' => ['type' => ['non_null' => 'ID'], 'description' => 'ID của lịch sử đóng cần xóa'],
+            ],
+            'outputFields'        => [
+                'success' => ['type' => 'Boolean'],
+                'message' => ['type' => 'String'],
+            ],
+            'mutateAndGetPayload' => function ($input) {
+                if (! $this->can_user_access_qlbh()) {
+                    throw new \GraphQL\Error\UserError(__('Bạn không có quyền thực hiện hành động này.', 'qlbh'));
+                }
+
+                global $wpdb;
+                $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
+                $id = (int) $input['id'];
+
+                if (empty($id)) {
+                    throw new \GraphQL\Error\UserError(__('ID lịch sử đóng không hợp lệ.', 'qlbh'));
+                }
+
+                $result = $wpdb->delete($table_lich_su, ['id' => $id], ['%d']);
+
+                if ($result === false) {
+                    return ['success' => false, 'message' => 'Lỗi khi xóa lịch sử đóng.'];
+                }
+
+                if ($result === 0) {
+                    return ['success' => false, 'message' => 'Không tìm thấy lịch sử đóng để xóa.'];
+                }
+
+                return ['success' => true, 'message' => 'Đã xóa thành công lịch sử đóng.'];
             },
         ]);
     }

@@ -30,13 +30,21 @@
         </q-btn>
         <q-btn
           size="sm"
-          color="positive"
-          icon="note_add"
-          label="Ghi nhận đóng"
+          :color="participant.lichSuDongDaThuTien ? 'orange' : 'positive'"
+          :icon="participant.lichSuDongDaThuTien ? 'edit' : 'note_add'"
+          :label="
+            participant.lichSuDongDaThuTien ? 'Cập nhật' : 'Ghi nhận đóng'
+          "
           dense
           class="q-px-sm"
           @click="$emit('record-payment', participant)"
-        />
+        >
+          <q-tooltip>{{
+            participant.lichSuDongDaThuTien
+              ? "Cập nhật ghi nhận đóng"
+              : "Ghi nhận đóng mới"
+          }}</q-tooltip>
+        </q-btn>
       </div>
     </q-card-section>
 
@@ -44,7 +52,9 @@
     <q-card-section class="q-pa-md q-gutter-y-sm" style="font-size: 13px">
       <div class="row">
         <span class="col-4 text-grey-8">Mã số BHXH:</span>
-        <span class="col-8 text-bold text-primary">{{ participant.maSoBhxh }}</span>
+        <span class="col-8 text-bold text-primary">{{
+          participant.maSoBhxh
+        }}</span>
       </div>
       <div class="row">
         <span class="col-4 text-grey-8">Ngày sinh:</span>
@@ -65,18 +75,24 @@
       <div class="row">
         <span class="col-4 text-grey-8">Điện thoại:</span>
         <span class="col-8">
-          <a :href="`tel:${participant.sdt}`">{{ participant.sdt || "N/A" }}</a>
+          <a :href="`tel:${participant.sdt}`">{{
+            participant.sdt || "N/A"
+          }}</a>
         </span>
       </div>
       <div class="row">
         <span class="col-4 text-grey-8">Điện thoại 2:</span>
         <span class="col-8">
-          <a :href="`tel:${participant.soDienThoai2}`">{{ participant.soDienThoai2 || "N/A" }}</a>
+          <a :href="`tel:${participant.soDienThoai2}`">{{
+            participant.soDienThoai2 || "N/A"
+          }}</a>
         </span>
       </div>
       <div class="row">
         <span class="col-4 text-grey-8">Địa chỉ:</span>
-        <span class="col-8 text-caption">{{ participant.diaChi || "N/A" }}</span>
+        <span class="col-8 text-caption">{{
+          participant.diaChi || "N/A"
+        }}</span>
       </div>
 
       <q-separator class="q-my-md" />
@@ -85,7 +101,9 @@
       <div class="row justify-between items-center text-center">
         <div class="col">
           <div class="text-caption text-grey-8">P.thức đóng</div>
-          <div class="text-weight-bold">{{ participant.phuongThucDong }}</div>
+          <div class="text-weight-bold">
+            {{ participant.phuongThucDong }}
+          </div>
         </div>
         <div class="col">
           <div class="text-caption text-grey-8">Số tháng</div>
@@ -120,7 +138,13 @@ const statusMap = {
   DA_THU_TIEN: { label: "Đã thu tiền", color: "accent" },
 };
 
-const statusInfo = computed(() => statusMap[props.participant.trangThai] || { label: "Không rõ", color: "grey" });
+const statusInfo = computed(
+  () =>
+    statusMap[props.participant.trangThai] || {
+      label: "Không rõ",
+      color: "grey",
+    }
+);
 const statusLabel = computed(() => statusInfo.value.label);
 const statusColor = computed(() => statusInfo.value.color);
 
@@ -138,9 +162,10 @@ const genderText = computed(() => {
 
 const formattedAmount = computed(() =>
   props.participant.soTien
-    ? new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
-        props.participant.soTien
-      )
+    ? new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(props.participant.soTien)
     : "0 đ"
 );
 </script>

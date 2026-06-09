@@ -1,10 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    <bhxh-header
-      :loading="loading"
-      @add="moDialogThemMoi"
-      @refresh="refetch"
-    />
+    <bhxh-header :loading="loading" @add="moDialogThemMoi" @refresh="refetch" />
     <bhxh-filter
       v-model:searchTerm="tuKhoaTimKiem"
       v-model:status="trangThaiChon"
@@ -25,6 +21,7 @@
       v-model="dialogThemLichSu"
       v-model:payment="formLichSu"
       @submit="xuLyThemLichSu"
+      @delete="xoaLichSu"
     />
     <bhxh-add-participant-dialog
       v-model="dialogThemMoi"
@@ -76,6 +73,15 @@
                   - Thu bởi:
                   {{ item.nguoiThu }}
                 </q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn
+                  icon="delete"
+                  color="negative"
+                  flat
+                  dense
+                  @click="xoaLichSu(item.id)"
+                />
               </q-item-section>
             </q-item>
           </q-list>
@@ -143,11 +149,14 @@ const QUERY_DANH_SACH_BHXH = gql`
       soThangDong
       soTien
       trangThai
-      maTraCuu
-      lichSuDongDaThuTien{
+      ngayHetHanBhxh
+      lichSuDongDaThuTien {
         id
         ngayLap
         tongTien
+        hinhThucTt
+        ghiChuDong
+        maTraCuu
       }
     }
   }
@@ -183,9 +192,20 @@ const MUTATION_THEM_NGUOI_MOI = gql`
   }
 `;
 
+const MUTATION_XOA_LICH_SU = gql`
+  mutation XoaLichSuDongBhxh($id: ID!) {
+    xoaLichSuDongBhxh(input: { id: $id }) {
+      success
+      message
+    }
+  }
+`;
+
 const { result, loading, error, refetch } = useQuery(
   QUERY_DANH_SACH_BHXH,
-  () => ({ searchKeyword: tuKhoaTimKiem.value ? tuKhoaTimKiem.value.trim() : null }),
+  () => ({
+    searchKeyword: tuKhoaTimKiem.value ? tuKhoaTimKiem.value.trim() : null,
+  }),
   { fetchPolicy: "network-only" }
 );
 
@@ -201,6 +221,9 @@ const { mutate: themLichSuDong, onDone: onThemLichSuDone } = useMutation(
 const { mutate: themNguoiMoi, onDone: onThemNguoiMoiDone } = useMutation(
   MUTATION_THEM_NGUOI_MOI
 );
+
+const { mutate: xoaLichSuDong, onDone: onXoaLichSuDone } =
+  useMutation(MUTATION_XOA_LICH_SU);
 
 const danhSachGoc = computed(() => result.value?.danhSachBhxh ?? []);
 
@@ -223,7 +246,10 @@ onThemLichSuDone(({ data }) => {
     dialogThemLichSu.value = false;
     refetch();
   } else {
-    $q.notify({ type: "negative", message: result?.message || "Có lỗi xảy ra." });
+    $q.notify({
+      type: "negative",
+      message: result?.message || "Có lỗi xảy ra.",
+    });
   }
   $q.loading.hide();
 });
@@ -238,26 +264,86 @@ onThemNguoiMoiDone(({ data }) => {
     dialogThemMoi.value = false;
     refetch();
   } else {
-    $q.notify({ type: "negative", message: result?.message || "Có lỗi xảy ra." });
+    $q.notify({
+      type: "negative",
+      message: result?.message || "Có lỗi xảy ra.",
+    });
+  }
+  $q.loading.hide();
+});
+
+onXoaLichSuDone(({ data }) => {
+  const result = data.xoaLichSuDongBhxh;
+  if (result?.success) {
+    $q.notify({
+      type: "positive",
+      message: result.message || "Xóa thành công!",
+    });
+    refetch();
+    // Optionally, re-fetch the history if the dialog is still open
+    if (dialogXemLichSu.value && nguoiThamGiaLichSu.value) {
+      loadLichSuDong(null, {
+        idNguoiThamGia: parseInt(nguoiThamGiaLichSu.value.id, 10),
+      });
+    }
+    if (dialogThemLichSu.value) {
+      dialogThemLichSu.value = false;
+    }
+  } else {
+    $q.notify({
+      type: "negative",
+      message: result?.message || "Có lỗi xảy ra.",
+    });
   }
   $q.loading.hide();
 });
 
 const moDialogThemLichSu = (nguoiThamGia) => {
   const soThang = nguoiThamGia.soThangDong;
-  const ngayHetHan = new Date();
-  ngayHetHan.setMonth(ngayHetHan.getMonth() + soThang);
 
-  formLichSu.value = {
-    maSoBhxh: nguoiThamGia.maSoBhxh,
-    tenNguoiThamGia: nguoiThamGia.hoTen,
-    soThang: soThang,
-    soTien: nguoiThamGia.soTien,
-    phuongThuc: "Chuyen khoan",
-    ngayHetHanBhxh: ngayHetHan.toISOString().split('T')[0],
-    maTraCuu: "", // Initialize as empty
-    tuThangNam: new Date().toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' }),
-  };
+  if (nguoiThamGia.lichSuDongDaThuTien) {
+    // UPDATE: Use the existing expiration date from the main participant record.
+    formLichSu.value = {
+      id: nguoiThamGia.lichSuDongDaThuTien.id,
+      maSoBhxh: nguoiThamGia.maSoBhxh,
+      tenNguoiThamGia: nguoiThamGia.hoTen,
+      soThang: soThang,
+      soTien: nguoiThamGia.lichSuDongDaThuTien.tongTien,
+      phuongThuc: nguoiThamGia.lichSuDongDaThuTien.hinhThucTt,
+      ngayHetHanBhxh: nguoiThamGia.ngayHetHanBhxh
+        ? nguoiThamGia.ngayHetHanBhxh.split(" ")[0]
+        : "", // Use existing date
+      maTraCuu: nguoiThamGia.lichSuDongDaThuTien.maTraCuu,
+      tuThangNam: new Date(
+        nguoiThamGia.lichSuDongDaThuTien.ngayLap
+      ).toLocaleDateString("vi-VN", { month: "2-digit", year: "numeric" }),
+    };
+  } else {
+    // CREATE: Calculate a new expiration date.
+    // Base the calculation on the current expiration date if it's in the future, otherwise use today.
+    const baseDate =
+      nguoiThamGia.ngayHetHanBhxh &&
+      new Date(nguoiThamGia.ngayHetHanBhxh) > new Date()
+        ? new Date(nguoiThamGia.ngayHetHanBhxh)
+        : new Date();
+
+    const ngayHetHan = new Date(baseDate);
+    ngayHetHan.setMonth(ngayHetHan.getMonth() + soThang);
+
+    formLichSu.value = {
+      maSoBhxh: nguoiThamGia.maSoBhxh,
+      tenNguoiThamGia: nguoiThamGia.hoTen,
+      soThang: soThang,
+      soTien: nguoiThamGia.soTien,
+      phuongThuc: "Chuyen khoan",
+      ngayHetHanBhxh: ngayHetHan.toISOString().split("T")[0],
+      maTraCuu: "", // Initialize as empty
+      tuThangNam: new Date().toLocaleDateString("vi-VN", {
+        month: "2-digit",
+        year: "numeric",
+      }),
+    };
+  }
   dialogThemLichSu.value = true;
 };
 
@@ -288,5 +374,17 @@ const xuLyThemMoiNguoiThamGia = () => {
 const xoaTimKiem = () => {
   tuKhoaTimKiem.value = "";
   refetch();
+};
+
+const xoaLichSu = (id) => {
+  $q.dialog({
+    title: "Xác nhận xóa",
+    message: "Bạn có chắc chắn muốn xóa lịch sử đóng này không?",
+    cancel: true,
+    persistent: true,
+  }).onOk(() => {
+    $q.loading.show({ message: "Đang xóa..." });
+    xoaLichSuDong({ id });
+  });
 };
 </script>
