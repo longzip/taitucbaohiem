@@ -144,7 +144,11 @@ const QUERY_DANH_SACH_BHXH = gql`
       soTien
       trangThai
       maTraCuu
-      lichSuDongDaThuTien
+      lichSuDongDaThuTien{
+        id
+        ngayLap
+        tongTien
+      }
     }
   }
 `;
