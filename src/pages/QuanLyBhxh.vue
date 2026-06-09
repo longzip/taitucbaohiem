@@ -75,7 +75,7 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn
+                <q-btn v-if="!item.soBienLai"
                   icon="delete"
                   color="negative"
                   flat
@@ -125,10 +125,11 @@ const formNguoiMoi = ref({});
 
 const danhSachTrangThai = [
   { label: "Tất cả", value: "ALL" },
-  { label: "Đang tham gia", value: "DANG_THAM_GIA" },
+  { label: "Đang tham gia", value: "TRONG_HAN" },
   { label: "Tạm dừng", value: "TAM_DUNG" },
   { label: "Đã nộp", value: "DA_NOP" },
   { label: "Đã thu tiền", value: "DA_THU_TIEN" },
+  { label: "Đã thu tiền", value: "CHAM_DONG" },
 ];
 
 // GRAPHQL
@@ -171,6 +172,10 @@ const QUERY_LICH_SU_DONG_BHXH = gql`
       hinhThucTt
       ghiChuDong
       nguoiThu
+      maTraCuu
+      ngayDuKienGiaHan
+      soBienLai
+      trangThaiNhac
     }
   }
 `;
