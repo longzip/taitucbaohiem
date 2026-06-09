@@ -15,6 +15,9 @@
         </div>
       </div>
       <div class="row items-center q-gutter-x-xs">
+        <q-badge :color="statusColor" text-color="white" class="q-mr-sm">
+          {{ statusLabel }}
+        </q-badge>
         <q-btn
           size="sm"
           color="secondary"
@@ -109,6 +112,17 @@ const props = defineProps({
 });
 
 defineEmits(["view-history", "record-payment"]);
+
+const statusMap = {
+  DANG_THAM_GIA: { label: "Đang tham gia", color: "positive" },
+  TAM_DUNG: { label: "Tạm dừng", color: "warning" },
+  DA_NOP: { label: "Đã nộp", color: "info" },
+  DA_THU_TIEN: { label: "Đã thu tiền", color: "accent" },
+};
+
+const statusInfo = computed(() => statusMap[props.participant.trangThai] || { label: "Không rõ", color: "grey" });
+const statusLabel = computed(() => statusInfo.value.label);
+const statusColor = computed(() => statusInfo.value.color);
 
 const formattedDob = computed(() => {
   if (!props.participant.ngaySinh) return "N/A";

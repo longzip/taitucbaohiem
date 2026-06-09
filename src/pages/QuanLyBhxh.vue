@@ -121,6 +121,8 @@ const danhSachTrangThai = [
   { label: "Tất cả", value: "ALL" },
   { label: "Đang tham gia", value: "DANG_THAM_GIA" },
   { label: "Tạm dừng", value: "TAM_DUNG" },
+  { label: "Đã nộp", value: "DA_NOP" },
+  { label: "Đã thu tiền", value: "DA_THU_TIEN" },
 ];
 
 // GRAPHQL
@@ -141,6 +143,8 @@ const QUERY_DANH_SACH_BHXH = gql`
       soThangDong
       soTien
       trangThai
+      maTraCuu
+      lichSuDongDaThuTien
     }
   }
 `;
@@ -236,12 +240,19 @@ onThemNguoiMoiDone(({ data }) => {
 });
 
 const moDialogThemLichSu = (nguoiThamGia) => {
+  const soThang = nguoiThamGia.soThangDong;
+  const ngayHetHan = new Date();
+  ngayHetHan.setMonth(ngayHetHan.getMonth() + soThang);
+
   formLichSu.value = {
-    idNguoiThamGia: nguoiThamGia.id,
+    maSoBhxh: nguoiThamGia.maSoBhxh,
     tenNguoiThamGia: nguoiThamGia.hoTen,
-    soThang: nguoiThamGia.soThangDong,
+    soThang: soThang,
     soTien: nguoiThamGia.soTien,
     phuongThuc: "Chuyen khoan",
+    ngayHetHanBhxh: ngayHetHan.toISOString().split('T')[0],
+    maTraCuu: "", // Initialize as empty
+    tuThangNam: new Date().toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' }),
   };
   dialogThemLichSu.value = true;
 };
@@ -254,7 +265,8 @@ const moDialogXemLichSu = (nguoiThamGia) => {
 
 const xuLyThemLichSu = () => {
   $q.loading.show({ message: "Đang ghi nhận..." });
-  themLichSuDong({ input: formLichSu.value });
+  const { tenNguoiThamGia, ...input } = formLichSu.value;
+  themLichSuDong({ input });
 };
 
 const moDialogThemMoi = () => {

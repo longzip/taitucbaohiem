@@ -34,18 +34,52 @@ class QLBH_GraphQL_BHXH {
                 'soTien' => ['type' => 'Float'],
                 'mucTienDong' => ['type' => 'Float'],
                 'trangThai' => ['type' => 'String'],
+                'maTraCuu' => ['type' => 'String'],
+                'lichSuDongDaThuTien' => [
+                    'type' => 'LichSuDong',
+                    'description' => 'Lấy lịch sử đóng tiền gần nhất đã thu nhưng chưa có mã tra cứu.',
+                    'resolve' => function($bhxh_participant) {
+                        global $wpdb;
+                        $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
+                        $id_nguoi_tham_gia = $bhxh_participant['id'];
+
+                        if (empty($id_nguoi_tham_gia)) {
+                            return null;
+                        }
+
+                        $query = "
+                            SELECT *
+                            FROM {$table_lich_su}
+                            WHERE khachHangId = %d
+                              AND loaiGiaoDich = 'BHXH'
+                              AND (maTraCuu IS NULL OR maTraCuu = '')
+                            ORDER BY ngayLap DESC
+                            LIMIT 1
+                        ";
+
+                        $result = $wpdb->get_row($wpdb->prepare($query, $id_nguoi_tham_gia), ARRAY_A);
+                        return $result ?: null;
+                    }
+                ],
             ]
         ]);
-    
+
         register_graphql_object_type('LichSuDong', [
             'description' => 'Một bản ghi trong lịch sử đóng tiền',
             'fields' => [
                 'id' => ['type' => 'ID'],
                 'ngayLap' => ['type' => 'String'],
                 'tongTien' => ['type' => 'Float'],
-                'hinhThucTt' => ['type' => 'String'],
-                'ghiChuDong' => ['type' => 'String'],
+                'phanTramHoaHong' => ['type' => 'Float'],
+                'tienHoaHong' => ['type' => 'Int'],
                 'nguoiThu' => ['type' => 'String'],
+                'soBienLai' => ['type' => 'String'],
+                'maTraCuu' => ['type' => 'String'],
+                'ngayDuKienGiaHan' => ['type' => 'String'],
+                'ghiChuDong' => ['type' => 'String'],
+                'trangThaiNhac' => ['type' => 'String'],
+                'hinhThucTt' => ['type' => 'String'],
+                'anhBienLai' => ['type' => 'String'],
             ]
         ]);
 
@@ -59,7 +93,7 @@ class QLBH_GraphQL_BHXH {
                 if (!$this->can_user_access_qlbh()) {
                    return [];
                 }
-    
+
                 global $wpdb;
                 $table_bhyt = $wpdb->prefix . 'bhyts';
                 $table_bhxh = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
@@ -80,18 +114,19 @@ class QLBH_GraphQL_BHXH {
                         h.soThangDong,
                         h.soTien,
                         h.mucTienDong,
-                        h.trangThai
+                        h.trangThai,
+                        h.maTraCuu
                     FROM
-                        {$table_bhyt} b
-                    INNER JOIN
-                        {$table_bhxh} h ON b.maSoBhxh = h.maSoBhxh
+                        {$table_bhxh} h
+                    LEFT JOIN
+                        {$table_bhyt} b ON h.maSoBhxh = b.maSoBhxh
                     WHERE 1=1
                 ";
                 $params = [];
 
                 if (!empty($args['searchKeyword'])) {
                     $keyword = '%' . $wpdb->esc_like($args['searchKeyword']) . '%';
-                    $query .= " AND (b.hoTen LIKE %s OR b.maSoBhxh LIKE %s)";
+                    $query .= " AND (b.hoTen LIKE %s OR h.maSoBhxh LIKE %s)";
                     $params[] = $keyword;
                     $params[] = $keyword;
                 }
@@ -115,14 +150,14 @@ class QLBH_GraphQL_BHXH {
                 global $wpdb;
                 $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
                 $id_nguoi_tham_gia = $args['idNguoiThamGia'];
-        
+
                 $query = "
-                    SELECT id, ngayLap, tongTien, hinhThucTt, ghiChuDong, nguoiThu
+                    SELECT *
                     FROM {$table_lich_su}
                     WHERE khachHangId = %d AND loaiGiaoDich = 'BHXH'
                     ORDER BY ngayLap DESC
                 ";
-        
+
                 return $wpdb->get_results($wpdb->prepare($query, $id_nguoi_tham_gia), ARRAY_A) ?: [];
             }
         ]);
@@ -133,10 +168,14 @@ class QLBH_GraphQL_BHXH {
         register_graphql_input_type('ThemDongBhxhInput', [
             'description' => 'Dữ liệu để thêm một lần đóng BHXH',
             'fields' => [
-                'idNguoiThamGia' => ['type' => ['non_null' => 'Int']],
+                'maSoBhxh' => ['type' => ['non_null' => 'String']],
+                'ngayHetHanBhxh' => ['type' => ['non_null' => 'String']],
                 'soThang' => ['type' => 'Int'],
                 'soTien' => ['type' => 'Float'],
+                'mucTienDong' => ['type' => 'Float'],
                 'phuongThuc' => ['type' => 'String'],
+                'maTraCuu' => ['type' => 'String'],
+                'tuThangNam' => ['type' => 'String'],
             ]
         ]);
 
@@ -152,6 +191,7 @@ class QLBH_GraphQL_BHXH {
                 'phuongThucDong' => ['type' => 'String'],
                 'soTien' => ['type' => 'Float'],
                 'mucTienDong' => ['type' => 'Float'],
+                'maTraCuu' => ['type' => 'String'],
             ]
         ]);
 
@@ -166,66 +206,85 @@ class QLBH_GraphQL_BHXH {
                 global $wpdb;
                 $table_bhyt = $wpdb->prefix . 'bhyts';
                 $table_bhxh = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
-
                 $input = $args['input'];
-                $id_nguoi_tham_gia = absint($input['idNguoiThamGia']);
+
+                $ma_so_bhxh = $input['maSoBhxh'];
+                $ngay_het_han_bhxh = $input['ngayHetHanBhxh'];
                 $so_thang = absint($input['soThang']);
                 $so_tien = floatval($input['soTien']);
+                $muc_tien_dong = floatval($input['mucTienDong']);
 
-                if ($id_nguoi_tham_gia <= 0 || $so_thang <= 0) {
-                    throw new \GraphQL\Error\UserError(__('Dữ liệu không hợp lệ.', 'qlbh'));
+                if (empty($ma_so_bhxh) || empty($ngay_het_han_bhxh)) {
+                    throw new \GraphQL\Error\UserError(__('Mã số BHXH và Ngày hết hạn là bắt buộc.', 'qlbh'));
                 }
 
-                $ma_so_bhxh = $wpdb->get_var($wpdb->prepare(
-                    "SELECT maSoBhxh FROM {$table_bhyt} WHERE id = %d",
-                    $id_nguoi_tham_gia
-                ));
-
-                if (!$ma_so_bhxh) {
-                    throw new \GraphQL\Error\UserError(__('Không tìm thấy người tham gia.', 'qlbh'));
+                try {
+                    new DateTime($ngay_het_han_bhxh);
+                } catch(Exception $e) {
+                    throw new \GraphQL\Error\UserError(__('Định dạng ngày hết hạn không hợp lệ.', 'qlbh'));
                 }
 
-                $current_bhxh = $wpdb->get_row($wpdb->prepare(
-                    "SELECT ngayHetHanBhxh FROM {$table_bhxh} WHERE maSoBhxh = %s",
-                    $ma_so_bhxh
-                ));
+                $id_nguoi_tham_gia = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table_bhyt} WHERE maSoBhxh = %s", $ma_so_bhxh));
 
-                $ngay_hien_tai = new DateTime();
-                $ngay_het_han_cu = null;
-                if ($current_bhxh && !empty($current_bhxh->ngayHetHanBhxh)) {
-                    try {
-                        $ngay_het_han_cu = new DateTime($current_bhxh->ngayHetHanBhxh);
-                    } catch(Exception $e) { $ngay_het_han_cu = null; }
+                if (!$id_nguoi_tham_gia) {
+                    throw new \GraphQL\Error\UserError(__('Không tìm thấy người tham gia với mã số BHXH cung cấp.', 'qlbh'));
                 }
 
-                $ngay_bat_dau_tinh = ($ngay_het_han_cu && $ngay_het_han_cu > $ngay_hien_tai) ? $ngay_het_han_cu : $ngay_hien_tai;
-                $ngay_het_han_moi = clone $ngay_bat_dau_tinh;
-                $ngay_het_han_moi->add(new DateInterval("P{$so_thang}M"));
-
-                $data_to_update = [
-                    'ngayHetHanBhxh' => $ngay_het_han_moi->format('Y-m-d'),
+                $data = [
+                    'ngayHetHanBhxh' => $ngay_het_han_bhxh,
                     'soTien' => $so_tien,
+                    'mucTienDong' => $muc_tien_dong,
                     'phuongThucDong' => $so_thang . ' tháng',
                     'soThangDong' => $so_thang,
-                    'trangThai' => 'DANG_THAM_GIA',
                 ];
 
-                $result = $wpdb->update($table_bhxh, $data_to_update, ['maSoBhxh' => $ma_so_bhxh]);
+                if (!empty($input['maTraCuu'])) {
+                    $data['trangThai'] = 'DA_NOP';
+                    $data['maTraCuu'] = $input['maTraCuu'];
+                } else {
+                    $data['trangThai'] = 'DA_THU_TIEN';
+                }
+
+                $bhxh_record_exists = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$table_bhxh} WHERE maSoBhxh = %s", $ma_so_bhxh));
+
+                if ($bhxh_record_exists) {
+                    $result = $wpdb->update($table_bhxh, $data, ['maSoBhxh' => $ma_so_bhxh]);
+                } else {
+                    $data['maSoBhxh'] = $ma_so_bhxh;
+                    $data['ngayDk'] = current_time('Y-m-d');
+                    $result = $wpdb->insert($table_bhxh, $data);
+                }
 
                 if ($result === false) {
-                    return ['success' => false, 'message' => 'Lỗi khi cập nhật cơ sở dữ liệu.'];
+                    return ['success' => false, 'message' => 'Lỗi khi cập nhật hoặc thêm mới vào cơ sở dữ liệu.'];
                 }
 
                 // Add payment to history
+                $ghi_chu_dong = "Đóng BHXH Tự nguyện - {$so_thang} tháng";
+                if (!empty($input['tuThangNam'])) {
+                    $ghi_chu_dong = "Kỳ đóng: " . $input['tuThangNam'] . " - " . $ghi_chu_dong;
+                }
+                if (!empty($input['maTraCuu'])) {
+                    $ghi_chu_dong .= " (Mã tra cứu: " . $input['maTraCuu'] . ")";
+                }
+
+                $current_user = wp_get_current_user();
+                $nguoi_thu = get_user_meta($current_user->ID, 'qlbh_ma_nhan_vien_thu', true);
+
+                if (empty($nguoi_thu)) {
+                    $nguoi_thu = $current_user->user_login;
+                }
+
                 $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
                 $lich_su_data = [
                     'khachHangId' => $id_nguoi_tham_gia,
-                    'loaiGiaoDich' => 'BHXH', // BHXH Tự nguyện
+                    'loaiGiaoDich' => 'BHXH',
                     'ngayLap' => current_time('mysql', 1),
                     'tongTien' => $so_tien,
                     'hinhThucTt' => $input['phuongThuc'] ?? 'Chưa rõ',
-                    'ghiChuDong' => "Đóng BHXH Tự nguyện - {$so_thang} tháng",
-                    'nguoiThu' => wp_get_current_user()->user_login,
+                    'maTraCuu' => $input['maTraCuu'] ?? '',
+                    'ghiChuDong' => $ghi_chu_dong,
+                    'nguoiThu' => $nguoi_thu,
                 ];
                 $wpdb->insert($table_lich_su, $lich_su_data);
 
@@ -306,9 +365,10 @@ class QLBH_GraphQL_BHXH {
                     'ngayHetHanBhxh' => $ngay_het_han,
                     'trangThai' => $trang_thai,
                     'ngayDk' => current_time('Y-m-d'),
+                    'maTraCuu' => $input['maTraCuu'] ?? null,
                 ];
                 $result_bhxh = $wpdb->insert($table_bhxh, $bhxh_data);
-                
+
                 if ($result_bhxh === false) {
                     // If the user was newly added to BHYT table, roll back the insert.
                     if ($exists_in_bhyt == 0) {
@@ -316,7 +376,7 @@ class QLBH_GraphQL_BHXH {
                     }
                     return ['success' => false, 'message' => 'Lỗi khi thêm thông tin đóng BHXH.'];
                 }
-                
+
                 return ['success' => true, 'message' => 'Thêm người tham gia BHXH thành công.'];
             }
         ]);

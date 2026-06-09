@@ -29,6 +29,20 @@
           label="Số tiền đóng"
           :rules="[(val) => val > 0 || 'Số tiền phải lớn hơn 0']"
         />
+        <q-input
+          :model-value="payment.tuThangNam"
+           @update:model-value="$emit('update:payment', {...payment, tuThangNam: $event})"
+          outlined
+          dense
+          label="Kỳ đóng (MM/YYYY)"
+        />
+        <q-input
+          :model-value="payment.maTraCuu"
+           @update:model-value="$emit('update:payment', {...payment, maTraCuu: $event})"
+          outlined
+          dense
+          label="Mã tra cứu (nếu có)"
+        />
         <q-select
           :model-value="payment.phuongThuc"
            @update:model-value="$emit('update:payment', {...payment, phuongThuc: $event})"
