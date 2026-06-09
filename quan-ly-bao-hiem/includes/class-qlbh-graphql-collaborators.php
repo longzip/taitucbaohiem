@@ -1,59 +1,76 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (! defined('ABSPATH')) {
+    exit;
+}
 
-class QLBH_GraphQL_Collaborators {
+class QLBH_GraphQL_Collaborators
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         add_action('graphql_register_types', [$this, 'register_types_and_queries']);
     }
 
-    private function can_user_access_qlbh() {
+    private function can_user_access_qlbh()
+    {
         $current_user = wp_get_current_user();
-        if (!$current_user || $current_user->ID === 0) return false;
+        if (! $current_user || $current_user->ID === 0) {
+            return false;
+        }
+
         $allowed_roles = ['dai_ly_thu', 'cong_tac_vien', 'editor', 'administrator'];
-        return !empty(array_intersect((array) $current_user->roles, $allowed_roles));
+        return ! empty(array_intersect((array) $current_user->roles, $allowed_roles));
     }
 
-    public function register_types_and_queries() {
-        register_graphql_object_type('CongTacVien', [
-            'description' => __('Đối tượng cộng tác viên', 'qlbh'),
-            'fields' => [
-                'id' => ['type' => 'ID'],
-                'name' => ['type' => 'String'],
-                'phone' => ['type' => 'String'],
-                'birth_date' => ['type' => 'String'],
-                'address' => ['type' => 'String'],
-                'status' => ['type' => 'String'],
-            ]
+    public function register_types_and_queries()
+    {
+        register_graphql_object_type('Collaborator', [
+            'description' => __('Một người dùng có vai trò trong hệ thống', 'qlbh'),
+            'fields'      => [
+                'label'         => ['type' => 'String'],
+                'value'         => ['type' => 'String'],
+                'maNhanVienThu' => ['type' => 'String'],
+                'userIdBhxh'    => ['type' => 'String'],
+                'vaiTro'        => ['type' => 'String'],
+            ],
         ]);
 
-        register_graphql_field('RootQuery', 'danhSachCtv', [
-            'type' => ['list_of' => 'CongTacVien'],
-            'description' => __('Lấy danh sách cộng tác viên.', 'qlbh'),
-            'args' => [
-                'searchKeyword' => ['type' => 'String'],
-            ],
-            'resolve' => function($root, $args) {
-                if (!$this->can_user_access_qlbh()) {
-                   return [];
+        register_graphql_field('RootQuery', 'collaborators', [
+            'type'        => ['list_of' => 'Collaborator'],
+            'description' => __('Lấy danh sách người dùng có vai trò đại lý, ctv, editor, admin.', 'qlbh'),
+            'resolve'     => function () {
+                if (! $this->can_user_access_qlbh()) {
+                    return [];
                 }
 
-                global $wpdb;
-                $table_name = $wpdb->prefix . 'collaborators';
-                
-                $query = "SELECT id, name, phone, birth_date, address, status FROM {$table_name} WHERE 1=1";
-                $params = [];
-
-                if (!empty($args['searchKeyword'])) {
-                    $keyword = '%' . $wpdb->esc_like($args['searchKeyword']) . '%';
-                    $query .= " AND (name LIKE %s OR phone LIKE %s)";
-                    $params[] = $keyword;
-                    $params[] = akeyword;
+                $users = get_users(['role__in' => ['dai_ly_thu', 'cong_tac_vien', 'editor', 'administrator'], 'orderby' => 'display_name']);
+                if (empty($users)) {
+                    return [];
                 }
 
-                $results = $wpdb->get_results($wpdb->prepare($query, $params), ARRAY_A);
-                return $results ?: [];
-            }
+                $collaborators = array_map(function ($user) {
+                    $maNhanVienThu = get_user_meta($user->ID, 'qlbh_ma_nhan_vien_thu', true);
+                    $userIdBhxh    = get_user_meta($user->ID, 'qlbh_userid_bhxh', true);
+                    $label         = ! empty($maNhanVienThu) ? $maNhanVienThu : $user->display_name;
+                    $value         = ! empty($userIdBhxh) ? $userIdBhxh : $user->user_login;
+
+                    $vaiTro = ! empty($user->roles[0]) ? $user->roles[0] : '';
+
+                    return [
+                        'label'         => $label,
+                        'value'         => $value,
+                        'maNhanVienThu' => $maNhanVienThu ?: '',
+                        'userIdBhxh'    => $userIdBhxh ?: '',
+                        'vaiTro'        => $vaiTro,
+                    ];
+                }, $users);
+
+                $filtered = array_filter($collaborators, function ($c) {
+                    return ! empty($c['label']) && ! empty($c['value']);
+                });
+
+                return array_values($filtered);
+            },
         ]);
     }
 }

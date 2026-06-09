@@ -29,6 +29,7 @@ class QLBH_GraphQL_BHXH
             'description' => __('Đối tượng BHXH tự nguyện', 'qlbh'),
             'fields'      => [
                 'id'                  => ['type' => 'ID'],
+                'userId'              => ['type' => 'Int'],
                 'hoTen'               => ['type' => 'String'],
                 'maSoBhxh'            => ['type' => 'String'],
                 'ngaySinh'            => ['type' => 'String'],
@@ -46,7 +47,7 @@ class QLBH_GraphQL_BHXH
                 'ngayHetHanBhxh'      => ['type' => 'String'],
                 'lichSuDongDaThuTien' => [
                     'type'        => 'LichSuDong',
-                    'description' => 'Lấy lịch sử đóng tiền gần nhất đã thu nhưng chưa có mã tra cứu.',
+                    'description' => __('Lấy lịch sử đóng tiền gần nhất đã thu nhưng chưa có mã tra cứu.', 'qlbh'),
                     'resolve'     => function ($bhxh_participant) {
                         global $wpdb;
                         $table_lich_su     = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
@@ -96,6 +97,7 @@ class QLBH_GraphQL_BHXH
             'type'        => ['list_of' => 'Bhxh'],
             'args'        => [
                 'searchKeyword' => ['type' => 'String'],
+                'userId'        => ['type' => 'Int'],
             ],
             'description' => __('Lấy danh sách người tham gia BHXH tự nguyện.', 'qlbh'),
             'resolve'     => function ($root, $args) {
@@ -110,6 +112,7 @@ class QLBH_GraphQL_BHXH
                 $query = "
                     SELECT
                         b.id,
+                        h.userId,
                         b.hoTen,
                         b.maSoBhxh,
                         b.ngaySinhDt as ngaySinh,
@@ -140,6 +143,11 @@ class QLBH_GraphQL_BHXH
                     $params[]  = $keyword;
                 }
 
+                if (! empty($args['userId'])) {
+                    $query    .= " AND h.userId = %d";
+                    $params[]  = (int) $args['userId'];
+                }
+
                 $results  = $wpdb->get_results($wpdb->prepare($query, $params), ARRAY_A);
 
                 if (empty($results)) {
@@ -147,10 +155,11 @@ class QLBH_GraphQL_BHXH
                 }
 
                 return array_map(function ($item) {
-                    $item['id'] = isset($item['id']) ? (int) $item['id'] : null;
-                    $item['gioiTinh'] = isset($item['gioiTinh']) ? (int) $item['gioiTinh'] : null;
+                    $item['id']          = isset($item['id']) ? (int) $item['id'] : null;
+                    $item['userId']      = isset($item['userId']) ? (int) $item['userId'] : null;
+                    $item['gioiTinh']    = isset($item['gioiTinh']) ? (int) $item['gioiTinh'] : null;
                     $item['soThangDong'] = isset($item['soThangDong']) ? (int) $item['soThangDong'] : null;
-                    $item['soTien'] = isset($item['soTien']) ? (float) $item['soTien'] : null;
+                    $item['soTien']      = isset($item['soTien']) ? (float) $item['soTien'] : null;
                     $item['mucTienDong'] = isset($item['mucTienDong']) ? (float) $item['mucTienDong'] : null;
                     return $item;
                 }, $results);
@@ -234,7 +243,7 @@ class QLBH_GraphQL_BHXH
                 $so_thang          = absint($input['soThang']);
                 $so_tien           = floatval($input['soTien']);
                 $muc_tien_dong     = floatval($input['mucTienDong']);
-                $id_lich_su_dong = isset($input['id']) ? (int) $input['id'] : 0;
+                $id_lich_su_dong   = isset($input['id']) ? (int) $input['id'] : 0;
 
                 if (empty($ma_so_bhxh) || empty($ngay_het_han_bhxh)) {
                     throw new \GraphQL\Error\UserError(__('Mã số BHXH và Ngày hết hạn là bắt buộc.', 'qlbh'));
@@ -365,7 +374,7 @@ class QLBH_GraphQL_BHXH
                 // Common logic to add to the BHXH extension table
                 $so_thang = 0;
                 if (! empty($input['phuongThucDong'])) {
-                    preg_match('/\d+/', $input['phuongThucDong'], $matches);
+                    preg_match('/\\d+/', $input['phuongThucDong'], $matches);
                     if (isset($matches[0])) {
                         $so_thang = (int) $matches[0];
                     }
@@ -419,24 +428,47 @@ class QLBH_GraphQL_BHXH
 
                 global $wpdb;
                 $table_lich_su = $wpdb->prefix . 'qlbh_lich_su_dong_tien';
-                $id = (int) $input['id'];
+                $table_bhxh    = $wpdb->prefix . 'qlbh_bhxh_mo_rong';
+                $table_bhyt    = $wpdb->prefix . 'bhyts';
+                $id            = (int) $input['id'];
 
                 if (empty($id)) {
                     throw new \GraphQL\Error\UserError(__('ID lịch sử đóng không hợp lệ.', 'qlbh'));
                 }
 
-                $result = $wpdb->delete($table_lich_su, ['id' => $id], ['%d']);
+                $khach_hang_id = $wpdb->get_var($wpdb->prepare("SELECT khachHangId FROM {$table_lich_su} WHERE id = %d", $id));
 
-                if ($result === false) {
+                if (empty($khach_hang_id)) {
+                    return ['success' => false, 'message' => 'Không tìm thấy lịch sử đóng tương ứng.'];
+                }
+
+                $ma_so_bhxh = $wpdb->get_var($wpdb->prepare("SELECT maSoBhxh FROM {$table_bhyt} WHERE id = %d", $khach_hang_id));
+
+                $delete_result = $wpdb->delete($table_lich_su, ['id' => $id], ['%d']);
+
+                if ($delete_result === false) {
                     return ['success' => false, 'message' => 'Lỗi khi xóa lịch sử đóng.'];
                 }
 
-                if ($result === 0) {
+                if ($delete_result === 0) {
                     return ['success' => false, 'message' => 'Không tìm thấy lịch sử đóng để xóa.'];
+                }
+
+                if ($ma_so_bhxh) {
+                    $update_result = $wpdb->update(
+                        $table_bhxh,
+                        ['trangThai' => 'HUY_THU'],
+                        ['maSoBhxh' => $ma_so_bhxh]
+                    );
+
+                    if ($update_result === false) {
+                        return ['success' => false, 'message' => 'Lỗi khi cập nhật trạng thái Hủy thu.'];
+                    }
                 }
 
                 return ['success' => true, 'message' => 'Đã xóa thành công lịch sử đóng.'];
             },
         ]);
+
     }
 }

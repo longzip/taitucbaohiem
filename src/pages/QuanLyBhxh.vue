@@ -4,10 +4,28 @@
     <bhxh-filter
       v-model:searchTerm="tuKhoaTimKiem"
       v-model:status="trangThaiChon"
+      v-model:userId="userIdSelected"
       :status-options="danhSachTrangThai"
       @search="refetch"
       @clear="xoaTimKiem"
     />
+    <div v-if="filterActive" class="q-mb-md q-pa-sm bg-info text-white rounded-borders row items-center">
+      <div class="col">
+        <span>Đang áp dụng bộ lọc: </span>
+        <span v-if="tuKhoaTimKiem" class="q-mr-md">
+          <strong>Từ khóa:</strong> {{ tuKhoaTimKiem }}
+        </span>
+        <span v-if="userIdSelected">
+          <strong>User ID:</strong> {{ userIdSelected }}
+        </span>
+      </div>
+      <q-btn flat dense icon="close" @click="xoaTimKiem" />
+    </div>
+
+    <div v-if="!loading" class="q-mb-md">
+      <strong>Kết quả:</strong> {{ danhSachHienThi.length }} người
+    </div>
+
     <bhxh-list :items="danhSachHienThi" :loading="loading">
       <template #default="{ item }">
         <bhxh-list-item
@@ -115,6 +133,7 @@ const $q = useQuasar();
 // STATES DỮ LIỆU
 const tuKhoaTimKiem = ref("");
 const trangThaiChon = ref("ALL");
+const userIdSelected = ref(null);
 const dialogThemLichSu = ref(false);
 const dialogThemMoi = ref(false);
 const dialogXemLichSu = ref(false);
@@ -123,20 +142,25 @@ const nguoiThamGiaLichSu = ref(null);
 const formLichSu = ref({});
 const formNguoiMoi = ref({});
 
+const filterActive = computed(() => {
+  return tuKhoaTimKiem.value || userIdSelected.value;
+});
+
 const danhSachTrangThai = [
   { label: "Tất cả", value: "ALL" },
   { label: "Đang tham gia", value: "TRONG_HAN" },
   { label: "Tạm dừng", value: "TAM_DUNG" },
   { label: "Đã nộp", value: "DA_NOP" },
   { label: "Đã thu tiền", value: "DA_THU_TIEN" },
-  { label: "Đã thu tiền", value: "CHAM_DONG" },
+  { label: "Chậm đóng", value: "CHAM_DONG" },
 ];
 
 // GRAPHQL
 const QUERY_DANH_SACH_BHXH = gql`
-  query GetDanhSachBhxh($searchKeyword: String) {
-    danhSachBhxh(searchKeyword: $searchKeyword) {
+  query GetDanhSachBhxh($searchKeyword: String, $userId: Int) {
+    danhSachBhxh(searchKeyword: $searchKeyword, userId: $userId) {
       id
+      userId
       hoTen
       maSoBhxh
       ngaySinh
@@ -210,15 +234,19 @@ const { result, loading, error, refetch } = useQuery(
   QUERY_DANH_SACH_BHXH,
   () => ({
     searchKeyword: tuKhoaTimKiem.value ? tuKhoaTimKiem.value.trim() : null,
+    userId: userIdSelected.value ? parseInt(userIdSelected.value, 10) : null,
   }),
   { fetchPolicy: "network-only" }
 );
 
 const {
   result: lichSuDongResult,
-  load: loadLichSuDong,
+  refetch: refetchLichSuDong,
+   load: loadLichSuDong,
   loading: lichSuDongLoading,
-} = useLazyQuery(QUERY_LICH_SU_DONG_BHXH);
+} = useLazyQuery(QUERY_LICH_SU_DONG_BHXH, null, {
+  fetchPolicy: "network-only",
+});
 
 const { mutate: themLichSuDong, onDone: onThemLichSuDone } = useMutation(
   MUTATION_THEM_LICH_SU
@@ -285,9 +313,9 @@ onXoaLichSuDone(({ data }) => {
       message: result.message || "Xóa thành công!",
     });
     refetch();
-    // Optionally, re-fetch the history if the dialog is still open
+    // Re-fetch the history if the dialog is still open
     if (dialogXemLichSu.value && nguoiThamGiaLichSu.value) {
-      loadLichSuDong(null, {
+      refetchLichSuDong({
         idNguoiThamGia: parseInt(nguoiThamGiaLichSu.value.id, 10),
       });
     }
@@ -354,7 +382,9 @@ const moDialogThemLichSu = (nguoiThamGia) => {
 
 const moDialogXemLichSu = (nguoiThamGia) => {
   nguoiThamGiaLichSu.value = nguoiThamGia;
-  loadLichSuDong(null, { idNguoiThamGia: parseInt(nguoiThamGia.id, 10) });
+   loadLichSuDong(null, {
+        idNguoiThamGia: parseInt(nguoiThamGiaLichSu.value.id, 10),
+      });
   dialogXemLichSu.value = true;
 };
 
@@ -378,6 +408,7 @@ const xuLyThemMoiNguoiThamGia = () => {
 
 const xoaTimKiem = () => {
   tuKhoaTimKiem.value = "";
+  userIdSelected.value = null;
   refetch();
 };
 
