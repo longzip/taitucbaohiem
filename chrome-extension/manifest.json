@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "QLBH Sync",
+  "version": "1.0",
+  "description": "Tự động đồng bộ dữ liệu khách hàng từ trang tra cứu BHYT.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://baohiemxahoi.gov.vn/tracuu/pages/tra-cuu-thoi-han-su-dung-the-bhyt.aspx"],
+      "js": ["sync-customer.js"]
+    }
+  ]
+}

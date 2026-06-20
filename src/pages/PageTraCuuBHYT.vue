@@ -849,16 +849,16 @@ export default defineComponent({
       this.$q.loading.show();
       try {
         if (!this.searchText) {
-          // this.searchText = this.userDetails.maNhanVienThu;
+          // this.searchText = 'NV034186013128';
         }
         if (user === 1)
           this.getBhyts({
-            userName: this.userDetails.maNhanVienThu,
+            userName: 'NV034186013128',
             isBHYT: 1,
           });
         else if (user === 0)
           this.getBhyts({
-            userName: this.userDetails.maNhanVienThu,
+            userName: 'NV034186013128',
             isBHXHTN: 1,
           });
         else
@@ -887,8 +887,7 @@ export default defineComponent({
           try {
             this.searchText = data;
             this.getBhyts({
-              name: data,
-              maXa: data.length < 9 ? this.userDetails.maXa : null,
+              name: data
             });
           } finally {
             this.$q.loading.hide();
@@ -913,7 +912,7 @@ export default defineComponent({
           try {
             this.getBhyts({
               thangBienLai: data.toString(),
-              khacUserName: this.userDetails.id,
+              khacUserName: '3152',
               maXa: this.userDetails.maXa,
             });
           } finally {

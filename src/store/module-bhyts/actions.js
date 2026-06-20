@@ -843,8 +843,7 @@ export const huyThuBHYT = async ({ commit }, { maSoBhxh, userName }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhyt`, {
     isBHYT: 0,
     completed: 0,
-    userName,
-    ngayLap: null,
+    userName
   });
   commit("updateBhyt", data);
 };
@@ -852,8 +851,7 @@ export const huyThuBHXHTN = async ({ commit }, { maSoBhxh, userName }) => {
   const { data } = await api.put(`/api/bhyts/${maSoBhxh}/huy-thu-bhxhtn`, {
     isBHXHTN: 0,
     completed: 0,
-    userName,
-    ngayLapTN: null,
+    userName
   });
   commit("updateBhyt", data);
 };

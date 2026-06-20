@@ -15,7 +15,7 @@
         {{ bhyt.ngaySinhDt || bhyt.ngayThangNamSinh }}
 
         <q-icon
-          
+
           @click="xacNhanLoaiBo(bhyt)"
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
@@ -363,6 +363,22 @@ export default {
         case "bhxh-new":
           url += `bhxh/bhxh-new?ms=${maSo}&ten=${hoTen}&ns=${ngaySinh}`;
           break;
+      }
+      if (type === "bhyt-new" || type === "bhyt-renew") {
+        this.huyThuBHYT({
+          maSoBhxh: maSo,
+          userName: "pvi",
+        });
+      } else if (type === "bhxh-new" || type === "bhxh-renew") {
+        this.huyThuBHXHTN({
+          maSoBhxh: maSo,
+          userName: "pvi",
+        });
+      } else {
+        this.huyThuTien({
+          maSoBhxh: maSo,
+          userName: "pvi",
+        });
       }
 
       window.open(url, "_blank");
