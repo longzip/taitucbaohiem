@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "VNPost Biên Lai Tự Động",
+  "version": "1.0",
+  "description": "Tự động trích xuất thông tin từ file PDF biên lai của VNPost, lưu và sao chép thông tin.",
+  "permissions": [
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://app.hotham.vn/*",
+    "https://ssm.vnpost.vn/*"
+  ],
+  "action": {
+    "default_title": "Xử lý file PDF biên lai"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [ "pdf.worker.min.js" ],
+      "matches": [ "https://ssm.vnpost.vn/*" ]
+    }
+  ]
+}
