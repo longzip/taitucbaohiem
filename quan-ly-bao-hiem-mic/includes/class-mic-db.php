@@ -2,7 +2,7 @@
 if (!defined('ABSPATH')) exit;
 
 class QLBH_MIC_DB {
-    
+
     public static function create_tables() {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
@@ -10,15 +10,16 @@ class QLBH_MIC_DB {
 
         $table_hopdong = $wpdb->prefix . 'qlbh_hopdong_mic';
         $table_lichsu  = $wpdb->prefix . 'qlbh_mic_lich_su_thu_tien';
-        
+
         // Bảng gốc hợp đồng MIC
+        // Thay đổi ENUM thành varchar(50) để tránh lỗi lặp truy vấn của dbDelta khi cập nhật schema
         $sql_hopdong = "CREATE TABLE $table_hopdong (
             id_hop_dong bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             so_hop_dong_mic varchar(50) DEFAULT NULL,
             ngay_bat_dau date NOT NULL,
             ngay_het_han date NOT NULL,
             muc_phi decimal(12,2) DEFAULT 169000.00,
-            trang_thai_don enum('Hieu luc','Het han','Can tai tuc','Da thu tien') DEFAULT 'Can tai tuc',
+            trang_thai_don varchar(50) DEFAULT 'Can tai tuc',
             ndbh_ho_ten varchar(100) NOT NULL,
             ndbh_ngay_sinh date DEFAULT NULL,
             ndbh_cccd varchar(12) NOT NULL,
@@ -31,11 +32,11 @@ class QLBH_MIC_DB {
             nmbh_dia_chi text DEFAULT '',
             nmbh_sdt varchar(15) DEFAULT '',
             PRIMARY KEY  (id_hop_dong),
-            UNIQUE KEY uk_so_hop_dong (so_hop_dong_mic),
-            KEY idx_ndbh_cccd (ndbh_cccd),
-            KEY idx_ndbh_bhxh (ndbh_bhxh),
-            KEY idx_trang_thai_don (trang_thai_don),
-            KEY idx_ngay_het_han_mic (ngay_het_han)
+            UNIQUE KEY  uk_so_hop_dong (so_hop_dong_mic),
+            KEY  idx_ndbh_cccd (ndbh_cccd),
+            KEY  idx_ndbh_bhxh (ndbh_bhxh),
+            KEY  idx_trang_thai_don (trang_thai_don),
+            KEY  idx_ngay_het_han_mic (ngay_het_han)
         ) $charset_collate;";
 
         // Bảng lịch sử dòng tiền biên lai
@@ -55,10 +56,10 @@ class QLBH_MIC_DB {
             phuong_thuc varchar(20) DEFAULT 'Chuyen khoan',
             ghi_chu text DEFAULT '',
             PRIMARY KEY  (id_log),
-            KEY idx_id_hop_dong (id_hop_dong),
-            KEY idx_nhan_vien (nhan_vien_thu)
-        ) $charset_collate;";  
-         
+            KEY  idx_id_hop_dong (id_hop_dong),
+            KEY  idx_nhan_vien (nhan_vien_thu)
+        ) $charset_collate;";
+
         dbDelta($sql_hopdong);
         dbDelta($sql_lichsu);
     }

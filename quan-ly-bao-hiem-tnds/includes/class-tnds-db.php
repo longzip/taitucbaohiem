@@ -11,6 +11,7 @@ class QLBH_TNDS_DB {
 
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
+            userId bigint(20) unsigned DEFAULT NULL, -- Thêm cột userId liên kết với người dùng WordPress
             chuXeHoTen varchar(255) NOT NULL,
             soDienThoai varchar(20),
             email varchar(100),
@@ -34,7 +35,8 @@ class QLBH_TNDS_DB {
             phiBaoHiem decimal(10, 2),
             trangThai varchar(100) DEFAULT 'Cần tái tục',
             ghiChu text,
-            PRIMARY KEY  (id)
+            PRIMARY KEY  (id),
+            UNIQUE KEY unique_bienSoXe (bienSoXe)
         ) $charset_collate;";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';

@@ -23,7 +23,7 @@ class QLBH_MIC_GraphQL {
                 )
             ));
 
-            $lich_su_select_fields_clause = "SELECT 
+            $lich_su_select_fields_clause = "SELECT
                 id_log AS idLog,
                 ngay_thu AS ngayThu,
                 so_tien_goc AS soTienGoc,
@@ -36,6 +36,16 @@ class QLBH_MIC_GraphQL {
                 ma_tra_cuu AS maTraCuu,
                 trang_thai_nop_tien AS trangThaiNopTien,
                 phuong_thuc AS phuongThuc";
+
+            // Helper to get contract ID safely regardless of representation style
+            $get_contract_id = function($contract) {
+                if (is_object($contract)) {
+                    return $contract->id_hop_dong ?? $contract->idHopDong ?? null;
+                } elseif (is_array($contract)) {
+                    return $contract['id_hop_dong'] ?? $contract['idHopDong'] ?? null;
+                }
+                return null;
+            };
 
             // 2. Then, update your MicContractType registration to include the new field
             register_graphql_object_type('MicContractType', array(
@@ -65,37 +75,37 @@ class QLBH_MIC_GraphQL {
                     'lichSuChuaDuyet' => array(
                         'type' => 'LichSuThuTienType',
                         'description' => 'Lấy thông tin lần thu tiền gần nhất đang ở trạng thái Chờ duyệt',
-                        'resolve' => function($contract) use ($lich_su_select_fields_clause) {
+                        'resolve' => function($contract) use ($lich_su_select_fields_clause, $get_contract_id) {
                             if (!is_user_logged_in()) {
                                 throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
                             }
                             global $wpdb;
-                            $id_hop_dong = $contract->id_hop_dong; 
-                            
+                            $id_hop_dong = $get_contract_id($contract);
+
                             if (empty($id_hop_dong)) {
                                 return null;
                             }
 
                             $table_lichsu  = $wpdb->prefix . 'qlbh_mic_lich_su_thu_tien';
                             $query = $wpdb->prepare(
-                                "$lich_su_select_fields_clause FROM $table_lichsu 
-                                WHERE id_hop_dong = %d AND trang_thai_nop_tien = 'Cho duyet' 
+                                "$lich_su_select_fields_clause FROM $table_lichsu
+                                WHERE id_hop_dong = %d AND trang_thai_nop_tien = 'Cho duyet'
                                 ORDER BY ngay_thu DESC LIMIT 1",
                                 $id_hop_dong
                             );
-                            
+
                             return $wpdb->get_row($query, OBJECT);
                         }
                     ),
                     'lichSuThanhToan' => array(
                         'type' => array( 'list_of' => 'LichSuThuTienType' ),
                         'description' => 'Lấy tất cả lịch sử thu tiền của hợp đồng',
-                        'resolve' => function($contract) use ($lich_su_select_fields_clause) {
+                        'resolve' => function($contract) use ($lich_su_select_fields_clause, $get_contract_id) {
                             if (!is_user_logged_in()) {
                                 throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
                             }
                             global $wpdb;
-                            $id_hop_dong = $contract->id_hop_dong;
+                            $id_hop_dong = $get_contract_id($contract);
 
                             if (empty($id_hop_dong)) {
                                 return [];
@@ -103,7 +113,7 @@ class QLBH_MIC_GraphQL {
 
                             $table_lichsu = $wpdb->prefix . 'qlbh_mic_lich_su_thu_tien';
                             $query = $wpdb->prepare(
-                                "$lich_su_select_fields_clause FROM $table_lichsu 
+                                "$lich_su_select_fields_clause FROM $table_lichsu
                                 WHERE id_hop_dong = %d ORDER BY ngay_thu DESC",
                                 $id_hop_dong
                             );
@@ -126,11 +136,11 @@ class QLBH_MIC_GraphQL {
                     }
                     global $wpdb;
                     $table_hopdong = $wpdb->prefix . 'qlbh_hopdong_mic';
-                    $search_keyword = !empty($args['searchKeyword']) ? $args['searchKeyword'] : null;
+                    $search_keyword = !empty($args['searchKeyword']) ? sanitize_text_field($args['searchKeyword']) : null;
 
                     $sql = "
-                        SELECT 
-                            m.id_hop_dong, m.so_hop_dong_mic AS soHopDongMic, 
+                        SELECT
+                            m.id_hop_dong, m.so_hop_dong_mic AS soHopDongMic,
                             m.ngay_bat_dau AS ngayBatDau, m.ngay_het_han AS ngayHetHan, m.muc_phi AS mucPhi, m.trang_thai_don AS trangThaiDon,
                             m.ndbh_ho_ten AS ndbhHoTen, m.ndbh_ngay_sinh AS ndbhNgaySinh, m.ndbh_cccd AS ndbhCccd, m.ndbh_bhxh AS ndbhBhxh,
                             m.ndbh_gioi_tinh AS ndbhGioiTinh, m.ndbh_dia_chi AS ndbhDiaChi, m.ndbh_sdt AS ndbhSdt, m.ndbh_email AS ndbhEmail,
@@ -138,7 +148,7 @@ class QLBH_MIC_GraphQL {
                             DATEDIFF(m.ngay_het_han, CURDATE()) AS soNgayConLai
                         FROM $table_hopdong m
                     ";
-                    
+
                     $params = [];
                     if ($search_keyword) {
                         $search_term = '%' . $wpdb->esc_like($search_keyword) . '%';
@@ -148,13 +158,18 @@ class QLBH_MIC_GraphQL {
 
                     $sql .= " ORDER BY m.ngay_het_han DESC";
 
-                    $query = $wpdb->prepare($sql, $params);
+                    if (!empty($params)) {
+                        $query = $wpdb->prepare($sql, $params);
+                    } else {
+                        $query = $sql;
+                    }
+
                     $results = $wpdb->get_results($query);
 
                     foreach ($results as $contract) {
                          $contract->idHopDong = $contract->id_hop_dong;
                     }
-                    
+
                     return $results;
                 }
             ));
@@ -178,10 +193,10 @@ class QLBH_MIC_GraphQL {
                         throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
                     }
                     global $wpdb;
-                    $id_hop_dong = $input['idHopDong'];
-                    $id_log = $input['idLog'] ?? null;
-                    $so_hoa_don = trim($input['soHoaDon'] ?? '');
-                    $ma_tra_cuu = trim($input['maTraCuu'] ?? '');
+                    $id_hop_dong = intval($input['idHopDong']);
+                    $id_log = isset($input['idLog']) ? intval($input['idLog']) : null;
+                    $so_hoa_don = sanitize_text_field(trim($input['soHoaDon'] ?? ''));
+                    $ma_tra_cuu = sanitize_text_field(trim($input['maTraCuu'] ?? ''));
 
                     // 1. Check if contract exists and get necessary data
                     $table_hopdong = $wpdb->prefix . 'qlbh_hopdong_mic';
@@ -199,7 +214,7 @@ class QLBH_MIC_GraphQL {
 
                     // 3. Prepare and insert/update history log
                     $table_lichsu = $wpdb->prefix . 'qlbh_mic_lich_su_thu_tien';
-                    $ti_le_hoa_hong = $input['tiLeHoaHong'] ?? 20.00;
+                    $ti_le_hoa_hong = isset($input['tiLeHoaHong']) ? floatval($input['tiLeHoaHong']) : 20.00;
                     $tien_hoa_hong = $contract->muc_phi * ($ti_le_hoa_hong / 100);
 
                     $common_data = [
@@ -207,7 +222,7 @@ class QLBH_MIC_GraphQL {
                         'tien_hoa_hong_tich_luy' => $tien_hoa_hong,
                         'so_hoa_don' => $so_hoa_don,
                         'ma_tra_cuu' => $ma_tra_cuu,
-                        'phuong_thuc' => $input['phuongThuc'] ?? 'Chuyen khoan',
+                        'phuong_thuc' => sanitize_text_field($input['phuongThuc'] ?? 'Chuyen khoan'),
                         'trang_thai_nop_tien' => $trang_thai_nop_tien,
                     ];
 
@@ -215,14 +230,14 @@ class QLBH_MIC_GraphQL {
                         // UPDATE existing log
                         $result = $wpdb->update(
                             $table_lichsu,
-                            $common_data, 
-                            ['id_log' => $id_log] 
+                            $common_data,
+                            ['id_log' => $id_log]
                         );
                     } else {
                         // INSERT new log
                         $current_user = wp_get_current_user();
                         $nhan_vien_thu = ($current_user && $current_user->ID > 0) ? $current_user->user_login : 'he thong';
-                        
+
                         $insert_data = array_merge($common_data, [
                             'id_hop_dong' => $id_hop_dong,
                             'ngay_thu' => current_time('mysql'),
@@ -240,15 +255,20 @@ class QLBH_MIC_GraphQL {
                             'message' => 'Lỗi database khi ghi nhận lịch sử thu tiền: ' . $wpdb->last_error,
                         ];
                     }
-                    
+
                     // 4. Update main contract status and expiry date
                     $update_data = [];
                     if (!empty($so_hoa_don) && !empty($ma_tra_cuu)) {
                         // Renew contract: set status to 'Hieu luc' and extend expiry date
-                        $ngay_het_han_dt = new DateTime($contract->ngay_het_han);
-                        $ngay_het_han_dt->add(new DateInterval('P365D'));
-                        $ngay_het_han_moi = $ngay_het_han_dt->format('Y-m-d');
-                        
+                        try {
+                            $base_date = !empty($contract->ngay_het_han) ? $contract->ngay_het_han : current_time('Y-m-d');
+                            $ngay_het_han_dt = new DateTime($base_date);
+                            $ngay_het_han_dt->add(new DateInterval('P365D'));
+                            $ngay_het_han_moi = $ngay_het_han_dt->format('Y-m-d');
+                        } catch (Exception $e) {
+                            $ngay_het_han_moi = date('Y-m-d', strtotime('+365 days'));
+                        }
+
                         $update_data = [
                             'trang_thai_don' => 'Hieu luc',
                             'ngay_het_han' => $ngay_het_han_moi,
@@ -284,7 +304,7 @@ class QLBH_MIC_GraphQL {
                         throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
                     }
                     global $wpdb;
-                    $id_log = $input['idLog'];
+                    $id_log = intval($input['idLog']);
                     $table_lichsu = $wpdb->prefix . 'qlbh_mic_lich_su_thu_tien';
                     $table_hopdong = $wpdb->prefix . 'qlbh_hopdong_mic';
 
@@ -335,7 +355,7 @@ class QLBH_MIC_GraphQL {
                         throw new \GraphQL\Error\UserError('Bạn cần đăng nhập để thực hiện hành động này.');
                     }
                     global $wpdb;
-                    $ma_so_bhxh = $input['maSoBhxh'];
+                    $ma_so_bhxh = sanitize_text_field($input['maSoBhxh']);
 
                     // 1. Check if a MIC contract with this BHXH already exists
                     $table_hopdong_mic = $wpdb->prefix . 'qlbh_hopdong_mic';
@@ -377,14 +397,14 @@ class QLBH_MIC_GraphQL {
                     }
 
                     $result = $wpdb->insert($table_hopdong_mic, [
-                        'ndbh_ho_ten'    => $bhyt_record['hoTen'],
-                        'ndbh_ngay_sinh' => $bhyt_record['ngaySinhDt'],
-                        'ndbh_cccd'      => $bhyt_record['soCmnd'],
+                        'ndbh_ho_ten'    => sanitize_text_field($bhyt_record['hoTen']),
+                        'ndbh_ngay_sinh' => sanitize_text_field($bhyt_record['ngaySinhDt']),
+                        'ndbh_cccd'      => sanitize_text_field($bhyt_record['soCmnd']),
                         'ndbh_bhxh'      => $ma_so_bhxh,
                         'ndbh_gioi_tinh' => $gioi_tinh_text,
-                        'ndbh_dia_chi'   => $bhyt_record['diaChiLh'],
-                        'ndbh_sdt'       => $bhyt_record['soDienThoai'],
-                        'ndbh_email'     => $bhyt_record['email'],
+                        'ndbh_dia_chi'   => sanitize_textarea_field($bhyt_record['diaChiLh']),
+                        'ndbh_sdt'       => sanitize_text_field($bhyt_record['soDienThoai']),
+                        'ndbh_email'     => sanitize_email($bhyt_record['email']),
                         'ngay_bat_dau'   => $ngay_bat_dau,
                         'ngay_het_han'   => $ngay_het_han,
                         'trang_thai_don' => 'Can tai tuc',
@@ -432,36 +452,46 @@ class QLBH_MIC_GraphQL {
                     }
                     global $wpdb;
                     $table_hopdong = $wpdb->prefix . 'qlbh_hopdong_mic';
-                    $cccd = trim($input['ndbhCccd']);
+                    $cccd = sanitize_text_field(trim($input['ndbhCccd']));
 
-                    // Helper function to convert date format from d/m/Y to Y-m-d
+                    // Helper function to convert date formats safely (accepts d/m/Y or Y-m-d)
                     $convert_date = function($date_string) {
                         if (empty($date_string)) return null;
+
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date_string)) {
+                            return $date_string;
+                        }
+
+                        $dt = DateTime::createFromFormat('d/m/Y', $date_string);
+                        if ($dt) {
+                            return $dt->format('Y-m-d');
+                        }
+
                         try {
-                            $dt = DateTime::createFromFormat('d/m/Y', $date_string);
-                            return $dt ? $dt->format('Y-m-d') : null;
+                            $dt = new DateTime($date_string);
+                            return $dt->format('Y-m-d');
                         } catch (Exception $e) {
                             return null;
                         }
                     };
 
-                    // Prepare the data array, common for both insert and update
+                    // Prepare and sanitize the data array
                     $data = [
-                        'so_hop_dong_mic' => $input['soHopDongMic'] ?? null,
-                        'ngay_bat_dau'   => $convert_date($input['ngayBatDau']),
-                        'ngay_het_han'   => $convert_date($input['ngayHetHan']),
+                        'so_hop_dong_mic' => isset($input['soHopDongMic']) ? sanitize_text_field($input['soHopDongMic']) : null,
+                        'ngay_bat_dau'   => $convert_date($input['ngayBatDau'] ?? ''),
+                        'ngay_het_han'   => $convert_date($input['ngayHetHan'] ?? ''),
                         'trang_thai_don' => 'Hieu luc',
                         'muc_phi'        => 169000.00,
-                        'ndbh_ho_ten'    => $input['ndbhHoTen'],
-                        'ndbh_ngay_sinh' => $convert_date($input['ndbhNgaySinh']),
+                        'ndbh_ho_ten'    => sanitize_text_field($input['ndbhHoTen']),
+                        'ndbh_ngay_sinh' => $convert_date($input['ndbhNgaySinh'] ?? ''),
                         'ndbh_cccd'      => $cccd,
-                        'ndbh_gioi_tinh' => $input['ndbhGioiTinh'] ?? null,
-                        'ndbh_dia_chi'   => $input['ndbhDiaChi'] ?? null,
-                        'ndbh_sdt'       => $input['ndbhSdt'] ?? null,
-                        'ndbh_email'     => $input['ndbhEmail'] ?? null,
-                        'nmbh_ho_ten'    => $input['nmbhHoTen'] ?? null,
-                        'nmbh_dia_chi'   => $input['nmbhDiaChi'] ?? null,
-                        'nmbh_sdt'       => $input['nmbhSdt'] ?? null,
+                        'ndbh_gioi_tinh' => isset($input['ndbhGioiTinh']) ? sanitize_text_field($input['ndbhGioiTinh']) : null,
+                        'ndbh_dia_chi'   => isset($input['ndbhDiaChi']) ? sanitize_textarea_field($input['ndbhDiaChi']) : null,
+                        'ndbh_sdt'       => isset($input['ndbhSdt']) ? sanitize_text_field($input['ndbhSdt']) : null,
+                        'ndbh_email'     => isset($input['ndbhEmail']) ? sanitize_email($input['ndbhEmail']) : null,
+                        'nmbh_ho_ten'    => isset($input['nmbhHoTen']) ? sanitize_text_field($input['nmbhHoTen']) : null,
+                        'nmbh_dia_chi'   => isset($input['nmbhDiaChi']) ? sanitize_textarea_field($input['nmbhDiaChi']) : null,
+                        'nmbh_sdt'       => isset($input['nmbhSdt']) ? sanitize_text_field($input['nmbhSdt']) : null,
                     ];
 
                     // Check if contract with this CCCD already exists
