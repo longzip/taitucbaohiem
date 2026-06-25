@@ -20,8 +20,6 @@
       </template>
     </bhyt-filters>
 
-    <bhyt-stats :stats="stats" />
-
     <bhyt-card-list
       :bhyts="bhyts"
       :loading="loading"
@@ -41,7 +39,6 @@ import { useStore } from "vuex";
 import BhytHeader from "src/components/bhyt/BhytHeader.vue";
 import BhytFilters from "src/components/bhyt/BhytFilters.vue";
 import BhytResultSummary from "src/components/bhyt/BhytResultSummary.vue";
-import BhytStats from "src/components/bhyt/BhytStats.vue";
 import BhytCardList from "src/components/bhyt/BhytCardList.vue";
 
 // GRAPHQL QUERIES
@@ -87,29 +84,13 @@ const BHYTS_QUERY = gql`
       updatedAt
       coTheUuTienCaoHon
       disabled
-      updated_at
+      updatedAt
     }
   }
 `;
 
-const BHYT_STATS_QUERY = gql`
-  query BhytStats($userName: String) {
-    bhytStats(userName: $userName) {
-      total
-      active
-      expired
-    }
-  }
-`;
 
-const COLLABORATORS_QUERY = gql`
-  query Collaborators {
-    collaborators {
-      label
-      value
-    }
-  }
-`;
+
 
 // COMPONENT SETUP
 const $q = useQuasar();
@@ -121,11 +102,11 @@ const selectedUser = ref(null);
 const selectedStatus = ref(null);
 
 // USER & STATUS OPTIONS
-const { result: collaboratorsResult, refetch: refetchCollaborators } = useQuery(COLLABORATORS_QUERY);
-const userOptions = useResult(collaboratorsResult, [], (data) => [
+
+const userOptions = [
   { label: "Tất cả", value: null },
-  ...data.collaborators,
-]);
+  { label: "142010_giaodichvien", value : '3152'}
+];
 
 const statusOptions = ref([
   { label: "Tất cả", value: null },
@@ -147,19 +128,14 @@ const { result, loading, error, refetch: refetchBhyts, onResult: onBhytsResult }
   }),
   () => ({
     debounce: 500,
-    enabled: computed(() => !!searchText.value || !!selectedUser.value || !!selectedStatus.value),
-  })
-);
-
-const { result: statsResult, refetch: refetchStats } = useQuery(
-  BHYT_STATS_QUERY,
-  () => ({
-    userName: selectedUser.value,
+    // Kích hoạt khi có searchText (từ 2 ký tự trở lên) HOẶC có chọn user HOẶC có chọn trạng thái
+    enabled: (!!searchText.value && searchText.value.length >= 10) ||
+             !!selectedUser.value ||
+             !!selectedStatus.value,
   })
 );
 
 const bhyts = useResult(result, [], (data) => data.bhyts);
-const stats = useResult(statsResult, null, (data) => data.bhytStats);
 
 // METHODS
 const search = () => {
@@ -172,8 +148,6 @@ const search = () => {
 
 const refetchAll = () => {
   refetchBhyts();
-  refetchStats();
-  refetchCollaborators();
    Notify.create({ type: "info", message: "Đang làm mới dữ liệu..." });
 }
 
