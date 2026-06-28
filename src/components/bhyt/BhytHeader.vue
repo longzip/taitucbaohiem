@@ -7,20 +7,41 @@
         <div class="text-caption text-grey">Tra cứu, quản lý và tái tục thẻ BHYT</div>
       </div>
     </div>
-    <q-btn
-      round
-      flat
-      color="primary"
-      icon="refresh"
-      @click="$emit('refresh')"
-      :loading="loading"
-    >
-      <q-tooltip>Làm mới dữ liệu</q-tooltip>
-    </q-btn>
+
+    <div class="row items-center">
+        <q-btn
+          round
+          flat
+          color="primary"
+          icon="refresh"
+          @click="$emit('refresh')"
+          :loading="loading"
+        >
+          <q-tooltip>Làm mới dữ liệu</q-tooltip>
+        </q-btn>
+
+        <q-btn
+          round
+          flat
+          color="primary"
+          icon="more_vert"
+        >
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup @click="$emit('copyPhones')">
+                <q-item-section>Copy SĐT</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="$emit('autoLookup')">
+                <q-item-section>Tra cứu tự động</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+    </div>
   </div>
 </template>
 
 <script setup>
 defineProps({ loading: Boolean });
-defineEmits(["refresh"]);
+defineEmits(["refresh", "copyPhones", "autoLookup"]);
 </script>

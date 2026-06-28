@@ -65,6 +65,9 @@
                 <q-item clickable @click="loadBhytByName" v-close-popup>
                   <q-item-section>Tìm tất cả</q-item-section>
                 </q-item>
+                <q-item clickable @click="loadBhytByUserName()" v-close-popup>
+                  <q-item-section>Đã thu tiền</q-item-section>
+                </q-item>
                 <q-item clickable @click="moCuaSoVoiMaSo" v-close-popup>
                   <q-item-section>Đồng bộ dữ liệu</q-item-section>
                 </q-item>
@@ -313,9 +316,7 @@
                   <q-item-section>Có số điện thoại</q-item-section>
                 </q-item>
                 <q-separator />
-                <q-item clickable @click="loadBhytByUserName()" v-close-popup>
-                  <q-item-section>Đã thu tiền</q-item-section>
-                </q-item>
+
               </q-list>
             </q-menu>
           </div>
@@ -472,22 +473,33 @@ export default defineComponent({
           value: null,
         },
         {
-          label: this.userDetails?.id,
-          value: this.userDetails?.id,
+          label: "142010_giaodichvien",
+          value: '3152',
         },
         {
-          label: this.userDetails?.maNhanVienThu?.slice(0, 4),
-          value: this.userDetails?.maNhanVienThu,
+          label: "Nguyễn Thị Hằng",
+          value: 'pvi',
         },
         {
-          label: this.userDetails?.name?.slice(0, 6),
-          value: this.userDetails?.name,
+          label: "CTV_TVLAP",
+          value: '174265',
         },
         {
-          label: this.userDetails?.maXa,
-          value: this.userDetails?.maXa,
+          label: "142010_Dam",
+          value: '101130',
         },
-        ...(this.userDetails?.ctv || []),
+        {
+          label: "142010_truongbc",
+          value: '3154',
+        },
+        {
+          label: "142001_THUY",
+          value: '107028',
+        },
+{
+          label: "142001_giaodichvien",
+          value: '3148',
+        },
         {
           label: "Khác",
           value: "",
@@ -863,7 +875,7 @@ export default defineComponent({
           });
         else
           this.getBhyts({
-            userName: this.searchText || this.userDetails.id,
+            userName: this.selectedUser || 'NV034186013128',
           });
       } finally {
         this.$q.loading.hide();

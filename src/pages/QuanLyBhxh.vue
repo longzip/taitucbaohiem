@@ -170,7 +170,6 @@ const QUERY_DANH_SACH_BHXH = gql`
       sdt
       soDienThoai2
       diaChi
-      phuongThucDong
       soThangDong
       soTien
       trangThai

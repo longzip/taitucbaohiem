@@ -15,7 +15,6 @@
         {{ bhyt.ngaySinhDt || bhyt.ngayThangNamSinh }}
 
         <q-icon
-
           @click="xacNhanLoaiBo(bhyt)"
           :name="bhyt.disabled == 1 ? 'do_not_disturb_on' : 'delete_forever'"
           :color="bhyt.disabled == 1 ? 'red' : 'gray'"
@@ -24,7 +23,7 @@
       <q-item-label caption lines="2">
         {{ bhyt.diaChiLh }}
       </q-item-label>
-      <div >
+      <div>
         <q-item-label caption lines="2">
           Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
             bhyt.maHoGd
@@ -85,7 +84,6 @@
       >
       <q-item-label
         v-if="
-
           bhyt.trangThaiHoSoName !== 'Đã nhận kết quả phát sinh từ BHXH' &&
           bhyt.thongBaoBhxh !== 'Phát sinh thành công'
         "
@@ -96,14 +94,14 @@
         {{ bhyt.trangThaiHoSoName }} {{ bhyt.thongBaoBhxh }}
       </q-item-label>
 
-      <q-item-label  caption lines="2">
+      <q-item-label caption lines="2">
         {{ bhyt.ghiChu || "Ghi chú:" }}
         <q-icon @click="xacNhanGhiChu(bhyt)" name="edit" />
       </q-item-label>
       <q-item-label v-if="bhyt.coTheUuTienCaoHon" caption>
         <q-badge color="warning">Đang tham gia BHXH bắt buộc</q-badge>
       </q-item-label>
-      <q-item-label  caption lines="2">
+      <q-item-label caption lines="2">
         <a v-if="bhyt.ngaySinhDt" :href="`tel:${bhyt.soDienThoai2}`">{{
           bhyt.soDienThoai2 || "Thêm sđt:"
         }}</a>
@@ -124,7 +122,7 @@
       </q-item-label>
     </q-item-section>
 
-    <q-item-section  side top>
+    <q-item-section side top>
       <div class="q-gutter-xs">
         <q-btn size="12px" flat dense round icon="more_horiz">
           <q-menu>
@@ -462,12 +460,56 @@ export default {
         });
     },
     xacNhanGiaHan(bhyt) {
+      // 1. Chỉ cần thay đổi mức lương cơ sở tại đây (Ví dụ: 2.340.000đ hoặc 2.530.000đ)
+      const mucLuongCoSo = 2340000;
+
+      // 2. Tính mức đóng BHYT GỐC của 1 THÁNG theo quy định hộ gia đình
+      const base1Month = mucLuongCoSo * 0.045; // Người thứ 1: 4.5% mức lương cơ sở
+      const m1 = Math.round(base1Month); // Người thứ 1
+      const m2 = Math.round(base1Month * 0.7); // Người thứ 2: 70% người thứ 1
+      const m3 = Math.round(base1Month * 0.6); // Người thứ 3: 60% người thứ 1
+      const m4 = Math.round(base1Month * 0.5); // Người thứ 4: 50% người thứ 1
+      const m5 = Math.round(base1Month * 0.4); // Từ người thứ 5: 40% người thứ 1
+
+      // Hàm helper định dạng hiển thị tiền tệ VND (Ví dụ: 1.263.600đ)
+      const formatMoney = (val) =>
+        new Intl.NumberFormat("vi-VN").format(val) + "đ";
+
+      // 3. Khởi tạo danh sách options với đầy đủ các mức đóng 3, 6, 12 tháng
       const options = [
-        { label: "T1: 1.263.600đ", value: 1263600, color: "secondary" },
-        { label: "T2: 884.520đ", value: 884520 },
-        { label: "T3: 758.160đ", value: 758160 },
-        { label: "T4: 631.800đ", value: 631800 },
-        { label: "T5: 505.440đ", value: 505440 },
+        // Mức 12 tháng (Mặc định ban đầu)
+        {
+          label: `T1 (12T): ${formatMoney(m1 * 12)}`,
+          value: m1 * 12,
+          color: "secondary",
+        },
+        { label: `T2 (12T): ${formatMoney(m2 * 12)}`, value: m2 * 12 },
+        { label: `T3 (12T): ${formatMoney(m3 * 12)}`, value: m3 * 12 },
+        { label: `T4 (12T): ${formatMoney(m4 * 12)}`, value: m4 * 12 },
+        { label: `T5 (12T): ${formatMoney(m5 * 12)}`, value: m5 * 12 },
+
+        // Mức 6 tháng
+        {
+          label: `T1 (6 tháng): ${formatMoney(m1 * 6)}`,
+          value: m1 * 6,
+          color: "primary",
+        },
+        { label: `T2 (6 tháng): ${formatMoney(m2 * 6)}`, value: m2 * 6 },
+        { label: `T3 (6 tháng): ${formatMoney(m3 * 6)}`, value: m3 * 6 },
+        { label: `T4 (6 tháng): ${formatMoney(m4 * 6)}`, value: m4 * 6 },
+        { label: `T5 (6 tháng): ${formatMoney(m5 * 6)}`, value: m5 * 6 },
+
+        // Mức 3 tháng
+        {
+          label: `T1 (3 tháng): ${formatMoney(m1 * 3)}`,
+          value: m1 * 3,
+          color: "warning",
+        },
+        { label: `T2 (3 tháng): ${formatMoney(m2 * 3)}`, value: m2 * 3 },
+        { label: `T3 (3 tháng): ${formatMoney(m3 * 3)}`, value: m3 * 3 },
+        { label: `T4 (3 tháng): ${formatMoney(m4 * 3)}`, value: m4 * 3 },
+        { label: `T5 (3 tháng): ${formatMoney(m5 * 3)}`, value: m5 * 3 },
+
         { label: "Hủy thu", value: "0" },
       ];
 
@@ -485,7 +527,7 @@ export default {
         })
         .onOk((data) => {
           const payload = {
-            tongTien: data,
+            tongTien: Number(data),
             maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
             userName: this.userDetails.maNhanVienThu,
             maXa: this.userDetails.maXa,
@@ -498,6 +540,7 @@ export default {
           }
         });
     },
+
     xacNhanMucDongBHYTBT(bhyt) {
       this.$q
         .dialog({
