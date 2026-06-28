@@ -1,7 +1,7 @@
 <template>
   <q-item
     :class="{
-      'bg-warning': bhyt.coTheUuTienCaoHon || !bhyt.soTheBhyt?.startsWith('GD'),
+      'bg-warning': !bhyt.soTheBhyt?.startsWith('GD'),
       'bg-positive': !isDateBeforeLastDayNextMonth(bhyt.denNgayDt),
       'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 0,
     }"
@@ -28,9 +28,7 @@
           Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
             bhyt.maHoGd
           }}</a
-          >/<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.soSoHoKhau}`">{{
-            bhyt.soSoHoKhau
-          }}</a>
+          >
           {{ bhyt.mqhChuHo }}
         </q-item-label>
         <q-item-label v-if="bhyt.maToKhaiRieng" caption lines="2">
@@ -38,23 +36,19 @@
             target="_blank"
             :href="`/#/ho-gia-dinh/${bhyt.maToKhaiRieng}`"
             >{{ bhyt.maToKhaiRieng }}</a
-          ><a
-            target="_blank"
-            :href="`https://app.hotham.vn/thanh-vien-ho-gia-dinh-by/${bhyt.maToKhaiRieng}/pdf`"
-            ><q-icon class="q-ml-sm" name="print" color="blue"
-          /></a>
+          >
         </q-item-label>
       </div>
       <q-item-label caption> CCCD: {{ bhyt.soCmnd }} </q-item-label>
       <q-item-label caption lines="2"
         ><strong>{{
-          bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
+          bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh
         }}</strong>
         <q-icon
           class="q-ml-md"
           @click="
             copyTextToClipboard(
-              bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
+              bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh
             )
           "
           name="content_copy"
@@ -74,7 +68,7 @@
       <q-item-label caption lines="2">{{ bhyt.tenDvi }}</q-item-label>
       <q-item-label caption lines="2">{{ bhyt.maKCB }}</q-item-label>
       <q-item-label caption lines="2">5 năm: {{ bhyt.ngay5Nam }}</q-item-label>
-      <q-item-label v-if="userDetails.isPro && bhyt.tienNop" caption
+      <q-item-label v-if="bhyt.tienNop" caption
         ><span @click="setCurrentBhyt(bhyt)"
           >BHXH
           <strong>T{{ bhyt.tuThangTN }}+{{ bhyt.maPhuongThucDong }}:</strong>
@@ -149,7 +143,7 @@
               </q-item>
               <q-item clickable v-close-popup>
                 <q-item-section
-                  @click="traCuuBHXHCu(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+                  @click="traCuuBHXHCu(bhyt.maSoBhxh)"
                   >Tra cứu trạng thái đóng BHYT</q-item-section
                 >
               </q-item>
@@ -172,7 +166,7 @@
               </q-item>
               <q-item clickable v-close-popup>
                 <q-item-section
-                  @click="copyBHXHToClipboard(bhyt.maSoBhxh || bhyt.maSoBHXH)"
+                  @click="copyBHXHToClipboard(bhyt.maSoBhxh)"
                   >Tra cứu quá trình đóng BHXH</q-item-section
                 >
               </q-item>
@@ -208,9 +202,9 @@
           @click="xacNhanGiaHan(bhyt)"
           class="text-subtitle2 text-weight-bold"
           >{{
-            bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong
+            bhyt.tongTien
               ? parseInt(
-                  bhyt.tongTien || bhyt.soTienThu || bhyt.soPhaiDong
+                  bhyt.tongTien
                 ).toLocaleString()
               : "0"
           }}</strong
@@ -260,9 +254,13 @@
         @click="xacNhanTheoDoi(bhyt)"
         name="star"
         :color="bhyt.completed == 1 ? 'yellow' : 'gray'"
-      /><q-badge class="q-mr-sm" v-if="bhyt.userName" color="gray">{{
-        bhyt.userName
-      }}</q-badge>
+      /><q-badge
+        @click="xacNhanUserName(bhyt)"
+        class="q-mr-sm"
+        v-if="bhyt.userName"
+        color="gray"
+        >{{ bhyt.userName }}</q-badge
+      >
 
       <q-item-label caption>
         {{ bhyt.soBienLai
@@ -283,7 +281,7 @@
         ><q-icon
           @click="
             handleTraCuuClick(
-              bhyt.maSoBhxh || bhyt.maSoBHXH,
+              bhyt.maSoBhxh,
               bhyt.hoTen,
               bhyt.ngaySinhDt
             )
@@ -291,7 +289,7 @@
           name="update"
           color="blue"
         />
-        {{ formatDate(bhyt.updated_at) }}</q-item-label
+        {{ formatDate(bhyt.ngayTraCuu) }}</q-item-label
       >
     </q-item-section>
   </q-item>
@@ -303,6 +301,8 @@ import { date } from "quasar";
 import { Notify } from "quasar";
 import moment from "moment";
 import { api } from "src/boot/axios";
+import { mucDongBHYTOptions } from "src/utils/chon-muc-dong-bhyt";
+import { formatDate, baoMatSoBHXH } from "src/utils/formatters";
 
 // Lấy ngày cuối cùng của tháng tới
 const lastDayNextMonth = moment()
@@ -338,8 +338,10 @@ export default {
       "traCuuBHXH",
       "traCuuBHXHCu",
     ]),
+    formatDate,
+    baoMatSoBHXH,
     openPviWindow(bhyt, type) {
-      const maSo = bhyt.maSoBhxh || bhyt.maSoBHXH;
+      const maSo = bhyt.maSoBhxh;
       const hoTen = bhyt.hoTen || bhyt.hoVaTen;
       const date = new Date(bhyt.ngaySinhDt);
       const day = String(date.getDate()).padStart(2, "0");
@@ -380,9 +382,6 @@ export default {
       }
 
       window.open(url, "_blank");
-    },
-    formatDate(date) {
-      return moment(date).fromNow();
     },
     isDateBeforeLastDayNextMonth(dateString) {
       if (!dateString) return false;
@@ -436,7 +435,7 @@ export default {
         .onOk((data) => {
           this.updateGhiChu({
             ghiChu: data,
-            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            maSoBhxh: bhyt.maSoBhxh,
           });
         });
     },
@@ -454,65 +453,12 @@ export default {
         })
         .onOk((data) => {
           this.updateTongTien({
-            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            maSoBhxh: bhyt.maSoBhxh,
             capNhatBHYT: { soDienThoai2: data },
           });
         });
     },
     xacNhanGiaHan(bhyt) {
-      // 1. Chỉ cần thay đổi mức lương cơ sở tại đây (Ví dụ: 2.340.000đ hoặc 2.530.000đ)
-      const mucLuongCoSo = 2340000;
-
-      // 2. Tính mức đóng BHYT GỐC của 1 THÁNG theo quy định hộ gia đình
-      const base1Month = mucLuongCoSo * 0.045; // Người thứ 1: 4.5% mức lương cơ sở
-      const m1 = Math.round(base1Month); // Người thứ 1
-      const m2 = Math.round(base1Month * 0.7); // Người thứ 2: 70% người thứ 1
-      const m3 = Math.round(base1Month * 0.6); // Người thứ 3: 60% người thứ 1
-      const m4 = Math.round(base1Month * 0.5); // Người thứ 4: 50% người thứ 1
-      const m5 = Math.round(base1Month * 0.4); // Từ người thứ 5: 40% người thứ 1
-
-      // Hàm helper định dạng hiển thị tiền tệ VND (Ví dụ: 1.263.600đ)
-      const formatMoney = (val) =>
-        new Intl.NumberFormat("vi-VN").format(val) + "đ";
-
-      // 3. Khởi tạo danh sách options với đầy đủ các mức đóng 3, 6, 12 tháng
-      const options = [
-        // Mức 12 tháng (Mặc định ban đầu)
-        {
-          label: `T1 (12T): ${formatMoney(m1 * 12)}`,
-          value: m1 * 12,
-          color: "secondary",
-        },
-        { label: `T2 (12T): ${formatMoney(m2 * 12)}`, value: m2 * 12 },
-        { label: `T3 (12T): ${formatMoney(m3 * 12)}`, value: m3 * 12 },
-        { label: `T4 (12T): ${formatMoney(m4 * 12)}`, value: m4 * 12 },
-        { label: `T5 (12T): ${formatMoney(m5 * 12)}`, value: m5 * 12 },
-
-        // Mức 6 tháng
-        {
-          label: `T1 (6 tháng): ${formatMoney(m1 * 6)}`,
-          value: m1 * 6,
-          color: "primary",
-        },
-        { label: `T2 (6 tháng): ${formatMoney(m2 * 6)}`, value: m2 * 6 },
-        { label: `T3 (6 tháng): ${formatMoney(m3 * 6)}`, value: m3 * 6 },
-        { label: `T4 (6 tháng): ${formatMoney(m4 * 6)}`, value: m4 * 6 },
-        { label: `T5 (6 tháng): ${formatMoney(m5 * 6)}`, value: m5 * 6 },
-
-        // Mức 3 tháng
-        {
-          label: `T1 (3 tháng): ${formatMoney(m1 * 3)}`,
-          value: m1 * 3,
-          color: "warning",
-        },
-        { label: `T2 (3 tháng): ${formatMoney(m2 * 3)}`, value: m2 * 3 },
-        { label: `T3 (3 tháng): ${formatMoney(m3 * 3)}`, value: m3 * 3 },
-        { label: `T4 (3 tháng): ${formatMoney(m4 * 3)}`, value: m4 * 3 },
-        { label: `T5 (3 tháng): ${formatMoney(m5 * 3)}`, value: m5 * 3 },
-
-        { label: "Hủy thu", value: "0" },
-      ];
-
       this.$q
         .dialog({
           title: "Gia hạn thẻ BHYT",
@@ -520,7 +466,7 @@ export default {
           options: {
             type: "radio",
             model: bhyt.tongTien,
-            items: options,
+            items: mucDongBHYTOptions,
           },
           cancel: true,
           persistent: true,
@@ -528,7 +474,7 @@ export default {
         .onOk((data) => {
           const payload = {
             tongTien: Number(data),
-            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            maSoBhxh: bhyt.maSoBhxh,
             userName: this.userDetails.maNhanVienThu,
             maXa: this.userDetails.maXa,
           };
@@ -566,7 +512,7 @@ export default {
         .onOk((data) => {
           const { addToDate } = date;
           this.updateTongTien({
-            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            maSoBhxh: bhyt.maSoBhxh,
             capNhatBHYT: {
               mucDongBHYTBT: data,
               maXa: this.userDetails.maXa,
@@ -597,7 +543,7 @@ export default {
         .onOk((data) => {
           this.updateDenNgayBHYTBT({
             denNgayBHYTBT: data,
-            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            maSoBhxh: bhyt.maSoBhxh,
             maXa: this.userDetails.maXa,
           });
         });
@@ -874,7 +820,7 @@ export default {
     },
     copyCustomData(bhyt) {
       const hoTen = bhyt.hoTen || bhyt.hoVaTen;
-      const maSoBhxh = bhyt.maSoBhxh || bhyt.maSoBHXH;
+      const maSoBhxh = bhyt.maSoBhxh;
       const ngaySinh = new Date(bhyt.ngaySinhDt).toLocaleDateString("vi-VN");
       const dataToCopy = `${hoTen}, ${maSoBhxh}, ${ngaySinh}, Nhập tờ khai bảo hiểm`;
 
@@ -979,7 +925,7 @@ export default {
         });
         return;
       }
-      const url = `https://baohiemxahoi.gov.vn/tracuu/Pages/tra-cuu-thoi-han-su-dung-the-bhyt.aspx?mathe=${mathe}&hoten=${hoten}&ngaysinh=${ngaysinh}`;
+      const url = `https://baohiemxahoi.gov.vn/tracuu/Pages/tra-cuu-thoi-han-su-dung-the-bhyt.aspx?mathe=${mathe}&hoten=${hoten}&ngaysinh=${ngaySinh}`;
       window.open(url, "_blank");
     },
 
@@ -1027,11 +973,28 @@ export default {
     sleep(ms = 500) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    baoMatSoBHXH(maSoCanAn) {
-      if (!maSoCanAn.length) return "";
-      const s = [...maSoCanAn];
-      s.splice(-7, 3, "***");
-      return s.join("");
+    xacNhanUserName(bhyt) {
+      this.$q
+        .dialog({
+          title: "Chọn người thu",
+          message: "Chọn người thu tiền:",
+          options: {
+            type: "radio",
+            model: bhyt.userName,
+            items: [
+              { label: "3152", value: "3152" },
+              { label: "pvi", value: "pvi" },
+            ],
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk((data) => {
+          this.updateTongTien({
+            maSoBhxh: bhyt.maSoBhxh,
+            capNhatBHYT: { userName: data },
+          });
+        });
     },
     showTrangThaiDialog(bhyt) {
       this.$q
@@ -1054,7 +1017,7 @@ export default {
         .onOk(async (data) => {
           await this.updateTrangThaiTaiTuc({
             trangThaiTaiTuc: data,
-            maSoBhxh: bhyt.maSoBhxh || bhyt.maSoBHXH,
+            maSoBhxh: bhyt.maSoBhxh,
             maXa: this.userDetails.maXa,
           });
 
