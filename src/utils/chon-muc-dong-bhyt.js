@@ -1,7 +1,7 @@
 // src/utils/chon-muc-dong-bhyt.js
 
 // 1. Chỉ cần thay đổi mức lương cơ sở tại đây (Ví dụ: 2.340.000đ hoặc 2.530.000đ)
-const mucLuongCoSo = 2340000;
+const mucLuongCoSo = 2530000;
 
 // 2. Tính mức đóng BHYT GỐC của 1 THÁNG theo quy định hộ gia đình
 const base1Month = mucLuongCoSo * 0.045; // Người thứ 1: 4.5% mức lương cơ sở

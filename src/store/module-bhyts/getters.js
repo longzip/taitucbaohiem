@@ -69,6 +69,22 @@ export const filteredBhyts = ({
         );
       });
       // --- Kết thúc logic mới ---
+    } else if (selectedStatus === "Chưa đồng bộ 1day") {
+      // --- Bắt đầu logic mới ---
+      const today = new Date();
+      const threeMonthsAgo = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() - 1
+      );
+
+      filtered = filtered.filter((bhyt) => {
+        return (
+          bhyt.ngayTraCuu === "0000-00-00 00:00:00" ||
+          new Date(bhyt.ngayTraCuu) < threeMonthsAgo
+        );
+      });
+      // --- Kết thúc logic mới ---
     } else {
       filtered = filtered.filter(
         (bhyt) =>

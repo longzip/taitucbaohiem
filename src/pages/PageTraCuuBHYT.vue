@@ -62,18 +62,12 @@
             <q-icon name="expand_more" dense> </q-icon>
             <q-menu touch-position>
               <q-list style="min-width: 150px">
-                <q-item clickable @click="loadBhytByName" v-close-popup>
-                  <q-item-section>Tìm tất cả</q-item-section>
-                </q-item>
                 <q-item clickable @click="loadBhytByUserName()" v-close-popup>
                   <q-item-section>Đã thu tiền</q-item-section>
                 </q-item>
                 <q-item clickable @click="moCuaSoVoiMaSo" v-close-popup>
                   <q-item-section>Đồng bộ dữ liệu</q-item-section>
                 </q-item>
-                <!-- <q-item clickable @click="dongBoMaSoBHXH" v-close-popup>
-                  <q-item-section>Đồng bộ mã số BHXH</q-item-section>
-                </q-item> -->
                 <q-item clickable @click="loadTaiTucBHYTBT" v-close-popup>
                   <q-item-section>Tái tục BHYT bổ trợ</q-item-section>
                 </q-item>
@@ -84,9 +78,6 @@
                   <q-item-section>Hoa hồng BHXH TN</q-item-section>
                 </q-item>
                 <q-separator />
-                <q-item clickable @click="loadBhytThangCTV" v-close-popup>
-                  <q-item-section>Hoa hồng CTV</q-item-section>
-                </q-item>
                 <q-separator />
                 <q-item clickable @click="loadBhytByUserName(1)" v-close-popup>
                   <q-item-section>Đã thu tiền BHYT</q-item-section>
@@ -96,80 +87,22 @@
                 </q-item>
                 <q-separator />
                 <q-item clickable @click="taiTucBHYT1thang" v-close-popup>
-                  <q-item-section
-                    >Tái tục BHYT ({{ userDetails.id }})</q-item-section
-                  >
-                </q-item>
-                <q-item
-                  clickable
-                  @click="loadBhyts({ thang: 1 })"
-                  v-close-popup
-                >
-                  <q-item-section>Tái tục BHYT(xã)</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable @click="taiTucBHYT2thang" v-close-popup>
-                  <q-item-section
-                    >Tái tục 2 tháng ({{ userDetails.id }})</q-item-section
-                  >
+                  <q-item-section>Tái tục BHYT</q-item-section>
                 </q-item>
 
-                <q-item
-                  clickable
-                  @click="loadBhyts({ thang: 2, taiTuc: 2 })"
-                  v-close-popup
-                >
-                  <q-item-section>Tái tục 2 tháng (xã)</q-item-section>
-                </q-item>
                 <q-separator />
-                <q-item
-                  clickable
-                  @click="
-                    loadBHXHTNs({
-                      tienNop: 1,
-                      taiTucBHXH: 1,
-                      userName: userDetails.id,
-                    })
-                  "
-                  v-close-popup
-                >
+                <q-item clickable @click="taiTucBHYT2thang" v-close-popup>
+                  <q-item-section>Tái tục 2 tháng</q-item-section>
+                </q-item>
+
+                <q-separator />
+                <q-item clickable @click="loadBHXHTNs()" v-close-popup>
                   <q-item-section>Tái tục BHXH</q-item-section>
                 </q-item>
-                <q-item
-                  clickable
-                  @click="
-                    loadBHXHTNs({
-                      tienNop: 1,
-                      userName: userDetails.id,
-                    })
-                  "
-                  v-close-popup
-                >
-                  <q-item-section
-                    >Đóng BHXH cho {{ userDetails.id }}</q-item-section
-                  >
-                </q-item>
-                <q-item
-                  clickable
-                  @click="
-                    loadBHXHTNs({
-                      tienNop: 1,
-                      maXa: userDetails.maXa,
-                      khacUserName: userDetails.id,
-                    })
-                  "
-                  v-close-popup
-                >
-                  <q-item-section>Đóng BHXH (xã)</q-item-section>
-                </q-item>
+
                 <q-separator />
                 <q-item clickable @click="loadBhytsHetHanByUser" v-close-popup>
-                  <q-item-section
-                    >Đã hết hạn {{ userDetails.id }}</q-item-section
-                  >
-                </q-item>
-                <q-item clickable @click="loadBhytsHetHan" v-close-popup>
-                  <q-item-section>Đã hết hạn (xã)</q-item-section>
+                  <q-item-section>Đã hết hạn</q-item-section>
                 </q-item>
                 <q-item clickable @click="loadBhytsDisable" v-close-popup>
                   <q-item-section>Đã liên hệ</q-item-section>
@@ -178,40 +111,10 @@
                   <q-item-section>Đánh dấu sao</q-item-section>
                 </q-item>
                 <q-separator />
+
                 <q-item
                   clickable
-                  @click="loadBaoCaoChiTietGiaoDich"
-                  v-close-popup
-                >
-                  <q-item-section>Báo cáo Chi Tiết Giao Dịch</q-item-section>
-                </q-item>
-                <q-item
-                  clickable
-                  @click="loadBaoCaoChiTietGiaoDichBHXH"
-                  v-close-popup
-                >
-                  <q-item-section>Chi Tiết Giao Dịch (BHXH)</q-item-section>
-                </q-item>
-                <q-item clickable @click="inC17" v-close-popup>
-                  <q-item-section>In C17</q-item-section>
-                </q-item>
-                <q-item clickable @click="printDanhSachTraThe" v-close-popup>
-                  <q-item-section>In Danh sách trả thẻ</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item
-                  clickable
-                  @click="copyMaSoBhxhToClipboard"
-                  v-close-popup
-                >
-                  <q-item-section>Copy tất cả mã số BHXH</q-item-section>
-                </q-item>
-                <q-item clickable @click="copyHoTenToClipboard" v-close-popup>
-                  <q-item-section>Copy tất cả họ tên</q-item-section>
-                </q-item>
-                <q-item
-                  clickable
-                  @click="copySoDienThoaiToClipboard"
+                  @click="copySoDienThoai(filteredBhyts)"
                   v-close-popup
                 >
                   <q-item-section>Copy tất cả số điện thoại</q-item-section>
@@ -219,104 +122,11 @@
                 <q-item clickable @click="copyNamePhoneClipboard" v-close-popup>
                   <q-item-section>Lưu danh bạ</q-item-section>
                 </q-item>
-                <q-item clickable @click="handleExport" v-close-popup>
-                  <q-item-section>Lưu danh bạ 2</q-item-section>
-                </q-item>
                 <q-separator />
                 <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
                   <q-item-section>Tìm theo năm sinh</q-item-section>
                 </q-item>
                 <q-separator />
-
-                <q-item
-                  clickable
-                  @click="capNhatBHXHTN(searchText)"
-                  v-close-popup
-                >
-                  <q-item-section>Đồng bộ BHXH TN</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item
-                  clickable
-                  @click="
-                    resetBhyt(
-                      searchText
-                        ? filteredBhyts.filter(
-                            (bhyt) => bhyt.userName !== searchText
-                          )
-                        : []
-                    )
-                  "
-                  v-close-popup
-                >
-                  <q-item-section>Xóa danh sách</q-item-section>
-                </q-item>
-                <q-item
-                  clickable
-                  @click="
-                    resetBhyt(
-                      searchText
-                        ? filteredBhyts.filter(
-                            (bhyt) => bhyt.userName === searchText
-                          )
-                        : []
-                    )
-                  "
-                  v-close-popup
-                >
-                  <q-item-section>Giữ lại danh sách</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item
-                  clickable
-                  @click="
-                    resetBhyt(
-                      searchText
-                        ? bhyts.filter(
-                            (bhyt) => !(bhyt.soDienThoai || bhyt.soDienThoai2)
-                          )
-                        : []
-                    )
-                  "
-                  v-close-popup
-                >
-                  <q-item-section>Thiếu số điện thoại</q-item-section>
-                </q-item>
-                <q-item
-                  clickable
-                  @click="
-                    loadBHXHTNs({
-                      isCMND: 1,
-                      maXa: userDetails.maXa,
-                    })
-                  "
-                  v-close-popup
-                >
-                  <q-item-section>Thiếu CCCD</q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item
-                  clickable
-                  @click="loadBhytByUserNameTaiTuc()"
-                  v-close-popup
-                >
-                  <q-item-section>Tái tục</q-item-section>
-                </q-item>
-                <q-item
-                  clickable
-                  @click="
-                    getBhyts({
-                      isPhone: true,
-                      maXa: userDetails.maXa,
-                      name: searchText,
-                    })
-                  "
-                  v-close-popup
-                >
-                  <q-item-section>Có số điện thoại</q-item-section>
-                </q-item>
-                <q-separator />
-
               </q-list>
             </q-menu>
           </div>
@@ -411,7 +221,15 @@ import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 import BhytUpdateDialog from "src/components/BhytUpdateDialog.vue";
 import { useDanhBaGenerator } from "src/utils/useDanhBaGenerator";
 import { xacDinhLoaiChuoi } from "src/utils/chuoi-utils";
-import moment from "moment";
+import { downloadFile } from "src/utils/download";
+import {
+  copyMaSoBhxh,
+  copySoDienThoai,
+  prepareDanhBa,
+} from "src/utils/clipboard";
+import { khoangCachThoiGian, dinhDangNgayThang } from "src/utils/formatters";
+import { userOptions, statusOptions } from "src/constants/tra-cuu-options";
+
 const { exportDanhBaCSV } = useDanhBaGenerator();
 
 export default defineComponent({
@@ -419,7 +237,7 @@ export default defineComponent({
   components: { ThongTinTheBHYT, BhytUpdateDialog },
   setup() {
     const $q = useQuasar();
-    return { $q };
+    return { $q, userOptions, statusOptions };
   },
   data() {
     return {
@@ -429,31 +247,6 @@ export default defineComponent({
       selectedStatus: null,
       dialogShow: false,
       expanded: false,
-      statusOptions: [
-        { label: "Tất cả", value: null }, // Thêm tùy chọn để bỏ lọc
-        { label: "Chưa tái tục", value: "Chưa tái tục" },
-        { label: "Chưa đồng bộ 3 tháng", value: "Chưa đồng bộ" },
-        { label: "Chưa liên hệ", value: "Chưa liên hệ" },
-        { label: "Đã liên hệ", value: "Đã liên hệ" },
-        { label: "Đã tái tục", value: "Đã tái tục" },
-        { label: "Từ chối", value: "Từ chối" },
-        { label: "Đã nộp BĐH", value: "Đã nộp BĐH" },
-        { label: "Đã lưu", value: "Đã lưu" },
-        { label: "Đã xóa", value: "Đã xóa" },
-        {
-          label: "Đã nhận kết quả phát sinh từ BHXH",
-          value: "Đã nhận kết quả phát sinh từ BHXH",
-        },
-        {
-          label: "Đã xác nhận yêu cầu phát sinh",
-          value: "Đã xác nhận yêu cầu phát sinh",
-        },
-        { label: "Hồ sơ lỗi", value: "Hồ sơ lỗi" },
-        {
-          label: "Đã gửi yêu cầu phát sinh nhưng chưa nộp tờ khai",
-          value: "Đã gửi yêu cầu phát sinh nhưng chưa nộp tờ khai",
-        },
-      ],
     };
   },
   computed: {
@@ -466,46 +259,6 @@ export default defineComponent({
       "getCurrentBhyt",
     ]),
     ...mapState("auth", ["userDetails"]),
-    userOptions() {
-      return [
-        {
-          label: "Tất cả",
-          value: null,
-        },
-        {
-          label: "142010_giaodichvien",
-          value: '3152',
-        },
-        {
-          label: "Nguyễn Thị Hằng",
-          value: 'pvi',
-        },
-        {
-          label: "CTV_TVLAP",
-          value: '174265',
-        },
-        {
-          label: "142010_Dam",
-          value: '101130',
-        },
-        {
-          label: "142010_truongbc",
-          value: '3154',
-        },
-        {
-          label: "142001_THUY",
-          value: '107028',
-        },
-{
-          label: "142001_giaodichvien",
-          value: '3148',
-        },
-        {
-          label: "Khác",
-          value: "",
-        },
-      ];
-    },
     tongTienBHYT() {
       if (this.filteredBhyts.length === 0) return 0;
       return this.filteredBhyts
@@ -550,16 +303,12 @@ export default defineComponent({
     ...mapMutations({
       setSearchText: "bhyts/SET_SEARCH_TEXT",
     }),
+    dinhDangNgayThang,
+    khoangCachThoiGian,
+    copyMaSoBhxh,
+    copySoDienThoai,
     handleExport() {
       exportDanhBaCSV(this.filteredBhyts);
-    },
-    khoangCachThoiGian(ngay) {
-      return moment(ngay).fromNow(true);
-    },
-    dinhDangNgayThang(ngayThang) {
-      if (!ngayThang) return "";
-      const ngay = new Date(ngayThang);
-      return ngay.toLocaleDateString("vi-VN");
     },
     sleep(ms = 500) {
       return new Promise((resolve) => setTimeout(resolve, ms));
@@ -574,7 +323,7 @@ export default defineComponent({
           completed: "0",
           disabled: "0",
           taiTuc: "1",
-          userName: this.userDetails.id,
+          userName: this.selectedUser,
         });
       } finally {
         this.$q.loading.hide();
@@ -594,227 +343,6 @@ export default defineComponent({
       } finally {
         this.$q.loading.hide();
       }
-    },
-
-    async loadBaoCaoChiTietGiaoDichBHXH() {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth();
-
-      if (this.searchText.split(" : ").length !== 2) {
-        this.tuNgayDenNgay = this.searchText = `${new Date(year, month - 2, 1)
-          .toISOString()
-          .slice(0, 10)} : ${new Date(2024, 12, 31)
-          .toISOString()
-          .slice(0, 10)}`;
-      }
-
-      this.$q
-        .dialog({
-          title: "Báo cáo chi tiết giao dịch",
-          message: "Từ ngày : đến ngày?",
-          prompt: {
-            model: this.searchText,
-            type: "text", // optional
-          },
-          cancel: true,
-          persistent: true,
-        })
-        .onOk(async (data) => {
-          const ngays = data.split(" : ");
-          this.$q.loading.show();
-          try {
-            await this.hoSoDaXuLy({
-              tuNgay: ngays[0],
-              denNgay: ngays[1],
-              mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-              maThuTuc: 0,
-            });
-            this.searchText = "";
-          } catch (error) {
-            Notify.create({
-              message: "Không thể kế nối đến máy chủ !",
-              color: "red",
-            });
-          } finally {
-            this.$q.loading.hide();
-          }
-        });
-    },
-    async loadBaoCaoChiTietGiaoDich() {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth();
-
-      if (this.searchText.split(" : ").length !== 2) {
-        this.tuNgayDenNgay = this.searchText = `${new Date(year, month - 2, 1)
-          .toISOString()
-          .slice(0, 10)} : ${new Date(2024, 12, 31)
-          .toISOString()
-          .slice(0, 10)}`;
-      }
-
-      this.$q
-        .dialog({
-          title: "Báo cáo chi tiết giao dịch",
-          message: "Từ ngày : đến ngày?",
-          prompt: {
-            model: this.searchText,
-            type: "text", // optional
-          },
-          cancel: true,
-          persistent: true,
-        })
-        .onOk(async (data) => {
-          const ngays = data.split(" : ");
-          this.$q.loading.show();
-          try {
-            await this.hoSoDaXuLy({
-              tuNgay: ngays[0],
-              denNgay: ngays[1],
-              mangLuoiId: this.userDetails.quaTrinhCongTac.mangLuoiId,
-            });
-            this.searchText = "";
-          } catch (error) {
-            Notify.create({
-              message: "Không thể kế nối đến máy chủ !",
-              color: "red",
-            });
-          } finally {
-            this.$q.loading.hide();
-          }
-        });
-    },
-    async inC17() {
-      if (!this.filteredBhyts.length && !this.tuNgayDenNgay) {
-        Notify.create({
-          type: "negative",
-          message: "Vào báo cáo giao dịch trước khi xuất C17.",
-        });
-        this.loadBaoCaoChiTietGiaoDich();
-        return;
-      }
-      this.$q
-        .dialog({
-          title: "In C17 (quyển)",
-          message: "Số biên lai?",
-          prompt: {
-            model: this.soBienLai,
-            type: "text", // optional
-          },
-          cancel: true,
-          persistent: true,
-        })
-        .onOk(async (data) => {
-          this.$q.loading.show();
-          try {
-            if (!data) return;
-            const ds = new Map();
-            for (let index = 1; index < 10; index++) {
-              await ds.set(`${data}0${index}`, {
-                tongTien: 0,
-                tienBHYT: 0,
-                tienBHXH: 0,
-                soBienLai: `${data}0${index}`,
-                ngayLap: null,
-              });
-            }
-            for (let index = 10; index < 100; index++) {
-              await ds.set(`${data}${index}`, {
-                tongTien: 0,
-                tienBHYT: 0,
-                tienBHXH: 0,
-                soBienLai: `${data}${index}`,
-                ngayLap: null,
-              });
-            }
-            await ds.set(`${parseInt(data + 99) + 1}`, {
-              tongTien: 0,
-              tienBHYT: 0,
-              tienBHXH: 0,
-              soBienLai: `${parseInt(data + 99) + 1}`,
-              ngayLap: null,
-            });
-            const xuatc17 = await this.filteredBhyts.filter((t) =>
-              t.soBienLai.startsWith(data)
-            );
-            if (!xuatc17.length) {
-              Notify.create({
-                type: "negative",
-                message: "Không tìm thấy quyển biên lai!",
-              });
-              return null;
-            }
-            for (let index = 0; index < this.filteredBhyts.length; index++) {
-              const t = this.filteredBhyts[index];
-              if (ds.has(t.soBienLai)) {
-                const g = ds.get(t.soBienLai);
-                ds.set(t.soBienLai, {
-                  ...g,
-                  ngayLap: t.ngayLap,
-                  tienBHYT:
-                    t.maThuTuc === 1
-                      ? parseInt(t.tongTien) + g.tienBHYT
-                      : g.tienBHYT,
-                  tienBHXH:
-                    t.maThuTuc === 0
-                      ? parseInt(t.tongTien) + g.tienBHXH
-                      : g.tienBHXH,
-                  tongTien: parseInt(t.tongTien) + g.tongTien,
-                });
-              }
-            }
-            await this.sleep(1000);
-            const res = await fetch(
-              `https://app.hotham.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
-                .filter((t) => t.maThuTuc == 1)
-                .map((t) => t.tongTien)
-                .reduce(
-                  (previousValue, currentValue) => previousValue + currentValue,
-                  0
-                )}&tienBHXH=${xuatc17
-                .filter((t) => t.maThuTuc == 0)
-                .map((t) => t.tongTien)
-                .reduce(
-                  (previousValue, currentValue) => previousValue + currentValue,
-                  0
-                )}`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: JSON.stringify([...ds.values()]),
-              }
-            );
-
-            const blob = await res.blob();
-            if (blob.errors) {
-              console.error(blob.errors);
-              throw new Error("Failed to fetch API");
-            }
-
-            var link = document.createElement("a");
-            link.href = window.URL.createObjectURL(blob);
-            link.download = `${new Date()
-              .toISOString()
-              .slice(0, 10)}-tham-tu-lap-c17.pdf`;
-            link.click();
-          } finally {
-            this.$q.loading.hide();
-          }
-        });
-    },
-
-    async print(maSoBhxhs) {
-      let a = document.createElement("a");
-      a.target = "_blank";
-      let lienKet = `https://app.hotham.vn/mau-c17/${new Date()
-        .toISOString()
-        .slice(0, 10)}/pdf?maSoBhxhs=${maSoBhxhs}`;
-      a.href = lienKet;
-      a.click();
     },
 
     loadBhytByNamSinh() {
@@ -837,25 +365,12 @@ export default defineComponent({
             this.getBhyts({
               completed: "0",
               disabled: "0",
-              maXa: this.userDetails.maXa,
               nam: data,
             });
           } finally {
             this.$q.loading.hide();
           }
         });
-    },
-    loadBhytByUserNameTaiTuc() {
-      this.$q.loading.show();
-      try {
-        this.getBhyts({
-          userName: this.searchText,
-          completed: "0",
-          disabled: "0",
-        });
-      } finally {
-        this.$q.loading.hide();
-      }
     },
     loadBhytByUserName(user) {
       this.$q.loading.show();
@@ -865,73 +380,23 @@ export default defineComponent({
         }
         if (user === 1)
           this.getBhyts({
-            userName: 'NV034186013128',
+            userName: "NV034186013128",
             isBHYT: 1,
           });
         else if (user === 0)
           this.getBhyts({
-            userName: 'NV034186013128',
+            userName: "NV034186013128",
             isBHXHTN: 1,
           });
         else
           this.getBhyts({
-            userName: this.selectedUser || 'NV034186013128',
+            userName: this.selectedUser || "NV034186013128",
           });
       } finally {
         this.$q.loading.hide();
       }
     },
-    loadBhytByName() {
-      this.$q
-        .dialog({
-          title: "Tìm thẻ BHYT",
-          message: "Nhập nội dung tìm kiếm?",
-          prompt: {
-            model: this.searchText,
-            isValid: (val) => val.length >= 2, // << here is the magic
-            type: "text", // optional
-          },
-          cancel: true,
-          persistent: true,
-        })
-        .onOk((data) => {
-          this.$q.loading.show();
-          try {
-            this.searchText = data;
-            this.getBhyts({
-              name: data
-            });
-          } finally {
-            this.$q.loading.hide();
-          }
-        });
-    },
-    loadBhytThangCTV() {
-      this.searchText = "";
-      this.$q
-        .dialog({
-          title: "Tháng biên lai",
-          message: "Nhập tháng?",
-          prompt: {
-            model: 0,
-            type: "number", // optional
-          },
-          cancel: true,
-          persistent: true,
-        })
-        .onOk((data) => {
-          this.$q.loading.show();
-          try {
-            this.getBhyts({
-              thangBienLai: data.toString(),
-              khacUserName: '3152',
-              maXa: this.userDetails.maXa,
-            });
-          } finally {
-            this.$q.loading.hide();
-          }
-        });
-    },
+
     loadBhytThang() {
       this.searchText = "";
       this.$q
@@ -950,7 +415,7 @@ export default defineComponent({
           try {
             this.getBhyts({
               thangBienLai: data.toString(),
-              userName: this.userDetails.id,
+              userName: this.selectedUser,
             });
           } finally {
             this.$q.loading.hide();
@@ -982,41 +447,24 @@ export default defineComponent({
           }
         });
     },
-    loadBhyts({ thang = 1, taiTuc = 1 }) {
-      this.$q.loading.show();
-      try {
-        this.searchText = "";
-        this.getBhyts({
-          thang,
-          completed: "0",
-          disabled: "0",
-          taiTuc,
-          maXa: this.userDetails.maXa,
-          khacUserName: this.userDetails.id,
-        });
-      } finally {
-        this.$q.loading.hide();
-      }
-    },
     loadTaiTucBHYTBT() {
       this.$q.loading.show();
       try {
         this.searchText = "";
         this.getBhyts({
-          userName: this.userDetails.id,
           taiTucBHYTBT: "1",
         });
       } finally {
         this.$q.loading.hide();
       }
     },
-    loadBHXHTNs(data) {
+    loadBHXHTNs() {
       this.$q.loading.show();
       try {
         this.searchText = "";
         this.getBhyts({
-          ...data,
-          name: this.searchText,
+          tienNop: 1,
+          taiTucBHXH: 1,
         });
       } finally {
         this.$q.loading.hide();
@@ -1027,25 +475,10 @@ export default defineComponent({
       try {
         this.searchText = "";
         this.getBhyts({
-          userName: this.userDetails.id,
+          userName: this.selectedUser,
           completed: "0",
           disabled: "0",
           hetHan: "1",
-        });
-      } finally {
-        this.$q.loading.hide();
-      }
-    },
-    loadBhytsHetHan() {
-      this.$q.loading.show();
-      try {
-        this.searchText = "";
-        this.getBhyts({
-          maXa: this.userDetails.maXa,
-          completed: "0",
-          disabled: "0",
-          hetHan: "1",
-          khacUserName: this.userDetails.id,
         });
       } finally {
         this.$q.loading.hide();
@@ -1056,7 +489,6 @@ export default defineComponent({
       try {
         this.searchText = "";
         this.getBhyts({
-          maXa: this.userDetails.maXa,
           disabled: 1,
         });
       } finally {
@@ -1068,7 +500,6 @@ export default defineComponent({
       try {
         this.searchText = "";
         this.getBhyts({
-          maXa: this.userDetails.maXa,
           completed: 1,
           disabled: "0",
         });
@@ -1108,7 +539,7 @@ export default defineComponent({
             try {
               await this.traCuuMaSoBHXH({
                 hoTen: name,
-                userName: '3152',
+                userName: "3152",
               });
             } catch (error) {
               Notify.create({
@@ -1141,13 +572,7 @@ export default defineComponent({
         this.$q.loading.hide();
       }
     },
-    async timMoi(searchText) {
-      const ds = searchText.split(",");
-      const daDongBos = JSON.parse(localStorage.getItem("hoTens")) || [];
-      const difference = ds.filter((x) => !daDongBos.includes(x));
-      this.searchText = difference.join();
-      this.timKiem(this.searchText);
-    },
+
     async khoiTao() {
       if (this.$route.query.q) {
         this.$q.loading.show();
@@ -1160,32 +585,7 @@ export default defineComponent({
         }
       }
     },
-    async printDanhSachTraThe() {
-      let a = document.createElement("a");
-      a.target = "_blank";
-      a.href = `https://app.hotham.vn/danh-sach-tra-the/1/pdf?maSoBhxhs=${this.filteredBhyts
-        .map((i) => i.maSoBhxh)
-        .join(",")}`;
-      a.click();
-    },
-    copyMaSoBhxhToClipboard() {
-      navigator.clipboard
-        .writeText(this.filteredBhyts.map((bhyt) => bhyt.maSoBhxh))
-        .then(
-          function () {
-            Notify.create({
-              type: "positive",
-              message: `Bạn đã sao chép thành công!`,
-            });
-          },
-          function (err) {
-            Notify.create({
-              type: "negative",
-              message: "Không thực hiện được!" + err,
-            });
-          }
-        );
-    },
+
     // Hàm để mở URL với mã số tương ứng
     moCuaSoVoiMaSo() {
       // BƯỚC 1: Trích xuất danh sách mã số từ mảng đối tượng
@@ -1213,67 +613,9 @@ export default defineComponent({
         }
       }, thoiGianDelay);
     },
-    copySoDienThoaiToClipboard() {
-      navigator.clipboard
-        .writeText(
-          [
-            ...new Set(
-              this.filteredBhyts.map(
-                (bhyt) => bhyt.soDienThoai2 || bhyt.soDienThoai
-              )
-            ),
-          ].join("\r\n")
-        )
-        .then(
-          function () {
-            Notify.create({
-              type: "positive",
-              message: `Bạn đã sao chép thành công!`,
-            });
-          },
-          function (err) {
-            Notify.create({
-              type: "negative",
-              message: "Không thực hiện được!" + err,
-            });
-          }
-        );
-    },
     copyNamePhoneClipboard() {
-      const mapSoDienThoai = new Map();
-      for (let bhyt of this.filteredBhyts) {
-        mapSoDienThoai.set(bhyt.soDienThoai2 || bhyt.soDienThoai, bhyt);
-      }
-      this.download(
-        "NamePhone.csv",
-        "Name\tPhone\r\n" +
-          [
-            ...new Set(
-              [...mapSoDienThoai.values()].map(
-                ({ soDienThoai2, soDienThoai, hoTen, ngaySinhDt }) =>
-                  `${hoTen} ${new Date(ngaySinhDt).getFullYear()}\t${
-                    soDienThoai2 || soDienThoai
-                  }`
-              )
-            ).values(),
-          ].join("\r\n")
-      );
-    },
-    download(filename, text) {
-      var pom = document.createElement("a");
-      pom.setAttribute(
-        "href",
-        "data:text/plain;charset=utf-8," + encodeURIComponent(text)
-      );
-      pom.setAttribute("download", filename);
-
-      if (document.createEvent) {
-        var event = document.createEvent("MouseEvents");
-        event.initEvent("click", true, true);
-        pom.dispatchEvent(event);
-      } else {
-        pom.click();
-      }
+      const danhBaText = prepareDanhBa(this.filteredBhyts);
+      downloadFile("NamePhone.csv", danhBaText);
     },
   },
   watch: {

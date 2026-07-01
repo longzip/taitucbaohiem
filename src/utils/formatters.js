@@ -6,22 +6,36 @@ import moment from "moment";
  * @returns {string} The formatted relative time or a placeholder string.
  */
 export const formatDate = (date) => {
-  // 1. Check for invalid input
   if (!date || String(date).trim() === "") {
     return "Chưa xác định";
   }
-
-  // 2. Convert to a moment object
   const mDate = moment(date);
-
-  // 3. Validate the date
   if (!mDate.isValid()) {
     return "Ngày không hợp lệ";
   }
-
-  // 4. Return the relative time
   return mDate.fromNow();
 };
+
+/**
+ * Formats a date to a locale-specific date string (e.g., "dd/mm/yyyy").
+ * @param {string | Date | null | undefined} dateString - The date to format.
+ * @returns {string} The formatted date string or an empty string.
+ */
+export const dinhDangNgayThang = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN");
+};
+
+/**
+ * Returns the relative time from now, without the suffix (e.g., "a few seconds").
+ * @param {string | Date | null | undefined} date - The date to compare.
+ * @returns {string} The relative time string.
+ */
+export const khoangCachThoiGian = (date) => {
+  return moment(date).fromNow(true);
+};
+
 
 /**
  * Masks a portion of the social security number for privacy.

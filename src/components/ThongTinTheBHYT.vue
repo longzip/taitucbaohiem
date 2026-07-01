@@ -27,8 +27,7 @@
         <q-item-label caption lines="2">
           Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
             bhyt.maHoGd
-          }}</a
-          >
+          }}</a>
           {{ bhyt.mqhChuHo }}
         </q-item-label>
         <q-item-label v-if="bhyt.maToKhaiRieng" caption lines="2">
@@ -41,15 +40,11 @@
       </div>
       <q-item-label caption> CCCD: {{ bhyt.soCmnd }} </q-item-label>
       <q-item-label caption lines="2"
-        ><strong>{{
-          bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh
-        }}</strong>
+        ><strong>{{ bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh }}</strong>
         <q-icon
           class="q-ml-md"
           @click="
-            copyTextToClipboard(
-              bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh
-            )
+            copyTextToClipboard(bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh)
           "
           name="content_copy"
         />
@@ -142,8 +137,7 @@
                 >
               </q-item>
               <q-item clickable v-close-popup>
-                <q-item-section
-                  @click="traCuuBHXHCu(bhyt.maSoBhxh)"
+                <q-item-section @click="traCuuBHXHCu(bhyt.maSoBhxh)"
                   >Tra cứu trạng thái đóng BHYT</q-item-section
                 >
               </q-item>
@@ -165,8 +159,7 @@
                 >
               </q-item>
               <q-item clickable v-close-popup>
-                <q-item-section
-                  @click="copyBHXHToClipboard(bhyt.maSoBhxh)"
+                <q-item-section @click="copyBHXHToClipboard(bhyt.maSoBhxh)"
                   >Tra cứu quá trình đóng BHXH</q-item-section
                 >
               </q-item>
@@ -202,11 +195,7 @@
           @click="xacNhanGiaHan(bhyt)"
           class="text-subtitle2 text-weight-bold"
           >{{
-            bhyt.tongTien
-              ? parseInt(
-                  bhyt.tongTien
-                ).toLocaleString()
-              : "0"
+            bhyt.tongTien ? parseInt(bhyt.tongTien).toLocaleString() : "0"
           }}</strong
         >đ</q-item-label
       >
@@ -279,13 +268,7 @@
       </q-item-label>
       <q-item-label caption
         ><q-icon
-          @click="
-            handleTraCuuClick(
-              bhyt.maSoBhxh,
-              bhyt.hoTen,
-              bhyt.ngaySinhDt
-            )
-          "
+          @click="handleTraCuuClick(bhyt.maSoBhxh, bhyt.hoTen, bhyt.ngaySinhDt)"
           name="update"
           color="blue"
         />
@@ -910,14 +893,29 @@ export default {
     openVssIdTraCuu(bhyt) {
       const mathe = bhyt.maSoBhxh;
       const hoten = encodeURIComponent(bhyt.hoTen || "");
-      let ngaysinh = "";
+      let ngaySinh = "";
+
       if (bhyt.ngaySinhDt) {
-        const date = new Date(bhyt.ngaySinhDt);
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const year = date.getFullYear();
-        ngaysinh = `${day}/${month}/${year}`;
+        // Trường hợp bhyt.ngaySinhDt là chuỗi có định dạng YYYY-MM-DD...
+        // Tách trực tiếp chuỗi để tránh lỗi lệch ngày do múi giờ (timezone) khi dùng new Date()
+        if (
+          typeof bhyt.ngaySinhDt === "string" &&
+          /^\d{4}-\d{2}-\d{2}/.test(bhyt.ngaySinhDt)
+        ) {
+          const [year, month, day] = bhyt.ngaySinhDt.split("T")[0].split("-");
+          ngaySinh = `${day}/${month}/${year}`;
+        } else {
+          // Trường hợp là đối tượng Date hoặc định dạng khác
+          const date = new Date(bhyt.ngaySinhDt);
+          if (!isNaN(date.getTime())) {
+            const day = String(date.getDate()).padStart(2, "0");
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const year = date.getFullYear();
+            ngaySinh = `${day}/${month}/${year}`;
+          }
+        }
       }
+
       if (!mathe) {
         this.$q.notify({
           type: "negative",
@@ -925,6 +923,7 @@ export default {
         });
         return;
       }
+
       const url = `https://baohiemxahoi.gov.vn/tracuu/Pages/tra-cuu-thoi-han-su-dung-the-bhyt.aspx?mathe=${mathe}&hoten=${hoten}&ngaysinh=${ngaySinh}`;
       window.open(url, "_blank");
     },
